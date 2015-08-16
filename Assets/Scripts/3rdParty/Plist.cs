@@ -725,7 +725,7 @@ namespace PlistCS
 			List<int> refs = new List<int>();
 			int refCount = 0;
 			
-			byte dictByte = objectTable[offsetTable[objRef]];
+			//byte dictByte = objectTable[offsetTable[objRef]];
 			
 			int refStartPosition;
 			refCount = getCount(offsetTable[objRef], out refStartPosition);
@@ -757,7 +757,7 @@ namespace PlistCS
 			List<int> refs = new List<int>();
 			int refCount = 0;
 			
-			byte arrayByte = objectTable[offsetTable[objRef]];
+			//byte arrayByte = objectTable[offsetTable[objRef]];
 			
 			int refStartPosition;
 			refCount = getCount(offsetTable[objRef], out refStartPosition);

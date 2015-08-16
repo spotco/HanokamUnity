@@ -9,7 +9,14 @@ public class GameEngineScene : SPScene {
 	}
 
 	private GameEngineScene i_cons() {
-		SPSprite test = SPSprite.cons(RTex.BG_SPRITESHEET_1,new Rect());
+		SPSprite.cons(RTex.BG_SPRITESHEET_1,GameMain._context._file_cache.get_texrect(RTex.BG_SPRITESHEET_1,"bg_3.png")).set_pos(0.75f,0.75f).set_z(0.2f).set_color(new Vector4(1,0,1,1f));
+		SPSprite.cons(RTex.BG_SPRITESHEET_1,GameMain._context._file_cache.get_texrect(RTex.BG_SPRITESHEET_1,"bg_3.png")).set_pos(0.75f,0.75f).set_z(0.2f).set_color(new Vector4(1,1,1,1f));
+		SPSprite.cons(RTex.BG_SPRITESHEET_1,GameMain._context._file_cache.get_texrect(RTex.BG_SPRITESHEET_1,"bg_3.png")).set_pos(0.75f,0.75f).set_z(0.2f).set_color(new Vector4(0,1,1,1f));
+		SPSprite.cons(RTex.BG_SPRITESHEET_1,GameMain._context._file_cache.get_texrect(RTex.BG_SPRITESHEET_1,"bg_3.png")).set_pos(0.75f,0.75f).set_z(0.2f).set_color(new Vector4(0,0,1,1f));
+		SPSprite.cons(RTex.BG_SPRITESHEET_1,GameMain._context._file_cache.get_texrect(RTex.BG_SPRITESHEET_1,"bg_3.png")).set_pos(0.25f,1f);
+		SPSprite.cons(RTex.BG_SPRITESHEET_1,GameMain._context._file_cache.get_texrect(RTex.BG_SPRITESHEET_1,"bg_3.png")).set_pos(0.75f,0.75f).set_z(0.2f).set_color(new Vector4(1,0,1,1f));
+		SPSprite.cons(RTex.BG_SPRITESHEET_1,GameMain._context._file_cache.get_texrect(RTex.BG_SPRITESHEET_1,"bg_3.png")).set_pos(-0.25f,-0.5f).set_z(-0.1f).set_color(new Vector4(1.0f,1,1,1.0f));	
+		SPSprite.cons(RTex.BG_SPRITESHEET_1,GameMain._context._file_cache.get_texrect(RTex.BG_SPRITESHEET_1,"bg_3.png")).set_pos(-0.35f,0.25f).set_z(-0.2f).set_color(new Vector4(1.0f,1,1,1.0f));
 
 		return this;
 	}
