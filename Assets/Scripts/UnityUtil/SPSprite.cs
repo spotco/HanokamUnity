@@ -1,31 +1,53 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class SPSprite : MonoBehaviour {
+public class SPSprite : SPBaseBehavior {
 
 	public static SPSprite cons(string texkey, Rect texrect) {
-		GameObject neu_obj = (new GameObject("SPSprite"));
-		neu_obj.transform.parent = GameMain._context.gameObject.transform;
-		return neu_obj.AddComponent<SPSprite>().i_cons(texkey,texrect);
+		SPSprite rtv = GameMain._context._objpool.depool<SPSprite>();
+		rtv.transform.parent = GameMain._context.gameObject.transform;
+		return rtv.i_cons(texkey,texrect);
 	}
 
+	public void repool() {
+		this.GetComponent<MeshRenderer>().material = null;
+		GameMain._context._objpool.repool<SPSprite>(this);
+	}
+
+	
 	private string _texkey;
+	private Vector4 _color;
+	private MaterialPropertyBlock _material_block;
+	private Vector3 _pos = new Vector3();
+	public float _rotation;
+	public float _scale_x, _scale_y;
+	private Rect _texrect;
+	private Vector2 _anchorpoint;
+
 	private SPSprite i_cons(string texkey, Rect texrect) {
 		_texkey = texkey;
 
-		this.gameObject.AddComponent<MeshFilter>().mesh = MeshGen.get_unit_quad_mesh(); 
-		this.gameObject.AddComponent<MeshRenderer>().material = GameMain._context._tex_resc.get_material_default(texkey);
+		if (this.GetComponent<MeshFilter>() == null) {
+			this.gameObject.AddComponent<MeshFilter>().mesh = MeshGen.get_unit_quad_mesh();
+			this.gameObject.AddComponent<MeshRenderer>();
+		}
+		
+		this.gameObject.GetComponent<MeshRenderer>().material = GameMain._context._tex_resc.get_material_default(texkey);
 		this.gameObject.GetComponent<MeshRenderer>().receiveShadows = false;
+
 		this.gameObject.GetComponent<MeshRenderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
 
+		this.set_pos(0,0);
+		this.set_z(0);
+		this.set_rotation(0);
+		this.set_scale(1);
+		
 		this.set_tex_rect(texrect);
 		this.set_anchor_point(0.5f,0.5f);
 		this.set_color(new Vector4(1,1,1,1));
 		return this;
 	}
 
-	private Vector4 _color;
-	private MaterialPropertyBlock _material_block;
 	public SPSprite set_color(Vector4 color) {
 		_color = color;
 
@@ -46,7 +68,7 @@ public class SPSprite : MonoBehaviour {
 		return this;
 	}
 
-	private Vector3 _pos = new Vector3();
+
 	public float _x {
 		get { return _pos.x; } set { _pos.x = value; this.transform.localPosition = _pos; }
 	}
@@ -59,20 +81,17 @@ public class SPSprite : MonoBehaviour {
 	public SPSprite set_pos(float x, float y) { _x = x; _y = y;  return this; }
 
 	public SPSprite set_z(float z) { _z = z; this.transform.localPosition = new Vector3(this.transform.localPosition.x,this.transform.localPosition.y,z); return this; }
-	public float z() { return _z; }
 
-	public float _rotation;
+
 	public SPSprite set_rotation(float deg) { this.transform.localEulerAngles = new Vector3(this.transform.localEulerAngles.x,this.transform.localEulerAngles.y, deg); return this; }
 	public float rotation() { return _rotation; }
-
-	public float _scale_x, _scale_y;
+	
 	public SPSprite set_scale_x(float scx) { this.transform.localScale = new Vector3(scx, this.transform.localScale.y, this.transform.localScale.z); return this; }
 	public SPSprite set_scale_y(float scy) { this.transform.localScale = new Vector3(this.transform.localScale.x, scy, this.transform.localScale.z); return this; }
 	public SPSprite set_scale(float sc) { this.transform.localScale = new Vector3(sc, sc, this.transform.localScale.z); return this; }
 	public float scale_x() { return _scale_x; }
 	public float scale_y() { return _scale_y; }
-
-	private Rect _texrect;
+	
 	public Rect texrect() { return _texrect; }
 	public SPSprite set_tex_rect(Rect texrect) {
 		_texrect = texrect;
@@ -96,8 +115,7 @@ public class SPSprite : MonoBehaviour {
 		return this;
 	}
 
-	private const float PIXELS_TO_VERT_SCF = 0.0005f;
-	private Vector2 _anchorpoint;
+	private const float PIXELS_TO_VERT_SCF = 0.001f;
 	public Vector2 anchorpoint() { return _anchorpoint; }
 	public SPSprite set_anchor_point(float x, float y) {
 		_anchorpoint.x = x;
@@ -106,8 +124,8 @@ public class SPSprite : MonoBehaviour {
 		Mesh sprite_mesh = this.gameObject.GetComponent<MeshFilter>().mesh;
 		Texture sprite_tex = GameMain._context._tex_resc.get_tex(_texkey);
 		
-		float tex_wid = sprite_tex.width;
-		float tex_hei = sprite_tex.height;
+		float tex_wid = _texrect.width;
+		float tex_hei = _texrect.height;
 
 
 		Vector3[] verts = sprite_mesh.vertices;
