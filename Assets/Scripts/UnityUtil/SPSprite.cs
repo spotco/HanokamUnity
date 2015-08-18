@@ -122,7 +122,6 @@ public class SPSprite : SPBaseBehavior {
 		_anchorpoint.y = y;
 
 		Mesh sprite_mesh = this.gameObject.GetComponent<MeshFilter>().mesh;
-		Texture sprite_tex = GameMain._context._tex_resc.get_tex(_texkey);
 		
 		float tex_wid = _texrect.width;
 		float tex_hei = _texrect.height;

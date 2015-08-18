@@ -1,8 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System.Reflection;
 
 public class RTex {
 	public static string BG_SPRITESHEET_1 = "background/bg_spritesheet_1";
+	public static string SPRITER_OLDMAN = "character/oldman/Oldman";
 }
 
 public class TextureResource : Object {
@@ -19,9 +21,15 @@ public class TextureResource : Object {
 	}
 
 	private TextureResource i_cons() {
-		_key_to_resourcevalue = new Dictionary<string, TextureResourceValue>() {
-			{RTex.BG_SPRITESHEET_1, cons_texture_resource_value(RTex.BG_SPRITESHEET_1)}
-		};
+		_key_to_resourcevalue = new Dictionary<string, TextureResourceValue>();
+
+		FieldInfo[] fields = typeof(RTex).GetFields(BindingFlags.Public | BindingFlags.Static);
+		foreach (FieldInfo itr in fields) {
+			if (itr.FieldType == typeof(string)) {	
+				string value = (string)itr.GetValue(null);
+				_key_to_resourcevalue[value] = cons_texture_resource_value(value);
+			}
+		}
 
 		return this;
 	}

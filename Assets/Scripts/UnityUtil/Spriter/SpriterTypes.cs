@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 public class TGSpriterFolder {
 	public int _id, _atlas;
-	public Dictionary<string,TGSpriterFile> _files = new Dictionary<string, TGSpriterFile>();
+	public Dictionary<int,TGSpriterFile> _files = new Dictionary<int, TGSpriterFile>();
 }
 
 public class TGSpriterFile {
@@ -39,7 +39,7 @@ public class TGSpriterTimelineKey {
 	public Vector2 _position = new Vector2(), _anchorPoint = new Vector2();
 	public float _rotation;
 	public int _spin;
-	float _scaleX, _scaleY, _alpha;
+	public float _scaleX, _scaleY, _alpha;
 }
 
 public class TGSpriterTimeLine {
@@ -48,55 +48,53 @@ public class TGSpriterTimeLine {
 	public int _id;
 
 	public TGSpriterTimelineKey key_for_time(float val) {
-		//return keys_[[self indexOfKeyForTime:val]];
+		return _keys[this.index_of_key_for_time(val)];
 	}
 
 	public TGSpriterTimelineKey next_key_for_time(float val) {
-		//return keys_[[self indexOfNextKeyForTime:val]];
+		return _keys[this.index_of_next_key_for_time(val)];
 	}
 
 	public int index_of_key_for_time(float val) {
-		/*
-	if (keys_.count > 0) { //no keyframe in first frame case
-		TGSpriterTimelineKey *min_keyframe = keys_[0];
-		for (int i = 1; i < keys_.count; i++) {
-			TGSpriterTimelineKey *itr = keys_[i];
-			if (itr.startsAt < min_keyframe.startsAt) min_keyframe = itr;
+		if (_keys.Count > 0) {
+			TGSpriterTimelineKey min_keyframe = _keys[0];
+			for (int i = 1; i < _keys.Count; i++) {
+				TGSpriterTimelineKey itr = _keys[i];
+				if (itr._startsAt < min_keyframe._startsAt) min_keyframe = itr;
+			}
+			if (val < min_keyframe._startsAt) {
+				return ((int)_keys.Count-1);
+			}
 		}
-		if (val < min_keyframe.startsAt) {
-			return ((int)keys_.count-1);
+		int rtv = 0;
+		for (int i = 0; i < _keys.Count; i++) {
+			TGSpriterTimelineKey keyframe = _keys[i];
+			if (keyframe._startsAt >= val) {
+				break;
+			} else {
+				rtv = i;
+			}
 		}
-	}
-	int rtv = 0;
-	for (int i = 0; i < keys_.count; i++) {
-		TGSpriterTimelineKey *keyframe = keys_[i];
-		if (keyframe.startsAt >= val) {
-			break;
-		} else {
-			rtv = i;
-		}
-	}
-	return rtv;
-		*/
+		return rtv;
 	}
 
 	public int index_of_next_key_for_time(float val) {
-		//return ([self indexOfKeyForTime:val]+1)%keys_.count;
+		return (this.index_of_key_for_time(val)+1)%_keys.Count;
 	}
 	public void add_key_frame(TGSpriterTimelineKey frame) {
-		//[keys_ addObject:frame];
+		_keys.Add(frame);
 	}
 }
 
 public class TGSpriterAnimation {
 	public string _name = "";
 	public List<TGSpriterMainlineKey> _mainline_keys = new List<TGSpriterMainlineKey>();
-	public Dictionary<string,TGSpriterTimeLine> _timelines = new Dictionary<string, TGSpriterTimeLine>();
+	public Dictionary<int,TGSpriterTimeLine> _timelines = new Dictionary<int, TGSpriterTimeLine>();
 	public long _duration;
 	public TGSpriterMainlineKey nth_mainline_key(int i) {
-		//return _mainline_keys[i];
+		return _mainline_keys[i];
 	}
 	public TGSpriterTimeLine timeline_key_of_id(int id) {
-		//return [_timelines objectForKey:[NSNumber numberWithInt:i]];
+		return _timelines[id];
 	}
 }
