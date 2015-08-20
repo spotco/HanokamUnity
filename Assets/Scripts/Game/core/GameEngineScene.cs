@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class GameEngineScene : SPScene {
@@ -9,31 +9,28 @@ public class GameEngineScene : SPScene {
 	}
 
 	private GameEngineScene i_cons() {
-		/*
-		SPSprite.cons(RTex.BG_SPRITESHEET_1,GameMain._context._file_cache.get_texrect(RTex.BG_SPRITESHEET_1,"bg_3.png")).set_pos(0.75f,0.75f).set_z(0.2f).set_color(new Vector4(1,0,1,1f));
-		SPSprite.cons(RTex.BG_SPRITESHEET_1,GameMain._context._file_cache.get_texrect(RTex.BG_SPRITESHEET_1,"bg_3.png")).set_pos(0.75f,0.75f).set_z(0.2f).set_color(new Vector4(1,1,1,1f));
-		SPSprite.cons(RTex.BG_SPRITESHEET_1,GameMain._context._file_cache.get_texrect(RTex.BG_SPRITESHEET_1,"bg_3.png")).set_pos(0.75f,0.75f).set_z(0.2f).set_color(new Vector4(0,1,1,1f));
-		SPSprite.cons(RTex.BG_SPRITESHEET_1,GameMain._context._file_cache.get_texrect(RTex.BG_SPRITESHEET_1,"bg_3.png")).set_pos(0.75f,0.75f).set_z(0.2f).set_color(new Vector4(0,0,1,1f));
-		SPSprite.cons(RTex.BG_SPRITESHEET_1,GameMain._context._file_cache.get_texrect(RTex.BG_SPRITESHEET_1,"bg_3.png")).set_pos(0.25f,1f);
-		SPSprite.cons(RTex.BG_SPRITESHEET_1,GameMain._context._file_cache.get_texrect(RTex.BG_SPRITESHEET_1,"bg_3.png")).set_pos(0.75f,0.75f).set_z(0.2f).set_color(new Vector4(1,0,1,1f));
-		SPSprite.cons(RTex.BG_SPRITESHEET_1,GameMain._context._file_cache.get_texrect(RTex.BG_SPRITESHEET_1,"bg_3.png")).set_pos(-0.25f,-0.5f).set_z(-0.1f).set_color(new Vector4(1.0f,1,1,1.0f));	
-		SPSprite.cons(RTex.BG_SPRITESHEET_1,GameMain._context._file_cache.get_texrect(RTex.BG_SPRITESHEET_1,"bg_3.png")).set_pos(-0.35f,0.25f).set_z(-0.2f).set_color(new Vector4(1.0f,1,1,1.0f));
-		*/
+		SPSprite test = SPSprite.cons(RTex.BG_SPRITESHEET_1,GameMain._context._file_cache.get_texrect(RTex.BG_SPRITESHEET_1,"bg_3.png"));
+		test.set_anchor_point(0.5f,0.5f);
+		test.set_u_z(400);
+		test.set_s_pos(SPUtil.game_screen().x/2,SPUtil.game_screen().y/2);
+		test.set_rotation(45f);
 
-		SPSprite test1 = SPSprite.cons(RTex.BG_SPRITESHEET_1,GameMain._context._file_cache.get_texrect(RTex.BG_SPRITESHEET_1,"bg_3.png")).set_color(new Vector4(1,0,0,0.5f));
-		SPSprite test2 = SPSprite.cons(RTex.BG_SPRITESHEET_1,GameMain._context._file_cache.get_texrect(RTex.BG_SPRITESHEET_1,"bg_3.png")).set_color(new Vector4(0,1,0,0.5f));
-		SPSprite test3 = SPSprite.cons(RTex.BG_SPRITESHEET_1,GameMain._context._file_cache.get_texrect(RTex.BG_SPRITESHEET_1,"bg_3.png")).set_color(new Vector4(0,1,0,0.5f));
-		SPSprite test4 = SPSprite.cons(RTex.BG_SPRITESHEET_1,GameMain._context._file_cache.get_texrect(RTex.BG_SPRITESHEET_1,"bg_3.png")).set_color(new Vector4(0,1,0,0.5f));
-		SPSprite test5 = SPSprite.cons(RTex.BG_SPRITESHEET_1,GameMain._context._file_cache.get_texrect(RTex.BG_SPRITESHEET_1,"bg_3.png")).set_color(new Vector4(0,1,0,0.5f));
-		test1.repool();
-		test2.repool();
-		test3.repool();
-		test4.repool();
-		test5.repool();
+		SPSprite test2 = SPSprite.cons(RTex.BG_SPRITESHEET_1,GameMain._context._file_cache.get_texrect(RTex.BG_SPRITESHEET_1,"bg_2.png"));
+		test2.set_anchor_point(1.0f,1.0f);
+		test2.set_rotation(0.0f);
+		test2.set_u_pos(SPUtil.pct_of_obj_u_with_anchorpt(test,1.0f,1.0f));
+		test2.set_name("test2");
+		test2.set_scale(3.0f);
 
-		test1 = SPSprite.cons(RTex.BG_SPRITESHEET_1,GameMain._context._file_cache.get_texrect(RTex.BG_SPRITESHEET_1,"bg_3.png")).set_color(new Vector4(1,0,0,0.5f));
-		SPSprite test6 = SPSprite.cons(RTex.BG_SPRITESHEET_1,GameMain._context._file_cache.get_texrect(RTex.BG_SPRITESHEET_1,"underwater_temple_treasure.png")).set_color(new Vector4(0,1,0,1.0f));
+		test.add_child(test2);
 
+		SPSprite test3 = SPSprite.cons(RTex.BG_SPRITESHEET_1,GameMain._context._file_cache.get_texrect(RTex.BG_SPRITESHEET_1,"bg_1.png"));
+		test3.set_anchor_point(1.0f,1.0f);
+		test3.set_rotation(0.0f);
+		test3.set_u_pos(SPUtil.pct_of_obj_u_with_anchorpt(test2,1.0f,1.0f));
+		test3.set_name("test3");
+		//test3.set_manual_child_sort_z_offset(-1000);
+		test2.add_child(test3);
 
 		return this;
 	}

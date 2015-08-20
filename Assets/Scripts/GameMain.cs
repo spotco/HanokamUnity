@@ -5,28 +5,22 @@ public class GameMain : SPBaseBehavior {
 
 	public static GameMain _context;
 
-	[SerializeField] private Camera _game_camera;
+	[SerializeField] public Camera _game_camera;
 	[System.NonSerialized] public ObjectPool _objpool;
 
 	private SPScene _current_scene;
 	[System.NonSerialized] public TextureResource _tex_resc;
 	[System.NonSerialized] public FileCache _file_cache;
 
+	private const float ROOT_SCF = 0.001f;
+
 	public override void Start () {
+		this.transform.localScale = SPUtil.valv(ROOT_SCF);
+
 		_context = this;
 		_objpool = ObjectPool.cons();
 		_tex_resc = TextureResource.cons();
 		_file_cache = FileCache.cons();
-
-		SpriterData.cons_data_from_spritesheetreaders(
-			new List<SpriteSheetReader>{ 
-				SpriterJSONParser.cons_from_texture_and_file(
-					_tex_resc.get_tex(RTex.SPRITER_OLDMAN),
-					RSpr.OLDMAN
-				) 
-			},
-			RSpr.OLDMAN
-		);
 
 		_current_scene = GameEngineScene.cons();
 	}
