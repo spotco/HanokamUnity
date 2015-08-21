@@ -11,7 +11,7 @@ public class TGSpriterFile {
 	public string _name = "";
 	public Rect _rect = new Rect();
 	public Vector2 _pivot = new Vector2();
-	public Texture _texture;
+	public string _texkey;
 }
 
 public class TGSpriterObjectRef {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 public class SPNode : SPBaseBehavior {
 
-	public static T generic_cons<T>() where T : SPNode {
+	protected static T generic_cons<T>() where T : SPNode {
 		T rtv = GameMain._context._objpool.depool<T>();
 		rtv.transform.parent = GameMain._context.gameObject.transform;
 		rtv.__ACTIVE = true;
@@ -12,21 +12,23 @@ public class SPNode : SPBaseBehavior {
 		return rtv;
 	}
 
-	public static void generic_repool<T>(T obj) where T : SPNode {
+	protected static T generic_repool<T>(T obj) where T : SPNode {
+		if (!obj.__ACTIVE) Debug.LogError("repool OPERATION ON POOLED SPNODE!");
 		if (obj._parent != null) obj._parent.remove_child(obj);
 		obj._parent = null;
-		obj.remove_all_children_with_cleanup();
+		obj.remove_all_children(true);
 		obj.__ACTIVE = false;
 		GameMain._context._objpool.repool<T>(obj);
+		return null;
 	}
 
-	public static SPNode cons() {
+	public static SPNode cons_node() {
 		return SPNode.generic_cons<SPNode>();
 	}
 
 	[SerializeField] public bool __ACTIVE = false;
-	public virtual void repool() {
-		SPNode.generic_repool<SPNode>(this);
+	public virtual SPNode repool() {
+		return SPNode.generic_repool<SPNode>(this);
 	}
 	
 	private SPNode i_spnode_cons() {
@@ -38,6 +40,7 @@ public class SPNode : SPBaseBehavior {
 		this.set_u_z(0);
 		this.set_rotation(0);
 		this.set_scale(1);
+		this.set_should_autosort_children(true);
 		return this;
 	}
 
@@ -46,15 +49,17 @@ public class SPNode : SPBaseBehavior {
 		return this;
 	}
 
-	[SerializeField] private float _rotation;
-	[SerializeField] private float _scale_x, _scale_y;
-	[SerializeField] private Vector3 _u_pos = new Vector3();
-	[SerializeField] private Vector2 _cached_s_pos = new Vector2();
-	[SerializeField] private float _child_sort_z_offset = 0;
-	[SerializeField] private bool _manual_set_child_sort_z_offset = false;
-	[SerializeField] private bool _cached_s_pos_dirty = true;
+	[SerializeField] protected float _rotation;
+	[SerializeField] protected float _scale_x, _scale_y;
+	[SerializeField] protected Vector3 _u_pos = new Vector3();
+	[SerializeField] protected Vector2 _cached_s_pos = new Vector2();
+	[SerializeField] protected float _child_sort_z_offset = 0;
+	[SerializeField] protected bool _manual_set_child_sort_z_offset = false;
+	[SerializeField] protected bool _cached_s_pos_dirty = true;
 	
 	private void set_u_pos(Vector3 val) {
+		if (!__ACTIVE) Debug.LogError("set_u_pos OPERATION ON POOLED SPNODE!");
+
 		_u_pos = val; 
 		this.transform.localPosition = new Vector3(_u_pos.x,_u_pos.y,_u_pos.z - _child_sort_z_offset);
 		_cached_s_pos_dirty = true;
@@ -100,6 +105,13 @@ public class SPNode : SPBaseBehavior {
 	public SPNode set_scale(float sc) { this.transform.localScale = new Vector3(sc, sc, this.transform.localScale.z); _scale_x = sc; _scale_y = sc; return this; }
 	public float scale_x() { return _scale_x; }
 	public float scale_y() { return _scale_y; }
+
+	[SerializeField] protected Vector2 _anchorpoint = new Vector2();
+	public virtual Vector2 anchorpoint() { return _anchorpoint; }
+	public virtual SPNode set_anchor_point(float x, float y) { _anchorpoint.x = x; _anchorpoint.y = y; return this; }
+
+	public virtual SPNode set_opacity(float val) { return this; }
+	public virtual float get_opacity() { return 1.0f; }
 	
 	private void update_s_pos() {
 		_cached_s_pos = GameMain._context._game_camera.WorldToScreenPoint(this.transform.position);
@@ -166,7 +178,7 @@ public class SPNode : SPBaseBehavior {
 		sort_children();
 	}
 	
-	public void remove_child(SPNode child) {
+	public void remove_child(SPNode child, bool cleanup = false) {
 		bool found = false;
 		for (int i = 0; i < _children.Count; i++ ){
 			SPNode itr = _children[i];
@@ -174,6 +186,7 @@ public class SPNode : SPBaseBehavior {
 				child._parent = null;
 				child.transform.parent = null;
 				_children.RemoveRange(i,1);
+				if (cleanup) child.repool();
 				found = true;
 				break;
 			}
@@ -183,28 +196,43 @@ public class SPNode : SPBaseBehavior {
 		}
 		sort_children();
 	}
+
+	public void remove_from_parent(bool cleanup = false) {
+		if (_parent != null) {
+			_parent.remove_child(this,cleanup);
+		} else {
+			if (cleanup) this.repool();
+		}
+	}
 	
-	public void remove_all_children_with_cleanup() {
+	public void remove_all_children(bool cleanup = false) {
 		while (_children.Count > 0) {
 			SPNode itr = _children[0];
 			itr._parent = null;
 			itr.transform.parent = null;
-			itr.repool();
+			if (cleanup) itr.repool();
 			_children.RemoveAt(0);
 		}
 	}
+
+	[SerializeField] private bool _should_autosort_children;
+	public void set_should_autosort_children(bool val) {
+		_should_autosort_children = val;
+	}
 	
 	private void sort_children() {
+		if (!_should_autosort_children) return;
 		for (int i = 0; i < _children.Count; i++ ){
 			SPNode itr = _children[i];
-			if (!itr._manual_set_child_sort_z_offset) itr._child_sort_z_offset = i+1;
+			if (!itr._manual_set_child_sort_z_offset) itr._child_sort_z_offset = i+0.1f;
 			itr.set_u_z(itr._u_z);
 		}
 	}
-	
+
 	public void set_manual_child_sort_z_offset(float val) {
 		_manual_set_child_sort_z_offset = true;
 		_child_sort_z_offset = val;
+		this.set_u_pos(_u_pos);
 	}
 
 }

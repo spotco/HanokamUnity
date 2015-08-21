@@ -12,21 +12,21 @@ public class SpriterJSONFrame {
 
 public class SpriterJSONParser : SpriteSheetReader {
 	private Dictionary<string,SpriterJSONFrame> _frames = new Dictionary<string, SpriterJSONFrame>();
-	private Texture _texture;
+	private string _texkey;
 	private string _filepath;
 
-	public static SpriterJSONParser cons_from_texture_and_file(Texture tex, string filepath) {
-		return (new SpriterJSONParser()).i_cons_from_texture_and_file(tex,filepath);
+	public static SpriterJSONParser cons_from_texture_and_file(string texkey, string filepath) {
+		return (new SpriterJSONParser()).i_cons_from_texture_and_file(texkey,filepath);
 	}
 
-	private SpriterJSONParser i_cons_from_texture_and_file(Texture tex, string filepath) {
-		_texture = tex;
+	private SpriterJSONParser i_cons_from_texture_and_file(string texkey, string filepath) {
+		_texkey = texkey;
 		_filepath = filepath;
 		this.parse_file(filepath);
 		return this;
 	}
 
-	public Texture texture() { return _texture; }
+	public string texkey() { return _texkey; }
 	public string filepath() { return _filepath; }
 
 	private SpriterJSONParser parse_file(string filepath) {

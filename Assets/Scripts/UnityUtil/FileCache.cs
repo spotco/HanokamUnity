@@ -4,6 +4,8 @@ using System.Text.RegularExpressions;
 
 public class FileCache : Object {
 
+	public static FileCache inst() { return GameMain._context._file_cache; }
+
 	public static FileCache cons() {
 		return (new FileCache()).i_cons();
 	}

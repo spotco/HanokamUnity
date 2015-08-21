@@ -3,6 +3,8 @@ using System.Collections.Generic;
 
 public class ObjectPool : SPBaseBehavior {
 
+	public static ObjectPool inst() { return GameMain._context._objpool; }
+
 	public static ObjectPool cons() {
 		GameObject neu_obj = new GameObject("ObjectPool");
 		return neu_obj.AddComponent<ObjectPool>().i_cons();	

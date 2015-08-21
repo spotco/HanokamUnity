@@ -5,9 +5,20 @@ using System.Reflection;
 public class RTex {
 	public static string BG_SPRITESHEET_1 = "background/bg_spritesheet_1";
 	public static string SPRITER_OLDMAN = "character/oldman/Oldman";
+	public static string SPRITER_FISHGIRL = "character/Fishgirl/Fishgirl";
+	public static string SPRITER_HANOKA = "character/hanoka/hanoka_player";
+	public static string SPRITER_HANOKA_SWORD = "character/hanoka/hanoka_sword";
+	public static string SPRITER_HANOKA_BOW = "character/hanoka/hanoka_bow";
+	public static string SPRITER_HANOKA_REDGARB = "character/hanoka/hanoka_armors/hanoka_player_redgarb";
+
+	public static string BLANK = "misc/blank";
+
+	public static string SPRITER_TEST_CHAR = "test/spriter_test";
 }
 
-public class TextureResource : Object {
+public class TextureResource {
+
+	public static TextureResource inst() { return GameMain._context._tex_resc; }
 
 	private class TextureResourceValue {
 		public Texture _tex;
@@ -38,6 +49,7 @@ public class TextureResource : Object {
 		path = System.IO.Path.Combine(Application.streamingAssetsPath, path+".png");
 		Texture2D rtv = new Texture2D(0,0);
 		rtv.LoadImage(SPUtil.streaming_asset_load(path));
+		rtv.filterMode = FilterMode.Point;
 		return rtv;
 	}
 

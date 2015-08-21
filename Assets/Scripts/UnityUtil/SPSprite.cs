@@ -7,13 +7,13 @@ using UnityEditor;
 #endif
 public class SPSprite : SPNode {
 	
-	public static SPSprite cons(string texkey, Rect texrect) {
-		return SPNode.generic_cons<SPSprite>().i_cons(texkey,texrect);
+	public static SPSprite cons_sprite_texkey_texrect(string texkey, Rect texrect) {
+		return SPNode.generic_cons<SPSprite>().i_cons_sprite_texkey_texrect(texkey,texrect);
 	}
 
-	public override void repool() {
+	public override SPNode repool() {
 		this.GetComponent<MeshRenderer>().material = null;
-		SPNode.generic_repool<SPSprite>(this);
+		return SPNode.generic_repool<SPSprite>(this);
 	}
 
 	[SerializeField] private string _texkey;
@@ -21,15 +21,14 @@ public class SPSprite : SPNode {
 	[SerializeField] private MaterialPropertyBlock _material_block;
 	[SerializeField] private Rect _texrect;
 
-	private SPSprite i_cons(string texkey, Rect texrect) {
-		_texkey = texkey;
-
+	//subclasses must call this
+	protected SPSprite i_cons_sprite_texkey_texrect(string texkey, Rect texrect) {
 		if (this.GetComponent<MeshFilter>() == null) {
 			this.gameObject.AddComponent<MeshFilter>().mesh = MeshGen.get_unit_quad_mesh();
 			this.gameObject.AddComponent<MeshRenderer>();
 		}
+		this.set_texkey(texkey);
 
-		this.gameObject.GetComponent<MeshRenderer>().material = GameMain._context._tex_resc.get_material_default(texkey);
 		this.gameObject.GetComponent<MeshRenderer>().receiveShadows = false;
 		this.gameObject.GetComponent<MeshRenderer>().useLightProbes = false;
 		this.gameObject.GetComponent<MeshRenderer>().reflectionProbeUsage = UnityEngine.Rendering.ReflectionProbeUsage.Off;
@@ -41,6 +40,20 @@ public class SPSprite : SPNode {
 		this.set_color(new Vector4(1,1,1,1));
 		return this;
 	}
+
+	public string texkey() { return _texkey; }
+	public SPSprite set_texkey(string texkey) {
+		_texkey = texkey;
+		this.set_color(_color);
+		return this;
+	}
+
+	public override SPNode set_opacity(float val) {
+		_color.w = val;
+		return this.set_color(_color);
+	}
+
+	public override float get_opacity() { return _color.w; }
 
 	public SPSprite set_color(Vector4 color) {
 		_color = color;
@@ -82,14 +95,14 @@ public class SPSprite : SPNode {
 		uvs[2] = new Vector2(x2/tex_wid,y2/tex_hei); //(1,1)
 		uvs[3] = new Vector2(x1/tex_wid,y2/tex_hei); //(0,1)
 		sprite_mesh.uv = uvs;
+
+		this.set_anchor_point(_anchorpoint.x,_anchorpoint.y);
+
 		return this;
 	}
-
-	[SerializeField] private Vector2 _anchorpoint = new Vector2();
-	public Vector2 anchorpoint() { return _anchorpoint; }
-	public SPSprite set_anchor_point(float x, float y) {
-		_anchorpoint.x = x;
-		_anchorpoint.y = y;
+	
+	public override SPNode set_anchor_point(float x, float y) {
+		base.set_anchor_point(x,y);
 		
 		Mesh sprite_mesh = this.gameObject.GetComponent<MeshFilter>().mesh;
 		

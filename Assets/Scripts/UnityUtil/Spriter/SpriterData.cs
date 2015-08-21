@@ -2,16 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-public class RSpr {
-	public static string OLDMAN = "character/oldman/Oldman";
-	public static string VILLAGER_FISHWOMAN = "character/villager_fishwoman/villager_fishwoman";
-	public static string FISHGIRL = "character/Fishgirl/Fishgirl";
-	public static string HANOKA = "character/hanoka/hanoka_player";
-}
-
 public interface SpriteSheetReader {
 	Rect rect_for_frame(string key);
-	Texture texture();
+	string texkey();
 	string filepath();
 }
 
@@ -24,7 +17,7 @@ public class SpriterData  {
 	public Dictionary<int,TGSpriterFolder> folders() { return _folders; }
 	public Dictionary<string,TGSpriterAnimation> animations() { return _animations; }
 
-	public TGSpriterAnimation anim_of_name(string name) { return _animations[name]; }
+	public TGSpriterAnimation anim_of_name(string name) { return _animations.ContainsKey(name)?_animations[name]:null; }
 	public TGSpriterFile file_for_folderid(int folderid, int fileid) {
 		TGSpriterFolder folder = _folders[folderid];
 		return folder._files[fileid];
@@ -68,7 +61,7 @@ public class SpriterData  {
 			if (itr_folder._atlas == index) {
 				foreach (int file_id in itr_folder._files.Keys) {
 					TGSpriterFile itr_file = itr_folder._files[file_id];
-					itr_file._texture = tar.texture();
+					itr_file._texkey = tar.texkey();
 					itr_file._rect = tar.rect_for_frame(itr_file._name);
 				}
 			}
@@ -103,7 +96,7 @@ public class SpriterData  {
 			neu_file._pivot = new Vector2(itr_files.get_val("pivot_x"),itr_files.get_val("pivot_y"));
 			
 			neu_file._rect = atlas_element.rect_for_frame(itr_files.get_str("name")); //Oldman had a phantom folder
-			neu_file._texture = atlas_element.texture();
+			neu_file._texkey = atlas_element.texkey();
 
 			neu_folder._files[neu_file._id] = neu_file;
 		}
@@ -153,7 +146,7 @@ public class SpriterData  {
 				hash.Append(SPUtil.sprintf("(b_%d-%d)",object_ref._id,object_ref._parent_bone_id));
 
 			} else if (itr_key_child._name == "object_ref") {
-				object_ref._zindex = itr_key_child.get_int("id"); //I think this was a hack
+				object_ref._zindex = itr_key_child.get_int("z_index"); //I think this was a hack
 				mainline_key._object_refs.Add(object_ref);
 				hash.Append(SPUtil.sprintf("(o_%d)",object_ref._parent_bone_id));
 
@@ -187,8 +180,8 @@ public class SpriterData  {
 
 				timeline_key._scaleX = itr_object.get_val("scale_x",1.0f);
 				timeline_key._scaleY = itr_object.get_val("scale_y",1.0f);
-				timeline_key._startsAt = itr_object.get_int("time",0);
-				timeline_key._rotation = -itr_object.get_val("angle");
+				timeline_key._startsAt = key.get_int("time",0);
+				timeline_key._rotation = itr_object.get_val("angle");
 				timeline_key._spin = itr_object.get_int("spin",1);
 				timeline_key._alpha = itr_object.get_val("a",1.0f);
 
