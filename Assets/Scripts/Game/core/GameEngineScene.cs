@@ -9,12 +9,28 @@ public class GameEngineScene : SPScene {
 	}
 
 	private GameEngineScene i_cons() {
-		SPSprite test = SPSprite.cons(RTex.BG_SPRITESHEET_1,GameMain._context._file_cache.get_texrect(RTex.BG_SPRITESHEET_1,"bg_3.png"));
-		test.set_anchor_point(0.5f,0.5f);
-		test.set_u_z(400);
-		test.set_s_pos(SPUtil.game_screen().x/2,SPUtil.game_screen().y/2);
-		test.set_rotation(45f);
+		SPNode test_node = SPNode.cons();
+		test_node.set_s_pos(SPUtil.game_screen().x/2,SPUtil.game_screen().y/2);
+		test_node.set_rotation(45.0f);
 
+
+		SPSprite test_sprite = SPSprite.cons(RTex.BG_SPRITESHEET_1,GameMain._context._file_cache.get_texrect(RTex.BG_SPRITESHEET_1,"bg_3.png"));
+		test_node.add_child(test_sprite);
+		test_sprite.set_anchor_point(0.0f,0.0f);
+		test_sprite.set_rotation(-45.0f);
+
+		test_sprite.repool();
+
+		test_sprite = SPSprite.cons(RTex.BG_SPRITESHEET_1,GameMain._context._file_cache.get_texrect(RTex.BG_SPRITESHEET_1,"bg_3.png"));
+		test_node.add_child(test_sprite);
+		test_sprite.set_anchor_point(0.0f,0.0f);
+		test_sprite.set_rotation(-45.0f);
+
+		//test.set_u_z(400);
+		//test.set_s_pos(SPUtil.game_screen().x/2,SPUtil.game_screen().y/2);
+		//test.set_rotation(45f);
+
+		/*
 		SPSprite test2 = SPSprite.cons(RTex.BG_SPRITESHEET_1,GameMain._context._file_cache.get_texrect(RTex.BG_SPRITESHEET_1,"bg_2.png"));
 		test2.set_anchor_point(1.0f,1.0f);
 		test2.set_rotation(0.0f);
@@ -29,8 +45,8 @@ public class GameEngineScene : SPScene {
 		test3.set_rotation(0.0f);
 		test3.set_u_pos(SPUtil.pct_of_obj_u_with_anchorpt(test2,1.0f,1.0f));
 		test3.set_name("test3");
-		//test3.set_manual_child_sort_z_offset(-1000);
 		test2.add_child(test3);
+		*/
 
 		return this;
 	}

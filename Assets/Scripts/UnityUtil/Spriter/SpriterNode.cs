@@ -1,25 +1,39 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-public class SpriterNode : SPBaseBehavior {
+public class SpriterNode : SPNode {
+	private class SPNode_Bone : SPNode {
+		public int _timeline_id;
+		public new static SPNode_Bone cons() { return SPNode.generic_cons<SPNode_Bone>(); }
+		public override void repool() { SPNode.generic_repool<SPNode_Bone>(this); }
+	}
+	
+	private class SPNode_Object : SPNode {
+		public int _timeline_id, _zindex;
+		public new static SPNode_Object cons() { return SPNode.generic_cons<SPNode_Object>(); }
+		public override void repool() { SPNode.generic_repool<SPNode_Object>(this); }
+	}
+
+	private SpriterData _data;
+	private Dictionary<int,SPNode_Bone> _bones;
+	private Dictionary<int,SPNode_Object> _objs;
+
+	private Dictionary<int,SPNode_Bone> _unused_bones;
+	private Dictionary<int,SPNode_Object> _unused_objs;
+
+	private SPNode_Bone _root_bone;
+	private SPNode _root_bone_holder;
+
+	private string _current_anim_name;
+	private int _anim_duration;
+	private bool _repeat_anim, _anim_finished;
+
+	private string _on_finish_play_anim, _current_playing;
+	private long _last_bone_structure_hash;
+
 }
 
 /*
-
-@interface CCNode_Bone : CCNode
-@property(readwrite,assign) int _timeline_id;
-@end
-@implementation CCNode_Bone
-@synthesize _timeline_id;
-@end
-
-@interface CCSprite_Object : CCSprite
-@property(readwrite,assign) int _timeline_id, _zindex;
-@end
-@implementation CCSprite_Object
-@synthesize _timeline_id, _zindex;
-@end
-
 @implementation SpriterNode {
 	SpriterData *_data;
 	NSMutableDictionary *_bones;
