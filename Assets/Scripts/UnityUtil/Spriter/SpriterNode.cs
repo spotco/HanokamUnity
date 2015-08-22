@@ -97,6 +97,7 @@ public class SpriterNode : SPNode {
 	}
 
 	public override void Update() {
+		/*
 		_current_anim_time += Time.deltaTime * 1000;
 
 		if (_current_anim_time > _anim_duration) {
@@ -114,6 +115,8 @@ public class SpriterNode : SPNode {
 		}
 		this.update_mainline_keyframes();
 		this.update_timeline_keyframes();
+
+		*/
 	}
 
 	private static float get_t_for_keyframes(TGSpriterTimelineKey keyframe_current, TGSpriterTimelineKey keyframe_next, float _current_anim_time, float _anim_duration, bool _repeat_anim) {
@@ -154,6 +157,10 @@ public class SpriterNode : SPNode {
 			TGSpriterFile file = _data.file_for_folderid(keyframe_current._folder,keyframe_current._file);
 			itr_obj.set_texkey(file._texkey);
 			itr_obj.set_tex_rect(file._rect);
+			itr_obj.set_manual_sort_z_order(_sort_z + itr_obj._zindex);
+
+
+			SPUtil.logf("%d,%d",_sort_z,itr_obj._sort_z);
 		}
 	}
 
@@ -220,7 +227,7 @@ public class SpriterNode : SPNode {
 			itr_bone.set_name("bone:"+bone_ref_id.ToString());
 #endif
 			itr_bone._timeline_id = bone_ref._timeline_id;
-			itr_bone.set_should_autosort_children(false);
+
 		}
 
 		for (int i = 0; i < mainline_key._bone_refs.Count; i++) {
@@ -268,14 +275,13 @@ public class SpriterNode : SPNode {
 			itr_obj.remove_from_parent();
 			itr_obj._timeline_id = obj_ref._timeline_id;
 			itr_obj._zindex = obj_ref._zindex;
-			itr_obj.set_manual_child_sort_z_offset(itr_obj._zindex*0.1f);
+			itr_obj.set_manual_sort_z_order(0);
 #if SPRITER_DEBUG
 			itr_obj.set_name("obj:"+obj_ref_id);
 #endif
 
 			SPNode_Bone itr_bone_parent = _bones[obj_ref._parent_bone_id];
 			itr_bone_parent.add_child(itr_obj);
-
 		}
 
 		foreach (int itr in unadded_objects) {
@@ -284,6 +290,12 @@ public class SpriterNode : SPNode {
 			itr_objs.remove_from_parent(true);
 		}
 		unadded_objects.Clear();
+	}
+
+	public override void set_manual_sort_z_order(int val) {
+		base.set_manual_sort_z_order(val);
+		this.update_mainline_keyframes();
+		this.update_timeline_keyframes();
 	}
 
 }

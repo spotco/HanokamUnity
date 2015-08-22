@@ -34,13 +34,14 @@ public class SPNode : SPBaseBehavior {
 	private SPNode i_spnode_cons() {
 		this.transform.localScale = SPUtil.valv(1.0f);
 		this._cached_s_pos_dirty = true;
-		this._child_sort_z_offset = 0;
-		this._manual_set_child_sort_z_offset = false;
 		this.set_u_pos(0,0);
 		this.set_u_z(0);
 		this.set_rotation(0);
 		this.set_scale(1);
+
+		this._has_set_manual_sort_z_order = false;
 		this.set_should_autosort_children(true);
+		this.set_sort_z(0);
 		return this;
 	}
 
@@ -53,15 +54,13 @@ public class SPNode : SPBaseBehavior {
 	[SerializeField] protected float _scale_x, _scale_y;
 	[SerializeField] protected Vector3 _u_pos = new Vector3();
 	[SerializeField] protected Vector2 _cached_s_pos = new Vector2();
-	[SerializeField] protected float _child_sort_z_offset = 0;
-	[SerializeField] protected bool _manual_set_child_sort_z_offset = false;
 	[SerializeField] protected bool _cached_s_pos_dirty = true;
 	
 	private void set_u_pos(Vector3 val) {
 		if (!__ACTIVE) Debug.LogError("set_u_pos OPERATION ON POOLED SPNODE!");
 
 		_u_pos = val; 
-		this.transform.localPosition = new Vector3(_u_pos.x,_u_pos.y,_u_pos.z - _child_sort_z_offset);
+		this.transform.localPosition = new Vector3(_u_pos.x,_u_pos.y,_u_pos.z);
 		_cached_s_pos_dirty = true;
 	}
 	
@@ -221,18 +220,29 @@ public class SPNode : SPBaseBehavior {
 	}
 	
 	private void sort_children() {
-		if (!_should_autosort_children) return;
 		for (int i = 0; i < _children.Count; i++ ){
 			SPNode itr = _children[i];
-			if (!itr._manual_set_child_sort_z_offset) itr._child_sort_z_offset = i+0.1f;
-			itr.set_u_z(itr._u_z);
+			if (itr._has_set_manual_sort_z_order) {
+			} else if (_should_autosort_children) {
+				itr.set_sort_z(_sort_z+(i+1));
+			} else {
+				itr.set_sort_z(_sort_z);
+			}
+
 		}
 	}
 
-	public void set_manual_child_sort_z_offset(float val) {
-		_manual_set_child_sort_z_offset = true;
-		_child_sort_z_offset = val;
-		this.set_u_pos(_u_pos);
+	[SerializeField] public int _sort_z;
+	public virtual void set_sort_z(int zt) {
+		_sort_z = zt;
+		this.sort_children();
+	}
+
+	[SerializeField] protected bool _has_set_manual_sort_z_order = false;
+	public virtual void set_manual_sort_z_order(int val) {
+		_has_set_manual_sort_z_order = true;
+		this.set_sort_z(val);
+		this.sort_children();
 	}
 
 }

@@ -32,6 +32,7 @@ public class SpriterUtil {
 		int tar = (int)(t*TABLE_SCUBIC_SIZE);
 
 		if (tar >= TABLE_SCUBIC_SIZE) tar = TABLE_SCUBIC_SIZE-1;
+		if (tar < 0) tar = 0;
 		return _table_scubic_point_for_t[tar];
 	}
 	

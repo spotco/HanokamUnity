@@ -20,6 +20,12 @@ public class SPUtil {
 
 	public static byte[] streaming_asset_load(string filePath) {
 		byte[] result;
+#if UNITY_WEBPLAYER
+		WWW www = new WWW(filePath);
+		while(!www.isDone);
+		result = www.bytes;
+		return result;
+#else
 		if (filePath.Contains("://")) {
 			WWW www = new WWW(filePath);
 			while(!www.isDone);
@@ -28,6 +34,7 @@ public class SPUtil {
 			result = System.IO.File.ReadAllBytes(filePath);
 		}
 		return result;
+#endif
 	}
 
 	public static System.Random rand = new System.Random(69);

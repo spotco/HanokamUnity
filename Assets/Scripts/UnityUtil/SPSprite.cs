@@ -38,6 +38,8 @@ public class SPSprite : SPNode {
 		this.set_tex_rect(texrect);
 		this.set_anchor_point(0.5f,0.5f);
 		this.set_color(new Vector4(1,1,1,1));
+		this.set_sort_z(_sort_z);
+
 		return this;
 	}
 
@@ -58,11 +60,17 @@ public class SPSprite : SPNode {
 	public SPSprite set_color(Vector4 color) {
 		_color = color;
 
+		/*
 		if (_color.w < 1.0) {
 			this.gameObject.GetComponent<MeshRenderer>().material = GameMain._context._tex_resc.get_material(_texkey,RSha.ALPHA);
 		} else {
 			this.gameObject.GetComponent<MeshRenderer>().material = GameMain._context._tex_resc.get_material_default(_texkey);
 		}
+		*/
+		this.gameObject.GetComponent<MeshRenderer>().material = GameMain._context._tex_resc.get_material_default(_texkey);
+
+		//this.gameObject.GetComponent<MeshRenderer>().material = GameMain._context._tex_resc.get_material_default(_texkey);
+		//this.gameObject.GetComponent<MeshRenderer>().material = GameMain._context._tex_resc.get_material(_texkey,RSha.ALPHA);
 
 		MeshRenderer renderer = this.GetComponent<MeshRenderer>();
 		if (_material_block == null) {
@@ -105,7 +113,7 @@ public class SPSprite : SPNode {
 		base.set_anchor_point(x,y);
 		
 		Mesh sprite_mesh = this.gameObject.GetComponent<MeshFilter>().mesh;
-		
+
 		float tex_wid = _texrect.width;
 		float tex_hei = _texrect.height;
 		
@@ -156,6 +164,11 @@ public class SPSprite : SPNode {
 			max_y = Mathf.Max(max_y,vtx_s_pos.y);
 		}
 		return new Rect(new Vector2(min_x,min_y),new Vector2(max_x-min_x,max_y-min_y));
+	}
+
+	public override void set_sort_z(int zt) {
+		if (this.GetComponent<MeshRenderer>() != null) this.GetComponent<MeshRenderer>().sortingOrder = zt;
+		base.set_sort_z(zt);
 	}
 
 	public override void Update() {}

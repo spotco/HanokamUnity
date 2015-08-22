@@ -3,6 +3,11 @@ using System.Collections.Generic;
 
 public class GameMain : SPBaseBehavior {
 
+	/*
+	Spriter same frame NaN fix
+	letterbox area
+	*/
+
 	public static GameMain _context;
 
 	[SerializeField] public Camera _game_camera;
@@ -15,7 +20,8 @@ public class GameMain : SPBaseBehavior {
 	private const float ROOT_SCF = 0.001f;
 
 	public override void Start () {
-		this.transform.localScale = SPUtil.valv(ROOT_SCF);
+		Application.targetFrameRate = 30;
+		this.transform.localScale = new Vector3(ROOT_SCF,ROOT_SCF,1.0f);
 
 		_context = this;
 		_objpool = ObjectPool.cons();
