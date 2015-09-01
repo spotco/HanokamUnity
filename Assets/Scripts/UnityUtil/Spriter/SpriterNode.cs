@@ -15,10 +15,25 @@ public class SPSprite_Object : SPSprite {
 		rtv.i_cons_sprite_texkey_texrect(RTex.BLANK,new Rect(0,0,1,1));
 		return rtv;
 	}
-	public override SPNode repool() { return SPNode.generic_repool<SPSprite_Object>(this); }
+	public override SPNode repool() { this.gameObject.layer = 0; return SPNode.generic_repool<SPSprite_Object>(this); }
 }
 
-public class SpriterNode : SPNode {
+public interface CameraRenderHookDelegate {
+	void on_pre_render();
+	void on_post_render();
+}
+
+public class CameraRenderHookDispatcher : MonoBehaviour {
+	public CameraRenderHookDelegate _delegate;
+	public void OnPreCull() {
+		_delegate.on_pre_render();
+	}
+	public void OnPostRender() {
+		_delegate.on_post_render();
+	}
+}
+
+public class SpriterNode : SPNode, CameraRenderHookDelegate {
 	private SpriterData _data;
 	private Dictionary<int,SPNode_Bone> _bones = new Dictionary<int, SPNode_Bone>();
 	private Dictionary<int,SPSprite_Object> _objs = new Dictionary<int, SPSprite_Object>();
@@ -58,7 +73,24 @@ public class SpriterNode : SPNode {
 		_anim_finished = true;
 		_on_finish_play_anim = null;
 		_last_bone_structure_hash = 0;
+
+		if (_rendered_img != null) {
+			_rendered_img.repool();
+			_rendered_img = null;
+		}
+		if (_rendertex != null) {
+			_rendertex.Release();
+			_rendertex = null;
+		}
+		if (_rendercam != null) {
+			Destroy(_rendercam);
+			_rendercam = null;
+		}
 	}
+
+	private SPSprite _rendered_img;
+	private RenderTexture _rendertex;
+	private Camera _rendercam;
 
 	private SpriterNode i_cons_spriternode_from_data(SpriterData data) {
 		this.reset_fields();
@@ -68,7 +100,42 @@ public class SpriterNode : SPNode {
 		_root_bone_holder = SPNode.cons_node().set_name("_root_bone_holder");
 		this.add_child(_root_bone_holder);
 
+		GameObject rendercam_obj = new GameObject("rendercam");
+		rendercam_obj.transform.parent = this.transform;
+		_rendercam = rendercam_obj.AddComponent<Camera>();
+		_rendercam.transform.localPosition = new Vector3(0,135,-0.25f);
+		_rendercam.nearClipPlane = 0.1f;
+		_rendercam.farClipPlane = 1.0f;
+		_rendercam.cullingMask = (1 << LayerMask.NameToLayer("SpriterNode"));
+
+		CameraRenderHookDispatcher rendercam_hook_dispatcher = rendercam_obj.AddComponent<CameraRenderHookDispatcher>();
+		rendercam_hook_dispatcher._delegate = this;
+
+		float max_of_widhei = Mathf.Max(SPUtil.game_screen().x,SPUtil.game_screen().y);
+		_rendercam.rect = new Rect(0,0,max_of_widhei/SPUtil.game_screen().x,max_of_widhei/SPUtil.game_screen().y);
+
+		_rendertex = new RenderTexture(256,256,16,RenderTextureFormat.ARGB32);
+		_rendertex.Create();
+		_rendercam.targetTexture = _rendertex;
+
+		_rendered_img = SPSprite.cons_sprite_texkey_texrect(RTex.BLANK,new Rect(0,0,1,1));
+		_rendered_img.set_anchor_point(0.5f,0.0f);
+		_rendered_img.manual_set_texture(_rendertex);
+		_rendered_img.manual_set_mesh_size(256,256);
+		_rendered_img.set_name("rendered_img");
+		this.add_child(_rendered_img);
+
 		return this;
+	}
+
+	Vector3 _pre_pos;
+	public void on_pre_render() {
+		_pre_pos = transform.position;
+		transform.position = new Vector3(0,0,-100);
+	}
+	
+	public void on_post_render() {
+		transform.position = _pre_pos;
 	}
 
 	public void p_play_anim(string anim, bool repeat) {
@@ -97,7 +164,6 @@ public class SpriterNode : SPNode {
 	}
 
 	public override void Update() {
-		/*
 		_current_anim_time += Time.deltaTime * 1000;
 
 		if (_current_anim_time > _anim_duration) {
@@ -115,8 +181,6 @@ public class SpriterNode : SPNode {
 		}
 		this.update_mainline_keyframes();
 		this.update_timeline_keyframes();
-
-		*/
 	}
 
 	private static float get_t_for_keyframes(TGSpriterTimelineKey keyframe_current, TGSpriterTimelineKey keyframe_next, float _current_anim_time, float _anim_duration, bool _repeat_anim) {
@@ -158,9 +222,6 @@ public class SpriterNode : SPNode {
 			itr_obj.set_texkey(file._texkey);
 			itr_obj.set_tex_rect(file._rect);
 			itr_obj.set_manual_sort_z_order(_sort_z + itr_obj._zindex);
-
-
-			SPUtil.logf("%d,%d",_sort_z,itr_obj._sort_z);
 		}
 	}
 
@@ -266,6 +327,7 @@ public class SpriterNode : SPNode {
 			int obj_ref_id = obj_ref._id;
 			if (!_objs.ContainsKey(obj_ref_id)) {
 				_objs[obj_ref_id] = SPSprite_Object.cons_object();
+				_objs[obj_ref_id].gameObject.layer = LayerMask.NameToLayer("SpriterNode");
 			
 			} else {
 				unadded_objects.Remove(obj_ref_id);
@@ -290,12 +352,6 @@ public class SpriterNode : SPNode {
 			itr_objs.remove_from_parent(true);
 		}
 		unadded_objects.Clear();
-	}
-
-	public override void set_manual_sort_z_order(int val) {
-		base.set_manual_sort_z_order(val);
-		this.update_mainline_keyframes();
-		this.update_timeline_keyframes();
 	}
 
 }

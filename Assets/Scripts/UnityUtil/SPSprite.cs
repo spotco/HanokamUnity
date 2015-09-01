@@ -32,7 +32,6 @@ public class SPSprite : SPNode {
 		this.gameObject.GetComponent<MeshRenderer>().receiveShadows = false;
 		this.gameObject.GetComponent<MeshRenderer>().useLightProbes = false;
 		this.gameObject.GetComponent<MeshRenderer>().reflectionProbeUsage = UnityEngine.Rendering.ReflectionProbeUsage.Off;
-
 		this.gameObject.GetComponent<MeshRenderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
 		
 		this.set_tex_rect(texrect);
@@ -68,9 +67,6 @@ public class SPSprite : SPNode {
 		}
 		*/
 		this.gameObject.GetComponent<MeshRenderer>().material = GameMain._context._tex_resc.get_material_default(_texkey);
-
-		//this.gameObject.GetComponent<MeshRenderer>().material = GameMain._context._tex_resc.get_material_default(_texkey);
-		//this.gameObject.GetComponent<MeshRenderer>().material = GameMain._context._tex_resc.get_material(_texkey,RSha.ALPHA);
 
 		MeshRenderer renderer = this.GetComponent<MeshRenderer>();
 		if (_material_block == null) {
@@ -171,6 +167,30 @@ public class SPSprite : SPNode {
 		base.set_sort_z(zt);
 	}
 
-	public override void Update() {}
+	public void manual_set_texture(Texture tex) {
+		this.GetComponent<MeshRenderer>().material.SetTexture("_MainTex",tex);
+	}
+	public void manual_set_mesh_size(float tex_wid, float tex_hei) {
+		Mesh sprite_mesh = this.gameObject.GetComponent<MeshFilter>().mesh;
+		Vector3[] verts = sprite_mesh.vertices;
+		verts[0] = new Vector3(
+			(-_anchorpoint.x) * tex_wid,
+			(-_anchorpoint.y) * tex_hei
+		);
+		verts[1] = new Vector3(
+			(-_anchorpoint.x + 1) * tex_wid,
+			(-_anchorpoint.y) * tex_hei
+		);
+		verts[2] = new Vector3(
+			(-_anchorpoint.x + 1) * tex_wid,
+			(-_anchorpoint.y + 1) * tex_hei
+		);
+		verts[3] = new Vector3(
+			(-_anchorpoint.x) * tex_wid,
+			(-_anchorpoint.y + 1) * tex_hei
+		);
+		sprite_mesh.vertices = verts;
+		sprite_mesh.RecalculateBounds();
+	}
 
 }

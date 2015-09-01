@@ -40,7 +40,6 @@ public class SPNode : SPBaseBehavior {
 		this.set_scale(1);
 
 		this._has_set_manual_sort_z_order = false;
-		this.set_should_autosort_children(true);
 		this.set_sort_z(0);
 		return this;
 	}
@@ -93,7 +92,11 @@ public class SPNode : SPBaseBehavior {
 	}
 	public SPNode set_u_pos(float x, float y) { _u_x = x; _u_y = y;  return this; }
 	public SPNode set_u_pos(Vector2 u_pos) { return this.set_u_pos(u_pos.x,u_pos.y); }
-	public SPNode set_u_z(float z) { _u_z = z; return this; }
+	public SPNode set_u_z(float z) { 
+		_u_z = z; 
+		this.set_manual_sort_z_order((int)(-z * 500));
+		return this; 
+	}
 	
 	
 	public SPNode set_rotation(float deg) { this.transform.localEulerAngles = new Vector3(this.transform.localEulerAngles.x,this.transform.localEulerAngles.y, deg); _rotation = deg; return this; }
@@ -213,20 +216,13 @@ public class SPNode : SPBaseBehavior {
 			_children.RemoveAt(0);
 		}
 	}
-
-	[SerializeField] private bool _should_autosort_children;
-	public void set_should_autosort_children(bool val) {
-		_should_autosort_children = val;
-	}
 	
 	private void sort_children() {
 		for (int i = 0; i < _children.Count; i++ ){
 			SPNode itr = _children[i];
 			if (itr._has_set_manual_sort_z_order) {
-			} else if (_should_autosort_children) {
-				itr.set_sort_z(_sort_z+(i+1));
 			} else {
-				itr.set_sort_z(_sort_z);
+				itr.set_sort_z(_sort_z+(i+1));
 			}
 
 		}

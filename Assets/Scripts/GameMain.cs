@@ -3,10 +3,11 @@ using System.Collections.Generic;
 
 public class GameMain : SPBaseBehavior {
 
-	/*
-	Spriter same frame NaN fix
-	letterbox area
-	*/
+	//set z as sort order in SPNode
+	//spriternode rendertexture
+
+	//Spriter same frame NaN fix
+	//letterbox area
 
 	public static GameMain _context;
 
@@ -27,6 +28,8 @@ public class GameMain : SPBaseBehavior {
 		_objpool = ObjectPool.cons();
 		_tex_resc = TextureResource.cons();
 		_file_cache = FileCache.cons();
+
+		_game_camera.cullingMask = int.MaxValue & (~(1 << LayerMask.NameToLayer("SpriterNode")));
 
 		_current_scene = GameEngineScene.cons();
 	}

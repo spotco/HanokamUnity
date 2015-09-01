@@ -29,8 +29,8 @@ public class GameEngineScene : SPScene {
 			test_sprite2.set_scale(0.25f);
 			test_sprite2.set_tex_rect(FileCache.inst().get_texrect(RTex.BG_SPRITESHEET_1,"bg_2.png"));
 			test_sprite2.set_opacity(0.5f);
-			//test_sprite2.set_manual_sort_z_order(9999);
 		}
+
 		{
 			SpriterData data = SpriterData.cons_data_from_spritesheetreaders(
 				new List<SpriteSheetReader> { SpriterJSONParser.cons_from_texture_and_file(RTex.SPRITER_OLDMAN,RTex.SPRITER_OLDMAN) },
@@ -39,9 +39,10 @@ public class GameEngineScene : SPScene {
 			SpriterNode test_node = SpriterNode.cons_spriternode_from_data(data);
 			test_node.p_play_anim_on_finish("Sleeping","Wake up");
 			test_node.set_s_pos(50,100);
-			test_node.set_manual_sort_z_order(150);
+			test_node.set_u_z(-0.25f);
+
 		}
-		
+
 		{
 			SpriterData data = SpriterData.cons_data_from_spritesheetreaders(
 				new List<SpriteSheetReader> { SpriterJSONParser.cons_from_texture_and_file(RTex.SPRITER_FISHGIRL,RTex.SPRITER_FISHGIRL) },
@@ -49,11 +50,11 @@ public class GameEngineScene : SPScene {
 			);
 			SpriterNode test_node = SpriterNode.cons_spriternode_from_data(data);
 			test_node.p_play_anim("Idle",true);
-			test_node.set_s_pos(150,100);
-			test_node.set_manual_sort_z_order(-150);
+			test_node.set_s_pos(50,200);
+			test_node.set_u_z(1.25f);
 		}
 
-		/*
+
 		{
 			SpriterData data = SpriterData.cons_data_from_spritesheetreaders(
 				new List<SpriteSheetReader> { 
@@ -65,9 +66,9 @@ public class GameEngineScene : SPScene {
 			);
 			SpriterNode test_node = SpriterNode.cons_spriternode_from_data(data);
 			test_node.p_play_anim("Idle",true);
-			test_node.set_s_pos(250,100);
+			test_node.set_s_pos(250,250);
+			test_node.set_u_z(0.0f);
 		}
-		*/
 		
 		return this;
 	}
