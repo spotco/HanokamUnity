@@ -3,10 +3,11 @@ using System.Collections.Generic;
 
 public class GameMain : SPBaseBehavior {
 
-	//set z as sort order in SPNode
-	//spriternode rendertexture
-
-	//Spriter same frame NaN fix
+	//game scene implementation
+	//village gameplay
+	//dive gameplay
+	//air gameplay
+	//figure out UI
 	//letterbox area
 
 	public static GameMain _context;

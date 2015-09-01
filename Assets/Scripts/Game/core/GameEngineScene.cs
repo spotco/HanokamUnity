@@ -40,9 +40,9 @@ public class GameEngineScene : SPScene {
 			test_node.p_play_anim_on_finish("Sleeping","Wake up");
 			test_node.set_s_pos(50,100);
 			test_node.set_u_z(-0.25f);
+			test_node.set_manual_sort_z_order(200);
 
 		}
-
 		{
 			SpriterData data = SpriterData.cons_data_from_spritesheetreaders(
 				new List<SpriteSheetReader> { SpriterJSONParser.cons_from_texture_and_file(RTex.SPRITER_FISHGIRL,RTex.SPRITER_FISHGIRL) },
@@ -52,6 +52,7 @@ public class GameEngineScene : SPScene {
 			test_node.p_play_anim("Idle",true);
 			test_node.set_s_pos(50,200);
 			test_node.set_u_z(1.25f);
+			test_node.set_manual_sort_z_order(-200);
 		}
 
 
@@ -68,8 +69,8 @@ public class GameEngineScene : SPScene {
 			test_node.p_play_anim("Idle",true);
 			test_node.set_s_pos(250,250);
 			test_node.set_u_z(0.0f);
+			test_node.set_manual_sort_z_order(100);
 		}
-		
 		return this;
 	}
 	

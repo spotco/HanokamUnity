@@ -11,7 +11,7 @@ public class SPDict<TKey,TValue> {
 		_list = new List<TKey>();
 	}
 
-	public object this[TKey i]
+	public TValue this[TKey i]
 	{
 		get { 
 			return _dict[i]; 
@@ -19,23 +19,27 @@ public class SPDict<TKey,TValue> {
 		set { 
 			_dict[i] = (TValue)value;
 			if (!_list.Contains(i)) {
-				_list.Remove(i);
+				_list.Add(i);
 			}
 		}
 	}
 
-	public void remove(TKey i) {
+	public void Remove(TKey i) {
 		_dict.Remove(i);
 		_list.Remove(i);
 	}
 
-	public void clear() {
+	public void Clear() {
 		_dict.Clear();
 		_list.Clear();
 	}
 
 	public List<TKey> key_itr() {
 		return _list;
+	}
+
+	public bool ContainsKey(TKey i) {
+		return _dict.ContainsKey(i);
 	}
 
 }

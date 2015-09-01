@@ -13,7 +13,10 @@ public class SPNode : SPBaseBehavior {
 	}
 
 	protected static T generic_repool<T>(T obj) where T : SPNode {
-		if (!obj.__ACTIVE) Debug.LogError("repool OPERATION ON POOLED SPNODE!");
+		if (!obj.__ACTIVE) {
+			Debug.LogError("repool OPERATION ON POOLED SPNODE!");
+		}
+
 		if (obj._parent != null) obj._parent.remove_child(obj);
 		obj._parent = null;
 		obj.remove_all_children(true);
@@ -26,7 +29,8 @@ public class SPNode : SPBaseBehavior {
 		return SPNode.generic_cons<SPNode>();
 	}
 
-	[SerializeField] public bool __ACTIVE = false;
+	[SerializeField] private bool __ACTIVE = false;
+	public bool get_obj_active() { return __ACTIVE; }
 	public virtual SPNode repool() {
 		return SPNode.generic_repool<SPNode>(this);
 	}
@@ -93,8 +97,10 @@ public class SPNode : SPBaseBehavior {
 	public SPNode set_u_pos(float x, float y) { _u_x = x; _u_y = y;  return this; }
 	public SPNode set_u_pos(Vector2 u_pos) { return this.set_u_pos(u_pos.x,u_pos.y); }
 	public SPNode set_u_z(float z) { 
-		_u_z = z; 
-		this.set_manual_sort_z_order((int)(-z * 500));
+		_u_z = z;
+		/*if (!_has_set_manual_sort_z_order) {
+			this.set_manual_sort_z_order((int)(-z * 500));
+		}*/
 		return this; 
 	}
 	

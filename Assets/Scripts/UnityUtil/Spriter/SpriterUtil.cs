@@ -27,15 +27,6 @@ public class SpriterUtil {
 		}
 	}
 	
-	private static float get_table_scubic_point_for_t(double t) {
-
-		int tar = (int)(t*TABLE_SCUBIC_SIZE);
-
-		if (tar >= TABLE_SCUBIC_SIZE) tar = TABLE_SCUBIC_SIZE-1;
-		if (tar < 0) tar = 0;
-		return _table_scubic_point_for_t[tar];
-	}
-	
 	public static Vector2 sbezier_point_for_t(Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3, float t) {
 		return new Vector2(
 			sbezier_val_for_t(p0.x, p1.x, p2.x, p3.x, t),
@@ -44,7 +35,10 @@ public class SpriterUtil {
 	}
 	
 	public static float scubic_interp(float a, float b, float t) {
-		return get_table_scubic_point_for_t(t) * (b-a) + a;
+		int tar = (int)(t*TABLE_SCUBIC_SIZE);
+		if (tar >= TABLE_SCUBIC_SIZE) tar = TABLE_SCUBIC_SIZE-1;
+		if (tar < 0) tar = 0;
+		return _table_scubic_point_for_t[tar] * (b-a) + a;
 	}
 
 	private static float fmod(float a, float b) { return a % b; }

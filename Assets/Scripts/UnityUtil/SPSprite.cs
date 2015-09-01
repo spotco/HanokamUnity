@@ -33,11 +33,13 @@ public class SPSprite : SPNode {
 		this.gameObject.GetComponent<MeshRenderer>().useLightProbes = false;
 		this.gameObject.GetComponent<MeshRenderer>().reflectionProbeUsage = UnityEngine.Rendering.ReflectionProbeUsage.Off;
 		this.gameObject.GetComponent<MeshRenderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
-		
+
+		this._has_set_initial_anchor_point = false;
 		this.set_tex_rect(texrect);
 		this.set_anchor_point(0.5f,0.5f);
 		this.set_color(new Vector4(1,1,1,1));
 		this.set_sort_z(_sort_z);
+
 
 		return this;
 	}
@@ -79,8 +81,10 @@ public class SPSprite : SPNode {
 		return this;
 	}
 
+	Vector2[] __uvs = new Vector2[4];
 	public Rect texrect() { return _texrect; }
 	public SPSprite set_tex_rect(Rect texrect) {
+		if (texrect.x == _texrect.x && texrect.y == _texrect.y && texrect.width == _texrect.width && texrect.height == _texrect.height) return this;
 		_texrect = texrect;
 
 		Mesh sprite_mesh = this.gameObject.GetComponent<MeshFilter>().mesh;
@@ -92,20 +96,25 @@ public class SPSprite : SPNode {
 		float y1 = tex_hei-texrect.height - texrect.y;
 		float x2 = texrect.x + texrect.width;
 		float y2 = tex_hei-texrect.y;
-		
-		Vector2[] uvs = sprite_mesh.uv;
+
+		Vector2[] uvs = __uvs;
 		uvs[0] = new Vector2(x1/tex_wid,y1/tex_hei); //(0,0)
 		uvs[1] = new Vector2(x2/tex_wid,y1/tex_hei); //(1,0)
 		uvs[2] = new Vector2(x2/tex_wid,y2/tex_hei); //(1,1)
 		uvs[3] = new Vector2(x1/tex_wid,y2/tex_hei); //(0,1)
 		sprite_mesh.uv = uvs;
 
+		_has_set_initial_anchor_point = false;
 		this.set_anchor_point(_anchorpoint.x,_anchorpoint.y);
 
 		return this;
 	}
-	
+
+	private Vector3[] __verts = new Vector3[4];
+	private bool _has_set_initial_anchor_point = false;
 	public override SPNode set_anchor_point(float x, float y) {
+		if (_has_set_initial_anchor_point && x == this._anchorpoint.x && y == this._anchorpoint.y) return this;
+		_has_set_initial_anchor_point = true;
 		base.set_anchor_point(x,y);
 		
 		Mesh sprite_mesh = this.gameObject.GetComponent<MeshFilter>().mesh;
@@ -114,23 +123,23 @@ public class SPSprite : SPNode {
 		float tex_hei = _texrect.height;
 		
 		
-		Vector3[] verts = sprite_mesh.vertices;
+		Vector3[] verts = __verts;
 		verts[0] = new Vector3(
 			(-_anchorpoint.x) * tex_wid,
 			(-_anchorpoint.y) * tex_hei
-			);
+		);
 		verts[1] = new Vector3(
 			(-_anchorpoint.x + 1) * tex_wid,
 			(-_anchorpoint.y) * tex_hei
-			);
+		);
 		verts[2] = new Vector3(
 			(-_anchorpoint.x + 1) * tex_wid,
 			(-_anchorpoint.y + 1) * tex_hei
-			);
+		);
 		verts[3] = new Vector3(
 			(-_anchorpoint.x) * tex_wid,
 			(-_anchorpoint.y + 1) * tex_hei
-			);
+		);
 		sprite_mesh.vertices = verts;
 		sprite_mesh.RecalculateBounds();
 		
