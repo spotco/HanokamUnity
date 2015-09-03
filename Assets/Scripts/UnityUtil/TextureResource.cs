@@ -4,6 +4,7 @@ using System.Reflection;
 
 public class RTex {
 	public static string BG_SPRITESHEET_1 = "background/bg_spritesheet_1";
+	public static string BG_UNDERWATER_SPRITESHEET = "background/underwater_spritesheet";
 	public static string BG_TILE_SKY = "background/bg_test_tile_sky";
 
 	public static string SPRITER_OLDMAN = "character/oldman/Oldman";

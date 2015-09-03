@@ -124,7 +124,8 @@ public class SPNode : SPBaseBehavior {
 		child._parent = this;
 		child.transform.parent = this.transform;
 		child.set_u_pos(child._u_x,child._u_y);
-		child.set_scale(child.scale_x());
+		child.set_scale_x(child._scale_x);
+		child.set_scale_y(child._scale_y);
 		child.set_rotation(child.rotation());
 		_children.Add(child);
 		sort_children();

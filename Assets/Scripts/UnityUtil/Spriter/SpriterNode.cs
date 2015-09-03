@@ -18,21 +18,6 @@ public class SPSprite_Object : SPSprite {
 	public override SPNode repool() { this.gameObject.layer = 0; return SPNode.generic_repool<SPSprite_Object>(this); }
 }
 
-public interface CameraRenderHookDelegate {
-	void on_pre_render();
-	void on_post_render();
-}
-
-public class CameraRenderHookDispatcher : MonoBehaviour {
-	public CameraRenderHookDelegate _delegate;
-	public void OnPreCull() {
-		_delegate.on_pre_render();
-	}
-	public void OnPostRender() {
-		_delegate.on_post_render();
-	}
-}
-
 public class SpriterNode : SPNode, CameraRenderHookDelegate {
 	private SpriterData _data;
 	private SPDict<int,SPNode_Bone> _bones = new SPDict<int, SPNode_Bone>();

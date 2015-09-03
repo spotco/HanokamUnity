@@ -9,6 +9,7 @@ public class GameEngineScene : SPScene {
 
 	public BGVillage _bg_village;
 	public BGSky _bg_sky;
+	public BGWater _bg_water;
 	private List<SPGameUpdateable> _bg_elements;
 
 	public static GameEngineScene cons() {
@@ -21,7 +22,9 @@ public class GameEngineScene : SPScene {
 
 		_bg_village = BGVillage.cons(this);
 		_bg_sky = BGSky.cons(this);
-		_bg_elements = new List<SPGameUpdateable>() {_bg_village,_bg_sky};
+		_bg_water = BGWater.cons(this);
+		_bg_elements = new List<SPGameUpdateable>() {_bg_village,_bg_sky,_bg_water};
+
 
 		{
 			SpriterData data = SpriterData.cons_data_from_spritesheetreaders(new List<SpriteSheetReader> { 

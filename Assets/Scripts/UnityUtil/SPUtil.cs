@@ -9,6 +9,21 @@ public struct SPHitRect {
 	public float _x1,_y1,_x2,_y2;
 }
 
+public interface CameraRenderHookDelegate {
+	void on_pre_render();
+	void on_post_render();
+}
+
+public class CameraRenderHookDispatcher : MonoBehaviour {
+	public CameraRenderHookDelegate _delegate;
+	public void OnPreCull() {
+		_delegate.on_pre_render();
+	}
+	public void OnPostRender() {
+		_delegate.on_post_render();
+	}
+}
+
 public class SPUtil {
 
 	public static string sprintf(string format ,params object[] varargs) {

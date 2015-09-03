@@ -1,4 +1,4 @@
-﻿Shader "Custom/SPSpriteDefault"
+﻿Shader "Custom/SurfaceReflection"
 {
 	Properties
 	{
@@ -44,6 +44,8 @@
 		Pass
 		{
 		CGPROGRAM
+// Upgrade NOTE: excluded shader from DX11 and Xbox360; has structs without semantics (struct v2f members fade_alpha)
+#pragma exclude_renderers d3d11 xbox360
 			#pragma vertex vert
 			#pragma fragment frag
 			#include "UnityCG.cginc"
@@ -59,7 +61,8 @@
 			{
 				float4 vertex   : SV_POSITION;
 				fixed4 color    : COLOR;
-				half2 texcoord  : TEXCOORD0;
+				float2 texcoord  : TEXCOORD0;
+				float fade_alpha;
 			};
 			
 			fixed4 _Color;
@@ -69,6 +72,8 @@
 				v2f OUT;
 				OUT.vertex = mul(UNITY_MATRIX_MVP, IN.vertex);
 				OUT.texcoord = IN.texcoord;
+				OUT.fade_alpha = 1-IN.texcoord.y;
+				
 #ifdef UNITY_HALF_TEXEL_OFFSET
 				OUT.vertex.xy += (_ScreenParams.zw-1.0)*float2(-1,1);
 #endif
@@ -80,7 +85,10 @@
 
 			fixed4 frag(v2f IN) : SV_Target
 			{
-				half4 color = tex2D(_MainTex, IN.texcoord) * IN.color;
+				float2 wave_texcoord = IN.texcoord;
+				float yval = IN.fade_alpha;
+				wave_texcoord.x = wave_texcoord.x + (0.02 * sin(_Time[1] * 0.5 + wave_texcoord.y * 100 * yval) + 0.005 * cos(_Time[1] * 0.75 + wave_texcoord.y * 300 * yval)) * yval;
+				half4 color = tex2D(_MainTex, wave_texcoord) * IN.color *float4(0.9,1.2,1.4,clamp(IN.fade_alpha-0.25,0,1.0)) + float4(0.02,0.02,0.02,0.0);
 				clip (color.a - 0.01);
 				return color;
 			}

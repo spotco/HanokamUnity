@@ -46,6 +46,16 @@ public class SPSprite : SPNode {
 		return this;
 	}
 
+	public SPSprite set_shader(string shader_key) {
+		if (_texkey != null) {
+			this.gameObject.GetComponent<MeshRenderer>().material = GameMain._context._tex_resc.get_material(_texkey,shader_key);
+		} else {
+			this.gameObject.GetComponent<MeshRenderer>().material.shader = ShaderResource.get_shader(RSha.SURFACE_REFLECTION);
+		}
+		
+		return this;
+	}
+
 	public string texkey() { return _texkey; }
 	public SPSprite set_texkey(string texkey) {
 		_texkey = texkey;
@@ -179,6 +189,7 @@ public class SPSprite : SPNode {
 	}
 
 	public void manual_set_texture(Texture tex) {
+		_texkey = null;
 		this.GetComponent<MeshRenderer>().material.SetTexture("_MainTex",tex);
 	}
 	public void manual_set_mesh_size(float tex_wid, float tex_hei) {
