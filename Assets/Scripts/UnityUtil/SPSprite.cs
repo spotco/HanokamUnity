@@ -11,6 +11,8 @@ public class SPSprite : SPNode {
 		return SPNode.generic_cons<SPSprite>().i_cons_sprite_texkey_texrect(texkey,texrect);
 	}
 
+	public new static SPNode cons_node() { throw new System.Exception("SPSprite::cons_node"); }
+
 	public override SPNode repool() {
 		this.GetComponent<MeshRenderer>().material = null;
 		return SPNode.generic_repool<SPSprite>(this);

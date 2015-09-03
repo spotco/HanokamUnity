@@ -37,7 +37,6 @@ public class SPNode : SPBaseBehavior {
 	
 	private SPNode i_spnode_cons() {
 		this.transform.localScale = SPUtil.valv(1.0f);
-		this._cached_s_pos_dirty = true;
 		this.set_u_pos(0,0);
 		this.set_u_z(0);
 		this.set_rotation(0);
@@ -56,15 +55,12 @@ public class SPNode : SPBaseBehavior {
 	[SerializeField] protected float _rotation;
 	[SerializeField] protected float _scale_x, _scale_y;
 	[SerializeField] protected Vector3 _u_pos = new Vector3();
-	[SerializeField] protected Vector2 _cached_s_pos = new Vector2();
-	[SerializeField] protected bool _cached_s_pos_dirty = true;
 	
 	private void set_u_pos(Vector3 val) {
 		if (!__ACTIVE) Debug.LogError("set_u_pos OPERATION ON POOLED SPNODE!");
 
 		_u_pos = val; 
 		this.transform.localPosition = new Vector3(_u_pos.x,_u_pos.y,_u_pos.z);
-		_cached_s_pos_dirty = true;
 	}
 	
 	public float _u_x {
@@ -98,9 +94,6 @@ public class SPNode : SPBaseBehavior {
 	public SPNode set_u_pos(Vector2 u_pos) { return this.set_u_pos(u_pos.x,u_pos.y); }
 	public SPNode set_u_z(float z) { 
 		_u_z = z;
-		/*if (!_has_set_manual_sort_z_order) {
-			this.set_manual_sort_z_order((int)(-z * 500));
-		}*/
 		return this; 
 	}
 	
@@ -120,55 +113,6 @@ public class SPNode : SPBaseBehavior {
 
 	public virtual SPNode set_opacity(float val) { return this; }
 	public virtual float get_opacity() { return 1.0f; }
-	
-	private void update_s_pos() {
-		_cached_s_pos = GameMain._context._game_camera.WorldToScreenPoint(this.transform.position);
-		_cached_s_pos_dirty = false;
-	}
-	
-	private void s_pos_set(float valx, float valy) {
-		if (_cached_s_pos_dirty) update_s_pos();
-		Vector3 sw_tar_pos = GameMain._context._game_camera.ScreenToWorldPoint(
-			new Vector3(
-			valx,
-			valy,
-			Mathf.Abs(this.transform.position.z - GameMain._context._game_camera.transform.position.z)
-			));
-		sw_tar_pos.z = this.transform.position.z;
-		this.transform.position = sw_tar_pos; //world->local inverse done on assign
-		_u_pos = this.transform.localPosition;
-		this.set_u_pos(_u_pos);
-	}
-	
-	public float _s_x {
-		get {
-			if (_cached_s_pos_dirty) update_s_pos();
-			return _cached_s_pos.x;
-		}
-		set {
-			if (_cached_s_pos_dirty) update_s_pos();
-			s_pos_set(value,_cached_s_pos.y);
-		}
-	}
-	
-	public float _s_y {
-		get {
-			if (_cached_s_pos_dirty) update_s_pos();
-			return _cached_s_pos.y;
-		}
-		set {
-			if (_cached_s_pos_dirty) update_s_pos();
-			s_pos_set(_cached_s_pos.x,value);
-		}
-	}
-	
-	public SPNode set_s_pos(float x, float y) {
-		_s_x = x;
-		_s_y = y;
-		return this;
-	}
-	
-	public SPNode set_s_pos(Vector2 s_pos) { return this.set_s_pos(s_pos.x,s_pos.y); }
 	
 	[SerializeField] public List<SPNode> _children = new List<SPNode>();
 	[SerializeField] public SPNode _parent;

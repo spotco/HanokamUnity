@@ -103,9 +103,9 @@ public class SpriterNode : SPNode, CameraRenderHookDelegate {
 		GameObject rendercam_obj = new GameObject("rendercam");
 		rendercam_obj.transform.parent = this.transform;
 		_rendercam = rendercam_obj.AddComponent<Camera>();
-		_rendercam.transform.localPosition = new Vector3(0,135,-0.25f);
+		_rendercam.transform.localPosition = new Vector3(0,135,-250.0f);
 		_rendercam.nearClipPlane = 0.1f;
-		_rendercam.farClipPlane = 1.0f;
+		_rendercam.farClipPlane = 10000.0f;
 		_rendercam.cullingMask = (1 << LayerMask.NameToLayer("SpriterNode"));
 
 		CameraRenderHookDispatcher rendercam_hook_dispatcher = rendercam_obj.AddComponent<CameraRenderHookDispatcher>();

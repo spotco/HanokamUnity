@@ -1,6 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+public struct SPRange {
+	public float _min, _max;
+}
+
+public struct SPHitRect {
+	public float _x1,_y1,_x2,_y2;
+}
+
 public class SPUtil {
 
 	public static string sprintf(string format ,params object[] varargs) {
@@ -50,12 +58,28 @@ public class SPUtil {
 		return new Vector3(val,val,val);
 	}
 
-	public static Vector2 game_screen() {
+	public static Vector2 view_screen() {
 		return new Vector2(Screen.width,Screen.height);
+	}
+
+	public static Vector2 game_screen() {
+		return new Vector2(Screen.width * GameMain._context._game_camera.rect.width ,Screen.height * GameMain._context._game_camera.rect.height );
 	}
 
 	public static Vector2 pct_of_obj_u_with_anchorpt(SPSprite obj, float x, float y) {
 		return new Vector2(obj.texrect().width*(x-obj.anchorpoint().x),obj.texrect().height*(y-obj.anchorpoint().y));
+	}
+
+	public static SPRange get_horiz_world_bounds() {
+		return new SPRange(){ _min = -500, _max = 500 };
+	}
+
+	private static float _dt_scale = 1;
+	public static void dt_scale_set(float val) {
+		_dt_scale = val;
+	}
+	public static float dt_scale_get() {
+		return _dt_scale;
 	}
 }
 /*

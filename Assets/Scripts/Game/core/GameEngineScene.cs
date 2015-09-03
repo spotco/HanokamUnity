@@ -1,7 +1,15 @@
 using UnityEngine;
 using System.Collections.Generic;
 
+public interface SPGameUpdateable {
+	void i_update(GameEngineScene g);
+}
+
 public class GameEngineScene : SPScene {
+
+	public BGVillage _bg_village;
+	public BGSky _bg_sky;
+	private List<SPGameUpdateable> _bg_elements;
 
 	public static GameEngineScene cons() {
 		GameEngineScene rtv = GameMain._context.gameObject.AddComponent<GameEngineScene>();
@@ -9,90 +17,64 @@ public class GameEngineScene : SPScene {
 	}
 
 	private GameEngineScene i_cons() {
-		{
-			_test = true;
-			
-			SPNode test_node = SPNode.cons_node();
-			test_node.set_s_pos(SPUtil.game_screen().x/2,SPUtil.game_screen().y/2);
-			test_node.set_rotation(0.0f);
+		__cached_viewbox_dirty = true;
 
-			SPSprite test_sprite = SPSprite.cons_sprite_texkey_texrect(RTex.BG_SPRITESHEET_1,new Rect(0,0,1,1));
-			test_node.add_child(test_sprite);
-			test_sprite.set_anchor_point(0.5f,0.5f);
-			test_sprite.set_rotation(0.0f);
-			test_sprite.set_tex_rect(FileCache.inst().get_texrect(RTex.BG_SPRITESHEET_1,"bg_3.png"));
-
-			SPSprite test_sprite2 = SPSprite.cons_sprite_texkey_texrect(RTex.BG_SPRITESHEET_1,new Rect(0,0,1,1));
-			test_sprite.add_child(test_sprite2);
-			test_sprite2.set_anchor_point(0.5f,0.5f);
-			test_sprite2.set_rotation(0.0f);
-			test_sprite2.set_scale(0.25f);
-			test_sprite2.set_tex_rect(FileCache.inst().get_texrect(RTex.BG_SPRITESHEET_1,"bg_2.png"));
-			test_sprite2.set_opacity(0.5f);
-		}
+		_bg_village = BGVillage.cons(this);
+		_bg_sky = BGSky.cons(this);
+		_bg_elements = new List<SPGameUpdateable>() {_bg_village,_bg_sky};
 
 		{
-			SpriterData data = SpriterData.cons_data_from_spritesheetreaders(
-				new List<SpriteSheetReader> { SpriterJSONParser.cons_from_texture_and_file(RTex.SPRITER_OLDMAN,RTex.SPRITER_OLDMAN) },
-			RTex.SPRITER_OLDMAN
-			);
-			SpriterNode test_node = SpriterNode.cons_spriternode_from_data(data);
-			test_node.p_play_anim_on_finish("Sleeping","Wake up");
-			test_node.set_s_pos(50,100);
-			test_node.set_u_z(-0.25f);
-			test_node.set_manual_sort_z_order(200);
-
-		}
-		{
-			SpriterData data = SpriterData.cons_data_from_spritesheetreaders(
-				new List<SpriteSheetReader> { SpriterJSONParser.cons_from_texture_and_file(RTex.SPRITER_FISHGIRL,RTex.SPRITER_FISHGIRL) },
-			RTex.SPRITER_FISHGIRL
+			SpriterData data = SpriterData.cons_data_from_spritesheetreaders(new List<SpriteSheetReader> { 
+					SpriterJSONParser.cons_from_texture_and_file(RTex.SPRITER_HANOKA,RTex.SPRITER_HANOKA),
+					SpriterJSONParser.cons_from_texture_and_file(RTex.SPRITER_HANOKA_BOW,RTex.SPRITER_HANOKA_BOW),
+					SpriterJSONParser.cons_from_texture_and_file(RTex.SPRITER_HANOKA_SWORD,RTex.SPRITER_HANOKA_SWORD)
+				}, RTex.SPRITER_HANOKA
 			);
 			SpriterNode test_node = SpriterNode.cons_spriternode_from_data(data);
 			test_node.p_play_anim("Idle",true);
-			test_node.set_s_pos(50,200);
-			test_node.set_u_z(1.25f);
-			test_node.set_manual_sort_z_order(-200);
+			test_node.set_u_pos(0,0);
+			test_node.set_manual_sort_z_order(GameAnchorZ.Player_Ground);
 		}
 
 
-		{
-			SpriterData data = SpriterData.cons_data_from_spritesheetreaders(
-				new List<SpriteSheetReader> { 
-				SpriterJSONParser.cons_from_texture_and_file(RTex.SPRITER_HANOKA,RTex.SPRITER_HANOKA),
-				SpriterJSONParser.cons_from_texture_and_file(RTex.SPRITER_HANOKA_BOW,RTex.SPRITER_HANOKA_BOW),
-				SpriterJSONParser.cons_from_texture_and_file(RTex.SPRITER_HANOKA_SWORD,RTex.SPRITER_HANOKA_SWORD)
-			},
-			RTex.SPRITER_HANOKA
-			);
-			SpriterNode test_node = SpriterNode.cons_spriternode_from_data(data);
-			test_node.p_play_anim("Idle",true);
-			test_node.set_s_pos(250,250);
-			test_node.set_u_z(0.0f);
-			test_node.set_manual_sort_z_order(100);
-		}
 		return this;
 	}
-	
-	private bool _test = false;
 
 	public override void i_update(float dt_scale) {
+		SPUtil.dt_scale_set(dt_scale);
+		__cached_viewbox_dirty = true;
 
-		bool is_touch = false;
-		for (int i = 0; i < Input.touchCount; ++i) { 
-			Touch itr = Input.GetTouch(0);
-			if (itr.phase == TouchPhase.Ended) {
-				is_touch = true;
-				Debug.Log("TOUCH!!");
-			}
-		}
-		if (Input.GetMouseButtonUp(0)) {
-			Debug.Log("MOUSE!!");
-			is_touch = true;
-		}
-
-		if (!_test && is_touch) {
-
+		for (int i = 0; i < _bg_elements.Count; i++) {
+			SPGameUpdateable itr = _bg_elements[i];
+			itr.i_update(this);
 		}
 	}
+
+	private SPHitRect __cached_viewbox;
+	private bool __cached_viewbox_dirty;
+	public SPHitRect get_viewbox() {
+		if (!__cached_viewbox_dirty) return __cached_viewbox;
+		__cached_viewbox_dirty = false;
+		__cached_viewbox = get_viewbox_dist(0);
+		return __cached_viewbox;
+	}
+
+	public SPHitRect get_viewbox_dist(float offset_dist) {
+		Vector3 bl = GameMain._context._game_camera.ScreenToWorldPoint(
+			new Vector3(
+			GameMain._context._game_camera.rect.x * SPUtil.view_screen().x,
+			GameMain._context._game_camera.rect.y * SPUtil.view_screen().y,
+			Mathf.Abs(GameMain._context._game_camera.transform.position.z) + offset_dist
+			));
+		Vector3 tr = GameMain._context._game_camera.ScreenToWorldPoint(
+			new Vector3(
+			SPUtil.game_screen().x + GameMain._context._game_camera.rect.x * SPUtil.view_screen().x,
+			SPUtil.game_screen().y + GameMain._context._game_camera.rect.y * SPUtil.view_screen().y,
+			Mathf.Abs(GameMain._context._game_camera.transform.position.z) + offset_dist
+			));
+		bl = GameMain._context.transform.InverseTransformPoint(bl);
+		tr = GameMain._context.transform.InverseTransformPoint(tr);
+		return new SPHitRect(){ _x1 = bl.x, _y1 = bl.y, _x2 = tr.x, _y2 = tr.y };
+	}
+
 }
