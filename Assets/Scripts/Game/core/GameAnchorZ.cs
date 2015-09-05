@@ -34,9 +34,12 @@ public class GameAnchorZ {
 	*/
 
 
-	public const int BGVillage_BG1 = -92;
-	public const int BGVillage_BG2 = -93;
-	public const int BGVillage_Reflection = -94;
+	public const int BGVillage_BG1 = -89;
+	public const int BGVillage_BG2 = -90;
+	public const int BGVillage_Reflection_DOCKS = -91;
+	public const int BGVillage_Reflection_1 = -92;
+	public const int BGVillage_Reflection_2 = -93;
+	public const int BGVillage_Reflection_3 = -94;
 	public const int BGWater_SURF_ELE1 = -95;
 	public const int BGWater_SURF_ELE2 = -96;
 

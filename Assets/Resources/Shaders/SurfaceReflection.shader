@@ -12,6 +12,7 @@
 		_StencilReadMask ("Stencil Read Mask", Float) = 255
 
 		_ColorMask ("Color Mask", Float) = 15
+		_alpha_sub ("_alpha_sub", Float) = 0
 	}
 
 	SubShader
@@ -66,6 +67,7 @@
 			};
 			
 			fixed4 _Color;
+			fixed _alpha_sub;
 
 			v2f vert(appdata_t IN)
 			{
@@ -86,9 +88,9 @@
 			fixed4 frag(v2f IN) : SV_Target
 			{
 				float2 wave_texcoord = IN.texcoord;
-				float yval = IN.fade_alpha;
-				wave_texcoord.x = wave_texcoord.x + (0.02 * sin(_Time[1] * 0.5 + wave_texcoord.y * 100 * yval) + 0.005 * cos(_Time[1] * 0.75 + wave_texcoord.y * 300 * yval)) * yval;
-				half4 color = tex2D(_MainTex, wave_texcoord) * IN.color *float4(0.9,1.2,1.4,clamp(IN.fade_alpha-0.25,0,1.0)) + float4(0.02,0.02,0.02,0.0);
+				float yval = 1-IN.fade_alpha;
+				wave_texcoord.x = wave_texcoord.x + (0.05 * sin(_Time[1] * 1.0 + wave_texcoord.y * 100 * yval) * yval) + (0.0075 * cos(_Time[1] * 5.0 + wave_texcoord.y * 300 * yval) * yval);
+				half4 color = tex2D(_MainTex, wave_texcoord) * IN.color *float4(0.9,1.2,1.4,clamp(IN.fade_alpha-_alpha_sub,0,1.0)) + float4(0.02,0.02,0.02,0.0);
 				clip (color.a - 0.01);
 				return color;
 			}
