@@ -7,6 +7,7 @@ public struct SPRange {
 
 public struct SPHitRect {
 	public float _x1,_y1,_x2,_y2;
+	public Vector2 get_center() { return new Vector2((_x2-_x1)/2.0f+_x1,(_y2-_y1)/2.0f+_y1); }
 }
 
 public interface CameraRenderHookDelegate {

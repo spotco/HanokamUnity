@@ -5,6 +5,7 @@ public class BGVillage : SPGameUpdateable {
 
 	private SPNode _root;
 	private SPSprite _docks, _docks_front, _bldg_1, _bldg_2, _bldg_3, _bldg_4;
+	private List<BGReflection> _reflections;
 
 	public static BGVillage cons(GameEngineScene g) {
 		return (new BGVillage()).i_cons(g);
@@ -23,6 +24,7 @@ public class BGVillage : SPGameUpdateable {
 		_bldg_4.set_scale(4.0f);
 		_bldg_4.set_anchor_point(0.5f,0);
 		_bldg_4.set_u_pos(0,500);
+		_bldg_4.gameObject.layer = RLayer.get_layer(RLayer.REFLECTION_OBJECTS_3);
 		_bldg_4.set_name("_bldg_4");
 		_root.add_child(_bldg_4);
 
@@ -86,39 +88,46 @@ public class BGVillage : SPGameUpdateable {
 		_docks_front.set_name("_docks_front");
 		_root.add_child(_docks_front);
 
-
-		BGReflection.cons(_root,RLayer.REFLECTION_OBJECTS_3)
+		_reflections = new List<BGReflection>();
+		_reflections.Add(BGReflection.cons(_root,RLayer.REFLECTION_OBJECTS_3)
 			.set_name("_bg_3_reflection")
 			.set_alpha_sub(0.3f)
-			.set_manual_z_order(GameAnchorZ.BGVillage_Reflection_3);
+			.set_manual_z_order(GameAnchorZ.BGVillage_Reflection_3));
 
-		BGReflection.cons(_root,RLayer.REFLECTION_OBJECTS_2)
+		_reflections.Add(BGReflection.cons(_root,RLayer.REFLECTION_OBJECTS_2)
 			.set_name("_bg_2_reflection")
 			.set_reflection_pos(0,-767,458)
 			.set_camera_pos(0,822,-929)
 			.set_manual_z_order(GameAnchorZ.BGVillage_Reflection_2)
 			.set_scale(6.5f)
-			.set_alpha_sub(0.65f);
-		BGReflection.cons(_root,RLayer.REFLECTION_OBJECTS_1)
+			.set_alpha_sub(0.65f));
+		_reflections.Add(BGReflection.cons(_root,RLayer.REFLECTION_OBJECTS_1)
 			.set_name("_bg_1_reflection")
 			.set_reflection_pos(0,-681,212)
 			.set_camera_pos(0,574,-929)
 			.set_manual_z_order(GameAnchorZ.BGVillage_Reflection_1)
 			.set_scale(5.0f)
-			.set_alpha_sub(0.65f);
-		BGReflection.cons(_root,RLayer.REFLECTION_OBJECTS_DOCKS)
+			.set_alpha_sub(0.65f));
+		_reflections.Add(BGReflection.cons(_root,RLayer.REFLECTION_OBJECTS_DOCKS)
 			.set_name("_docks_reflections")
 			.set_reflection_pos(0,-408,-17)
 			.set_camera_pos(0,219,-929)
 			.set_manual_z_order(GameAnchorZ.BGVillage_Reflection_DOCKS)
 			.set_scale(4.0f)
-			.set_alpha_sub(0.55f);
+			.set_alpha_sub(0.55f));
+
+
 
 
 		return this;
 	}
 
 	public void i_update(GameEngineScene g) {
+		for (int i = 0; i < _reflections.Count; i++) {
+			_reflections[i].set_enabled(!g.is_camera_underwater());
+		}
+
+
 	}
 
 }

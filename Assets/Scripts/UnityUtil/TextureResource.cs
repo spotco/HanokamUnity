@@ -6,6 +6,9 @@ public class RTex {
 	public static string BG_SPRITESHEET_1 = "background/bg_spritesheet_1";
 	public static string BG_UNDERWATER_SPRITESHEET = "background/underwater_spritesheet";
 	public static string BG_TILE_SKY = "background/bg_test_tile_sky";
+	public static string BG_TILE_WATER = "background/bg_test_tile_water";
+	public static string BG_WATER_ELEMENT_FADE = "background/bg_water_element_fade";
+	public static string BG_UNDERWATER_SURFACE_GRADIENT = "background/bg_underwater_surface_gradient";
 
 	public static string SPRITER_OLDMAN = "character/oldman/Oldman";
 	public static string SPRITER_FISHGIRL = "character/Fishgirl/Fishgirl";
@@ -13,6 +16,8 @@ public class RTex {
 	public static string SPRITER_HANOKA_SWORD = "character/hanoka/hanoka_sword";
 	public static string SPRITER_HANOKA_BOW = "character/hanoka/hanoka_bow";
 	public static string SPRITER_HANOKA_REDGARB = "character/hanoka/hanoka_armors/hanoka_player_redgarb";
+
+
 
 	public static string BLANK = "misc/blank";
 

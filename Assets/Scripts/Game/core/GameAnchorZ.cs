@@ -22,6 +22,9 @@ public class GameAnchorZ {
 	public const int BGSky_Sky_SideCliffs = 40;
 	*/
 
+	public const int BGWater_SurfaceReflection = 500;
+	public const int BGWater_SurfaceGradient = 499;
+
 	public const int BGVillage_Docks_Front = 100;
 
 	public const int Player_Ground = 75;
@@ -42,15 +45,17 @@ public class GameAnchorZ {
 	public const int BGVillage_Reflection_3 = -94;
 	public const int BGWater_SURF_ELE1 = -95;
 	public const int BGWater_SURF_ELE2 = -96;
-
 	public const int BGWater_SURF_ELE3 = -98;
 	public const int BGVillage_BG3 = -99;
 	public const int BGVillage_BG4 = -100;
+	
 
+	public const int BGWater_TOP_FADE = -950;
+	public const int BGWater_BG_ELE1 = -998;
+	public const int BGWater_BG_ELE2 = -999;
+	public const int BGWater_BG_ELE3 = -1000;
 
-
-
-	public const int BGSky_RepeatBG = -500;
+	public const int BGSky_RepeatBG = -5000;
 
 	//public const int BGSky_BackgroundElements = 6;
 	//public const int BGSky_Sky_Islands = 4;

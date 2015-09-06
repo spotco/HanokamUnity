@@ -54,6 +54,12 @@ public class BGReflection {
 		_reflection_image.set_scale_y(-val);
 		return this;
 	}
+	public BGReflection set_scale(float valx, float valy) {
+		_reflection_image.set_scale_x(valx);
+		_reflection_image.set_scale_y(valy);
+		return this;
+	}
+
 
 	public BGReflection set_reflection_pos(float x, float y, float z) {
 		_reflection_image.set_u_pos(x,y);
@@ -76,5 +82,14 @@ public class BGReflection {
 		return this;
 	}
 
+	public BGReflection set_enabled(bool val) {
+		_root.set_enabled(val);
+		return this;
+	}
+
+	public BGReflection manual_set_camera_cullingmask(int val) {
+		_reflection_render_cam.cullingMask = val;
+		return this;
+	}
 
 }

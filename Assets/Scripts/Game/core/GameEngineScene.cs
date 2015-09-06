@@ -67,17 +67,23 @@ public class GameEngineScene : SPScene {
 			new Vector3(
 			GameMain._context._game_camera.rect.x * SPUtil.view_screen().x,
 			GameMain._context._game_camera.rect.y * SPUtil.view_screen().y,
-			Mathf.Abs(GameMain._context._game_camera.transform.position.z) + offset_dist
-			));
+			Mathf.Abs(GameMain._context._game_camera.transform.position.z - offset_dist)
+		));
 		Vector3 tr = GameMain._context._game_camera.ScreenToWorldPoint(
 			new Vector3(
 			SPUtil.game_screen().x + GameMain._context._game_camera.rect.x * SPUtil.view_screen().x,
 			SPUtil.game_screen().y + GameMain._context._game_camera.rect.y * SPUtil.view_screen().y,
-			Mathf.Abs(GameMain._context._game_camera.transform.position.z) + offset_dist
-			));
+			Mathf.Abs(GameMain._context._game_camera.transform.position.z - offset_dist)
+		));
 		bl = GameMain._context.transform.InverseTransformPoint(bl);
 		tr = GameMain._context.transform.InverseTransformPoint(tr);
 		return new SPHitRect(){ _x1 = bl.x, _y1 = bl.y, _x2 = tr.x, _y2 = tr.y };
+	}
+
+	
+
+	public bool is_camera_underwater() {
+		return GameMain._context._game_camera.transform.localPosition.y < -100;
 	}
 
 }

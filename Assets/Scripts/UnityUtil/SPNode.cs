@@ -192,4 +192,12 @@ public class SPNode : SPBaseBehavior {
 		this.sort_children();
 	}
 
+	public bool is_enabled() {
+		return this.gameObject.activeSelf;
+	}
+	public SPNode set_enabled(bool val) {
+		this.gameObject.SetActive(val);
+		return this;
+	}
+
 }
