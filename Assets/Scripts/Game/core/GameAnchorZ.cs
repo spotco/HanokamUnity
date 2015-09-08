@@ -22,19 +22,22 @@ public class GameAnchorZ {
 	public const int BGSky_Sky_SideCliffs = 40;
 	*/
 
+	public const int BGWater_WaterLineBelow_Line_LightRays = 506;
+	public const int BGWater_WaterLineBelow_Line = 505;
+	public const int BGWater_WaterLineBelow_Grad = 504;
 	public const int BGWater_SurfaceReflection = 500;
 	public const int BGWater_SurfaceGradient = 499;
 
-	public const int BGVillage_Docks_Front = 100;
+	public const int BGVillage_Docks_Front = 300;
+
+	public const int BGVillage_WaterLineAbove_Line = 200;
+	public const int BGVillage_WaterLineAbove_Grad = 199;
+	public const int BGVillage_WaterLineAbove_BelowLine = 198;
+	public const int BGVillage_WaterLineAbove_BelowLine_LightRays = 197;
 
 	public const int Player_Ground = 75;
 
 	public const int BGVillage_Docks = 50;
-	/*
-	public const int BGWater_Reflection = 11;
-	public const int Enemies_Underwater = 8;
-	public const int BGWater_I1 = 7;
-	*/
 
 
 	public const int BGVillage_BG1 = -89;

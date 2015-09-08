@@ -23,6 +23,7 @@ public class BGSky : SPGameUpdateable {
 		_sky_bg.set_name("_sky_bg");
 		_sky_bg.set_u_z(3000);
 		_sky_bg.set_manual_sort_z_order(GameAnchorZ.BGSky_RepeatBG);
+		_sky_bg.gameObject.layer = RLayer.get_layer(RLayer.UNDERWATER_ELEMENTS);
 		_root.add_child(_sky_bg);
 		return this;
 	}

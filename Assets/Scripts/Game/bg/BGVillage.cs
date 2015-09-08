@@ -4,8 +4,9 @@ using System.Collections.Generic;
 public class BGVillage : SPGameUpdateable {
 
 	private SPNode _root;
-	private SPSprite _docks, _docks_front, _bldg_1, _bldg_2, _bldg_3, _bldg_4;
+	public SPSprite _docks, _docks_front, _bldg_1, _bldg_2, _bldg_3, _bldg_4;
 	private List<BGReflection> _reflections;
+	private BGWaterLineAbove _waterlineabove;
 
 	public static BGVillage cons(GameEngineScene g) {
 		return (new BGVillage()).i_cons(g);
@@ -96,17 +97,17 @@ public class BGVillage : SPGameUpdateable {
 
 		_reflections.Add(BGReflection.cons(_root,RLayer.REFLECTION_OBJECTS_2)
 			.set_name("_bg_2_reflection")
-			.set_reflection_pos(0,-767,458)
+			.set_reflection_pos(0,-483,458)
 			.set_camera_pos(0,822,-929)
 			.set_manual_z_order(GameAnchorZ.BGVillage_Reflection_2)
-			.set_scale(6.5f)
+			.set_scale(6.5f,-4)
 			.set_alpha_sub(0.65f));
 		_reflections.Add(BGReflection.cons(_root,RLayer.REFLECTION_OBJECTS_1)
 			.set_name("_bg_1_reflection")
-			.set_reflection_pos(0,-681,212)
+			.set_reflection_pos(0,-495,212)
 			.set_camera_pos(0,574,-929)
 			.set_manual_z_order(GameAnchorZ.BGVillage_Reflection_1)
-			.set_scale(5.0f)
+			.set_scale(5.0f,-3)
 			.set_alpha_sub(0.65f));
 		_reflections.Add(BGReflection.cons(_root,RLayer.REFLECTION_OBJECTS_DOCKS)
 			.set_name("_docks_reflections")
@@ -116,8 +117,9 @@ public class BGVillage : SPGameUpdateable {
 			.set_scale(4.0f)
 			.set_alpha_sub(0.55f));
 
-
-
+		_waterlineabove = BGWaterLineAbove.cons(_root);
+		_waterlineabove.set_u_pos(0,-200);
+		_waterlineabove.set_u_z(-500);
 
 		return this;
 	}
@@ -126,7 +128,17 @@ public class BGVillage : SPGameUpdateable {
 		for (int i = 0; i < _reflections.Count; i++) {
 			_reflections[i].set_enabled(!g.is_camera_underwater());
 		}
+		if (g.is_camera_underwater()) {
+			_waterlineabove.set_enabled(false);
+			_bldg_1.gameObject.layer = RLayer.get_layer(RLayer.SURFACEREFLECTION_ONLY);
+			_bldg_2.gameObject.layer = RLayer.get_layer(RLayer.SURFACEREFLECTION_ONLY);
+		} else {
+			_waterlineabove.set_enabled(true);
+			_waterlineabove.i_update(g);
 
+			_bldg_1.gameObject.layer = RLayer.get_layer(RLayer.REFLECTION_OBJECTS_1);
+			_bldg_2.gameObject.layer = RLayer.get_layer(RLayer.REFLECTION_OBJECTS_2);
+		}
 
 	}
 

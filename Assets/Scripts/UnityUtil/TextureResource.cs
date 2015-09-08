@@ -9,6 +9,11 @@ public class RTex {
 	public static string BG_TILE_WATER = "background/bg_test_tile_water";
 	public static string BG_WATER_ELEMENT_FADE = "background/bg_water_element_fade";
 	public static string BG_UNDERWATER_SURFACE_GRADIENT = "background/bg_underwater_surface_gradient";
+	
+	public static string BG_WATER_TOP_BELOWLINE = "background/waterline_tex/bg_water_top_belowline";
+	public static string BG_WATER_TOP_WATERLINE = "background/waterline_tex/bg_water_top_waterline";
+	public static string BG_WATER_TOP_WATERLINEGRAD = "background/waterline_tex/bg_water_top_waterlinegrad";
+	public static string BG_WATER_BOTTOM_SURFACEGRAD = "background/waterline_tex/bg_water_bottom_surfacegrad";
 
 	public static string SPRITER_OLDMAN = "character/oldman/Oldman";
 	public static string SPRITER_FISHGIRL = "character/Fishgirl/Fishgirl";
@@ -16,8 +21,6 @@ public class RTex {
 	public static string SPRITER_HANOKA_SWORD = "character/hanoka/hanoka_sword";
 	public static string SPRITER_HANOKA_BOW = "character/hanoka/hanoka_bow";
 	public static string SPRITER_HANOKA_REDGARB = "character/hanoka/hanoka_armors/hanoka_player_redgarb";
-
-
 
 	public static string BLANK = "misc/blank";
 

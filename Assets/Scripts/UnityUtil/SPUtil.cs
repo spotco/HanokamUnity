@@ -97,6 +97,11 @@ public class SPUtil {
 	public static float dt_scale_get() {
 		return _dt_scale;
 	}
+
+	public static Rect texture_default_rect(string key) {
+		Texture tex = TextureResource.inst().get_tex(key);
+		return new Rect(0,0,tex.width,tex.height);
+	}
 }
 /*
 
@@ -127,10 +132,6 @@ float lerp(float a, float b, float t) {
 
 CGPoint lerp_point(CGPoint a, CGPoint b, float t) {
 	return ccp(lerp(a.x, b.x, t),lerp(a.y, b.y, t));
-}
-
-CGRect cctexture_default_rect(CCTexture *tex) {
-	return CGRectMake(0, 0, tex.pixelWidth, tex.pixelHeight);
 }
 
 int SIG(float n) {

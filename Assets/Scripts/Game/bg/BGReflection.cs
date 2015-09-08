@@ -92,4 +92,15 @@ public class BGReflection {
 		return this;
 	}
 
+	public BGReflection add_camerarender_hook(CameraRenderHookDelegate hook) {
+		if (_reflection_render_cam.gameObject.GetComponent<CameraRenderHookDispatcher>() == null) _reflection_render_cam.gameObject.AddComponent<CameraRenderHookDispatcher>();
+		_reflection_render_cam.gameObject.GetComponent<CameraRenderHookDispatcher>()._delegate = hook;
+		return this;
+	}
+
+	public BGReflection set_opacity(float val) {
+		_reflection_image.set_opacity(val);
+		return this;
+	}
+
 }

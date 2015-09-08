@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class BGWater : SPGameUpdateable {
+public class BGWater : SPGameUpdateable, CameraRenderHookDelegate {
 
 	private SPNode _root;
 
@@ -9,6 +9,8 @@ public class BGWater : SPGameUpdateable {
 	private SPSprite _underwater_element_1, _underwater_element_2, _underwater_element_3;
 	private SPSprite _top_fade;
 	private SPSprite _water_bg;
+
+	private BGWaterLineBelow _waterlinebelow;
 	
 	public static BGWater cons(GameEngineScene g) {
 		return (new BGWater()).i_cons(g);
@@ -118,7 +120,9 @@ public class BGWater : SPGameUpdateable {
 			new Rect(0,0,SPUtil.get_horiz_world_bounds()._max-SPUtil.get_horiz_world_bounds()._min,256));
 		_surface_gradient.set_manual_sort_z_order(GameAnchorZ.BGWater_SurfaceGradient);
 		_surface_gradient.set_name("_surface_gradient");
-		_surface_gradient.set_opacity(0.75f);
+		_surface_gradient.set_anchor_point(0.5f,0);
+		_surface_gradient.set_scale_y(4);
+		_surface_gradient.set_u_pos(0,-116);
 		_surface_gradient.gameObject.layer = RLayer.get_layer(RLayer.UNDERWATER_ELEMENTS);
 		
 		_root.add_child(_surface_gradient);
@@ -126,29 +130,72 @@ public class BGWater : SPGameUpdateable {
 		_surface_reflection = BGReflection.cons(_root,"Default")
 			.set_name("_surface_reflection")
 			.set_scale(4.75f,4.75f)
-			.set_camera_pos(0,255,-1214)
-			.set_reflection_pos(0,219,0)
+			.set_camera_pos(0,526,-1040)
+			.set_reflection_pos(0,473,0)
 			.set_manual_z_order(GameAnchorZ.BGWater_SurfaceReflection)
+			.add_camerarender_hook(this)
+			.set_alpha_sub(0.25f)
+			.set_opacity(0.65f)
 			.manual_set_camera_cullingmask(
-					int.MaxValue 
-						& ~(1 << RLayer.get_layer(RLayer.REFLECTION_OBJECTS_3))
+					int.MaxValue
 						& ~(1 << RLayer.get_layer(RLayer.REFLECTIONS))
-						& ~(1 << RLayer.get_layer(RLayer.UNDERWATER_ELEMENTS)));
+						& ~(1 << RLayer.get_layer(RLayer.UNDERWATER_ELEMENTS))
+			);
+
+		_waterlinebelow = BGWaterLineBelow.cons(_root);
+		_waterlinebelow.set_u_pos(0,-168);
+		_waterlinebelow.set_u_z(0);
 
 		return this;
+	}
+
+	private BGVillage _surface_reflection_bgvillage_hook_target = null;
+	private SPDict<string,Vector3> __bgvillage_hook_lpos_prev = new SPDict<string, Vector3>();
+	private SPDict<string,Vector3> __bgvillage_hook_scale_prev = new SPDict<string, Vector3>();
+	private void __bgvillage_hook_prev_record(SPNode node) {
+		__bgvillage_hook_lpos_prev[node.gameObject.name] = node.transform.localPosition;
+		__bgvillage_hook_scale_prev[node.gameObject.name] = node.transform.localScale;
+	}
+	private void __bgvillage_hook_prev_set(SPNode node) {
+		node.transform.localPosition = __bgvillage_hook_lpos_prev[node.gameObject.name];
+		node.transform.localScale = __bgvillage_hook_scale_prev[node.gameObject.name];
+	}
+
+	public void on_pre_render() {
+		if (_surface_reflection_bgvillage_hook_target == null) return;
+		__bgvillage_hook_prev_record(_surface_reflection_bgvillage_hook_target._bldg_3);
+		__bgvillage_hook_prev_record(_surface_reflection_bgvillage_hook_target._bldg_2);
+		__bgvillage_hook_prev_record(_surface_reflection_bgvillage_hook_target._bldg_1);
+		__bgvillage_hook_prev_record(_surface_reflection_bgvillage_hook_target._docks);
+
+		_surface_reflection_bgvillage_hook_target._bldg_3.transform.localPosition = new Vector3(0,-109,0);
+		_surface_reflection_bgvillage_hook_target._bldg_3.transform.localScale = SPUtil.valv(1.5f);
+		_surface_reflection_bgvillage_hook_target._bldg_2.transform.localPosition = new Vector3(0,-164,0);
+		_surface_reflection_bgvillage_hook_target._bldg_2.transform.localScale = SPUtil.valv(1.5f);
+		_surface_reflection_bgvillage_hook_target._bldg_1.transform.localPosition = new Vector3(-275,-71,0);
+		_surface_reflection_bgvillage_hook_target._bldg_1.transform.localScale = SPUtil.valv(1.5f);
+		_surface_reflection_bgvillage_hook_target._docks.transform.localPosition = new Vector3(0,-107,0);
+		_surface_reflection_bgvillage_hook_target._docks.transform.localScale = SPUtil.valv(1.5f);
+	}
+	public void on_post_render() {
+		if (_surface_reflection_bgvillage_hook_target == null) return;
+		__bgvillage_hook_prev_set(_surface_reflection_bgvillage_hook_target._bldg_3);
+		__bgvillage_hook_prev_set(_surface_reflection_bgvillage_hook_target._bldg_2);
+		__bgvillage_hook_prev_set(_surface_reflection_bgvillage_hook_target._bldg_1);
+		__bgvillage_hook_prev_set(_surface_reflection_bgvillage_hook_target._docks);
 	}
 
 	private SPSprite _surface_gradient;
 	private BGReflection _surface_reflection;
 	
 	public void i_update(GameEngineScene g) {
+		_surface_reflection_bgvillage_hook_target = g._bg_village;
 		this.update_water_bg(g);
 		_surf_ele_3.set_enabled(g.get_viewbox_dist(_surf_ele_3.transform.position.z).get_center().y > -90);
 
 		_underwater_element_3.set_enabled(g.is_camera_underwater());
 		_underwater_element_2.set_enabled(g.is_camera_underwater());
 		_underwater_element_1.set_enabled(g.is_camera_underwater());
-
 	}
 
 	private void update_water_bg(GameEngineScene g) {
@@ -157,8 +204,17 @@ public class BGWater : SPGameUpdateable {
 			SPHitRect water_bg_viewbox = g.get_viewbox_dist(_water_bg.transform.position.z);
 			_water_bg.set_tex_rect(new Rect(0,0,water_bg_viewbox._x2-water_bg_viewbox._x1,water_bg_viewbox._y2-water_bg_viewbox._y1));
 			_water_bg.set_u_pos(water_bg_viewbox._x1,water_bg_viewbox._y1);
+
+			_surface_gradient.set_enabled(true);
+			_surface_reflection.set_enabled(true);
+			_waterlinebelow.set_enabled(true);
+			_waterlinebelow.i_update(g);
+
 		} else {
+			_surface_gradient.set_enabled(false);
+			_surface_reflection.set_enabled(false);
 			_water_bg.set_enabled(false);
+			_waterlinebelow.set_enabled(false);
 		}
 	}
 }

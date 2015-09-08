@@ -73,14 +73,10 @@ public class SPSprite : SPNode {
 	public SPSprite set_color(Vector4 color) {
 		_color = color;
 
-		/*
-		if (_color.w < 1.0) {
-			this.gameObject.GetComponent<MeshRenderer>().material = GameMain._context._tex_resc.get_material(_texkey,RSha.ALPHA);
-		} else {
+		if (_texkey != null) {
 			this.gameObject.GetComponent<MeshRenderer>().material = GameMain._context._tex_resc.get_material_default(_texkey);
 		}
-		*/
-		this.gameObject.GetComponent<MeshRenderer>().material = GameMain._context._tex_resc.get_material_default(_texkey);
+
 
 		MeshRenderer renderer = this.GetComponent<MeshRenderer>();
 		if (_material_block == null) {

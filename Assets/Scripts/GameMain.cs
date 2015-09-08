@@ -36,7 +36,10 @@ public class GameMain : SPBaseBehavior {
 		float norm_game_width = tar_x_div_y / actual_x_div_y;
 		_game_camera.rect = new Rect((1-norm_game_width)/2.0f,0,norm_game_width,1.0f);
 
-		_game_camera.cullingMask = int.MaxValue & (~(1 << LayerMask.NameToLayer("SpriterNode")));
+		_game_camera.cullingMask = int.MaxValue 
+			& (~(1 << RLayer.get_layer(RLayer.SPRITER_NODE)))
+			& (~(1 << RLayer.get_layer(RLayer.SURFACEREFLECTION_ONLY)))
+		;
 
 		_current_scene = GameEngineScene.cons();
 	}

@@ -20,6 +20,9 @@ public class GameEngineScene : SPScene {
 	private GameEngineScene i_cons() {
 		__cached_viewbox_dirty = true;
 
+		//GameMain._context._game_camera.transform.localPosition = new Vector3(0,250,-1500);
+		GameMain._context._game_camera.transform.localPosition = new Vector3(0,-250,-1500);
+
 		_bg_village = BGVillage.cons(this);
 		_bg_sky = BGSky.cons(this);
 		_bg_water = BGWater.cons(this);
