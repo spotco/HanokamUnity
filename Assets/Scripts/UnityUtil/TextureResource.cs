@@ -5,6 +5,7 @@ using System.Reflection;
 public class RTex {
 	public static string BG_SPRITESHEET_1 = "background/bg_spritesheet_1";
 	public static string BG_UNDERWATER_SPRITESHEET = "background/underwater_spritesheet";
+	public static string BG_SKY_SPRITESHEET = "background/sky_spritesheet";
 	public static string BG_TILE_SKY = "background/bg_test_tile_sky";
 	public static string BG_TILE_WATER = "background/bg_test_tile_water";
 	public static string BG_WATER_ELEMENT_FADE = "background/bg_water_element_fade";

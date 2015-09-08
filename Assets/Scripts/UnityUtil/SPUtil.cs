@@ -102,188 +102,128 @@ public class SPUtil {
 		Texture tex = TextureResource.inst().get_tex(key);
 		return new Rect(0,0,tex.width,tex.height);
 	}
-}
-/*
-
-@implementation CallBack
-	@synthesize selector;
-	@synthesize target;
-	@synthesize context;
-@end
-
-@implementation TexRect
-	@synthesize tex;
-	@synthesize rect;
-+(TexRect*)cons_tex:(CCTexture *)tex rect:(CGRect)rect {
-    TexRect *r = [[TexRect alloc] init]; [r setTex:tex]; [r setRect:rect]; return r;
-}
-
-float drpt(float a, float b, float fric) {
-	if (fric == 0) NSLog(@"ERROR FRIC 0");
-	if (fric >= 1) NSLog(@"ERROR FRIC >= 1");
-	float deltaf = (b - a);
-	deltaf *= powf(fric,1/dt_scale_get());
-	return a + deltaf;
-}
-
-float lerp(float a, float b, float t) {
-	return a + (b - a) * t;
-}
-
-CGPoint lerp_point(CGPoint a, CGPoint b, float t) {
-	return ccp(lerp(a.x, b.x, t),lerp(a.y, b.y, t));
-}
-
-int SIG(float n) {
-    if (n > 0) {
-        return 1;
-    } else if (n < 0) {
-        return -1;
-    } else {
-        return 0;
-    }
-}
-
-CGPoint CGPointAdd(CGPoint a,CGPoint b) {
-    return ccp(a.x+b.x,a.y+b.y);
-}
-CGPoint CGPointSub(CGPoint a,CGPoint b) {
-    return ccp(a.x-b.x,a.y-b.y);
-}
-float CGPointDist(CGPoint a,CGPoint b) {
-    return sqrtf(powf(a.x-b.x, 2)+powf(a.y-b.y, 2));
-}
-CGPoint CGPointMult(CGPoint a, CGPoint b) {
-	return ccp(a.x*b.x,a.y*b.y);
-}
-CGPoint CGPointMid(CGPoint a,CGPoint b) {
-	CGPoint add = CGPointAdd(a, b);
-	return ccp(add.x/2,add.y/2);
-}
-
-
-bool fuzzyeq(float a, float b, float delta) {
-	return ABS(a-b) <= delta;
-}
-
-float deg_to_rad(float degrees) {
-    return degrees * M_PI / 180.0;
-}
-
-float rad_to_deg(float rad) {
-    return rad * 180.0 / M_PI;
-}
-
-CGPoint line_seg_intersection_pts(CGPoint a1, CGPoint a2, CGPoint b1, CGPoint b2) {
-	CGPoint null_point = CGPointMake(SEG_NO_VALUE(),SEG_NO_VALUE());
-    double Ax = a1.x; double Ay = a1.y;
-	double Bx = a2.x; double By = a2.y;
-	double Cx = b1.x; double Cy = b1.y;
-	double Dx = b2.x; double Dy = b2.y;
-	double X; double Y;
-	double  distAB, theCos, theSin, newX, ABpos ;
 	
-	if ((Ax==Bx && Ay==By) || (Cx==Dx && Cy==Dy)) return null_point; //  Fail if either line segment is zero-length.
-    
-	Bx-=Ax; By-=Ay;//Translate the system so that point A is on the origin.
-	Cx-=Ax; Cy-=Ay;
-	Dx-=Ax; Dy-=Ay;
-	
-	distAB=sqrt(Bx*Bx+By*By);//Discover the length of segment A-B.
-	
-	theCos=Bx/distAB;//Rotate the system so that point B is on the positive X axis.
-	theSin=By/distAB;
-    
-	newX=Cx*theCos+Cy*theSin;
-	Cy  =Cy*theCos-Cx*theSin; Cx=newX;
-	newX=Dx*theCos+Dy*theSin;
-	Dy  =Dy*theCos-Dx*theSin; Dx=newX;
-	
-	if ((Cy<0. && Dy<0.) || (Cy>=0. && Dy>=0.)) return null_point;//C-D must be origin crossing line
-	
-	ABpos=Dx+(Cx-Dx)*Dy/(Dy-Cy);//Discover the position of the intersection point along line A-B.
-	
-    
-	if (ABpos<0. || ABpos-distAB> 0.001) {
-        return null_point;//  Fail if segment C-D crosses line A-B outside of segment A-B.
+	public static float drpt(float a, float b, float fric) {
+		float deltaf = (b - a);
+		deltaf *= Mathf.Pow(fric,1/SPUtil.dt_scale_get());
+		return a + deltaf;
 	}
-        
-	X=Ax+ABpos*theCos;//Apply the discovered position to line A-B in the original coordinate system.
-	Y=Ay+ABpos*theSin;
+	public static float lerp(float a, float b, float t) {
+		return a + (b - a) * t;
+	}
+	public static Vector3 vec_mid(Vector3 a, Vector3 b) {
+		Vector3 add = a + b;
+		return new Vector3(add.x/2,add.y/2,add.z/2);
+	}
+
+	public static bool fuzzyeq(float a, float b, float delta) {
+		return Mathf.Abs(a-b) <= delta;
+	}
+
+	public static float deg_to_rad(float degrees) {
+		return degrees * Mathf.PI / 180.0f;
+	}
 	
-	return ccp(X,Y);
-}
+	float rad_to_deg(float rad) {
+		return rad * 180.0f / Mathf.PI;
+	}
 
-float shortest_angle(float src, float dest) {
-	float shortest_angle=fmod((fmod((dest - src) , 360) + 540), 360) - 180;
-	return shortest_angle;
-}
-
-float cubic_angular_interp(float src, float dest, float c1, float c2, float t) {
-	t = cubic_interp(0, 1, c1, c2, t);
-	return src + shortest_angle(src, dest) * t;
-}
-
-void scale_to_fit_screen_x(CCSprite *spr) {
-	[spr setScaleX:game_screen().width/spr.textureRect.size.width];
-}
-void scale_to_fit_screen_y(CCSprite *spr) {
-	[spr setScaleY:game_screen().height/spr.textureRect.size.height];
-}
-
-float bezier_val_for_t(float p0, float p1, float p2, float p3, float t) {
-	float cp0 = (1 - t)*(1 - t)*(1 - t);
-	float cp1 = 3 * t * (1-t)*(1-t);
-	float cp2 = 3 * t * t * (1 - t);
-	float cp3 = t * t * t;
-	return cp0 * p0 + cp1 * p1 + cp2 * p2 + cp3 * p3;
-}
-
-CGPoint bezier_point_for_t(CGPoint p0, CGPoint p1, CGPoint p2, CGPoint p3, float t) {
-	return ccp(
-		bezier_val_for_t(p0.x, p1.x, p2.x, p3.x, t),
-		bezier_val_for_t(p0.y, p1.y, p2.y, p3.y, t)
-	);
-}
-
-float cubic_interp(float a, float b, float c1, float c2, float t) {
-	CGPoint bez = bezier_point_for_t(ccp(0,0), ccp(0.25,c1), ccp(0.75,c2), ccp(1,1), t);
-	return bez.y * (b-a) + a;
-}
-
-float low_filter(float value, float min) {
-	return ABS(value) < ABS(min) ? 0 : value;
-}
-
-float running_avg(float avg, float val, float ct) {
-	avg -= avg / ct;
-	avg += val / ct;
-	return avg;
-}
-
-CGRect scale_rect(CGRect tar, float scf) {
-	return CGRectMake(tar.origin.x, tar.origin.x, tar.size.width*scf, tar.size.height*scf);
-}
-
-float y_for_point_of_2pt_line(CGPoint pt1, CGPoint pt2, float x) {
-	//(y - y1)/(x - x1) = m
-	float m = (pt1.y - pt2.y) / (pt1.x - pt2.x);
-	//y - mx = b
-	float b = pt1.y - m * pt1.x;
-	return m * x + b;
-}
-
-BOOL ccnode_is_visible(CCNode* tar) {
-	CCNode *itr = tar;
-	while (itr != NULL) {
-		if (!itr.visible) {
-			return NO;
+	public Vector2 line_seg_intersection_pts(Vector2 a1, Vector2 a2, Vector2 b1, Vector2 b2) {
+		double Ax = a1.x; double Ay = a1.y;
+		double Bx = a2.x; double By = a2.y;
+		double Cx = b1.x; double Cy = b1.y;
+		double Dx = b2.x; double Dy = b2.y;
+		double X; double Y;
+		double  distAB, theCos, theSin, newX, ABpos ;
+		
+		if ((Ax==Bx && Ay==By) || (Cx==Dx && Cy==Dy)) return new Vector2(float.NaN,float.NaN); //  Fail if either line segment is zero-length.
+		
+		Bx-=Ax; By-=Ay;//Translate the system so that point A is on the origin.
+		Cx-=Ax; Cy-=Ay;
+		Dx-=Ax; Dy-=Ay;
+		
+		distAB=System.Math.Sqrt(Bx*Bx+By*By);//Discover the length of segment A-B.
+		
+		theCos=Bx/distAB;//Rotate the system so that point B is on the positive X axis.
+		theSin=By/distAB;
+		
+		newX=Cx*theCos+Cy*theSin;
+		Cy  =Cy*theCos-Cx*theSin; Cx=newX;
+		newX=Dx*theCos+Dy*theSin;
+		Dy  =Dy*theCos-Dx*theSin; Dx=newX;
+		
+		if ((Cy<0.0 && Dy<0.0) || (Cy>=0.0 && Dy>=0.0)) return new Vector2(float.NaN,float.NaN); //C-D must be origin crossing line
+		
+		ABpos=Dx+(Cx-Dx)*Dy/(Dy-Cy);//Discover the position of the intersection point along line A-B.
+		
+		
+		if (ABpos<0.0 || ABpos-distAB> 0.001) {
+			return new Vector2(float.NaN,float.NaN);//  Fail if segment C-D crosses line A-B outside of segment A-B.
 		}
-		itr = itr.parent;
+		
+		X=Ax+ABpos*theCos;//Apply the discovered position to line A-B in the original coordinate system.
+		Y=Ay+ABpos*theSin;
+		
+		return new Vector2((float)X,(float)Y);
 	}
-	return YES;
+
+	public static float fmod(float a, float b) { return a % b; }
+	public static float shortest_angle(float src, float dest) {
+		float shortest_angle=fmod((fmod((dest - src) , 360) + 540), 360) - 180;
+		return shortest_angle;
+	}
+
+	public static bool vec_eq(Vector3 a, Vector3 b) {
+		return a.x == b.x && a.y == b.y && a.z == b.z;
+	}
+	public static float bezier_val_for_t(float p0, float p1, float p2, float p3, float t) {
+		float cp0 = (1 - t)*(1 - t)*(1 - t);
+		float cp1 = 3 * t * (1-t)*(1-t);
+		float cp2 = 3 * t * t * (1 - t);
+		float cp3 = t * t * t;
+		return cp0 * p0 + cp1 * p1 + cp2 * p2 + cp3 * p3;
+	}
+	public static Vector2 bezier_val_for_t(Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3, float t) {
+		return new Vector2(
+			bezier_val_for_t(p0.x,p1.x,p2.x,p3.x,t),
+			bezier_val_for_t(p0.y,p1.y,p2.y,p3.y,t)
+		);
+	}
+	public static Vector3 bezier_val_for_t(Vector3 p0, Vector3 p1, Vector3 p2, Vector3 p3, float t) {
+		return new Vector3(
+			bezier_val_for_t(p0.x,p1.x,p2.x,p3.x,t),
+			bezier_val_for_t(p0.y,p1.y,p2.y,p3.y,t),
+			bezier_val_for_t(p0.z,p1.z,p2.z,p3.z,t)
+		);
+	}
+
+	public static float low_filter(float value, float min) {
+		return Mathf.Abs(value) < Mathf.Abs(min) ? 0 : value;
+	}
+	
+	public static float running_avg(float avg, float val, float ct) {
+		avg -= avg / ct;
+		avg += val / ct;
+		return avg;
+	}
+	
+	public static float y_for_point_of_2pt_line(Vector2 pt1, Vector2 pt2, float x) {
+		//(y - y1)/(x - x1) = m
+		float m = (pt1.y - pt2.y) / (pt1.x - pt2.x);
+		//y - mx = b
+		float b = pt1.y - m * pt1.x;
+		return m * x + b;
+	}
+	
+	public static bool transform_is_enabled(Transform t) {
+		Transform itr = t;
+		while (itr != null) {
+			if (!itr.gameObject.activeSelf) {
+				return false;
+			}
+			itr = itr.parent;
+		}
+		return true;
+	}
+
 }
-
-@end
-
-*/

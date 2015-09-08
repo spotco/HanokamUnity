@@ -2,26 +2,6 @@
 using System.Collections;
 
 public class GameAnchorZ {
-	/*
-	public const int UI = 5000;
-	public const int BlurTex = 4500;
-	public const int DebugDraw = 999;
-	public const int BGWater_WaterLineBelow = 101;
-	public const int BGSky_SurfaceReflection = 100;
-	public const int BGWater_SplashBaseEffect = 85;
-	public const int BGWater_SplashBubbleEffect = 84;
-	public const int UnderwaterForegroundElements = 83;
-	public const int PlayerAirEffects = 82;
-	public const int Enemies_Air = 81;
-	public const int PlayerProjectiles = 80;
-	public const int BGSky_SurfaceGradient = 80;
-	public const int Player_Out = 79;
-	public const int BGSky_Docks_Pillars_Front = 52;
-	public const int Player = 51;
-	public const int BGVillage_Character = 50;
-	public const int BGSky_Sky_SideCliffs = 40;
-	*/
-
 	public const int BGWater_WaterLineBelow_Line_LightRays = 506;
 	public const int BGWater_WaterLineBelow_Line = 505;
 	public const int BGWater_WaterLineBelow_Grad = 504;
@@ -34,6 +14,9 @@ public class GameAnchorZ {
 	public const int BGVillage_WaterLineAbove_Grad = 199;
 	public const int BGVillage_WaterLineAbove_BelowLine = 198;
 	public const int BGVillage_WaterLineAbove_BelowLine_LightRays = 197;
+
+	public const int BGSky_BG_SideCliffs = 100;
+
 
 	public const int Player_Ground = 75;
 
@@ -61,6 +44,10 @@ public class GameAnchorZ {
 	public const int BGWater_BG_ELE1 = -998;
 	public const int BGWater_BG_ELE2 = -999;
 	public const int BGWater_BG_ELE3 = -1000;
+
+
+	public const int BGSky_BG_ELE1 = -4997;
+	public const int BGSky_BG_ELE2 = -4998;
 
 	public const int BGSky_RepeatBG = -5000;
 }
