@@ -1,14 +1,18 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 
 public class BGWater : SPGameUpdateable, CameraRenderHookDelegate {
 
 	private SPNode _root;
 
 	private SPSprite _surf_ele_1, _surf_ele_2, _surf_ele_3;
-	private SPSprite _underwater_element_1, _underwater_element_2, _underwater_element_3;
+
+	private List<SPParallaxScrollSprite> _underwater_scroll_elements;
+	
 	private SPSprite _top_fade;
 	private SPSprite _water_bg;
+
+	private BGWaterGround _lake_bottom_ground;
 
 	private BGWaterLineBelow _waterlinebelow;
 	
@@ -70,38 +74,40 @@ public class BGWater : SPGameUpdateable, CameraRenderHookDelegate {
 		_surf_ele_1.gameObject.layer = RLayer.get_layer(RLayer.UNDERWATER_ELEMENTS);
 		_root.add_child(_surf_ele_1);
 
-		_underwater_element_3 = SPSprite.cons_sprite_texkey_texrect(
+		SPParallaxScrollSprite underwater_element_3 = SPParallaxScrollSprite.cons(
 			RTex.BG_UNDERWATER_SPRITESHEET,
-			FileCache.inst().get_texrect(RTex.BG_UNDERWATER_SPRITESHEET,"underwater_bg_3.png"));
-		_underwater_element_3.set_name("_underwater_element_3");
-		_underwater_element_3.set_manual_sort_z_order(GameAnchorZ.BGWater_BG_ELE3);
-		_underwater_element_3.set_u_z(1046);
-		_underwater_element_3.set_scale(3.75f);
-		_underwater_element_3.set_u_pos(0,-3400);
-		_underwater_element_3.gameObject.layer = RLayer.get_layer(RLayer.UNDERWATER_ELEMENTS);
-		_root.add_child(_underwater_element_3);
+			FileCache.inst().get_texrect(RTex.BG_UNDERWATER_SPRITESHEET,"underwater_bg_3.png"),
+			new Vector2(3.75f,3.75f),
+			new Vector3(0,0,1046)
+		);
+		underwater_element_3._img.set_manual_sort_z_order(GameAnchorZ.BGWater_BG_ELE3);
+		underwater_element_3._img.set_name("_underwater_element_3");
+		underwater_element_3._img.gameObject.layer = RLayer.get_layer(RLayer.UNDERWATER_ELEMENTS);
+		_root.add_child(underwater_element_3._img);
 
-		_underwater_element_2 = SPSprite.cons_sprite_texkey_texrect(
+		SPParallaxScrollSprite underwater_element_2 = SPParallaxScrollSprite.cons(
 			RTex.BG_UNDERWATER_SPRITESHEET,
-			FileCache.inst().get_texrect(RTex.BG_UNDERWATER_SPRITESHEET,"underwater_bg_2.png"));
-		_underwater_element_2.set_name("_underwater_element_2");
-		_underwater_element_2.set_manual_sort_z_order(GameAnchorZ.BGWater_BG_ELE2);
-		_underwater_element_2.set_u_z(491);
-		_underwater_element_2.set_scale(2.0f);
-		_underwater_element_2.set_u_pos(0,-2400);
-		_underwater_element_2.gameObject.layer = RLayer.get_layer(RLayer.UNDERWATER_ELEMENTS);
-		_root.add_child(_underwater_element_2);
+			FileCache.inst().get_texrect(RTex.BG_UNDERWATER_SPRITESHEET,"underwater_bg_2.png"),
+			new Vector2(2.0f,2.0f),
+			new Vector3(0,0,491)
+		);
+		underwater_element_2._img.set_manual_sort_z_order(GameAnchorZ.BGWater_BG_ELE2);
+		underwater_element_2._img.set_name("_underwater_element_2");
+		underwater_element_2._img.gameObject.layer = RLayer.get_layer(RLayer.UNDERWATER_ELEMENTS);
+		_root.add_child(underwater_element_2._img);
 
-		_underwater_element_1 = SPSprite.cons_sprite_texkey_texrect(
+		SPParallaxScrollSprite underwater_element_1 = SPParallaxScrollSprite.cons(
 			RTex.BG_UNDERWATER_SPRITESHEET,
-			FileCache.inst().get_texrect(RTex.BG_UNDERWATER_SPRITESHEET,"underwater_bg_1.png"));
-		_underwater_element_1.set_name("_underwater_element_1");
-		_underwater_element_1.set_manual_sort_z_order(GameAnchorZ.BGWater_BG_ELE1);
-		_underwater_element_1.set_u_z(25);
-		_underwater_element_1.set_scale(1.65f);
-		_underwater_element_1.set_u_pos(0,-2400);
-		_underwater_element_1.gameObject.layer = RLayer.get_layer(RLayer.UNDERWATER_ELEMENTS);
-		_root.add_child(_underwater_element_1);
+			FileCache.inst().get_texrect(RTex.BG_UNDERWATER_SPRITESHEET,"underwater_bg_1.png"),
+			new Vector2(1.65f,1.65f),
+			new Vector3(0,0,25)
+		);
+		underwater_element_1._img.set_manual_sort_z_order(GameAnchorZ.BGWater_BG_ELE1);
+		underwater_element_1._img.set_name("_underwater_element_1");
+		underwater_element_1._img.gameObject.layer = RLayer.get_layer(RLayer.UNDERWATER_ELEMENTS);
+		_root.add_child(underwater_element_1._img);
+
+		_underwater_scroll_elements = new List<SPParallaxScrollSprite>() { underwater_element_1, underwater_element_2, underwater_element_3 };
 
 		_top_fade = SPSprite.cons_sprite_texkey_texrect(
 			RTex.BG_WATER_ELEMENT_FADE,
@@ -145,6 +151,9 @@ public class BGWater : SPGameUpdateable, CameraRenderHookDelegate {
 		_waterlinebelow = BGWaterLineBelow.cons(_root);
 		_waterlinebelow.set_u_pos(0,-168);
 		_waterlinebelow.set_u_z(0);
+
+		_lake_bottom_ground = BGWaterGround.cons(g,_root);
+		_lake_bottom_ground.set_u_pos(0,-5000);
 
 		return this;
 	}
@@ -193,9 +202,15 @@ public class BGWater : SPGameUpdateable, CameraRenderHookDelegate {
 		this.update_water_bg(g);
 		_surf_ele_3.set_enabled(g.get_viewbox_dist(_surf_ele_3.transform.position.z).get_center().y > -90);
 
-		_underwater_element_3.set_enabled(g.is_camera_underwater());
-		_underwater_element_2.set_enabled(g.is_camera_underwater());
-		_underwater_element_1.set_enabled(g.is_camera_underwater());
+		for (int i = 0; i < this._underwater_scroll_elements.Count; i++) {
+			SPParallaxScrollSprite itr = this._underwater_scroll_elements[i];
+			if (g.is_camera_underwater()) {
+				itr.set_enabled(true);
+				itr.i_update(g);
+			} else {
+				itr.set_enabled(false);
+			}
+		}
 	}
 
 	private void update_water_bg(GameEngineScene g) {
@@ -209,6 +224,8 @@ public class BGWater : SPGameUpdateable, CameraRenderHookDelegate {
 			_surface_reflection.set_enabled(true);
 			_waterlinebelow.set_enabled(true);
 			_waterlinebelow.i_update(g);
+
+			_lake_bottom_ground.i_update(g);
 
 		} else {
 			_surface_gradient.set_enabled(false);

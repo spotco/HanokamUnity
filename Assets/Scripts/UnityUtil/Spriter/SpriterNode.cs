@@ -91,7 +91,7 @@ public class SpriterNode : SPNode, CameraRenderHookDelegate {
 		_rendercam.transform.localPosition = new Vector3(0,135,-250.0f);
 		_rendercam.nearClipPlane = 0.1f;
 		_rendercam.farClipPlane = 10000.0f;
-		_rendercam.cullingMask = (1 << LayerMask.NameToLayer("SpriterNode"));
+		_rendercam.cullingMask = (1 << RLayer.get_layer(RLayer.SPRITER_NODE));
 
 		CameraRenderHookDispatcher rendercam_hook_dispatcher = rendercam_obj.AddComponent<CameraRenderHookDispatcher>();
 		rendercam_hook_dispatcher._delegate = this;
@@ -301,6 +301,7 @@ public class SpriterNode : SPNode, CameraRenderHookDelegate {
 
 			if (!_bones.ContainsKey(bone_ref_id)) {
 				_bones[bone_ref_id] = SPNode_Bone.cons_bone();
+				_bones[bone_ref_id].gameObject.layer = RLayer.get_layer(RLayer.SPRITER_NODE);
 			} else {
 				unadded_bones.Remove(bone_ref_id);
 
@@ -350,7 +351,7 @@ public class SpriterNode : SPNode, CameraRenderHookDelegate {
 			int obj_ref_id = obj_ref._id;
 			if (!_objs.ContainsKey(obj_ref_id)) {
 				_objs[obj_ref_id] = SPSprite_Object.cons_object();
-				_objs[obj_ref_id].gameObject.layer = LayerMask.NameToLayer("SpriterNode");
+				_objs[obj_ref_id].gameObject.layer = RLayer.get_layer(RLayer.SPRITER_NODE);
 			
 			} else {
 				unadded_objects.Remove(obj_ref_id);

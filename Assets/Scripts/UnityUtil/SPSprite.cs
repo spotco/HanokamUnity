@@ -89,6 +89,11 @@ public class SPSprite : SPNode {
 		return this;
 	}
 
+	public const int VTX_0_0 = 0;
+	public const int VTX_1_0 = 1;
+	public const int VTX_1_1 = 2;
+	public const int VTX_0_1 = 3;
+
 	Vector2[] __uvs = new Vector2[4];
 	public Rect texrect() { return _texrect; }
 	public SPSprite set_tex_rect(Rect texrect) {
@@ -106,10 +111,10 @@ public class SPSprite : SPNode {
 		float y2 = tex_hei-texrect.y;
 
 		Vector2[] uvs = __uvs;
-		uvs[0] = new Vector2(x1/tex_wid,y1/tex_hei); //(0,0)
-		uvs[1] = new Vector2(x2/tex_wid,y1/tex_hei); //(1,0)
-		uvs[2] = new Vector2(x2/tex_wid,y2/tex_hei); //(1,1)
-		uvs[3] = new Vector2(x1/tex_wid,y2/tex_hei); //(0,1)
+		uvs[VTX_0_0] = new Vector2(x1/tex_wid,y1/tex_hei); //(0,0)
+		uvs[VTX_1_0] = new Vector2(x2/tex_wid,y1/tex_hei); //(1,0)
+		uvs[VTX_1_1] = new Vector2(x2/tex_wid,y2/tex_hei); //(1,1)
+		uvs[VTX_0_1] = new Vector2(x1/tex_wid,y2/tex_hei); //(0,1)
 		sprite_mesh.uv = uvs;
 
 		_has_set_initial_anchor_point = false;
@@ -132,19 +137,19 @@ public class SPSprite : SPNode {
 		
 		
 		Vector3[] verts = __verts;
-		verts[0] = new Vector3(
+		verts[VTX_0_0] = new Vector3(
 			(-_anchorpoint.x) * tex_wid,
 			(-_anchorpoint.y) * tex_hei
 		);
-		verts[1] = new Vector3(
+		verts[VTX_1_0] = new Vector3(
 			(-_anchorpoint.x + 1) * tex_wid,
 			(-_anchorpoint.y) * tex_hei
 		);
-		verts[2] = new Vector3(
+		verts[VTX_1_1] = new Vector3(
 			(-_anchorpoint.x + 1) * tex_wid,
 			(-_anchorpoint.y + 1) * tex_hei
 		);
-		verts[3] = new Vector3(
+		verts[VTX_0_1] = new Vector3(
 			(-_anchorpoint.x) * tex_wid,
 			(-_anchorpoint.y + 1) * tex_hei
 		);
@@ -154,14 +159,17 @@ public class SPSprite : SPNode {
 		return this;
 	}
 
-	private Vector2 s_pos_of_vertex(int i) {
+	private Vector3 w_pos_of_vertex(int i) {
 		MeshFilter mesh = this.GetComponent<MeshFilter>();
-		return GameMain._context._game_camera.WorldToScreenPoint(this.transform.TransformPoint(mesh.sharedMesh.vertices[i]));
+		return this.transform.TransformPoint(mesh.sharedMesh.vertices[i]);
 	}
 
-	private Vector2 u_pos_of_vertex(int i) {
-		MeshFilter mesh = this.GetComponent<MeshFilter>();
-		return GameMain._context.gameObject.transform.InverseTransformPoint(this.transform.TransformPoint(mesh.sharedMesh.vertices[i]));
+	public Vector3 u_pos_of_vertex(int i) {
+		return GameMain._context.transform.InverseTransformPoint(this.w_pos_of_vertex(i));
+	}
+
+	public Vector2 s_pos_of_vertex(int i) {
+		return GameMain._context._game_camera.WorldToScreenPoint(this.w_pos_of_vertex(i));
 	}
 
 	public Rect s_bounding_box() {
@@ -191,19 +199,19 @@ public class SPSprite : SPNode {
 	public void manual_set_mesh_size(float tex_wid, float tex_hei) {
 		Mesh sprite_mesh = this.gameObject.GetComponent<MeshFilter>().mesh;
 		Vector3[] verts = sprite_mesh.vertices;
-		verts[0] = new Vector3(
+		verts[VTX_0_0] = new Vector3(
 			(-_anchorpoint.x) * tex_wid,
 			(-_anchorpoint.y) * tex_hei
 		);
-		verts[1] = new Vector3(
+		verts[VTX_1_0] = new Vector3(
 			(-_anchorpoint.x + 1) * tex_wid,
 			(-_anchorpoint.y) * tex_hei
 		);
-		verts[2] = new Vector3(
+		verts[VTX_1_1] = new Vector3(
 			(-_anchorpoint.x + 1) * tex_wid,
 			(-_anchorpoint.y + 1) * tex_hei
 		);
-		verts[3] = new Vector3(
+		verts[VTX_0_1] = new Vector3(
 			(-_anchorpoint.x) * tex_wid,
 			(-_anchorpoint.y + 1) * tex_hei
 		);

@@ -39,7 +39,6 @@ public class GameAnchorZ {
 
 	public const int BGVillage_Docks = 50;
 
-
 	public const int BGVillage_BG1 = -89;
 	public const int BGVillage_BG2 = -90;
 	public const int BGVillage_Reflection_DOCKS = -91;
@@ -51,7 +50,12 @@ public class GameAnchorZ {
 	public const int BGWater_SURF_ELE3 = -98;
 	public const int BGVillage_BG3 = -99;
 	public const int BGVillage_BG4 = -100;
-	
+
+	public const int BGWater_Ground_Treasure = -898;
+	public const int BGWater_Ground_Treasure_Light = -899;
+	public const int BGWater_Ground = -900;
+	public const int BGWater_Ground_Fill = -901;
+	public const int BGWater_Ground_BottomFade = -902;
 
 	public const int BGWater_TOP_FADE = -950;
 	public const int BGWater_BG_ELE1 = -998;
@@ -59,14 +63,4 @@ public class GameAnchorZ {
 	public const int BGWater_BG_ELE3 = -1000;
 
 	public const int BGSky_RepeatBG = -5000;
-
-	//public const int BGSky_BackgroundElements = 6;
-	//public const int BGSky_Sky_Islands = 4;
-	//public const int BGSky_Sky_Arcs = 3;
-
-	//public const int BGWater_WaterLineAbove = 8;
-	//public const int BGSky_RepeatBG = -9;
-	//public const int BGWater_Ground = -11;
-	//public const int BGWater_Elements = -12;
-	//public const int BGWater_RepeatBG = -13;
 }
