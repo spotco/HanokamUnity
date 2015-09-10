@@ -104,15 +104,15 @@ public class BGVillage : SPGameUpdateable {
 			.set_alpha_sub(0.65f));
 		_reflections.Add(BGReflection.cons(_root,RLayer.REFLECTION_OBJECTS_1)
 			.set_name("_bg_1_reflection")
-			.set_reflection_pos(0,-495,212)
-			.set_camera_pos(0,574,-929)
+			.set_reflection_pos(0,-458,212)
+			.set_camera_pos(0,586,-929)
 			.set_manual_z_order(GameAnchorZ.BGVillage_Reflection_1)
 			.set_scale(5.0f,-3)
-			.set_alpha_sub(0.65f));
+			.set_alpha_sub(0.55f));
 		_reflections.Add(BGReflection.cons(_root,RLayer.REFLECTION_OBJECTS_DOCKS)
 			.set_name("_docks_reflections")
-			.set_reflection_pos(0,-408,-17)
-			.set_camera_pos(0,219,-929)
+			.set_reflection_pos(0,-499,-17)
+			.set_camera_pos(0,363,-929)
 			.set_manual_z_order(GameAnchorZ.BGVillage_Reflection_DOCKS)
 			.set_scale(4.0f)
 			.set_alpha_sub(0.55f));

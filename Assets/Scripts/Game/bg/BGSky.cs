@@ -7,7 +7,11 @@ public class BGSky : SPGameUpdateable {
 	private SPSprite _sky_bg;
 
 	private SPParallaxScrollSprite _bg_arcs, _bg_islands;
+
 	private SPParallaxScrollSprite _bg_cliff_left, _bg_cliff_right;
+	private ELMVal _bg_cliff_left_x = ELMVal.cons();
+	private ELMVal _bg_cliff_right_x = ELMVal.cons();
+
 	private List<SPParallaxScrollSprite> _scroll_elements;
 
 	public static BGSky cons(GameEngineScene g) {
@@ -54,27 +58,31 @@ public class BGSky : SPGameUpdateable {
 			RTex.BG_SKY_SPRITESHEET,
 			FileCache.inst().get_texrect(RTex.BG_SKY_SPRITESHEET,"bg_sky_cliffs_left.png"),
 			new Vector3(1.5f,1.5f),
-			new Vector3(-370,0,0)
+			new Vector3(-750,0,0)
 		);
 		_bg_cliff_left._img.set_manual_sort_z_order(GameAnchorZ.BGSky_BG_SideCliffs);
 		_bg_cliff_left._img.set_name("_bg_cliff_left");
+		_bg_cliff_left_x.set_current(_bg_cliff_left._img._u_x);
+		_bg_cliff_left_x.set_target_vel(25.0f);
 		_root.add_child(_bg_cliff_left._img);
 
 		_bg_cliff_right = SPParallaxScrollSprite.cons(
 			RTex.BG_SKY_SPRITESHEET,
 			FileCache.inst().get_texrect(RTex.BG_SKY_SPRITESHEET,"bg_sky_cliffs_right.png"),
 			new Vector3(1.5f,1.5f),
-			new Vector3(280,0,0)
+			new Vector3(750,0,0)
 		);
 		_bg_cliff_right._img.set_manual_sort_z_order(GameAnchorZ.BGSky_BG_SideCliffs);
 		_bg_cliff_right._img.set_name("_bg_cliff_right");
+		_bg_cliff_right_x.set_current(_bg_cliff_right._img._u_x);
+		_bg_cliff_right_x.set_target_vel(25.0f);
 		_root.add_child(_bg_cliff_right._img);
 
 		_scroll_elements = new List<SPParallaxScrollSprite>() { _bg_islands, _bg_arcs, _bg_cliff_left, _bg_cliff_right };
 
 		return this;
 	}
-	
+
 	public void i_update(GameEngineScene g) {
 		this.update_sky_bg(g);
 	}
@@ -91,12 +99,17 @@ public class BGSky : SPGameUpdateable {
 		}
 
 		if (GameMain._context._game_camera.transform.localPosition.y > 1500) {
-			_bg_cliff_left._img._u_x = SPUtil.drpt(_bg_cliff_left._img._u_x,-370,1/10.0f);
-			_bg_cliff_right._img._u_x = SPUtil.drpt(_bg_cliff_right._img._u_x,280,1/10.0f);
+			_bg_cliff_left_x.set_target(-370);
+			_bg_cliff_right_x.set_target(280);
 		} else {
-			_bg_cliff_left._img._u_x = SPUtil.drpt(_bg_cliff_left._img._u_x,-750,1/10.0f);
-			_bg_cliff_right._img._u_x = SPUtil.drpt(_bg_cliff_right._img._u_x,750,1/10.0f);
+			_bg_cliff_left_x.set_target(-800);
+			_bg_cliff_right_x.set_target(700);
 		}
+		_bg_cliff_left_x.i_update(SPUtil.dt_scale_get());
+		_bg_cliff_right_x.i_update(SPUtil.dt_scale_get());
+		_bg_cliff_left._img._u_x = _bg_cliff_left_x.get_current();
+		_bg_cliff_right._img._u_x = _bg_cliff_right_x.get_current();
+
 		for (int i = 0; i < _scroll_elements.Count; i++) {
 			SPParallaxScrollSprite itr = _scroll_elements[i];
 			if (!g.is_camera_underwater()) {

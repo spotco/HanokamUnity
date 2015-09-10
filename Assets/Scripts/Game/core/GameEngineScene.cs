@@ -7,27 +7,26 @@ public interface SPGameUpdateable {
 
 public class GameEngineScene : SPScene {
 
-	public BGVillage _bg_village;
-	public BGSky _bg_sky;
-	public BGWater _bg_water;
-	private List<SPGameUpdateable> _bg_elements;
-
 	public static GameEngineScene cons() {
 		GameEngineScene rtv = GameMain._context.gameObject.AddComponent<GameEngineScene>();
 		return rtv.i_cons();
 	}
+	
+	public BGVillage _bg_village;
+	public BGSky _bg_sky;
+	public BGWater _bg_water;
+	private List<SPGameUpdateable> _bg_elements;
+	public GameCameraController _camerac;
 
 	private GameEngineScene i_cons() {
 		__cached_viewbox_dirty = true;
 
-		GameMain._context._game_camera.transform.localPosition = new Vector3(0,250,-1500);
-		//GameMain._context._game_camera.transform.localPosition = new Vector3(0,-250,-1500);
+		_camerac = GameCameraController.cons(this);
 
 		_bg_village = BGVillage.cons(this);
 		_bg_sky = BGSky.cons(this);
 		_bg_water = BGWater.cons(this);
 		_bg_elements = new List<SPGameUpdateable>() {_bg_village,_bg_sky,_bg_water};
-
 
 		{
 			SpriterData data = SpriterData.cons_data_from_spritesheetreaders(new List<SpriteSheetReader> { 
@@ -45,11 +44,21 @@ public class GameEngineScene : SPScene {
 
 		return this;
 	}
-
 	public override void i_update(float dt_scale) {
 		SPUtil.dt_scale_set(dt_scale);
 		__cached_viewbox_dirty = true;
 
+
+		if (Input.GetKey(KeyCode.UpArrow)) {
+			_camerac.set_tar_camera_height(2000);
+
+		} else if (Input.GetKey(KeyCode.DownArrow)) {
+			_camerac.set_tar_camera_height(-500);
+
+		}
+
+
+		_camerac.i_update(this);
 		for (int i = 0; i < _bg_elements.Count; i++) {
 			SPGameUpdateable itr = _bg_elements[i];
 			itr.i_update(this);
@@ -82,11 +91,10 @@ public class GameEngineScene : SPScene {
 		tr = GameMain._context.transform.InverseTransformPoint(tr);
 		return new SPHitRect(){ _x1 = bl.x, _y1 = bl.y, _x2 = tr.x, _y2 = tr.y };
 	}
-
 	
-
 	public bool is_camera_underwater() {
 		return GameMain._context._game_camera.transform.localPosition.y < -100;
 	}
+
 
 }

@@ -226,4 +226,107 @@ public class SPUtil {
 		return true;
 	}
 
+	public static float lmovt(float a, float b, float vmax) {
+		float dir = SPUtil.sig(b-a);
+		float mag = Mathf.Abs(b-a) > vmax * SPUtil.dt_scale_get() ? vmax * SPUtil.dt_scale_get() : Mathf.Abs(b-a);
+		return a + dir * mag;
+	}
+
+	public static float elmovt(float a, float b, float vmax, float accel, float vcur, out float vnext) {
+		float dir = SPUtil.sig(b-a);
+		float dt_vel = vcur * SPUtil.dt_scale_get();
+		float mag = Mathf.Abs(b-a) > dt_vel ? dt_vel : Mathf.Abs(b-a);
+		if (dir != 0) {
+			vnext = vcur + accel * SPUtil.dt_scale_get();
+		} else {
+			vnext = 0;
+		}
+		return a + dir * mag;
+	}
+
+	public static int sig(float a) {
+		if (a > 0) {
+			return 1;
+		} else if (a < 0) {
+			return -1;
+		} else {
+			return 0;
+		}
+	}
+}
+
+/*
+ELM (Eased Linear Motion) Value
+Matches the start-end time of a linear motion curve with constant velocity,
+but has motion easing and constant acceleration.
+Can set target once, or every update.
+*/
+public struct ELMVal {
+	private float _target_vel; //target velocity
+	private float _t; //time in current curve
+	private float _t_max; //max time of current curve
+	private float _start,_end,_current; //starting, ending and current values
+	private Vector2 _dval; //last update value delta, x is last timestep and y is value delta
+	private Vector2 _nhalf_cp1; //normalized*0.5 point used for quadratic bezier curve control point 1
+	
+	public static ELMVal cons() {
+		return new ELMVal(){
+			_target_vel = 1,
+			_nhalf_cp1 = new Vector2(0.5f,0),
+			_has_set_target = false
+		};
+	}
+
+	public void set_target_vel(float val) { _target_vel = val; this.set_target(this.get_target()); }
+
+	public float get_current() { return _current; }
+	public void set_current(float val) { 
+		_current = val; 
+		if (!_has_set_target) {
+			this.set_target(this.get_current());
+		} else {
+			this.set_target(this.get_target());
+		}
+
+	}
+
+	public float get_target() { return _end; }
+	public bool get_finished() { return _t >= _t_max; }
+
+	public float get_target_vel() { return _target_vel; }
+	private bool _has_set_target;
+	public void set_target(float target) {
+		_has_set_target = true;
+		_end = target;
+		_start = _current;
+		_t = 0;
+		_t_max = Mathf.Abs(_end-_start)/_target_vel;
+
+		if (_dval.magnitude > 0) {
+			_nhalf_cp1 = new Vector2(_dval.x,Mathf.Abs(_dval.y));
+			_nhalf_cp1.Normalize();
+			_nhalf_cp1.Scale(new Vector2(0.5f,0.5f));
+		} else {
+			_nhalf_cp1 = new Vector2(0.5f,0);
+		}
+	}
+	
+	public float i_update(float dt) {
+		float prev_current = _current;
+		_t = Mathf.Clamp(_t+dt,0,_t_max);
+		float lerp_t = 1;
+		if (_t_max != 0) {
+			lerp_t = SPUtil.bezier_val_for_t(
+				new Vector2(0,0),
+				_nhalf_cp1,
+				new Vector2(0.5f,1),
+				new Vector2(1,1),
+				_t/_t_max
+			).y;
+		}
+		_current = SPUtil.lerp(_start,_end,lerp_t);
+		_dval.x = dt;
+		_dval.y = _current - prev_current;
+		return _current;
+	}
 }

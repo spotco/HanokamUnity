@@ -3,12 +3,19 @@ using System.Collections.Generic;
 
 public class GameMain : SPBaseBehavior {
 
-	//game scene implementation
-	//village gameplay
-	//dive gameplay
-	//air gameplay
-	//figure out UI
-	//letterbox area
+	/**
+	TODO--
+	camera bounds
+	editor/pc controls
+	village mode
+	dive mode
+		-bounding box debug render
+	air mode
+	gameui
+	build streamingassets to resources
+	gameui
+	dialogui
+	**/
 
 	public static GameMain _context;
 
