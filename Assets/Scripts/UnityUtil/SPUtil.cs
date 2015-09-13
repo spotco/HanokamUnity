@@ -272,21 +272,16 @@ public struct ELMVal {
 	public static ELMVal cons() {
 		return new ELMVal(){
 			_target_vel = 1,
-			_nhalf_cp1 = new Vector2(0.5f,0),
-			_has_set_target = false
+			_nhalf_cp1 = new Vector2(0.5f,0)
 		};
 	}
 
-	public void set_target_vel(float val) { _target_vel = val; this.set_target(this.get_target()); }
+	public ELMVal set_target_vel(float val) { _target_vel = val; this.set_target(this.get_target()); return this; }
 
 	public float get_current() { return _current; }
 	public void set_current(float val) { 
 		_current = val; 
-		if (!_has_set_target) {
-			this.set_target(this.get_current());
-		} else {
-			this.set_target(this.get_target());
-		}
+		this.set_target(this.get_target());
 
 	}
 
@@ -294,9 +289,7 @@ public struct ELMVal {
 	public bool get_finished() { return _t >= _t_max; }
 
 	public float get_target_vel() { return _target_vel; }
-	private bool _has_set_target;
 	public void set_target(float target) {
-		_has_set_target = true;
 		_end = target;
 		_start = _current;
 		_t = 0;

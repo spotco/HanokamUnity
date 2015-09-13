@@ -123,7 +123,7 @@ public class SpriterNode : SPNode, CameraRenderHookDelegate {
 		transform.position = _pre_pos;
 	}
 
-	public void p_play_anim(string anim, bool repeat) {
+	public void p_play_anim(string anim, bool repeat = true) {
 		_on_finish_play_anim = null;
 		if (_current_playing_anim != anim) {
 			this.i_play_anim(anim,repeat);
@@ -376,6 +376,21 @@ public class SpriterNode : SPNode, CameraRenderHookDelegate {
 			itr_objs.remove_from_parent(true);
 		}
 		unadded_objects.Clear();
+	}
+	
+	public override SPNode set_scale_x(float scx) { 
+		if (_rendered_img != null) {
+			if (scx < 0) {
+				_rendered_img.set_scale_x(-1);
+			} else {
+				_rendered_img.set_scale_x(1);
+			}
+		}
+		return base.set_scale_x(scx);
+	}
+	public override SPNode set_scale(float sc) {
+		if (_rendered_img != null) _rendered_img.set_scale(1);
+		return base.set_scale(sc);
 	}
 
 }

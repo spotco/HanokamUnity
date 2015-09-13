@@ -6,7 +6,9 @@ public interface SPGameUpdateable {
 }
 
 public class GameEngineScene : SPScene {
-
+	
+	[SerializeField] public bool _camera_active;
+	
 	public static GameEngineScene cons() {
 		GameEngineScene rtv = GameMain._context.gameObject.AddComponent<GameEngineScene>();
 		return rtv.i_cons();
@@ -17,52 +19,49 @@ public class GameEngineScene : SPScene {
 	public BGWater _bg_water;
 	private List<SPGameUpdateable> _bg_elements;
 	public GameCameraController _camerac;
+	public ControlManager _controls;
+	public PlayerCharacter _player;
+	
+	
+	private List<GameStateBase> _game_state_stack;
 
 	private GameEngineScene i_cons() {
 		__cached_viewbox_dirty = true;
-
+		_camera_active = true;
+		
+		_game_state_stack = new List<GameStateBase>(){ IdleGameState.cons() };
+		_game_state_stack.Add(OnGroundGameState.cons(this));
+		
 		_camerac = GameCameraController.cons(this);
+		_controls = ControlManager.cons();
 
 		_bg_village = BGVillage.cons(this);
 		_bg_sky = BGSky.cons(this);
 		_bg_water = BGWater.cons(this);
 		_bg_elements = new List<SPGameUpdateable>() {_bg_village,_bg_sky,_bg_water};
-
-		{
-			SpriterData data = SpriterData.cons_data_from_spritesheetreaders(new List<SpriteSheetReader> { 
-					SpriterJSONParser.cons_from_texture_and_file(RTex.SPRITER_HANOKA,RTex.SPRITER_HANOKA),
-					SpriterJSONParser.cons_from_texture_and_file(RTex.SPRITER_HANOKA_BOW,RTex.SPRITER_HANOKA_BOW),
-					SpriterJSONParser.cons_from_texture_and_file(RTex.SPRITER_HANOKA_SWORD,RTex.SPRITER_HANOKA_SWORD)
-				}, RTex.SPRITER_HANOKA
-			);
-			SpriterNode test_node = SpriterNode.cons_spriternode_from_data(data);
-			test_node.p_play_anim("Idle",true);
-			test_node.set_u_pos(0,0);
-			test_node.set_manual_sort_z_order(GameAnchorZ.Player_Ground);
-		}
-
+		
+		_player = PlayerCharacter.cons(this);
+		_player.set_u_pos(0,0);
 
 		return this;
 	}
+	
+	public GameStateBase get_top_game_state() { return _game_state_stack[_game_state_stack.Count-1]; }
+	
 	public override void i_update(float dt_scale) {
 		SPUtil.dt_scale_set(dt_scale);
 		__cached_viewbox_dirty = true;
 
 
-		if (Input.GetKey(KeyCode.UpArrow)) {
-			_camerac.set_tar_camera_height(2000);
-
-		} else if (Input.GetKey(KeyCode.DownArrow)) {
-			_camerac.set_tar_camera_height(-500);
-
-		}
-
-
+		
+		
+		_controls.i_update(this);
 		_camerac.i_update(this);
 		for (int i = 0; i < _bg_elements.Count; i++) {
 			SPGameUpdateable itr = _bg_elements[i];
 			itr.i_update(this);
 		}
+		this.get_top_game_state().i_update(this);
 	}
 
 	private SPHitRect __cached_viewbox;

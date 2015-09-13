@@ -22,7 +22,7 @@ public class SpriterUtil {
 		float t = 0;
 		float itr_add = 1.0f / TABLE_SCUBIC_SIZE;
 		for (int i = 0; i < TABLE_SCUBIC_SIZE; i++) {
-			_table_scubic_point_for_t[i] = sbezier_point_for_t(new Vector2(0,0), new Vector2(0.25f,0), new Vector2(0.75f,1), new Vector2(1,1), t).y;
+			_table_scubic_point_for_t[i] = sbezier_point_for_t(new Vector2(0,0), new Vector2(0.5f,0), new Vector2(0.5f,1), new Vector2(1,1), t).y;
 			t += itr_add;
 		}
 	}

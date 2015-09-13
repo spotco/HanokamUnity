@@ -101,11 +101,11 @@ public class SPNode : SPBaseBehavior {
 	public SPNode set_rotation(float deg) { this.transform.localEulerAngles = new Vector3(this.transform.localEulerAngles.x,this.transform.localEulerAngles.y, deg); _rotation = deg; return this; }
 	public float rotation() { return _rotation; }
 	
-	public SPNode set_scale_x(float scx) { this.transform.localScale = new Vector3(scx, this.transform.localScale.y, this.transform.localScale.z); _scale_x = scx; return this; }
-	public SPNode set_scale_y(float scy) { this.transform.localScale = new Vector3(this.transform.localScale.x, scy, this.transform.localScale.z); _scale_y = scy; return this; }
-	public SPNode set_scale(float sc) { this.transform.localScale = new Vector3(sc, sc, this.transform.localScale.z); _scale_x = sc; _scale_y = sc; return this; }
-	public float scale_x() { return _scale_x; }
-	public float scale_y() { return _scale_y; }
+	public virtual SPNode set_scale_x(float scx) { this.transform.localScale = new Vector3(scx, this.transform.localScale.y, this.transform.localScale.z); _scale_x = scx; return this; }
+	public virtual SPNode set_scale_y(float scy) { this.transform.localScale = new Vector3(this.transform.localScale.x, scy, this.transform.localScale.z); _scale_y = scy; return this; }
+	public virtual SPNode set_scale(float sc) { this.transform.localScale = new Vector3(sc, sc, this.transform.localScale.z); _scale_x = sc; _scale_y = sc; return this; }
+	public virtual float scale_x() { return _scale_x; }
+	public virtual float scale_y() { return _scale_y; }
 
 	[SerializeField] protected Vector2 _anchorpoint = new Vector2();
 	public virtual Vector2 anchorpoint() { return _anchorpoint; }

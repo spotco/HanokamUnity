@@ -52,7 +52,7 @@ public class GameMain : SPBaseBehavior {
 	}
 
 	public override void Update () {
-		float dt_scale = (1/60.0f)/(Time.deltaTime);
+		float dt_scale = (Time.deltaTime)/(1/60.0f);
 		_current_scene.i_update(dt_scale);
 	}
 }
