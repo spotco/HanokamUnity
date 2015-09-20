@@ -20,8 +20,8 @@ public class GameUICursor : SPGameUpdateable {
 			RTex.HUD_SPRITESHEET,
 			FileCache.inst().get_texrect(RTex.HUD_SPRITESHEET,"mouse_target.png")
 		);
-		_image.set_scale(0.45f);
-		_image.set_color(new Vector4(1,237.0f/255.0f,114.0f/255.0f,0.75f));
+		_image.set_scale(0.25f);
+		_image.set_color(SPUtil.color_from_bytes(255,237,114,191));
 		_root.add_child(_image);
 		
 		return this;
@@ -29,6 +29,11 @@ public class GameUICursor : SPGameUpdateable {
 	
 	public GameUICursor set_u_pos(float x, float y) {
 		_root.set_u_pos(x,y);
+		return this;
+	}
+	
+	public GameUICursor set_enabled(bool val) {
+		_root.set_enabled(val);
 		return this;
 	}
 	

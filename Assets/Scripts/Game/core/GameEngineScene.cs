@@ -33,7 +33,7 @@ public class GameEngineScene : SPScene {
 		_game_state_stack = new List<GameStateBase>(){ IdleGameState.cons() };
 		_game_state_stack.Add(OnGroundGameState.cons(this));
 		
-		_game_ui = GameUI.cons();
+		_game_ui = GameUI.cons(this);
 		
 		_camerac = GameCameraController.cons(this);
 		_controls = ControlManager.cons();

@@ -231,6 +231,10 @@ public class SPUtil {
 		return SPUtil.lerp(min,max,rtv_normalized);
 	}
 	
+	public static Vector4 color_from_bytes(float r, float g, float b, float a) {
+		return new Vector4(r/255.0f,g/255.0f,b/255.0f,a/255.0f);
+	}
+	
 	public static bool transform_is_enabled(Transform t) {
 		Transform itr = t;
 		while (itr != null) {
@@ -267,6 +271,16 @@ public class SPUtil {
 			return -1;
 		} else {
 			return 0;
+		}
+	}
+	
+	public static bool cond_cast<T>(System.Object input, out T output) {
+		if (input.GetType() == typeof(T)) {
+			output = (T)input;
+			return true;
+		} else {
+			output = default(T);
+			return false;
 		}
 	}
 }

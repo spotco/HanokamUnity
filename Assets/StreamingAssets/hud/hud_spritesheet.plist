@@ -132,7 +132,7 @@
 			<key>spriteTrimmed</key>
 			<true/>
 			<key>textureRect</key>
-			<string>{{916, 134}, {769, 144}}</string>
+			<string>{{866, 280}, {769, 144}}</string>
 			<key>textureRotated</key>
 			<false/>
 		</dict>
@@ -287,6 +287,28 @@
 			<true/>
 			<key>textureRect</key>
 			<string>{{1991, 30}, {29, 28}}</string>
+			<key>textureRotated</key>
+			<false/>
+		</dict>
+		
+		<key>jump_charge_bar.png</key>
+		<dict>
+			<key>aliases</key>
+			<array>
+			
+			</array>
+			<key>spriteColorRect</key>
+			<string>{{0, 0}, {769, 144}}</string>
+			<key>spriteOffset</key>
+			<string>{0, -0}</string>
+			<key>spriteSize</key>
+			<string>{769, 144}</string>
+			<key>spriteSourceSize</key>
+			<string>{769, 144}</string>
+			<key>spriteTrimmed</key>
+			<true/>
+			<key>textureRect</key>
+			<string>{{916, 134}, {769, 144}}</string>
 			<key>textureRotated</key>
 			<false/>
 		</dict>
