@@ -14,9 +14,10 @@ public class ControlManager : SPGameUpdateable {
 		return this;
 	}
 	
-	
-	
 	public void i_update(GameEngineScene g) {
+		Cursor.visible = false;
+		Cursor.lockState = CursorLockMode.Locked;
+	
 		if (Input.GetKey(KeyCode.A)) {
 			_move_vec.x = SPUtil.drpt(_move_vec.x,-1,1/20.0f);
 			_is_move = true;
@@ -27,6 +28,14 @@ public class ControlManager : SPGameUpdateable {
 			_move_vec.x = 0;
 			_is_move = false;
 		}
+	}
+	
+	public Vector2 get_cursor_move_delta() {
+		Vector2 scf = new Vector2(
+			SPUtil.game_screen().x * 0.1f,
+			SPUtil.game_screen().y * 0.1f
+		);
+		return SPUtil.vec_mult(new Vector2(Input.GetAxis ("Mouse X"),Input.GetAxis ("Mouse Y")),scf);
 	}
 	
 	public bool is_move() { return _is_move; }

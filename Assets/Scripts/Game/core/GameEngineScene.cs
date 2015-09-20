@@ -14,6 +14,7 @@ public class GameEngineScene : SPScene {
 		return rtv.i_cons();
 	}
 	
+	public GameUI _game_ui;
 	public BGVillage _bg_village;
 	public BGSky _bg_sky;
 	public BGWater _bg_water;
@@ -31,6 +32,8 @@ public class GameEngineScene : SPScene {
 		
 		_game_state_stack = new List<GameStateBase>(){ IdleGameState.cons() };
 		_game_state_stack.Add(OnGroundGameState.cons(this));
+		
+		_game_ui = GameUI.cons();
 		
 		_camerac = GameCameraController.cons(this);
 		_controls = ControlManager.cons();
@@ -51,9 +54,6 @@ public class GameEngineScene : SPScene {
 	public override void i_update(float dt_scale) {
 		SPUtil.dt_scale_set(dt_scale);
 		__cached_viewbox_dirty = true;
-
-
-		
 		
 		_controls.i_update(this);
 		_camerac.i_update(this);
@@ -62,6 +62,7 @@ public class GameEngineScene : SPScene {
 			itr.i_update(this);
 		}
 		this.get_top_game_state().i_update(this);
+		_game_ui.i_update(this);
 	}
 
 	private SPHitRect __cached_viewbox;

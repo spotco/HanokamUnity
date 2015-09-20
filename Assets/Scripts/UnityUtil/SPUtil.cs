@@ -81,6 +81,10 @@ public class SPUtil {
 	public static Vector2 game_screen() {
 		return new Vector2(Screen.width * GameMain._context._game_camera.rect.width ,Screen.height * GameMain._context._game_camera.rect.height );
 	}
+	
+	public static Vector2 game_from_view_screen_offset() {
+		return new Vector2(GameMain._context._game_camera.rect.x * Screen.width,GameMain._context._game_camera.rect.y * Screen.height);
+	}
 
 	public static Vector2 pct_of_obj_u_with_anchorpt(SPSprite obj, float x, float y) {
 		return new Vector2(obj.texrect().width*(x-obj.anchorpoint().x),obj.texrect().height*(y-obj.anchorpoint().y));
@@ -114,6 +118,12 @@ public class SPUtil {
 	public static Vector3 vec_mid(Vector3 a, Vector3 b) {
 		Vector3 add = a + b;
 		return new Vector3(add.x/2,add.y/2,add.z/2);
+	}
+	public static Vector3 vec_mult(Vector3 a, Vector3 b) {
+		return new Vector3(a.x*b.x,a.y*b.y,a.z*b.z);
+	}
+	public static Vector3 vec_sub(Vector3 a, Vector3 b) {
+		return a - b;
 	}
 
 	public static bool fuzzyeq(float a, float b, float delta) {
@@ -213,6 +223,12 @@ public class SPUtil {
 		//y - mx = b
 		float b = pt1.y - m * pt1.x;
 		return m * x + b;
+	}
+	
+	public static float eclamp(float val, float min, float max, Vector2 n_bez_ctrl1, Vector2 n_bez_ctrl2) {
+		float t = Mathf.Clamp((val-min)/(max-min),0,1);
+		float rtv_normalized = SPUtil.bezier_val_for_t(new Vector2(0,0),n_bez_ctrl1,n_bez_ctrl2,new Vector2(1,1),t).y;
+		return SPUtil.lerp(min,max,rtv_normalized);
 	}
 	
 	public static bool transform_is_enabled(Transform t) {

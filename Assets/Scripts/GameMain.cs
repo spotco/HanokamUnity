@@ -5,11 +5,9 @@ public class GameMain : SPBaseBehavior {
 
 	/**
 	TODO--
-	camera bounds
-	editor/pc controls
 	village mode
 	dive mode
-		-bounding box debug render
+	bounding box debug render
 	air mode
 	gameui
 	build streamingassets to resources

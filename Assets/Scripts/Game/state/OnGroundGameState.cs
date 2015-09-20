@@ -47,7 +47,13 @@ public class OnGroundGameState : GameStateBase {
 		} else if (g._player._u_x > SPUtil.get_horiz_world_bounds()._max) {
 			g._player._u_x = SPUtil.get_horiz_world_bounds()._max;
 		}
-		g._camerac.set_camera_focus_on_character(g);
+		
+		Vector3 player_to_cursor_delta = SPUtil.vec_sub(g._game_ui._cursor.get_game_pos(),new Vector2(g._player._u_x,g._player._u_y));
+		player_to_cursor_delta.x = SPUtil.eclamp(player_to_cursor_delta.x,-200,200,new Vector2(0.25f,0),new Vector2(0.75f,1)) * 0.2f;
+		player_to_cursor_delta.y = SPUtil.eclamp(player_to_cursor_delta.y,-100,700,new Vector2(0.25f,0),new Vector2(0.75f,1)) * 0.2f;
+		
+		g._camerac.set_zoom(1300);
+		g._camerac.set_camera_focus_on_character(g,player_to_cursor_delta.x,player_to_cursor_delta.y);
 	}
 	
 	public override GameStateIdentifier get_state() {

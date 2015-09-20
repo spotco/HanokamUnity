@@ -32,7 +32,7 @@ public class GameCameraController : SPGameUpdateable {
 	}
 	
 	private SPRange get_camera_horiz_bounds() {
-		Vector3 letterbox_offset = new Vector3(GameMain._context._game_camera.rect.x * Screen.width,GameMain._context._game_camera.rect.y * Screen.height,0);
+		Vector3 letterbox_offset = SPUtil.game_from_view_screen_offset();
 		Vector3 world_left_anchor = GameMain._context.transform.TransformPoint(new Vector3(SPUtil.get_horiz_world_bounds()._min,0,0));
 		Vector3 world_right_anchor = GameMain._context.transform.TransformPoint(new Vector3(SPUtil.get_horiz_world_bounds()._max,0,0));
 		Vector3 screen_left_anchor = GameMain._context._game_camera.WorldToScreenPoint(world_left_anchor) - letterbox_offset;
@@ -50,24 +50,14 @@ public class GameCameraController : SPGameUpdateable {
 		return rtv;
 	}
 	
-	private float _test = 0;
 	
 	public void i_update(GameEngineScene g) {
-		
-		if (Input.GetMouseButton(0)) {
-			_test = Mathf.Clamp(_test+0.1f*SPUtil.dt_scale_get(),0,1);
-		} else {
-			_test = Mathf.Clamp(_test-0.1f*SPUtil.dt_scale_get(),0,1);
-		}
-		_camera_zoom.set_target(SPUtil.lerp(1500,500,_test));
-		
 		if (g._camera_active) {
 			_camera_zoom.set_current(SPUtil.drpt(_camera_zoom.get_current(),_camera_zoom.get_target(),1/10.0f));
 			this.apply_camera_values();
 			
 			SPRange camera_bounds = this.get_camera_horiz_bounds();
 			_camera_x.set_current(Mathf.Clamp(SPUtil.drpt(_camera_x.get_current(),_camera_x.get_target(),1/10.0f),camera_bounds._min,camera_bounds._max));
-			
 			_camera_y.i_update(SPUtil.dt_scale_get());
 			
 			this.apply_camera_values();
@@ -82,13 +72,14 @@ public class GameCameraController : SPGameUpdateable {
 		return _camera_y.get_target();
 	}
 	
-	public void set_camera_focus_on_character(GameEngineScene g) {
+	public void set_camera_focus_on_character(GameEngineScene g, float offset_x = 0, float offset_y = 0) {
 		SPRange camera_bounds = this.get_camera_horiz_bounds();
-		_camera_x.set_target(Mathf.Clamp(g._player._u_x,camera_bounds._min,camera_bounds._max));
+		_camera_x.set_target(Mathf.Clamp(g._player._u_x + offset_x,camera_bounds._min,camera_bounds._max));
+		_camera_y.set_target(g._player._u_y + offset_y);
 	}
 	
 	public void set_zoom(float val) {
-		_camera_zoom.set_target(val);
+		_camera_zoom.set_target(Mathf.Clamp(val,MIN_ZOOM,MAX_ZOOM));
 	}
 	
 	public float get_zoom() {
