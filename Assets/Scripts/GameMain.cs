@@ -5,12 +5,15 @@ public class GameMain : SPBaseBehavior {
 
 	/**
 	TODO--
+	build textures to resources
+	http://answers.unity3d.com/questions/984854/is-it-possible-to-excluding-streamingassets-depend.html
+
 	village mode
 	dive mode
 	bounding box debug render
 	air mode
 	gameui
-	build streamingassets to resources
+
 	gameui
 	dialogui
 	**/
@@ -23,7 +26,7 @@ public class GameMain : SPBaseBehavior {
 
 	private SPScene _current_scene;
 	[System.NonSerialized] public TextureResource _tex_resc;
-	[System.NonSerialized] public FileCache _file_cache;
+	public FileCache _file_cache;
 
 	private const float ROOT_SCF = 0.1f;
 

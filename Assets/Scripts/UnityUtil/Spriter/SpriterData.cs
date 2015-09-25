@@ -8,6 +8,7 @@ public class SpriterData  {
 	[ProtoMember(1)] public Dictionary<int,TGSpriterFolder> _folders = new Dictionary<int, TGSpriterFolder>();
 	[ProtoMember(2)] public Dictionary<string,TGSpriterAnimation> _animations = new Dictionary<string, TGSpriterAnimation>();
 	[ProtoMember(3)] public Dictionary<int,SpriterJSONParser> _atlas = new Dictionary<int, SpriterJSONParser>();
+	[ProtoMember(4)] public string _scmlpath;
 
 	public Dictionary<int,TGSpriterFolder> folders() { return _folders; }
 	public Dictionary<string,TGSpriterAnimation> animations() { return _animations; }
@@ -19,10 +20,16 @@ public class SpriterData  {
 	}
 
 	public static SpriterData cons_data_from_spritesheetreaders(List<SpriterJSONParser> sheetreaders, string scmlpath) {
+		return FileCache.inst().get_spriter_data(sheetreaders,scmlpath);
+	}
+
+	public static SpriterData _cons_data_from_spritesheetreaders(List<SpriterJSONParser> sheetreaders, string scmlpath) {
 		return (new SpriterData()).i_cons_data_from_spritesheetreaders(sheetreaders,scmlpath);
 	}
 
 	public SpriterData i_cons_data_from_spritesheetreaders(List<SpriterJSONParser> sheetreaders, string scmlpath) {
+		Debug.LogError("spriter data from streaming:"+scmlpath);
+		_scmlpath = scmlpath;
 		TGSpriterConfigNode root = SpriterXMLParser.parse_scml(scmlpath);
 
 		_folders = new Dictionary<int, TGSpriterFolder>();

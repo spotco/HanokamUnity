@@ -20,6 +20,10 @@ public class SpriterJSONParser {
 	[ProtoMember(3)] public string _filepath;
 
 	public static SpriterJSONParser cons_from_texture_and_file(string texkey, string filepath) {
+		return FileCache.inst().get_spriter_json_parser(texkey,filepath);
+	}
+
+	public static SpriterJSONParser _cons_from_texture_and_file(string texkey, string filepath) {
 		return (new SpriterJSONParser()).i_cons_from_texture_and_file(texkey,filepath);
 	}
 
@@ -32,8 +36,10 @@ public class SpriterJSONParser {
 
 	public string texkey() { return _texkey; }
 	public string filepath() { return _filepath; }
+	public static string cachekey(string texkey, string filepath) { return texkey + filepath; }
 
 	private SpriterJSONParser parse_file(string filepath) {
+		Debug.LogError("SpriterJSONParser from streaming");
 		_frames = new Dictionary<string, SpriterJSONFrame>();
 
 		string jsonData = System.Text.Encoding.Default.GetString(
