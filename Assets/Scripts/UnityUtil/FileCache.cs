@@ -1,8 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using ProtoBuf;
 
-public class FileCache : Object {
+[ProtoContract]
+public class FileCache {
 
 	public static FileCache inst() { return GameMain._context._file_cache; }
 
@@ -10,7 +12,7 @@ public class FileCache : Object {
 		return (new FileCache()).i_cons();
 	}
 
-	private Dictionary<string,Dictionary<string,Rect>> _texkey_to_rectkey_to_rect = new Dictionary<string,Dictionary<string,Rect>>();
+	[ProtoMember(1)] private Dictionary<string,Dictionary<string,Rect>> _texkey_to_rectkey_to_rect = new Dictionary<string,Dictionary<string,Rect>>();
 
 	private FileCache i_cons() {
 		return this;

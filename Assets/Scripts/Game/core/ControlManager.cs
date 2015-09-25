@@ -7,7 +7,8 @@ public class ControlManager : SPGameUpdateable {
 	public enum Control {
 		MoveLeft,
 		MoveRight,
-		OnGround_Jump
+		OnGround_Jump,
+		None
 	}
 	private static bool control_is_pressed(Control test) {
 		switch (test) {

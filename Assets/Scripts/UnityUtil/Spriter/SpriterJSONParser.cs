@@ -1,8 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using ProtoBuf;
 
+[ProtoContract]
 public class SpriterJSONFrame {
-	public Rect _val;
+	[ProtoMember(1)] public Rect _val;
+
 	public static SpriterJSONFrame cons_from_rect(Rect rect) {
 		SpriterJSONFrame rtv = new SpriterJSONFrame();
 		rtv._val = rect;
@@ -10,10 +13,11 @@ public class SpriterJSONFrame {
 	}
 }
 
-public class SpriterJSONParser : SpriteSheetReader {
-	private Dictionary<string,SpriterJSONFrame> _frames = new Dictionary<string, SpriterJSONFrame>();
-	private string _texkey;
-	private string _filepath;
+[ProtoContract]
+public class SpriterJSONParser {
+	[ProtoMember(1)] public Dictionary<string,SpriterJSONFrame> _frames = new Dictionary<string, SpriterJSONFrame>();
+	[ProtoMember(2)] public string _texkey;
+	[ProtoMember(3)] public string _filepath;
 
 	public static SpriterJSONParser cons_from_texture_and_file(string texkey, string filepath) {
 		return (new SpriterJSONParser()).i_cons_from_texture_and_file(texkey,filepath);

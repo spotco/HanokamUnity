@@ -1,18 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using System.Text;
+using ProtoBuf;
 
-public interface SpriteSheetReader {
-	Rect rect_for_frame(string key);
-	string texkey();
-	string filepath();
-}
-
-//to optimize, try protobuf serialization of all this stuff
+[ProtoContract]
 public class SpriterData  {
-	private Dictionary<int,TGSpriterFolder> _folders = new Dictionary<int, TGSpriterFolder>();
-	private Dictionary<string,TGSpriterAnimation> _animations = new Dictionary<string, TGSpriterAnimation>();
-	private Dictionary<int,SpriteSheetReader> _atlas = new Dictionary<int, SpriteSheetReader>();
+	[ProtoMember(1)] public Dictionary<int,TGSpriterFolder> _folders = new Dictionary<int, TGSpriterFolder>();
+	[ProtoMember(2)] public Dictionary<string,TGSpriterAnimation> _animations = new Dictionary<string, TGSpriterAnimation>();
+	[ProtoMember(3)] public Dictionary<int,SpriterJSONParser> _atlas = new Dictionary<int, SpriterJSONParser>();
 
 	public Dictionary<int,TGSpriterFolder> folders() { return _folders; }
 	public Dictionary<string,TGSpriterAnimation> animations() { return _animations; }
@@ -23,16 +18,16 @@ public class SpriterData  {
 		return folder._files[fileid];
 	}
 
-	public static SpriterData cons_data_from_spritesheetreaders(List<SpriteSheetReader> sheetreaders, string scmlpath) {
+	public static SpriterData cons_data_from_spritesheetreaders(List<SpriterJSONParser> sheetreaders, string scmlpath) {
 		return (new SpriterData()).i_cons_data_from_spritesheetreaders(sheetreaders,scmlpath);
 	}
 
-	public SpriterData i_cons_data_from_spritesheetreaders(List<SpriteSheetReader> sheetreaders, string scmlpath) {
+	public SpriterData i_cons_data_from_spritesheetreaders(List<SpriterJSONParser> sheetreaders, string scmlpath) {
 		TGSpriterConfigNode root = SpriterXMLParser.parse_scml(scmlpath);
 
 		_folders = new Dictionary<int, TGSpriterFolder>();
 		_animations = new Dictionary<string, TGSpriterAnimation>();
-		_atlas = new Dictionary<int, SpriteSheetReader>();
+		_atlas = new Dictionary<int, SpriterJSONParser>();
 
 		for (int i_base = 0; i_base < root._children.Count; i_base++) {
 			TGSpriterConfigNode itr_base = root._children[i_base];
@@ -54,7 +49,7 @@ public class SpriterData  {
 		return this;
 	}
 
-	public void replace_atlas_index(int index, SpriteSheetReader tar) {
+	public void replace_atlas_index(int index, SpriterJSONParser tar) {
 		_atlas[index] = tar;
 		foreach (int folder_id in _folders.Keys) {
 			TGSpriterFolder itr_folder = _folders[folder_id];
@@ -68,12 +63,12 @@ public class SpriterData  {
 		}
 	}
 
-	private void handle_atlas(TGSpriterConfigNode itr_base, List<SpriteSheetReader> sheetreaders) {
+	private void handle_atlas(TGSpriterConfigNode itr_base, List<SpriterJSONParser> sheetreaders) {
 		for (int i = 0; i < itr_base._children.Count; i++) {
 			TGSpriterConfigNode itr_atlas_element = itr_base._children[i];
 			string itr_atlas_element_name = itr_atlas_element.get_str("name");
 			for (int i_sheetreaders = 0; i_sheetreaders < sheetreaders.Count; i_sheetreaders++) {
-				SpriteSheetReader itr_sheetreaders = sheetreaders[i];
+				SpriterJSONParser itr_sheetreaders = sheetreaders[i];
 				if ((itr_sheetreaders.filepath()+".json").Contains(itr_atlas_element_name)) {
 					_atlas[i] = itr_sheetreaders;
 					break;
@@ -87,7 +82,7 @@ public class SpriterData  {
 		neu_folder._id = itr_base.get_id();
 		neu_folder._atlas = itr_base.get_int("atlas");
 
-		SpriteSheetReader atlas_element = _atlas[neu_folder._atlas];
+		SpriterJSONParser atlas_element = _atlas[neu_folder._atlas];
 		for (int i_files = 0; i_files < itr_base._children.Count; i_files++) {
 			TGSpriterConfigNode itr_files = itr_base._children[i_files];
 			TGSpriterFile neu_file = new TGSpriterFile();

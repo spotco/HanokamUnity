@@ -1,30 +1,40 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using ProtoBuf;
 
+[ProtoContract]
 public class TGSpriterFolder {
-	public int _id, _atlas;
-	public Dictionary<int,TGSpriterFile> _files = new Dictionary<int, TGSpriterFile>();
+	[ProtoMember(1)] public int _id;
+	[ProtoMember(2)] public int _atlas;
+	[ProtoMember(3)] public Dictionary<int,TGSpriterFile> _files = new Dictionary<int, TGSpriterFile>();
 }
 
+[ProtoContract]
 public class TGSpriterFile {
-	public int _id;
-	public string _name = "";
-	public Rect _rect = new Rect();
-	public Vector2 _pivot = new Vector2();
-	public string _texkey;
+	[ProtoMember(1)] public int _id;
+	[ProtoMember(2)] public string _name = "";
+	[ProtoMember(3)] public Rect _rect = new Rect();
+	[ProtoMember(4)] public Vector2 _pivot = new Vector2();
+	[ProtoMember(5)] public string _texkey;
 }
 
+[ProtoContract]
 public class TGSpriterObjectRef {
-	public int _id, _parent_bone_id, _timeline_id, _zindex;
-	public bool _is_root;
+	[ProtoMember(1)] public int _id;
+	[ProtoMember(2)] public int _parent_bone_id;
+	[ProtoMember(3)] public int _timeline_id;
+	[ProtoMember(4)] public int _zindex;
+	[ProtoMember(5)] public bool _is_root;
 }
 
+[ProtoContract]
 public class TGSpriterMainlineKey {
-	public int _start_time;
-	public long _hash;
-	public string _hashtest = "";
-	public List<TGSpriterObjectRef> _bone_refs = new List<TGSpriterObjectRef>();
-	public List<TGSpriterObjectRef> _object_refs = new List<TGSpriterObjectRef>();
+	[ProtoMember(1)] public int _start_time;
+	[ProtoMember(2)] public long _hash;
+	[ProtoMember(3)] public string _hashtest = "";
+	[ProtoMember(4)] public List<TGSpriterObjectRef> _bone_refs = new List<TGSpriterObjectRef>();
+	[ProtoMember(5)] public List<TGSpriterObjectRef> _object_refs = new List<TGSpriterObjectRef>();
+
 	public TGSpriterObjectRef nth_bone_ref(int i) {
 		return _bone_refs[i];
 	}
@@ -33,19 +43,25 @@ public class TGSpriterMainlineKey {
 	}
 }
 
+[ProtoContract]
 public class TGSpriterTimelineKey {
-	public int _file, _folder;
-	public float _startsAt;
-	public Vector2 _position = new Vector2(), _anchorPoint = new Vector2();
-	public float _rotation;
-	public int _spin;
-	public float _scaleX, _scaleY, _alpha;
+	[ProtoMember(1)] public int _file;
+	[ProtoMember(2)] public int _folder;
+	[ProtoMember(3)] public float _startsAt;
+	[ProtoMember(4)] public Vector2 _position = new Vector2();
+	[ProtoMember(5)] public Vector2 _anchorPoint = new Vector2();
+	[ProtoMember(6)] public float _rotation;
+	[ProtoMember(7)] public int _spin;
+	[ProtoMember(8)] public float _scaleX;
+	[ProtoMember(9)] public float _scaleY;
+	[ProtoMember(10)] public float _alpha;
 }
 
+[ProtoContract]
 public class TGSpriterTimeLine {
-	public List<TGSpriterTimelineKey> _keys = new List<TGSpriterTimelineKey>();
-	public string _name = "";
-	public int _id;
+	[ProtoMember(1)] public List<TGSpriterTimelineKey> _keys = new List<TGSpriterTimelineKey>();
+	[ProtoMember(2)] public string _name = "";
+	[ProtoMember(3)] public int _id;
 
 	public TGSpriterTimelineKey key_for_time(float val) {
 		return _keys[this.index_of_key_for_time(val)];
@@ -86,11 +102,13 @@ public class TGSpriterTimeLine {
 	}
 }
 
+[ProtoContract]
 public class TGSpriterAnimation {
-	public string _name = "";
-	public List<TGSpriterMainlineKey> _mainline_keys = new List<TGSpriterMainlineKey>();
-	public Dictionary<int,TGSpriterTimeLine> _timelines = new Dictionary<int, TGSpriterTimeLine>();
-	public long _duration;
+	[ProtoMember(1)] public string _name = "";
+	[ProtoMember(2)] public List<TGSpriterMainlineKey> _mainline_keys = new List<TGSpriterMainlineKey>();
+	[ProtoMember(3)] public Dictionary<int,TGSpriterTimeLine> _timelines = new Dictionary<int, TGSpriterTimeLine>();
+	[ProtoMember(4)] public long _duration;
+
 	public TGSpriterMainlineKey nth_mainline_key(int i) {
 		return _mainline_keys[i];
 	}

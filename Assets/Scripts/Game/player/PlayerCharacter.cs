@@ -14,11 +14,12 @@ public class PlayerCharacter : SPGameUpdateable {
 		_root = SPNode.cons_node();
 		_root.set_name("PlayerCharacter");
 		
-		SpriterData data = SpriterData.cons_data_from_spritesheetreaders(new List<SpriteSheetReader> { 
+		SpriterData data = SpriterData.cons_data_from_spritesheetreaders(new List<SpriterJSONParser> { 
 			SpriterJSONParser.cons_from_texture_and_file(RTex.SPRITER_HANOKA,RTex.SPRITER_HANOKA),
 			SpriterJSONParser.cons_from_texture_and_file(RTex.SPRITER_HANOKA_BOW,RTex.SPRITER_HANOKA_BOW),
 			SpriterJSONParser.cons_from_texture_and_file(RTex.SPRITER_HANOKA_SWORD,RTex.SPRITER_HANOKA_SWORD)
 		}, RTex.SPRITER_HANOKA);
+
 		_img = SpriterNode.cons_spriternode_from_data(data);
 		_img.p_play_anim("Idle",true);
 		_img.set_manual_sort_z_order(GameAnchorZ.Player_Ground);
