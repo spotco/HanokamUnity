@@ -73,7 +73,7 @@ public class SpriterNode : SPNode, CameraRenderHookDelegate {
 		}
 	}
 
-	private SPSprite _rendered_img;
+	public SPSprite _rendered_img;
 	private RenderTexture _rendertex;
 	private Camera _rendercam;
 
@@ -91,6 +91,7 @@ public class SpriterNode : SPNode, CameraRenderHookDelegate {
 		_rendercam.transform.localPosition = new Vector3(0,135,-250.0f);
 		_rendercam.nearClipPlane = 0.1f;
 		_rendercam.farClipPlane = 10000.0f;
+		_rendercam.backgroundColor = new Color(0,0,0,0);
 		_rendercam.cullingMask = (1 << RLayer.get_layer(RLayer.SPRITER_NODE));
 
 		CameraRenderHookDispatcher rendercam_hook_dispatcher = rendercam_obj.AddComponent<CameraRenderHookDispatcher>();
@@ -99,11 +100,12 @@ public class SpriterNode : SPNode, CameraRenderHookDelegate {
 		float max_of_widhei = Mathf.Max(SPUtil.game_screen().x,SPUtil.game_screen().y);
 		_rendercam.rect = new Rect(0,0,max_of_widhei/SPUtil.game_screen().x,max_of_widhei/SPUtil.game_screen().y);
 
-		_rendertex = new RenderTexture(256,256,16,RenderTextureFormat.ARGB32);
+		_rendertex = new RenderTexture(256,256,16,RenderTextureFormat.ARGBFloat);
 		_rendertex.Create();
 		_rendercam.targetTexture = _rendertex;
 
 		_rendered_img = SPSprite.cons_sprite_texkey_texrect(RTex.BLANK,new Rect(0,0,1,1));
+		_rendered_img.set_shader(RSha.ALPHA);
 		_rendered_img.set_anchor_point(0.5f,0.0f);
 		_rendered_img.manual_set_texture(_rendertex);
 		_rendered_img.manual_set_mesh_size(256,256);
@@ -116,7 +118,7 @@ public class SpriterNode : SPNode, CameraRenderHookDelegate {
 	Vector3 _pre_pos;
 	public void on_pre_render() {
 		_pre_pos = transform.position;
-		transform.position = new Vector3(0,0,-100);
+		transform.position = new Vector3(10000,10000,-100);
 	}
 	
 	public void on_post_render() {
@@ -380,16 +382,17 @@ public class SpriterNode : SPNode, CameraRenderHookDelegate {
 	
 	public override SPNode set_scale_x(float scx) { 
 		if (_rendered_img != null) {
-			if (scx < 0) {
-				_rendered_img.set_scale_x(-1);
-			} else {
-				_rendered_img.set_scale_x(1);
-			}
+			_rendered_img.set_scale_x(scx);
+			return this;
 		}
 		return base.set_scale_x(scx);
 	}
+
 	public override SPNode set_scale(float sc) {
-		if (_rendered_img != null) _rendered_img.set_scale(1);
+		if (_rendered_img != null) {
+			_rendered_img.set_scale(sc);
+			return this;
+		}
 		return base.set_scale(sc);
 	}
 

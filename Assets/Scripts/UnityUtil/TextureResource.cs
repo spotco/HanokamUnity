@@ -20,6 +20,8 @@ public class RTex {
 
 	public static string SPRITER_OLDMAN = "character/oldman/Oldman";
 	public static string SPRITER_FISHGIRL = "character/Fishgirl/Fishgirl";
+	public static string SPRITER_DOG = "character/dog/dog";
+	public static string SPRITER_FISHMOM = "character/Fishmom/Fishmom";
 	public static string SPRITER_HANOKA = "character/hanoka/hanoka_player";
 	public static string SPRITER_HANOKA_SWORD = "character/hanoka/hanoka_sword";
 	public static string SPRITER_HANOKA_BOW = "character/hanoka/hanoka_bow";
@@ -34,12 +36,12 @@ public class TextureResource {
 
 	public static TextureResource inst() { return GameMain._context._tex_resc; }
 
-	private class TextureResourceValue {
+	public class TextureResourceValue {
 		public Texture _tex;
 		public Dictionary<string,Material> _shaderkey_to_material = new Dictionary<string, Material>();
 	}
 
-	private Dictionary<string,TextureResourceValue> _key_to_resourcevalue;
+	public Dictionary<string,TextureResourceValue> _key_to_resourcevalue;
 
 	public static TextureResource cons() {
 		return (new TextureResource()).i_cons();
@@ -59,7 +61,8 @@ public class TextureResource {
 		return this;
 	}
 
-	private Texture load_texture_from_resources(string path) {
+	private Texture load_texture_from_streamingassets(string path) {
+		Debug.LogError("loading from streaming");
 		path = System.IO.Path.Combine(Application.streamingAssetsPath, path+".png");
 		Texture2D rtv = new Texture2D(0,0);
 		rtv.LoadImage(SPUtil.streaming_asset_load(path));
@@ -67,9 +70,15 @@ public class TextureResource {
 		return rtv;
 	}
 
-	private TextureResourceValue cons_texture_resource_value(string path) {
+	private TextureResourceValue cons_texture_resource_value(string texkey) {
+		Texture tex = 
+		//null;
+		Resources.Load<Texture2D>(CachedStreamingAssets.texture_key_to_resource_path(texkey));
+		if (tex == null) {
+			tex = this.load_texture_from_streamingassets(texkey);
+		}
 		return new TextureResourceValue() {
-			_tex = load_texture_from_resources(path)
+			_tex = tex
 		};
 	}
 

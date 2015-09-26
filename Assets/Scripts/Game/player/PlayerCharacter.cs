@@ -36,8 +36,6 @@ public class PlayerCharacter : SPGameUpdateable {
 		return this;
 	}
 	
-	
-	
 	public void i_update(GameEngineScene g) {
 	
 	}	

@@ -53,7 +53,8 @@ public class SPNode : SPBaseBehavior {
 	}
 
 	[SerializeField] protected float _rotation;
-	[SerializeField] protected float _scale_x, _scale_y;
+	[SerializeField] protected virtual float _scale_x { get; set; }
+	[SerializeField] protected float _scale_y { get; set; }
 	[SerializeField] protected Vector3 _u_pos = new Vector3();
 	
 	private void set_u_pos(Vector3 val) {

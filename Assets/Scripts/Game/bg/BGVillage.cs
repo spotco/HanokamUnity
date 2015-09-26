@@ -121,7 +121,52 @@ public class BGVillage : SPGameUpdateable {
 		_waterlineabove.set_u_pos(0,-200);
 		_waterlineabove.set_u_z(-500);
 
+		test_display_characters();
+
 		return this;
+	}
+
+	private void test_display_characters() {
+		{
+			SpriterData data = SpriterData.cons_data_from_spritesheetreaders(new List<SpriterJSONParser> { 
+				SpriterJSONParser.cons_from_texture_and_file(RTex.SPRITER_OLDMAN,RTex.SPRITER_OLDMAN),
+			}, RTex.SPRITER_OLDMAN);
+
+			SpriterNode test = SpriterNode.cons_spriternode_from_data(data);
+			test.p_play_anim("Idle",true);
+			test.set_manual_sort_z_order(GameAnchorZ.Player_Ground);
+			test.set_name("OldMan_TEST");
+			test.set_u_pos(-130,225);
+			test.set_u_z(219);
+			_root.add_child(test);
+		}
+		{
+			SpriterData data = SpriterData.cons_data_from_spritesheetreaders(new List<SpriterJSONParser> { 
+				SpriterJSONParser.cons_from_texture_and_file(RTex.SPRITER_FISHGIRL,RTex.SPRITER_FISHGIRL),
+			}, RTex.SPRITER_FISHGIRL);
+
+			SpriterNode test = SpriterNode.cons_spriternode_from_data(data);
+			test.p_play_anim("Idle",true);
+			test.set_manual_sort_z_order(GameAnchorZ.Player_Ground);
+			test.set_name("FishGirl_TEST");
+			test.set_u_pos(407,-7);
+			test.set_u_z(0);
+			_root.add_child(test);
+		}
+		{
+			SpriterData data = SpriterData.cons_data_from_spritesheetreaders(new List<SpriterJSONParser> { 
+				SpriterJSONParser.cons_from_texture_and_file(RTex.SPRITER_DOG,RTex.SPRITER_DOG),
+			}, RTex.SPRITER_DOG);
+
+			SpriterNode test = SpriterNode.cons_spriternode_from_data(data);
+			test.p_play_anim("idle",true);
+			test.set_manual_sort_z_order(GameAnchorZ.Player_Ground);
+			test.set_name("Dog_TEST");
+			test.set_u_pos(-309,4);
+			test.set_u_z(0);
+			test.set_scale_x(-1);
+			_root.add_child(test);
+		}
 	}
 
 	public void i_update(GameEngineScene g) {

@@ -88,7 +88,7 @@ public class OnGroundGameState : GameStateBase {
 				_current_state = State.Gameplay;
 				
 			} else if (!g._controls.get_control_down(ControlManager.Control.OnGround_Jump)) {
-				_current_state = State.JumpInAir;
+				_current_state = State.Gameplay;
 			}
 			
 		} break;
