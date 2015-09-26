@@ -380,20 +380,16 @@ public class SpriterNode : SPNode, CameraRenderHookDelegate {
 		unadded_objects.Clear();
 	}
 	
-	public override SPNode set_scale_x(float scx) { 
+	public void set_img_scale_x(float scx) { 
 		if (_rendered_img != null) {
 			_rendered_img.set_scale_x(scx);
-			return this;
 		}
-		return base.set_scale_x(scx);
 	}
 
-	public override SPNode set_scale(float sc) {
+	public void set_img_scale(float sc) {
 		if (_rendered_img != null) {
 			_rendered_img.set_scale(sc);
-			return this;
 		}
-		return base.set_scale(sc);
 	}
 
 }

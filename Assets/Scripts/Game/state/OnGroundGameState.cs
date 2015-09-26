@@ -41,19 +41,19 @@ public class OnGroundGameState : GameStateBase {
 			if (g._controls.is_move()) {
 				_params._vel.x = g._controls.get_move().x * 8.0f;
 				if (Mathf.Abs(_params._vel.x) > 7.5f) {
-					g._player._img.p_play_anim(PlayerCharacterAnims.RUN);
+					g._player.play_anim(PlayerCharacterAnims.RUN);
 				} else {
-					g._player._img.p_play_anim(PlayerCharacterAnims.WALK);
+					g._player.play_anim(PlayerCharacterAnims.WALK);
 				}
 				if (g._controls.get_move().x > 0) {
-					g._player._img.set_scale_x(-1);
+					g._player.set_scale_x(-1);
 					
 				} else if (g._controls.get_move().x < 0) {
-					g._player._img.set_scale_x(1);
+					g._player.set_scale_x(1);
 				}
 			} else {
 				_params._vel.x = SPUtil.drpt(_params._vel.x,0,1/10.0f);
-				g._player._img.p_play_anim(PlayerCharacterAnims.IDLE);
+				g._player.play_anim(PlayerCharacterAnims.IDLE);
 			}
 			g._player._u_x = g._player._u_x + _params._vel.x * SPUtil.dt_scale_get();
 			if (g._player._u_x < SPUtil.get_horiz_world_bounds()._min) {
@@ -72,7 +72,7 @@ public class OnGroundGameState : GameStateBase {
 			
 			if (g._controls.get_control_just_pressed(ControlManager.Control.OnGround_Jump)) {
 				_current_state = State.JumpCharge;
-				g._player._img.p_play_anim(PlayerCharacterAnims.PREPDIVE,false);
+				g._player.play_anim(PlayerCharacterAnims.PREPDIVE,false);
 				_params._jump_charge_t = 0;
 			}
 			

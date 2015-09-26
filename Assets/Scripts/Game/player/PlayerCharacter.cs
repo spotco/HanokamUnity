@@ -8,7 +8,7 @@ public class PlayerCharacter : SPGameUpdateable {
 	}
 	
 	private SPNode _root;
-	public SpriterNode _img;
+	private SpriterNode _img;
 	
 	public PlayerCharacter i_cons(GameEngineScene g) {
 		_root = SPNode.cons_node();
@@ -33,6 +33,16 @@ public class PlayerCharacter : SPGameUpdateable {
 	public float _u_y { get { return _root._u_y; } set { this.set_u_pos(this._u_x,value); } }
 	public PlayerCharacter set_u_pos(float x, float y) {
 		_root.set_u_pos(x,y);
+		return this;
+	}
+
+	public PlayerCharacter set_scale_x(float val) {
+		_img.set_img_scale_x(val);
+		return this;
+	}
+
+	public PlayerCharacter play_anim(string anim, bool repeat = true) {
+		_img.p_play_anim(anim, repeat);
 		return this;
 	}
 	

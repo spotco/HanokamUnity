@@ -164,7 +164,20 @@ public class BGVillage : SPGameUpdateable {
 			test.set_name("Dog_TEST");
 			test.set_u_pos(-309,4);
 			test.set_u_z(0);
-			test.set_scale_x(-1);
+			test.set_img_scale_x(-1);
+			_root.add_child(test);
+		}
+		{
+			SpriterData data = SpriterData.cons_data_from_spritesheetreaders(new List<SpriterJSONParser> { 
+				SpriterJSONParser.cons_from_texture_and_file(RTex.SPRITER_FISHMOM,RTex.SPRITER_FISHMOM),
+			}, RTex.SPRITER_FISHMOM);
+
+			SpriterNode test = SpriterNode.cons_spriternode_from_data(data);
+			test.p_play_anim("Idle",true);
+			test.set_manual_sort_z_order(GameAnchorZ.Player_Ground);
+			test.set_name("FishMom_TEST");
+			test.set_u_pos(262,-13);
+			test.set_u_z(0);
 			_root.add_child(test);
 		}
 	}
