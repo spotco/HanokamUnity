@@ -28,23 +28,15 @@ public class PlayerCharacter : SPGameUpdateable {
 		
 		return this;
 	}
-	
+
+	public PlayerCharacter set_manual_sort_z_order(int val) { _img.set_manual_sort_z_order(val); return this; }
 	public float _u_x { get { return _root._u_x; } set { this.set_u_pos(value,this._u_y); } }
 	public float _u_y { get { return _root._u_y; } set { this.set_u_pos(this._u_x,value); } }
-	public PlayerCharacter set_u_pos(float x, float y) {
-		_root.set_u_pos(x,y);
-		return this;
-	}
-
-	public PlayerCharacter set_scale_x(float val) {
-		_img.set_img_scale_x(val);
-		return this;
-	}
-
-	public PlayerCharacter play_anim(string anim, bool repeat = true) {
-		_img.p_play_anim(anim, repeat);
-		return this;
-	}
+	public PlayerCharacter set_u_pos(float x, float y) { _root.set_u_pos(x,y); return this; }
+	public PlayerCharacter set_scale_x(float val) { _img.set_img_scale_x(val); return this; }
+	public PlayerCharacter play_anim(string anim, bool repeat = true) { _img.p_play_anim(anim, repeat); return this; }
+	public float rotation() { return _img._rendered_img.rotation(); }
+	public PlayerCharacter set_rotation(float deg) { _img._rendered_img.set_rotation(deg); return this; }
 	
 	public void i_update(GameEngineScene g) {
 	

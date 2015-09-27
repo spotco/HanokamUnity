@@ -5,10 +5,6 @@ public class GameMain : SPBaseBehavior {
 
 	/**
 	TODO--
-	build textures to resources
-	http://answers.unity3d.com/questions/984854/is-it-possible-to-excluding-streamingassets-depend.html
-
-	village mode
 	dive mode
 	bounding box debug render
 	air mode

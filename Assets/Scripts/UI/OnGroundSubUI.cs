@@ -114,7 +114,7 @@ public class OnGroundSubUI_JumpChargeUI : SPGameUpdateable {
 	public void i_update(GameEngineScene g) {
 		OnGroundGameState ground_state;
 		if (SPUtil.cond_cast<OnGroundGameState>(g.get_top_game_state(),out ground_state)) {
-			this.set_bar_pct(ground_state._params.get_jump_charge_pct());
+			this.set_bar_pct(ground_state._params._jump_charge_t);
 		}
 	}
 }

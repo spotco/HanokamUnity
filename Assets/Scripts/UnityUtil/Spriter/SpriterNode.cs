@@ -106,7 +106,8 @@ public class SpriterNode : SPNode, CameraRenderHookDelegate {
 
 		_rendered_img = SPSprite.cons_sprite_texkey_texrect(RTex.BLANK,new Rect(0,0,1,1));
 		_rendered_img.set_shader(RSha.ALPHA);
-		_rendered_img.set_anchor_point(0.5f,0.0f);
+		_rendered_img.set_u_pos(0,_rendertex.height/2);
+		_rendered_img.set_anchor_point(0.5f,0.5f);
 		_rendered_img.manual_set_texture(_rendertex);
 		_rendered_img.manual_set_mesh_size(256,256);
 		_rendered_img.set_name("rendered_img");

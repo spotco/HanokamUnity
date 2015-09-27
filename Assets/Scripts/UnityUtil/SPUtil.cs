@@ -106,7 +106,9 @@ public class SPUtil {
 		Texture tex = TextureResource.inst().get_tex(key);
 		return new Rect(0,0,tex.width,tex.height);
 	}
-	
+	public static float sec_to_tick(float sec) {
+		return (1 / 60.0f) / sec;
+	}
 	public static float drpt(float a, float b, float fric) {
 		float deltaf = (b - a);
 		deltaf *= Mathf.Pow(fric,1/SPUtil.dt_scale_get());
@@ -125,8 +127,11 @@ public class SPUtil {
 	public static Vector3 vec_sub(Vector3 a, Vector3 b) {
 		return a - b;
 	}
+	public static float dir_ang_deg(float x, float y) {
+		return SPUtil.rad_to_deg(Mathf.Atan2(y,x));
+	}
 
-	public static bool fuzzyeq(float a, float b, float delta) {
+	public static bool flt_cmp_delta(float a, float b, float delta) {
 		return Mathf.Abs(a-b) <= delta;
 	}
 
@@ -134,7 +139,7 @@ public class SPUtil {
 		return degrees * Mathf.PI / 180.0f;
 	}
 	
-	float rad_to_deg(float rad) {
+	public static float rad_to_deg(float rad) {
 		return rad * 180.0f / Mathf.PI;
 	}
 
@@ -282,6 +287,15 @@ public class SPUtil {
 			output = default(T);
 			return false;
 		}
+	}
+}
+
+public struct DrptVal {
+	public float _current, _target, _drptval;
+
+	public void i_update() {
+		if (_drptval <= 0) return;
+		_current = SPUtil.drpt(_current,_target,_drptval);
 	}
 }
 

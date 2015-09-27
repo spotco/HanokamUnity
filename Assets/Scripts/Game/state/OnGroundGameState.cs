@@ -1,19 +1,16 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-public struct OnGroundGameStateParams {
+public class OnGroundGameState : GameStateBase {
+
+	public struct OnGroundGameStateParams {
 	public float _jump_charge_t;
-	public float get_jump_charge_pct() {
-		return Mathf.Clamp( SPUtil.bezier_val_for_t(new Vector2(0,0),new Vector2(0.5f,1.25f),new Vector2(0.5f,1.25f),new Vector2(1,0),_jump_charge_t).y, 0,1);
-	}
 	public Vector2 _vel;
 	public static OnGroundGameStateParams cons() {
 		OnGroundGameStateParams rtv = new OnGroundGameStateParams();
 		return rtv;
 	}
 }
-
-public class OnGroundGameState : GameStateBase {
 
 	public enum State {
 		Gameplay,
@@ -38,6 +35,7 @@ public class OnGroundGameState : GameStateBase {
 	public override void i_update(GameEngineScene g) {
 		switch (_current_state) {
 		case State.Gameplay:{
+			g._player.set_manual_sort_z_order(GameAnchorZ.Player_Ground);
 			if (g._controls.is_move()) {
 				_params._vel.x = g._controls.get_move().x * 8.0f;
 				if (Mathf.Abs(_params._vel.x) > 7.5f) {
@@ -82,10 +80,11 @@ public class OnGroundGameState : GameStateBase {
 			g._camerac.set_target_zoom(500);
 			g._game_ui._cursor.set_enabled(false);
 			
-			_params._jump_charge_t = Mathf.Clamp(_params._jump_charge_t + SPUtil.dt_scale_get() * 0.015f,0,1);
+			_params._jump_charge_t = Mathf.Clamp(_params._jump_charge_t + SPUtil.dt_scale_get() * SPUtil.sec_to_tick(1.0f),0,1);
 			
 			if (_params._jump_charge_t >= 1) {
-				_current_state = State.Gameplay;
+				_current_state = State.JumpInAir;
+				_params._vel = new Vector2(0,15);
 				
 			} else if (!g._controls.get_control_down(ControlManager.Control.OnGround_Jump)) {
 				_current_state = State.Gameplay;
@@ -93,7 +92,31 @@ public class OnGroundGameState : GameStateBase {
 			
 		} break;
 		case State.JumpInAir:{
-			
+			g._player.set_manual_sort_z_order(GameAnchorZ.Player_InAir);
+			g._camerac.set_target_camera_focus_on_character(g,0,120);
+			g._camerac.set_target_zoom(1000);
+			if (g._controls.is_move()) {
+				_params._vel.x = g._controls.get_move().x * 3.0f;
+			} else {
+				_params._vel.x = SPUtil.drpt(_params._vel.x,0,1/10.0f);
+				g._player.play_anim(PlayerCharacterAnims.IDLE);
+			}
+			g._player.set_u_pos(
+				g._player._u_x + _params._vel.x * SPUtil.dt_scale_get(),
+				g._player._u_y + _params._vel.y * SPUtil.dt_scale_get()
+			);
+			_params._vel.y -= 0.4f * SPUtil.dt_scale_get();
+
+			float tar_rotation = SPUtil.dir_ang_deg(_params._vel.x,_params._vel.y) - 90;
+				g._player.set_rotation(g._player.rotation() + SPUtil.shortest_angle(g._player.rotation(),tar_rotation) * 0.25f);
+
+			g._player.play_anim("Dive");
+			if (g._player._u_y < -250) {
+				g.pop_top_game_state();
+				g.push_game_state(DiveGameState.cons(g, _params._vel));
+				g._camerac.camera_shake(new Vector2(-1.7f,2.1f),40,400, 1/60.0f);
+			}
+
 		} break;
 		}
 	}
@@ -103,6 +126,6 @@ public class OnGroundGameState : GameStateBase {
 	}
 	
 	public override void on_state_end(GameEngineScene g) {
-		
+		Debug.Log("state end");
 	}
 }

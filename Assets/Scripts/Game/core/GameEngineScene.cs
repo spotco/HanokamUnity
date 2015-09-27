@@ -49,7 +49,15 @@ public class GameEngineScene : SPScene {
 		return this;
 	}
 	
-	public GameStateBase get_top_game_state() { return _game_state_stack[_game_state_stack.Count-1]; }
+	public GameStateBase get_top_game_state() { 
+		return _game_state_stack[_game_state_stack.Count-1]; 
+	}
+	public void pop_top_game_state() {
+		_game_state_stack.RemoveAt(_game_state_stack.Count-1);
+	}
+	public void push_game_state(GameStateBase state) {
+		_game_state_stack.Add(state);
+	}
 	
 	public override void i_update(float dt_scale) {
 		SPUtil.dt_scale_set(dt_scale);
