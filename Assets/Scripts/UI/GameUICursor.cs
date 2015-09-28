@@ -22,6 +22,7 @@ public class GameUICursor : SPGameUpdateable {
 		);
 		_image.set_scale(0.25f);
 		_image.set_color(SPUtil.color_from_bytes(255,237,114,191));
+		_image.gameObject.layer = RLayer.get_layer(RLayer.UI);
 		_root.add_child(_image);
 		
 		return this;

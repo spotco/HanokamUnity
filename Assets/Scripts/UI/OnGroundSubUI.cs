@@ -71,6 +71,7 @@ public class OnGroundSubUI_JumpChargeUI : SPGameUpdateable {
 		_charge_bar_bg.set_u_pos(ui.get_ui_bounds()._x1,ui.get_ui_bounds()._y1 + 5);
 		_charge_bar_bg.set_scale_x((ui.get_ui_bounds()._x2 - ui.get_ui_bounds()._x1)/_charge_bar_bg.texrect().size.x);
 		_charge_bar_bg.set_scale_y(0.5f);
+		_charge_bar_bg.gameObject.layer = RLayer.get_layer(RLayer.UI);
 		_charge_bar_bg.set_color(SPUtil.color_from_bytes(45,28,34,255));
 		
 		_charge_bar_fill = SPSprite.cons_sprite_texkey_texrect(
@@ -81,6 +82,7 @@ public class OnGroundSubUI_JumpChargeUI : SPGameUpdateable {
 		_charge_bar_fill.set_anchor_point(_charge_bar_bg.anchorpoint().x,_charge_bar_bg.anchorpoint().y);
 		_charge_bar_fill.set_u_pos(_charge_bar_bg._u_x,_charge_bar_bg._u_y);
 		_charge_bar_fill.set_scale_x(_charge_bar_bg.scale_x());
+		_charge_bar_fill.gameObject.layer = RLayer.get_layer(RLayer.UI);
 		_charge_bar_fill.set_scale_y(_charge_bar_bg.scale_y());		
 		
 		this.set_bar_pct(0.0f);

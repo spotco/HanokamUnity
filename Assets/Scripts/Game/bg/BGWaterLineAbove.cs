@@ -68,6 +68,8 @@ public class BGWaterLineAbove : SPGameUpdateable {
 		return this;
 	}
 
+	private float _tmp;
+
 	public BGWaterLineAbove set_u_pos(float x, float y) {
 		_root.set_u_pos(x,y);
 		return this;

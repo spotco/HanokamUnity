@@ -159,7 +159,7 @@ public class SPSprite : SPNode {
 		return this;
 	}
 
-	private Vector3 w_pos_of_vertex(int i) {
+	public Vector3 w_pos_of_vertex(int i) {
 		MeshFilter mesh = this.GetComponent<MeshFilter>();
 		return this.transform.TransformPoint(mesh.sharedMesh.vertices[i]);
 	}

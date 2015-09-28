@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+using UnityStandardAssets.ImageEffects;
+
 public class GameCameraController : SPGameUpdateable {
 
 	public static GameCameraController cons(GameEngineScene g) {
@@ -13,8 +15,20 @@ public class GameCameraController : SPGameUpdateable {
 	private DrptVal _camera_zoom;
 	private DrptVal _camera_x;
 	private DrptVal _camera_y;
+
+	private CameraMotionBlur _motion_blur;
+	private BloomOptimized _bloom;
+	private VignetteAndChromaticAberration _vignette;
 	
 	public GameCameraController i_cons(GameEngineScene g) {
+		_motion_blur = GameMain._context._game_camera.GetComponent<CameraMotionBlur>();
+		_bloom = GameMain._context._game_camera.GetComponent<BloomOptimized>();
+		_vignette = GameMain._context._game_camera.GetComponent<VignetteAndChromaticAberration>();
+		_motion_blur.enabled = true;
+		_motion_blur.excludeLayers.value = 1 << RLayer.get_layer(RLayer.UI);
+		_bloom.enabled = true;
+		_vignette.enabled = true;
+
 		_camera_zoom = new DrptVal() {
 			_current = 1500,
 			_target = 1500,
@@ -94,7 +108,11 @@ public class GameCameraController : SPGameUpdateable {
 			_camera_shake_ct = Mathf.Max(0,_camera_shake_ct - SPUtil.dt_scale_get());
 			_camera_shake_theta = (_camera_shake_theta + SPUtil.dt_scale_get() * 0.1f) % (2 * Mathf.PI);
 			_camera_zoom.i_update();
+			this.apply_camera_values();
+			SPRange camera_horiz_range = this.get_camera_horiz_bounds();
 			_camera_x.i_update();
+			_camera_x._current = Mathf.Clamp(_camera_x._current,camera_horiz_range._min,camera_horiz_range._max);
+
 			_camera_y.i_update();
 			this.apply_camera_values();
 		}

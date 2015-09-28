@@ -11,6 +11,8 @@ public class RLayer {
 	public static string SPRITER_NODE = "SpriterNode";
 	public static string UNDERWATER_ELEMENTS = "UnderwaterElements";
 	public static string SURFACEREFLECTION_ONLY = "SurfaceReflectionOnly";
+	public static string UI = "UI";
+	public static string OUTPUT = "Output";
 
 	public static int get_layer(string key) {
 		return LayerMask.NameToLayer(key);

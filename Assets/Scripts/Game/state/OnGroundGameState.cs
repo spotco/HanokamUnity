@@ -83,8 +83,9 @@ public class OnGroundGameState : GameStateBase {
 			_params._jump_charge_t = Mathf.Clamp(_params._jump_charge_t + SPUtil.dt_scale_get() * SPUtil.sec_to_tick(1.0f),0,1);
 			
 			if (_params._jump_charge_t >= 1) {
-				_current_state = State.JumpInAir;
-				_params._vel = new Vector2(0,15);
+				_current_state = State.Gameplay;
+				//_current_state = State.JumpInAir;
+				//_params._vel = new Vector2(0,15);
 				
 			} else if (!g._controls.get_control_down(ControlManager.Control.OnGround_Jump)) {
 				_current_state = State.Gameplay;
