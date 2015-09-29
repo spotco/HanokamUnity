@@ -45,8 +45,6 @@
 		Pass
 		{
 		CGPROGRAM
-// Upgrade NOTE: excluded shader from DX11 and Xbox360; has structs without semantics (struct v2f members fade_alpha)
-#pragma exclude_renderers d3d11 xbox360
 			#pragma vertex vert
 			#pragma fragment frag
 			#include "UnityCG.cginc"
@@ -63,7 +61,7 @@
 				float4 vertex   : SV_POSITION;
 				fixed4 color    : COLOR;
 				float2 texcoord  : TEXCOORD0;
-				float fade_alpha;
+				float fade_alpha : TEXCOORD1;
 			};
 			
 			fixed4 _Color;

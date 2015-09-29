@@ -50,14 +50,14 @@ public class GameMain : SPBaseBehavior {
 			Screen.width,
 			Screen.height,
 			16,
-			RenderTextureFormat.RGB565);
+			RenderTextureFormat.Default);
 		_game_camera_out.Create();
 
 		_ui_camera_out = new RenderTexture(
 			Screen.width,
 			Screen.height,
 			16,
-			RenderTextureFormat.ARGB32);
+			RenderTextureFormat.Default);
 		_ui_camera_out.Create();
 
 		_ui_camera.targetTexture = _ui_camera_out;
@@ -65,6 +65,7 @@ public class GameMain : SPBaseBehavior {
 
 		SPSprite game_camera_out = SPSprite.cons_sprite_texkey_texrect(RTex.BLANK,new Rect(0,0,1,1));
 		game_camera_out.set_u_pos(0,0);
+        game_camera_out.set_shader(RSha.NOALPHA);
 		game_camera_out.manual_set_texture(_game_camera_out);
 		game_camera_out.manual_set_mesh_size(
 			Screen.width * game_cam_rect.width,
