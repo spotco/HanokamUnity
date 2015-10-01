@@ -17,7 +17,7 @@ public class FileCache {
 				).bytes
 			);
 		} catch (System.Exception e) {
-			Debug.LogError("filecache not loaded from resources:"+e.Message);
+			Debug.LogWarning("filecache not loaded from resources:"+e.Message);
 			rtv = (new FileCache());
 		}
 		return rtv.i_cons();
@@ -34,12 +34,24 @@ public class FileCache {
 		if (_texkey_to_rectkey_to_rect[texkey].ContainsKey(rectname)) {
 			return _texkey_to_rectkey_to_rect[texkey][rectname];
 		} else {
+			SPUtil.logf("get_texrect(%s,%s) not found",texkey,rectname);
 			return new Rect();
 		}
 	}
 
+	public List<Rect> get_rects_list(string texkey, string rect_format_str, int min, int max, bool append_empty = false) {
+		List<Rect> rtv = new List<Rect>();
+		for (int i = min; i < max; i++) {
+			rtv.Add(this.get_texrect(texkey,SPUtil.sprintf(rect_format_str,i)));
+		}
+		if (append_empty) {
+			rtv.Add(new Rect());
+		}
+		return rtv;
+	}
+
 	private void add_plist_file_to_cache(string texkey) {
-		Debug.LogError("lookup from streaming");
+		Debug.LogWarning("plist from streaming:"+texkey);
 		_texkey_to_rectkey_to_rect[texkey] = new Dictionary<string,Rect>();
 
 		Dictionary<string,object> frames = (Dictionary<string,object>)((Dictionary<string,object>) PlistCS.Plist.readPlistSource(this.load_plist_from_path(texkey)))["frames"];
@@ -61,7 +73,7 @@ public class FileCache {
 
 	private string load_plist_from_path(string key) {
 		string path = System.IO.Path.Combine(Application.streamingAssetsPath, key+".plist");
-		return System.Text.Encoding.Default.GetString(SPUtil.streaming_asset_load(path));
+		return System.Text.Encoding.UTF8.GetString(SPUtil.streaming_asset_load(path));
 	}
 
 

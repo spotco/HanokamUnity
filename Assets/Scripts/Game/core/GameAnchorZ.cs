@@ -5,6 +5,7 @@ public class GameAnchorZ {
 
 	public const int HUD_BASE = 5000;
 
+	public const int BGWater_FX = 510;
 	public const int BGWater_WaterLineBelow_Line_LightRays = 506;
 	public const int BGWater_WaterLineBelow_Line = 505;
 	public const int BGWater_WaterLineBelow_Grad = 504;

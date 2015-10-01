@@ -33,6 +33,34 @@ public class OnGroundGameState : GameStateBase {
 	}
 	
 	public override void i_update(GameEngineScene g) {
+
+		if (SPUtil.int_random(0,10) < 1) {
+			g.add_particle(SPConfigAnimParticle.cons()
+				.add_to_parent(g.get_particle_root())
+				.set_name("uw_splash")
+				.set_texture(TextureResource.inst().get_tex(RTex.FX_SPLASH))
+				.set_texrect(FileCache.inst().get_texrect(RTex.FX_SPLASH,"uw_splash_0.png"))
+				.set_ctmax(50)
+				.set_pos(SPUtil.float_random(-100,100),SPUtil.float_random(-100,100))
+				.set_anim_lambda((SPSprite _img, float anim_t) => {
+					_img.set_opacity(SPUtil.bezier_val_for_t(new Vector2(0,0),new Vector2(0,1),new Vector2(0.3f,1.25f),new Vector2(1,0),anim_t).y);
+					_img.set_scale_x(SPUtil.bezier_val_for_t(new Vector2(0,0.75f),new Vector2(0,1.5f),new Vector2(0.6f,2.5f),new Vector2(1,0.65f),anim_t).y * 1.75f);
+					_img.set_scale_y(SPUtil.bezier_val_for_t(new Vector2(0,0.75f),new Vector2(0,1.2f),new Vector2(0.75f,1.25f),new Vector2(1,0.75f),anim_t).y * 1.75f);
+				})
+				.set_anchor_point(0.5f,0.85f)
+				.set_manual_sort_z_order(GameAnchorZ.BGWater_FX)
+				.set_normalized_timed_sprite_animator(SPTimedSpriteAnimator.cons(null)
+					.add_frame_at_time(FileCache.inst().get_texrect(RTex.FX_SPLASH,"uw_splash_0.png"),0.0f)
+					.add_frame_at_time(FileCache.inst().get_texrect(RTex.FX_SPLASH,"uw_splash_1.png"),0.15f)
+					.add_frame_at_time(FileCache.inst().get_texrect(RTex.FX_SPLASH,"uw_splash_2.png"),0.24f)
+					.add_frame_at_time(FileCache.inst().get_texrect(RTex.FX_SPLASH,"uw_splash_3.png"),0.36f)
+					.add_frame_at_time(FileCache.inst().get_texrect(RTex.FX_SPLASH,"uw_splash_4.png"),0.48f)
+					.add_frame_at_time(FileCache.inst().get_texrect(RTex.FX_SPLASH,"uw_splash_5.png"),0.60f)
+					.add_frame_at_time(FileCache.inst().get_texrect(RTex.FX_SPLASH,"uw_splash_6.png"),0.72f)
+					.add_frame_at_time(FileCache.inst().get_texrect(RTex.FX_SPLASH,"uw_splash_7.png"),0.84f)
+				));
+		}
+
 		switch (_current_state) {
 		case State.Gameplay:{
 			g._player.set_manual_sort_z_order(GameAnchorZ.Player_Ground);
@@ -83,9 +111,8 @@ public class OnGroundGameState : GameStateBase {
 			_params._jump_charge_t = Mathf.Clamp(_params._jump_charge_t + SPUtil.dt_scale_get() * SPUtil.sec_to_tick(1.0f),0,1);
 			
 			if (_params._jump_charge_t >= 1) {
-				_current_state = State.Gameplay;
-				//_current_state = State.JumpInAir;
-				//_params._vel = new Vector2(0,15);
+				_current_state = State.JumpInAir;
+				_params._vel = new Vector2(0,15);
 				
 			} else if (!g._controls.get_control_down(ControlManager.Control.OnGround_Jump)) {
 				_current_state = State.Gameplay;
@@ -115,7 +142,7 @@ public class OnGroundGameState : GameStateBase {
 			if (g._player._u_y < -250) {
 				g.pop_top_game_state();
 				g.push_game_state(DiveGameState.cons(g, _params._vel));
-				g._camerac.camera_shake(new Vector2(-1.7f,2.1f),40,400, 1/60.0f);
+				g._camerac.camera_shake(new Vector2(-1.7f,2.1f),150,500, 1/60.0f);
 			}
 
 		} break;

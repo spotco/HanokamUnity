@@ -39,7 +39,7 @@ public class SpriterJSONParser {
 	public static string cachekey(string texkey, string filepath) { return texkey + filepath; }
 
 	private SpriterJSONParser parse_file(string filepath) {
-		Debug.LogError("SpriterJSONParser from streaming");
+		Debug.LogWarning("SpriterJSONParser from streaming:"+filepath);
 		_frames = new Dictionary<string, SpriterJSONFrame>();
 
 		string jsonData = System.Text.Encoding.Default.GetString(

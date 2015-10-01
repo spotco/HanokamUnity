@@ -4,7 +4,7 @@ using System.Collections.Generic;
 public class SPNode : SPBaseBehavior {
 
 	protected static T generic_cons<T>() where T : SPNode {
-		T rtv = GameMain._context._objpool.depool<T>();
+		T rtv = GameMain._context._objpool.spbasebehavior_depool<T>();
 		rtv.transform.parent = GameMain._context.gameObject.transform;
 		rtv.__ACTIVE = true;
 		rtv.set_name(typeof(T).ToString());
@@ -21,7 +21,7 @@ public class SPNode : SPBaseBehavior {
 		obj._parent = null;
 		obj.remove_all_children(true);
 		obj.__ACTIVE = false;
-		GameMain._context._objpool.repool<T>(obj);
+		GameMain._context._objpool.spbasebehavior_repool<T>(obj);
 		return null;
 	}
 

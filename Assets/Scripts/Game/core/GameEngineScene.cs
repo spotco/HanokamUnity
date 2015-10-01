@@ -18,11 +18,17 @@ public class GameEngineScene : SPScene {
 	public BGVillage _bg_village;
 	public BGSky _bg_sky;
 	public BGWater _bg_water;
-	private List<SPGameUpdateable> _bg_elements;
 	public GameCameraController _camerac;
 	public ControlManager _controls;
 	public PlayerCharacter _player;
-	
+
+	private List<SPGameUpdateable> _bg_elements;
+	private SPParticleSystem _particles;
+	private SPNode _particle_root;
+	public SPNode get_particle_root() { return _particle_root; }
+	public void add_particle(SPParticle particle) {
+		_particles.add_particle(particle);
+	}
 	
 	private List<GameStateBase> _game_state_stack;
 
@@ -46,6 +52,10 @@ public class GameEngineScene : SPScene {
 		_player = PlayerCharacter.cons(this);
 		_player.set_u_pos(0,0);
 
+		_particle_root = SPNode.cons_node();
+		_particle_root.set_name("_particle_root");
+		_particles = SPParticleSystem.cons();
+
 		return this;
 	}
 	
@@ -62,9 +72,9 @@ public class GameEngineScene : SPScene {
 	public override void i_update(float dt_scale) {
 		SPUtil.dt_scale_set(dt_scale);
 		__cached_viewbox_dirty = true;
-		
 		_controls.i_update(this);
 		_camerac.i_update(this);
+		_particles.i_update(this);
 		for (int i = 0; i < _bg_elements.Count; i++) {
 			SPGameUpdateable itr = _bg_elements[i];
 			itr.i_update(this);

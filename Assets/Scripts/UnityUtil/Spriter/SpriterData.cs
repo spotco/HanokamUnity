@@ -28,7 +28,7 @@ public class SpriterData  {
 	}
 
 	public SpriterData i_cons_data_from_spritesheetreaders(List<SpriterJSONParser> sheetreaders, string scmlpath) {
-		Debug.LogError("spriter data from streaming:"+scmlpath);
+		Debug.LogWarning("spriter data from streaming:"+scmlpath);
 		_scmlpath = scmlpath;
 		TGSpriterConfigNode root = SpriterXMLParser.parse_scml(scmlpath);
 

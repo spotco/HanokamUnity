@@ -77,7 +77,6 @@ public class SPSprite : SPNode {
 			this.gameObject.GetComponent<MeshRenderer>().material = GameMain._context._tex_resc.get_material_default(_texkey);
 		}
 
-
 		MeshRenderer renderer = this.GetComponent<MeshRenderer>();
 		if (_material_block == null) {
 			_material_block = new MaterialPropertyBlock();
@@ -101,7 +100,15 @@ public class SPSprite : SPNode {
 		_texrect = texrect;
 
 		Mesh sprite_mesh = this.gameObject.GetComponent<MeshFilter>().mesh;
-		Texture sprite_tex = GameMain._context._tex_resc.get_tex(_texkey);
+		Texture sprite_tex;
+		if (_texkey != null) {
+			sprite_tex = GameMain._context._tex_resc.get_tex(_texkey);
+		} else if (_manually_set_texture != null) {
+			sprite_tex = _manually_set_texture;
+		} else {
+			Debug.LogError("set_tex_rect texture is null");
+			return this;
+		}
 		
 		float tex_wid = sprite_tex.width;
 		float tex_hei = sprite_tex.height;
@@ -192,8 +199,10 @@ public class SPSprite : SPNode {
 		base.set_sort_z(zt);
 	}
 
+	private Texture _manually_set_texture;
 	public void manual_set_texture(Texture tex) {
 		_texkey = null;
+		_manually_set_texture = tex;
 		this.GetComponent<MeshRenderer>().material.SetTexture("_MainTex",tex);
 	}
 	public void manual_set_mesh_size(float tex_wid, float tex_hei) {

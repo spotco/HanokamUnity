@@ -27,6 +27,8 @@ public class RTex {
 	public static string SPRITER_HANOKA_BOW = "character/hanoka/hanoka_bow";
 	public static string SPRITER_HANOKA_REDGARB = "character/hanoka/hanoka_armors/hanoka_player_redgarb";
 
+	public static string FX_SPLASH = "effects/ss_splash_fx";
+
 	public static string BLANK = "misc/blank";
 
 	public static string SPRITER_TEST_CHAR = "test/spriter_test";
@@ -62,7 +64,7 @@ public class TextureResource {
 	}
 
 	private Texture load_texture_from_streamingassets(string path) {
-		Debug.LogError("loading from streaming");
+		Debug.LogWarning("texture from streaming:"+path);
 		path = System.IO.Path.Combine(Application.streamingAssetsPath, path+".png");
 		Texture2D rtv = new Texture2D(0,0);
 		rtv.LoadImage(SPUtil.streaming_asset_load(path));

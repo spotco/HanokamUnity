@@ -30,10 +30,12 @@ public class DiveGameState : GameStateBase {
 		g._camerac.set_target_camera_focus_on_character(g,0,120);
 		g._camerac.set_target_zoom(1000);
 
+		/*
 		g._player.set_u_pos(
 			g._player._u_x + _params._vel.x * SPUtil.dt_scale_get(),
 			g._player._u_y + _params._vel.y * SPUtil.dt_scale_get()
 		);
+		*/
 	}
 
 	public override GameStateIdentifier get_state() { 
