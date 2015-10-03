@@ -146,6 +146,7 @@ public class BGWater : SPGameUpdateable, CameraRenderHookDelegate {
 					int.MaxValue
 						& ~(1 << RLayer.get_layer(RLayer.REFLECTIONS))
 						& ~(1 << RLayer.get_layer(RLayer.UNDERWATER_ELEMENTS))
+						& ~(1 << RLayer.get_layer(RLayer.SPRITER_NODE))
 			);
 
 		_waterlinebelow = BGWaterLineBelow.cons(_root);
