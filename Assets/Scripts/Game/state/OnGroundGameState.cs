@@ -34,6 +34,7 @@ public class OnGroundGameState : GameStateBase {
 	
 	public override void i_update(GameEngineScene g) {
 
+		/*
 		if (SPUtil.int_random(0,10) < 1) {
 			g.add_particle(SPConfigAnimParticle.cons()
 				.add_to_parent(g.get_particle_root())
@@ -60,6 +61,7 @@ public class OnGroundGameState : GameStateBase {
 					.add_frame_at_time(FileCache.inst().get_texrect(RTex.FX_SPLASH,"uw_splash_7.png"),0.84f)
 				));
 		}
+		*/
 
 		switch (_current_state) {
 		case State.Gameplay:{

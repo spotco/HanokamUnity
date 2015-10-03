@@ -8,6 +8,8 @@ public class BGVillage : SPGameUpdateable {
 	private List<BGReflection> _reflections;
 	private BGWaterLineAbove _waterlineabove;
 
+	private List<BaseVillager> _villagers = new List<BaseVillager>();
+
 	public static BGVillage cons(GameEngineScene g) {
 		return (new BGVillage()).i_cons(g);
 	}
@@ -180,9 +182,29 @@ public class BGVillage : SPGameUpdateable {
 			test.set_u_z(0);
 			_root.add_child(test);
 		}
+		{
+			SpriterData data = SpriterData.cons_data_from_spritesheetreaders(new List<SpriterJSONParser> { 
+				SpriterJSONParser.cons_from_texture_and_file(RTex.SPRITER_BOY,RTex.SPRITER_BOY),
+			}, RTex.SPRITER_BOY);
+
+			SpriterNode test = SpriterNode.cons_spriternode_from_data(data);
+			test.p_play_anim("Idle",true);
+			test.set_manual_sort_z_order(GameAnchorZ.Player_Ground);
+			test.set_name("Boy_TEST");
+			test.set_u_pos(-100,10);
+			test.set_u_z(0);
+
+			_villagers.Add(TestBoyVillager.cons(test));
+
+			_root.add_child(test);
+		}
 	}
 
 	public void i_update(GameEngineScene g) {
+		for (int i = 0; i < _villagers.Count; i++) {
+			_villagers[i].i_update(g);
+		}
+
 		for (int i = 0; i < _reflections.Count; i++) {
 			_reflections[i].set_enabled(!g.is_camera_underwater());
 		}
