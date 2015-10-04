@@ -29,6 +29,9 @@ public class OnGroundGameState : GameStateBase {
 		_params = OnGroundGameStateParams.cons();
 		_current_state = State.Gameplay;
 		g._camerac.set_zoom_speed(1/20.0f);
+		g._camerac.set_camera_follow_speed(1/30.0f);
+		
+		g._game_ui._cursor.set_enabled(false);
 		return this;
 	}
 	
@@ -61,13 +64,16 @@ public class OnGroundGameState : GameStateBase {
 				g._player._u_x = SPUtil.get_horiz_world_bounds()._max;
 			}
 			
+			/*
 			Vector3 player_to_cursor_delta = SPUtil.vec_sub(g._game_ui._cursor.get_game_pos(),new Vector2(g._player._u_x,g._player._u_y));
 			player_to_cursor_delta.x = SPUtil.eclamp(player_to_cursor_delta.x,-400,400,new Vector2(0.25f,0),new Vector2(0.75f,1)) * 0.2f;
 			player_to_cursor_delta.y = SPUtil.eclamp(player_to_cursor_delta.y,-100,900,new Vector2(0.25f,0),new Vector2(0.75f,1)) * 0.2f;
+			*/
 			
 			g._camerac.set_target_zoom(1300);
-			g._camerac.set_target_camera_focus_on_character(g,player_to_cursor_delta.x,player_to_cursor_delta.y);
-			g._game_ui._cursor.set_enabled(true);
+			//g._camerac.set_target_camera_focus_on_character(g,player_to_cursor_delta.x,player_to_cursor_delta.y);
+			//g._game_ui._cursor.set_enabled(true);
+			g._camerac.set_target_camera_focus_on_character(g,0,200);
 			
 			if (g._controls.get_control_just_pressed(ControlManager.Control.OnGround_Jump)) {
 				_current_state = State.JumpCharge;
@@ -95,7 +101,7 @@ public class OnGroundGameState : GameStateBase {
 		} break;
 		case State.JumpInAir:{
 			g._player.set_manual_sort_z_order(GameAnchorZ.Player_InAir);
-			g._camerac.set_target_camera_focus_on_character(g,0,120);
+			g._camerac.set_target_camera_focus_on_character(g,0,-60);
 			g._camerac.set_target_zoom(1000);
 			if (g._controls.is_move_x()) {
 				_params._vel.x = g._controls.get_move().x * 3.0f;

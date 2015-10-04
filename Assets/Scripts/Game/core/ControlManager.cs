@@ -10,24 +10,28 @@ public class ControlManager : SPGameUpdateable {
 		MoveUp,
 		MoveDown,
 		OnGround_Jump,
+		Dash,
 		None
 	}
 	private static bool control_is_pressed(Control test) {
 		switch (test) {
 		case Control.MoveLeft: {
-			return Input.GetKey(KeyCode.A);
+			return Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.Keypad4);
 		} break;
 		case Control.MoveRight: {
-			return Input.GetKey(KeyCode.D);
+			return Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.Keypad6);
 		} break;
 		case Control.MoveUp: {
-			return Input.GetKey(KeyCode.W);
+			return Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.Keypad8);
 		} break;
 		case Control.MoveDown: {
-			return Input.GetKey(KeyCode.S);
+			return Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow) || Input.GetKey(KeyCode.Keypad5);
 		} break;
 		case Control.OnGround_Jump: {
-			return Input.GetKey(KeyCode.Space);
+			return Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow) || Input.GetKey(KeyCode.Keypad5);
+		} break;
+		case Control.Dash: {
+			return Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.Z);
 		} break;
 		}
 		return false;

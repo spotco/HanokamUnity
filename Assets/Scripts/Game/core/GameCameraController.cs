@@ -41,12 +41,12 @@ public class GameCameraController : SPGameUpdateable {
 		_camera_x = new DrptVal() {
 			_current = 0,
 			_target = 0,
-			_drptval = 1/20.0f
+			_drptval = 1/30.0f
 		};
 		_camera_y = new DrptVal() {
 			_current = 250,
 			_target = 250,
-			_drptval = 1/20.0f
+			_drptval = 1/30.0f
 		};
 
 		this.apply_camera_values();
@@ -199,6 +199,10 @@ public class GameCameraController : SPGameUpdateable {
 	}
 	public void set_zoom_speed(float val) {
 		_camera_zoom._drptval = val;
+	}
+	public void set_camera_follow_speed(float val) {
+		_camera_x._drptval = val;
+		_camera_y._drptval = val;
 	}
 	
 	public float get_zoom() {

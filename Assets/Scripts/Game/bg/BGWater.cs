@@ -218,8 +218,8 @@ public class BGWater : SPGameUpdateable, CameraRenderHookDelegate {
 		if (g.is_camera_underwater()) {
 			_water_bg.set_enabled(true);
 			SPHitRect water_bg_viewbox = g.get_viewbox_dist(_water_bg.transform.position.z);
-			_water_bg.set_tex_rect(new Rect(0,0,water_bg_viewbox._x2-water_bg_viewbox._x1,water_bg_viewbox._y2-water_bg_viewbox._y1));
-			_water_bg.set_u_pos(water_bg_viewbox._x1,water_bg_viewbox._y1);
+			_water_bg.set_tex_rect(new Rect(0,0,water_bg_viewbox._x2-water_bg_viewbox._x1,water_bg_viewbox._y2-water_bg_viewbox._y1+2000));
+			_water_bg.set_u_pos(water_bg_viewbox._x1,water_bg_viewbox._y1-1000);
 
 			_surface_gradient.set_enabled(true);
 			_surface_reflection.set_enabled(true);

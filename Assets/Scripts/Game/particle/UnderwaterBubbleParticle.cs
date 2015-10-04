@@ -35,8 +35,8 @@ public class UnderwaterBubbleParticle : SPGameEngineParticle, GenericPooledObjec
 	public override void i_update(GameEngineScene g) {
 		_anim_t += SPUtil.dt_scale_get() * 0.05f;
 		_wave_t += SPUtil.dt_scale_get() * 0.05f;
-		float wave_offset = SPUtil.lerp(0,20,_anim_t) * Mathf.Sin(_wave_t);
-		_img.set_u_pos(Vector2.Lerp(_start,_end, _anim_t));
+		float wave_offset = SPUtil.lerp(0,60,_anim_t) * Mathf.Sin(_wave_t);
+		_img.set_u_pos(SPUtil.vec_add(Vector2.Lerp(_start,_end, _anim_t),new Vector2(wave_offset,0)));
 		_img.set_opacity(SPUtil.lerp(_opacity._min,_opacity._max,_anim_t));
 		_img.set_scale(SPUtil.lerp(_scale._min,_scale._max,_anim_t));
 	}
@@ -52,7 +52,7 @@ public class UnderwaterBubbleParticle : SPGameEngineParticle, GenericPooledObjec
 	
 	public static void proc_multiple_bubbles(GameEngineScene g) {
 		UnderwaterBubbleParticle.proc_bubble(g);
-		for (int i = 0; i < 8; i++) {
+		for (int i = 0; i < 12; i++) {
 			g._delayed_actions.enqueue_action(new DelayedAction() {
 				_time_left = SPUtil.float_random(0,12),
 				_callback = __delayed_proc_bubble

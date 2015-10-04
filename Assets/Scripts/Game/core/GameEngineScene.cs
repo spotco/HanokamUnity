@@ -81,12 +81,13 @@ public class GameEngineScene : SPScene {
 		_camerac.i_update(this);
 		_delayed_actions.i_update(this);
 		_particles.i_update(this);
+		this.get_top_game_state().i_update(this);
+		_game_ui.i_update(this);
 		for (int i = 0; i < _bg_elements.Count; i++) {
 			SPGameUpdateable itr = _bg_elements[i];
 			itr.i_update(this);
 		}
-		this.get_top_game_state().i_update(this);
-		_game_ui.i_update(this);
+		
 	}
 
 	private SPHitRect __cached_viewbox;

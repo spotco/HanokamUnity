@@ -91,8 +91,8 @@ public class BGSky : SPGameUpdateable {
 		if (!g.is_camera_underwater()) {
 			_sky_bg.set_enabled(true);
 			SPHitRect sky_bg_viewbox = g.get_viewbox_dist(_sky_bg.transform.position.z);
-			_sky_bg.set_tex_rect(new Rect(0,0,sky_bg_viewbox._x2-sky_bg_viewbox._x1,sky_bg_viewbox._y2-sky_bg_viewbox._y1));
-			_sky_bg.set_u_pos(sky_bg_viewbox._x1,sky_bg_viewbox._y1);
+			_sky_bg.set_tex_rect(new Rect(0,0,sky_bg_viewbox._x2-sky_bg_viewbox._x1,sky_bg_viewbox._y2-sky_bg_viewbox._y1+2000));
+			_sky_bg.set_u_pos(sky_bg_viewbox._x1,sky_bg_viewbox._y1-1000);
 
 		} else {
 			_sky_bg.set_enabled(false);

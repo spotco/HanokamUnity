@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-public struct DelayedAction {
+public class DelayedAction {
 	public float _time_left;
 	public System.Action<GameEngineScene> _callback;
 	public void run_and_cleanup(GameEngineScene g) {
@@ -21,7 +21,7 @@ public class DelayActionQueue : SPGameUpdateable {
 			itr._time_left -= SPUtil.dt_scale_get();
 			if (itr._time_left <= 0) {
 				itr.run_and_cleanup(g);
-				_queue.RemoveAt(i);
+				_queue.RemoveRange(i,1);
 			}
 		}
 	}

@@ -6,6 +6,9 @@ public class DiveGameState : GameStateBase {
 	public struct DiveGameStateParams {
 		public Vector2 _vel;
 		public DiveGameState.State _state;
+		
+		public bool _dashing;
+		public float _dash_ct;
 	}
 
 	public enum State {
@@ -23,6 +26,7 @@ public class DiveGameState : GameStateBase {
 	public DiveGameState i_cons(GameEngineScene g) {
 		_params._vel = new Vector2(0,-22);
 		_params._state = State.TransitionIn;
+		_params._dashing = false;
 
 		g._player.play_anim(PlayerCharacterAnims.SWIM);
 
@@ -59,10 +63,11 @@ public class DiveGameState : GameStateBase {
 
 	float MAX_MOVE_SPEED = 10;
 	float TURN_SPEED = 3;
+	private float _camera_offset_y;
 	public override void i_update(GameEngineScene g) {
 		switch (_params._state) {
 		case (State.TransitionIn): {
-			g._camerac.set_target_camera_focus_on_character(g,0,0);
+			g._camerac.set_target_camera_focus_on_character(g,0,-200);
 			g._camerac.set_target_zoom(1000);
 			if (g._controls.is_move_x()) {
 				Vector2 move = g._controls.get_move();
@@ -78,35 +83,81 @@ public class DiveGameState : GameStateBase {
 			if (g._player._u_y < -1000) {
 				_params._state = State.Gameplay;
 				g._camerac.set_zoom_speed(1/100.0f);
+				g._camerac.set_camera_follow_speed(1/40.0f);
 				g._camerac.set_target_zoom(1500);
-				g._game_ui._cursor.set_enabled(true);
 			}
 
 		} break;
 		case (State.Gameplay): {
-			g._camerac.set_target_camera_focus_on_character(g,0,150);
+		
+			float MIN_Y_OFFSET = -350;
+			float MAX_Y_OFFSET = 200;
+			_camera_offset_y = SPUtil.eclamp(
+				SPUtil.y_for_point_of_2pt_line(
+				new Vector2(-MAX_MOVE_SPEED,MIN_Y_OFFSET),
+				new Vector2(MAX_MOVE_SPEED,MAX_Y_OFFSET),
+				_params._vel.y
+				), 
+				MIN_Y_OFFSET, MAX_Y_OFFSET, 
+				new Vector2(0.5f,0), new Vector2(0.5f,1));
+			g._camerac.set_target_camera_focus_on_character(g,0,_camera_offset_y);
 			
-			Vector2 move = g._controls.get_move();
-			if (g._controls.is_move_x()) {
-				_params._vel.x = Mathf.Clamp(_params._vel.x + move.x * TURN_SPEED, -MAX_MOVE_SPEED, MAX_MOVE_SPEED);
-			} else {
-				_params._vel.x = SPUtil.drpt(_params._vel.x,0,1/60.0f);
+			float DASH_SPEED = 23;
+			
+			if (_params._dashing) {
+				_camera_offset_y = SPUtil.y_for_point_of_2pt_line(new Vector2(-10,-450),new Vector2(10,100),_params._vel.y);
+				g._player.play_anim(PlayerCharacterAnims.SPIN);
+				_params._dash_ct -= SPUtil.dt_scale_get();
+				if (_params._dash_ct <= 0) {
+					_params._dashing = false;
+				}
+				
+				Vector2 move_dir = g._controls.get_move();
+				Vector2 vel = (_params._vel).normalized;
+				_params._vel = SPUtil.vec_scale(
+					SPUtil.vec_add(SPUtil.vec_scale(move_dir,1.5f),vel).normalized
+				,DASH_SPEED);
+				
+			} else {				
+				Vector2 move = g._controls.get_move();
+				if (g._controls.is_move_x()) {
+					float cur_vel_x = _params._vel.x;
+					float tar_vel_x = Mathf.Clamp(_params._vel.x + move.x * TURN_SPEED, -MAX_MOVE_SPEED, MAX_MOVE_SPEED);
+					float drpt_spd = Mathf.Abs(cur_vel_x) < MAX_MOVE_SPEED ? 1.0f : 1/20.0f;
+					_params._vel.x = SPUtil.drpt(cur_vel_x,tar_vel_x,drpt_spd);
+				} else {
+					_params._vel.x = SPUtil.drpt(_params._vel.x,0,1/60.0f);
+				}
+				if (g._controls.is_move_y()) {
+					float cur_vel_y = _params._vel.y;
+					float tar_vel_y = Mathf.Clamp(_params._vel.y + move.y * TURN_SPEED, -MAX_MOVE_SPEED, MAX_MOVE_SPEED);
+					float drpt_spd = Mathf.Abs(cur_vel_y) < MAX_MOVE_SPEED ? 1.0f : 1/20.0f;
+					_params._vel.y = SPUtil.drpt(cur_vel_y,tar_vel_y,drpt_spd);
+				} else {
+					_params._vel.y = SPUtil.drpt(_params._vel.y,0,1/60.0f);
+				}
+				
+				if (g._controls.get_control_just_released(ControlManager.Control.Dash)) {
+					Vector2 dir = SPUtil.ang_deg_dir(g._player.rotation() + 90);
+					dir = SPUtil.vec_scale(dir,DASH_SPEED);
+					_params._vel = dir;
+					_params._dashing = true;
+					_params._dash_ct += 20;
+					UnderwaterBubbleParticle.proc_multiple_bubbles(g);
+				}
+				if (_params._vel.magnitude > 2) {
+					g._player.play_anim(PlayerCharacterAnims.SWIM);
+				} else {
+					g._player.play_anim(PlayerCharacterAnims.SWIM_SLOW);
+				}
 			}
-			if (g._controls.is_move_y()) {
-				_params._vel.y = Mathf.Clamp(_params._vel.y + move.y * TURN_SPEED, -MAX_MOVE_SPEED, MAX_MOVE_SPEED);
-			} else {
-				_params._vel.y = SPUtil.drpt(_params._vel.y,0,1/60.0f);
-			}
+			
 			PlayerCharacterUtil.move_in_bounds(
 				g._player,
 				g._player._u_x + _params._vel.x * SPUtil.dt_scale_get(),
 				g._player._u_y + _params._vel.y * SPUtil.dt_scale_get()
 			);
-			if (_params._vel.magnitude > 2) {
-				g._player.play_anim(PlayerCharacterAnims.SWIM);
-			} else {
-				g._player.play_anim(PlayerCharacterAnims.SWIM_SLOW);
-			}
+			
 			PlayerCharacterUtil.rotate_to_rotation_for_vel(g._player,_params._vel.x,_params._vel.y,1/10.0f);
 			
 			_bubble_every.i_update(g);

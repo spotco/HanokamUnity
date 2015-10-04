@@ -136,6 +136,10 @@ public class SPUtil {
 	public static float dir_ang_deg(float x, float y) {
 		return SPUtil.rad_to_deg(Mathf.Atan2(y,x));
 	}
+	public static Vector2 ang_deg_dir(float deg) {
+		float rad = SPUtil.deg_to_rad(deg);
+		return new Vector2(Mathf.Cos(rad),Mathf.Sin(rad));
+	}
 
 	public static bool flt_cmp_delta(float a, float b, float delta) {
 		return Mathf.Abs(a-b) <= delta;

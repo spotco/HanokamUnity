@@ -102,6 +102,7 @@ public class SpriterNode : SPNode, CameraRenderHookDelegate {
 
 		_rendertex = new RenderTexture(256,256,16,RenderTextureFormat.ARGBFloat);
 		_rendertex.Create();
+		_rendertex.filterMode = FilterMode.Point;
 		_rendercam.targetTexture = _rendertex;
 
 		_rendered_img = SPSprite.cons_sprite_texkey_texrect(RTex.BLANK,new Rect(0,0,1,1));
