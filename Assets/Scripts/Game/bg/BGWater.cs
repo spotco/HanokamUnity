@@ -115,7 +115,7 @@ public class BGWater : SPGameUpdateable, CameraRenderHookDelegate {
 		_top_fade.set_name("_top_fade");
 		_top_fade.set_manual_sort_z_order(GameAnchorZ.BGWater_TOP_FADE);
 		_top_fade.set_u_z(25);
-		_top_fade.set_scale_x(1);
+		_top_fade.set_scale_x(1.1f);
 		_top_fade.set_scale_y(-2.5f);
 		_top_fade.set_u_pos(0,-1350);
 		_top_fade.gameObject.layer = RLayer.get_layer(RLayer.UNDERWATER_ELEMENTS);
@@ -127,7 +127,7 @@ public class BGWater : SPGameUpdateable, CameraRenderHookDelegate {
 		_surface_gradient.set_manual_sort_z_order(GameAnchorZ.BGWater_SurfaceGradient);
 		_surface_gradient.set_name("_surface_gradient");
 		_surface_gradient.set_anchor_point(0.5f,0);
-		_surface_gradient.set_scale_y(4);
+		_surface_gradient.set_scale_y(4f);
 		_surface_gradient.set_u_pos(0,-116);
 		_surface_gradient.gameObject.layer = RLayer.get_layer(RLayer.UNDERWATER_ELEMENTS);
 		

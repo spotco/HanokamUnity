@@ -17,6 +17,7 @@ public class GameUI : SPGameUpdateable {
 	
 	public SPNode _root;
 	public GameUICursor _cursor;
+	public SPSprite _blur_cover;
 	private List<GameUISubUI> _sub_uis;
 	
 	public GameUI i_cons(GameEngineScene g) {
@@ -33,7 +34,25 @@ public class GameUI : SPGameUpdateable {
 			OnGroundSubUI.cons(this,_root)
 		};
 		
+		g._camerac.create_blur_texture(this);
+		
 		return this;
+	}
+	
+	public SPSprite add_blur_cover_sprite(Texture game_camera_copy_tex) {
+		if (_blur_cover == null) {
+			_blur_cover = SPSprite.cons_sprite_texkey_texrect(RTex.BLANK,new Rect(0,0,0,0));
+			_blur_cover.manual_set_texture(game_camera_copy_tex);
+			_blur_cover.manual_set_mesh_size(game_camera_copy_tex.width,game_camera_copy_tex.height);
+			_blur_cover.set_scale_x((this.get_ui_bounds()._x2 - this.get_ui_bounds()._x1)/_blur_cover.texrect().size.x);
+			_blur_cover.set_scale_y((this.get_ui_bounds()._y2 - this.get_ui_bounds()._y1)/_blur_cover.texrect().size.y);
+			_blur_cover.set_manual_sort_z_order(0);
+			_blur_cover.gameObject.layer = RLayer.get_layer(RLayer.UI);
+			_blur_cover.set_name("_blur_cover");
+			_blur_cover.set_opacity(0.35f);
+			_root.add_child(_blur_cover);
+		}
+		return _blur_cover;
 	}
 	
 	public void i_update(GameEngineScene g) {

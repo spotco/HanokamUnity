@@ -7,6 +7,8 @@ public class ControlManager : SPGameUpdateable {
 	public enum Control {
 		MoveLeft,
 		MoveRight,
+		MoveUp,
+		MoveDown,
 		OnGround_Jump,
 		None
 	}
@@ -17,6 +19,12 @@ public class ControlManager : SPGameUpdateable {
 		} break;
 		case Control.MoveRight: {
 			return Input.GetKey(KeyCode.D);
+		} break;
+		case Control.MoveUp: {
+			return Input.GetKey(KeyCode.W);
+		} break;
+		case Control.MoveDown: {
+			return Input.GetKey(KeyCode.S);
 		} break;
 		case Control.OnGround_Jump: {
 			return Input.GetKey(KeyCode.Space);
@@ -29,7 +37,7 @@ public class ControlManager : SPGameUpdateable {
 		return (new ControlManager()).i_cons();
 	}
 	
-	private bool _is_move;
+	private bool _is_move_x, _is_move_y;
 	private Vector2 _move_vec;
 	private List<Control> _controls_to_test = new List<Control>();
 	private Dictionary<Control,bool> _control_is_down = new Dictionary<Control, bool>();
@@ -69,17 +77,37 @@ public class ControlManager : SPGameUpdateable {
 				_control_is_down[itr_test] = false;
 			}
 		}
-	
+		
+		bool frame_is_move_x = false;
+		bool frame_is_move_y = false;
+		Vector2 move_mag = Vector2.zero;
 		if (this.get_control_down(Control.MoveLeft)) {
-			_move_vec.x = SPUtil.drpt(_move_vec.x,-1,1/20.0f);
-			_is_move = true;
+			move_mag.x = SPUtil.drpt(_move_vec.x,-1,1/20.0f);
+			frame_is_move_x = true;
 		} else if (this.get_control_down(Control.MoveRight)) {
-			_move_vec.x = SPUtil.drpt(_move_vec.x,1,1/20.0f);
-			_is_move = true;
+			move_mag.x = SPUtil.drpt(_move_vec.x,1,1/20.0f);
+			frame_is_move_x = true;
 		} else {
-			_move_vec.x = 0;
-			_is_move = false;
+			move_mag.x = 0;
 		}
+		
+		if (this.get_control_down(Control.MoveUp)) {
+			move_mag.y = SPUtil.drpt(_move_vec.y,1,1/20.0f);
+			frame_is_move_y = true;
+		} else if (this.get_control_down(Control.MoveDown)) {
+			move_mag.y = SPUtil.drpt(_move_vec.y,-1,1/20.0f);
+			frame_is_move_y = true;
+		} else {
+			move_mag.y = 0;
+		}
+		
+		if (move_mag.magnitude > 1) {
+			move_mag.Normalize();
+		}
+		_move_vec = move_mag;
+		
+		_is_move_x = frame_is_move_x;
+		_is_move_y = frame_is_move_y;
 	}
 	
 	public Vector2 get_cursor_move_delta() {
@@ -100,6 +128,7 @@ public class ControlManager : SPGameUpdateable {
 		return _control_is_down[test];
 	}
 	
-	public bool is_move() { return _is_move; }
+	public bool is_move_x() { return _is_move_x; }
+	public bool is_move_y() { return _is_move_y; }
 	public Vector2 get_move() { return _move_vec; }
 }

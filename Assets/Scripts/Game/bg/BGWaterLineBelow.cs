@@ -24,7 +24,7 @@ public class BGWaterLineBelow : SPGameUpdateable {
 		_waterline.set_u_pos(0,13);
 		_waterline.set_scale(2.5f);
 		_waterline.set_name("_waterline");
-		_waterline.set_opacity(0.65f);
+		_waterline.set_opacity(1.0f);
 		_waterline.set_manual_sort_z_order(GameAnchorZ.BGWater_WaterLineBelow_Line);
 		_root.add_child(_waterline);
 
@@ -46,7 +46,7 @@ public class BGWaterLineBelow : SPGameUpdateable {
 		);
 		_belowline_lightrays.set_name("_belowline_lightrays");
 		_belowline_lightrays.set_manual_sort_z_order(GameAnchorZ.BGWater_WaterLineBelow_Line_LightRays);
-		_belowline_lightrays.set_opacity(0.8f);
+		_belowline_lightrays.set_opacity(0.65f);
 		_belowline_lightrays.set_scale(1.5f);
 		_belowline_lightrays.set_anchor_point(0.5f,1.0f);
 		_belowline_lightrays.set_u_pos(0,970);

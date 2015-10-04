@@ -4,6 +4,7 @@
         <i name="hanoka_player.json"/>
         <i name="hanoka_bow.json"/>
         <i name="hanoka_sword.json"/>
+        <i name="hanoka_FX.json"/>
     </atlas>
     <folder id="0" name="&lt;hanoka_player.json&gt;" atlas="0">
         <file id="0" name="Player_hair-5.png" width="16" height="24" pivot_x="0" pivot_y="1"/>
@@ -81,6 +82,10 @@
         <file id="0" name="Player_sword.png" width="20" height="126" pivot_x="0" pivot_y="1"/>
         <file id="1" name="player_downslash1.png" width="0" height="0" pivot_x="0" pivot_y="1"/>
         <file id="2" name="player_downslash2.png" width="0" height="0" pivot_x="0" pivot_y="1"/>
+    </folder>
+    <folder id="3" name="&lt;hanoka_FX.json&gt;" atlas="3">
+        <file id="0" name="player_downslash1.png" width="215" height="118" pivot_x="0" pivot_y="1"/>
+        <file id="1" name="player_downslash2.png" width="156" height="50" pivot_x="0" pivot_y="1"/>
     </folder>
     <entity id="0" name="player">
         <obj_info name="bone_000" type="bone" w="30.3509" h="10"/>

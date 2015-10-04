@@ -37,11 +37,9 @@ public class GameEngineScene : SPScene {
 		_camera_active = true;
 		
 		_game_state_stack = new List<GameStateBase>(){ IdleGameState.cons() };
-		_game_state_stack.Add(OnGroundGameState.cons(this));
-		
+		_camerac = GameCameraController.cons(this);
 		_game_ui = GameUI.cons(this);
 		
-		_camerac = GameCameraController.cons(this);
 		_controls = ControlManager.cons();
 
 		_bg_village = BGVillage.cons(this);
@@ -55,6 +53,8 @@ public class GameEngineScene : SPScene {
 		_particle_root = SPNode.cons_node();
 		_particle_root.set_name("_particle_root");
 		_particles = SPParticleSystem.cons();
+		
+		_game_state_stack.Add(OnGroundGameState.cons(this));
 
 		return this;
 	}

@@ -226,6 +226,7 @@ public class SPSprite : SPNode {
 		);
 		sprite_mesh.vertices = verts;
 		sprite_mesh.RecalculateBounds();
+		_texrect = new Rect(0,0,tex_wid,tex_hei);
 	}
 
 }

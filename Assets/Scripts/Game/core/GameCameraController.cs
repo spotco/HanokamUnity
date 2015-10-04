@@ -20,6 +20,9 @@ public class GameCameraController : SPGameUpdateable {
 	private BloomOptimized _bloom;
 	private VignetteAndChromaticAberration _vignette;
 	
+	private RenderTexture _game_camera_blur_copy;
+	private SPSprite _ui_blur_cover;
+	
 	public GameCameraController i_cons(GameEngineScene g) {
 		_motion_blur = GameMain._context._game_camera.GetComponent<CameraMotionBlur>();
 		_bloom = GameMain._context._game_camera.GetComponent<BloomOptimized>();
@@ -28,6 +31,7 @@ public class GameCameraController : SPGameUpdateable {
 		_motion_blur.excludeLayers.value = 1 << RLayer.get_layer(RLayer.UI);
 		_bloom.enabled = true;
 		_vignette.enabled = true;
+		_has_camera_motion_blur = false;
 
 		_camera_zoom = new DrptVal() {
 			_current = 1500,
@@ -46,8 +50,18 @@ public class GameCameraController : SPGameUpdateable {
 		};
 
 		this.apply_camera_values();
-
+		
+		_game_camera_blur_copy = new RenderTexture(
+			GameMain._context._game_camera_out.width / 4,
+			GameMain._context._game_camera_out.height / 4,
+			0,
+			RenderTextureFormat.Default
+		);
 		return this;
+	}
+	
+	public void create_blur_texture(GameUI ui) {
+		_ui_blur_cover = ui.add_blur_cover_sprite(_game_camera_blur_copy);
 	}
 
 	private Vector2 _last_shake;
@@ -102,8 +116,27 @@ public class GameCameraController : SPGameUpdateable {
 		_camera_shake_ct = duration;
 		_camera_shake_friction = friction;
 	}
+	
+	private Vector3 _camera_motion_blur_mag;
+	private float _camera_motion_blur_ct, _camera_motion_blur_ct_max;
+	private bool _has_camera_motion_blur;
+	public void camera_motion_blur(Vector3 mag, float duration) {
+		_camera_motion_blur_mag = mag;
+		_camera_motion_blur_ct = 0;
+		_camera_motion_blur_ct_max = duration;
+		_has_camera_motion_blur = true;
+	}
+	
+	private float _blur_ct, _blur_ct_max;
+	private bool _has_blur, _last_has_blur;
+	public void camera_blur(float duration) {
+		_blur_ct = 0;
+		_blur_ct_max = duration;
+		_has_blur = true;
+		_last_has_blur = false;
+	}
 
-	public void i_update(GameEngineScene g) {
+	public void i_update(GameEngineScene g) {	
 		if (g._camera_active) {
 			_camera_shake_ct = Mathf.Max(0,_camera_shake_ct - SPUtil.dt_scale_get());
 			_camera_shake_theta = (_camera_shake_theta + SPUtil.dt_scale_get() * 0.1f) % (2 * Mathf.PI);
@@ -115,6 +148,33 @@ public class GameCameraController : SPGameUpdateable {
 
 			_camera_y.i_update();
 			this.apply_camera_values();
+			
+			
+			if (_has_camera_motion_blur) {
+				_motion_blur.preview = true;
+				float pct = Mathf.Clamp(SPUtil.bezier_val_for_t(
+					new Vector2(0,1), new Vector2(0,1.5f), new Vector2(1,1.5f), new Vector2(1,0), _camera_motion_blur_ct / _camera_motion_blur_ct_max
+					).y,0,1);
+				_motion_blur.previewScale = SPUtil.vec_scale(_camera_motion_blur_mag,pct);
+				_camera_motion_blur_ct += SPUtil.dt_scale_get();
+				if (_camera_motion_blur_ct >= _camera_motion_blur_ct_max) {
+					_has_camera_motion_blur = false;
+				}
+				
+			} else {
+				_motion_blur.preview = false;
+			}
+			
+			if (_has_blur) {
+				if (!_last_has_blur) Graphics.Blit(GameMain._context._game_camera_out,_game_camera_blur_copy);
+				_ui_blur_cover.set_opacity(SPUtil.y_for_point_of_2pt_line(new Vector2(0,0.75f),new Vector2(1,0),_blur_ct/_blur_ct_max));
+				_blur_ct += SPUtil.dt_scale_get();
+				if (_blur_ct >= _blur_ct_max) {
+					_has_camera_motion_blur = false;
+				}
+			}
+			_last_has_blur = _has_blur;
+			
 		}
 	}
 
@@ -133,6 +193,9 @@ public class GameCameraController : SPGameUpdateable {
 	
 	public void set_target_zoom(float val) {
 		_camera_zoom._target = (Mathf.Clamp(val,MIN_ZOOM,MAX_ZOOM));
+	}
+	public void set_zoom_speed(float val) {
+		_camera_zoom._drptval = val;
 	}
 	
 	public float get_zoom() {

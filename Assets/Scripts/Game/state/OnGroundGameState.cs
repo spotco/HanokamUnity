@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections.Generic;
 
 public class OnGroundGameState : GameStateBase {
@@ -28,45 +28,16 @@ public class OnGroundGameState : GameStateBase {
 	public OnGroundGameState i_cons(GameEngineScene g) {
 		_params = OnGroundGameStateParams.cons();
 		_current_state = State.Gameplay;
-		
+		g._camerac.set_zoom_speed(1/20.0f);
 		return this;
 	}
 	
 	public override void i_update(GameEngineScene g) {
 
-		/*
-		if (SPUtil.int_random(0,10) < 1) {
-			g.add_particle(SPConfigAnimParticle.cons()
-				.add_to_parent(g.get_particle_root())
-				.set_name("uw_splash")
-				.set_texture(TextureResource.inst().get_tex(RTex.FX_SPLASH))
-				.set_texrect(FileCache.inst().get_texrect(RTex.FX_SPLASH,"uw_splash_0.png"))
-				.set_ctmax(50)
-				.set_pos(SPUtil.float_random(-100,100),SPUtil.float_random(-100,100))
-				.set_anim_lambda((SPSprite _img, float anim_t) => {
-					_img.set_opacity(SPUtil.bezier_val_for_t(new Vector2(0,0),new Vector2(0,1),new Vector2(0.3f,1.25f),new Vector2(1,0),anim_t).y);
-					_img.set_scale_x(SPUtil.bezier_val_for_t(new Vector2(0,0.75f),new Vector2(0,1.5f),new Vector2(0.6f,2.5f),new Vector2(1,0.65f),anim_t).y * 1.75f);
-					_img.set_scale_y(SPUtil.bezier_val_for_t(new Vector2(0,0.75f),new Vector2(0,1.2f),new Vector2(0.75f,1.25f),new Vector2(1,0.75f),anim_t).y * 1.75f);
-				})
-				.set_anchor_point(0.5f,0.85f)
-				.set_manual_sort_z_order(GameAnchorZ.BGWater_FX)
-				.set_normalized_timed_sprite_animator(SPTimedSpriteAnimator.cons(null)
-					.add_frame_at_time(FileCache.inst().get_texrect(RTex.FX_SPLASH,"uw_splash_0.png"),0.0f)
-					.add_frame_at_time(FileCache.inst().get_texrect(RTex.FX_SPLASH,"uw_splash_1.png"),0.15f)
-					.add_frame_at_time(FileCache.inst().get_texrect(RTex.FX_SPLASH,"uw_splash_2.png"),0.24f)
-					.add_frame_at_time(FileCache.inst().get_texrect(RTex.FX_SPLASH,"uw_splash_3.png"),0.36f)
-					.add_frame_at_time(FileCache.inst().get_texrect(RTex.FX_SPLASH,"uw_splash_4.png"),0.48f)
-					.add_frame_at_time(FileCache.inst().get_texrect(RTex.FX_SPLASH,"uw_splash_5.png"),0.60f)
-					.add_frame_at_time(FileCache.inst().get_texrect(RTex.FX_SPLASH,"uw_splash_6.png"),0.72f)
-					.add_frame_at_time(FileCache.inst().get_texrect(RTex.FX_SPLASH,"uw_splash_7.png"),0.84f)
-				));
-		}
-		*/
-
 		switch (_current_state) {
 		case State.Gameplay:{
 			g._player.set_manual_sort_z_order(GameAnchorZ.Player_Ground);
-			if (g._controls.is_move()) {
+			if (g._controls.is_move_x()) {
 				_params._vel.x = g._controls.get_move().x * 8.0f;
 				if (Mathf.Abs(_params._vel.x) > 7.5f) {
 					g._player.play_anim(PlayerCharacterAnims.RUN);
@@ -92,7 +63,7 @@ public class OnGroundGameState : GameStateBase {
 			
 			Vector3 player_to_cursor_delta = SPUtil.vec_sub(g._game_ui._cursor.get_game_pos(),new Vector2(g._player._u_x,g._player._u_y));
 			player_to_cursor_delta.x = SPUtil.eclamp(player_to_cursor_delta.x,-400,400,new Vector2(0.25f,0),new Vector2(0.75f,1)) * 0.2f;
-			player_to_cursor_delta.y = SPUtil.eclamp(player_to_cursor_delta.y,-100,700,new Vector2(0.25f,0),new Vector2(0.75f,1)) * 0.2f;
+			player_to_cursor_delta.y = SPUtil.eclamp(player_to_cursor_delta.y,-100,900,new Vector2(0.25f,0),new Vector2(0.75f,1)) * 0.2f;
 			
 			g._camerac.set_target_zoom(1300);
 			g._camerac.set_target_camera_focus_on_character(g,player_to_cursor_delta.x,player_to_cursor_delta.y);
@@ -118,6 +89,7 @@ public class OnGroundGameState : GameStateBase {
 				
 			} else if (!g._controls.get_control_down(ControlManager.Control.OnGround_Jump)) {
 				_current_state = State.Gameplay;
+				g._camerac.set_zoom_speed(1/60.0f);
 			}
 			
 		} break;
@@ -125,11 +97,10 @@ public class OnGroundGameState : GameStateBase {
 			g._player.set_manual_sort_z_order(GameAnchorZ.Player_InAir);
 			g._camerac.set_target_camera_focus_on_character(g,0,120);
 			g._camerac.set_target_zoom(1000);
-			if (g._controls.is_move()) {
+			if (g._controls.is_move_x()) {
 				_params._vel.x = g._controls.get_move().x * 3.0f;
 			} else {
 				_params._vel.x = SPUtil.drpt(_params._vel.x,0,1/10.0f);
-				g._player.play_anim(PlayerCharacterAnims.IDLE);
 			}
 			g._player.set_u_pos(
 				g._player._u_x + _params._vel.x * SPUtil.dt_scale_get(),
@@ -137,14 +108,19 @@ public class OnGroundGameState : GameStateBase {
 			);
 			_params._vel.y -= 0.4f * SPUtil.dt_scale_get();
 
-			float tar_rotation = SPUtil.dir_ang_deg(_params._vel.x,_params._vel.y) - 90;
-				g._player.set_rotation(g._player.rotation() + SPUtil.shortest_angle(g._player.rotation(),tar_rotation) * 0.25f);
-
-			g._player.play_anim("Dive");
+			if (g._player._u_y > 250) {
+				g._player.play_anim(PlayerCharacterAnims.SPIN);
+			} else {
+				g._player.play_anim(PlayerCharacterAnims.DIVE);
+				PlayerCharacterUtil.rotate_to_rotation_for_vel(g._player,_params._vel.x,_params._vel.y,1/10.0f);
+			}
+			
 			if (g._player._u_y < -250) {
 				g.pop_top_game_state();
 				g.push_game_state(DiveGameState.cons(g, _params._vel));
-				g._camerac.camera_shake(new Vector2(-1.7f,2.1f),150,500, 1/60.0f);
+				g._camerac.camera_shake(new Vector2(-1.7f,2.1f),80,400, 1/300.0f);
+				g._camerac.camera_motion_blur(new Vector3(0,500,500), 60.0f);
+				g._camerac.camera_blur(45.0f);
 			}
 
 		} break;

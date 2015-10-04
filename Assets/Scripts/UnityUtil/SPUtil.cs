@@ -127,6 +127,9 @@ public class SPUtil {
 	public static Vector3 vec_sub(Vector3 a, Vector3 b) {
 		return a - b;
 	}
+	public static Vector3 vec_scale(Vector3 vec, float scale) {
+		return new Vector3(vec.x * scale, vec.y * scale, vec.z * scale);
+	}
 	public static float dir_ang_deg(float x, float y) {
 		return SPUtil.rad_to_deg(Mathf.Atan2(y,x));
 	}

@@ -74,7 +74,7 @@ public class SpriterData  {
 		for (int i = 0; i < itr_base._children.Count; i++) {
 			TGSpriterConfigNode itr_atlas_element = itr_base._children[i];
 			string itr_atlas_element_name = itr_atlas_element.get_str("name");
-			for (int i_sheetreaders = 0; i_sheetreaders < sheetreaders.Count; i_sheetreaders++) {
+			for (int i_sheetreaders = 0; i_sheetreaders < sheetreaders.Count && i < sheetreaders.Count; i_sheetreaders++) {
 				SpriterJSONParser itr_sheetreaders = sheetreaders[i];
 				if ((itr_sheetreaders.filepath()+".json").Contains(itr_atlas_element_name)) {
 					_atlas[i] = itr_sheetreaders;
@@ -89,6 +89,7 @@ public class SpriterData  {
 		neu_folder._id = itr_base.get_id();
 		neu_folder._atlas = itr_base.get_int("atlas");
 
+		if (!_atlas.ContainsKey(neu_folder._atlas)) return;
 		SpriterJSONParser atlas_element = _atlas[neu_folder._atlas];
 		for (int i_files = 0; i_files < itr_base._children.Count; i_files++) {
 			TGSpriterConfigNode itr_files = itr_base._children[i_files];
