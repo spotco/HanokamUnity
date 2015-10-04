@@ -152,7 +152,7 @@ public class SpriterNode : SPNode, CameraRenderHookDelegate {
 	}
 
 	public override void Update() {
-		_current_anim_time += Time.deltaTime * 1000;
+		_current_anim_time += Time.deltaTime * 1000 * _anim_playback_speed_mult;
 
 		if (_current_anim_time > _anim_duration) {
 			if (_repeat_anim) {
@@ -173,6 +173,11 @@ public class SpriterNode : SPNode, CameraRenderHookDelegate {
 		//Profiler.BeginSample("update_timeline_keyframes");
 		this.update_timeline_keyframes();
 		//Profiler.EndSample();
+	}
+	
+	private float _anim_playback_speed_mult = 1;
+	public void set_anim_playback_speed_mult(float mlt) {
+		_anim_playback_speed_mult = mlt;
 	}
 
 	private static float get_t_for_keyframes(TGSpriterTimelineKey keyframe_current, TGSpriterTimelineKey keyframe_next, float _current_anim_time, float _anim_duration, bool _repeat_anim) {

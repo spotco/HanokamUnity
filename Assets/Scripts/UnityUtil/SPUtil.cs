@@ -124,6 +124,9 @@ public class SPUtil {
 	public static Vector3 vec_mult(Vector3 a, Vector3 b) {
 		return new Vector3(a.x*b.x,a.y*b.y,a.z*b.z);
 	}
+	public static Vector3 vec_add(Vector3 a, Vector3 b) {
+		return a + b;
+	}
 	public static Vector3 vec_sub(Vector3 a, Vector3 b) {
 		return a - b;
 	}

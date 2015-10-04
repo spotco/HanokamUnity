@@ -13,20 +13,20 @@ public class DiveGameState : GameStateBase {
 		Gameplay
 	}
 
-	public static DiveGameState cons(GameEngineScene g, Vector2 initial_velocity) {
-		return (new DiveGameState()).i_cons(g, initial_velocity);
+	public static DiveGameState cons(GameEngineScene g) {
+		return (new DiveGameState()).i_cons(g);
 	}
 
 	public DiveGameStateParams _params;
+	private FlashEvery _bubble_every;
 
-	public DiveGameState i_cons(GameEngineScene g, Vector2 initial_velocity) {
-		_params._vel = initial_velocity;
+	public DiveGameState i_cons(GameEngineScene g) {
+		_params._vel = new Vector2(0,-22);
 		_params._state = State.TransitionIn;
 
 		g._player.play_anim(PlayerCharacterAnims.SWIM);
 
 		g.add_particle(SPConfigAnimParticle.cons()
-			.add_to_parent(g.get_particle_root())
 			.set_name("uw_splash")
 			.set_texture(TextureResource.inst().get_tex(RTex.FX_SPLASH))
 			.set_texrect(FileCache.inst().get_texrect(RTex.FX_SPLASH,"uw_splash_0.png"))
@@ -51,6 +51,9 @@ public class DiveGameState : GameStateBase {
 			));
 		
 		g._player.set_manual_sort_z_order(GameAnchorZ.Player_UnderWater);
+		
+		_bubble_every = FlashEvery.cons(30);
+		
 		return this;
 	}
 
@@ -76,6 +79,7 @@ public class DiveGameState : GameStateBase {
 				_params._state = State.Gameplay;
 				g._camerac.set_zoom_speed(1/100.0f);
 				g._camerac.set_target_zoom(1500);
+				g._game_ui._cursor.set_enabled(true);
 			}
 
 		} break;
@@ -98,8 +102,19 @@ public class DiveGameState : GameStateBase {
 				g._player._u_x + _params._vel.x * SPUtil.dt_scale_get(),
 				g._player._u_y + _params._vel.y * SPUtil.dt_scale_get()
 			);
+			if (_params._vel.magnitude > 2) {
+				g._player.play_anim(PlayerCharacterAnims.SWIM);
+			} else {
+				g._player.play_anim(PlayerCharacterAnims.SWIM_SLOW);
+			}
 			PlayerCharacterUtil.rotate_to_rotation_for_vel(g._player,_params._vel.x,_params._vel.y,1/10.0f);
-
+			
+			_bubble_every.i_update(g);
+			if (_bubble_every.do_flash()) {
+				_bubble_every._max_time = SPUtil.int_random(0,4) == 0 ? SPUtil.float_random(1,3) : SPUtil.float_random(20,40);
+				UnderwaterBubbleParticle.proc_bubble(g);
+			}
+			
 		} break;
 		}
 	}
@@ -107,5 +122,4 @@ public class DiveGameState : GameStateBase {
 	public override GameStateIdentifier get_state() { 
 		return GameStateIdentifier.Dive; 
 	}
-
 }

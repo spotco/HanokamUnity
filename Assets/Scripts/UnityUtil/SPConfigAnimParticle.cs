@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class SPConfigAnimParticle : SPParticle, GenericPooledObject {
+public class SPConfigAnimParticle : SPGameEngineParticle, GenericPooledObject {
 
 	public static SPConfigAnimParticle cons() {
 		return ObjectPool.inst().generic_depool<SPConfigAnimParticle>().i_cons();
@@ -49,7 +49,7 @@ public class SPConfigAnimParticle : SPParticle, GenericPooledObject {
 		_anim_lambda = null;
 		return this;
 	}
-	public void i_update(Object context) {
+	public override void i_update(GameEngineScene g) {
 		_ct += SPUtil.dt_scale_get();
 		float anim_t = _ct / _ctmax;
 		_img.set_rotation(_img.rotation() + _vr * SPUtil.dt_scale_get());
@@ -70,11 +70,14 @@ public class SPConfigAnimParticle : SPParticle, GenericPooledObject {
 		}
 
 	}
-	public bool should_remove(Object context) {
+	public override bool should_remove(GameEngineScene g) {
 		return _ct >= _ctmax;
 	}
-	public void do_remove(Object context) {
+	public override void do_remove(GameEngineScene g) {
 		ObjectPool.inst().generic_repool<SPConfigAnimParticle>(this);
+	}
+	public override void add_to_parent(SPNode parent) {
+		parent.add_child(_img);
 	}
 
 	public SPConfigAnimParticle set_alpha(float start, float end) {
@@ -119,10 +122,6 @@ public class SPConfigAnimParticle : SPParticle, GenericPooledObject {
 	}
 	public SPConfigAnimParticle set_name(string name) {
 		_img.set_name(name);
-		return this;
-	}
-	public SPConfigAnimParticle add_to_parent(SPNode parent) {
-		parent.add_child(_img);
 		return this;
 	}
 	public SPConfigAnimParticle set_manual_sort_z_order(int z_ord) {

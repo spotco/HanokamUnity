@@ -6,29 +6,39 @@ public interface SPParticle {
 	bool should_remove(Object context);
 	void do_remove(Object context);
 }
+public abstract class SPGameEngineParticle : SPParticle, SPGameUpdateable, SPGameHierarchyElement {
+	public void i_update(Object context) { this.i_update(context as GameEngineScene); }
+	public bool should_remove(Object context) { return this.should_remove(context as GameEngineScene); }
+	public void do_remove(Object context) { this.do_remove(context as GameEngineScene); }
+	
+	public virtual void i_update(GameEngineScene g) { throw new System.Exception(this.GetType()+" must Implement i_update(g)"); }
+	public virtual bool should_remove(GameEngineScene g) { throw new System.Exception(this.GetType()+" must Implement should_remove(g)"); }
+	public virtual void do_remove(GameEngineScene g) { throw new System.Exception(this.GetType()+" must Implement do_remove(g)"); }
+	public virtual void add_to_parent(SPNode parent) { throw new System.Exception(this.GetType()+" must Implement add_to_parent(g)"); }
+}
 
-public class SPParticleSystem {
-	public static SPParticleSystem cons() {
-		return (new SPParticleSystem()).i_cons();
+public class SPParticleSystem<T> where T : SPParticle {
+	public static SPParticleSystem<T> cons() {
+		return (new SPParticleSystem<T>()).i_cons();
 	}
 
-	private List<SPParticle> _particles = new List<SPParticle>(), _to_remove = new List<SPParticle>(), _to_add = new List<SPParticle>();
+	private List<T> _particles = new List<T>(), _to_remove = new List<T>(), _to_add = new List<T>();
 	private SPNode _anchor;
 
-	private SPParticleSystem i_cons() {
+	private SPParticleSystem<T> i_cons() {
 		return this;
 	}
 
-	public void add_particle(SPParticle p) { _to_add.Add(p); }
-	public void i_update(Object context) {
+	public virtual void add_particle(T p) { _to_add.Add(p); }
+	public virtual void i_update(Object context) {
 		for (int i = 0; i < _to_add.Count; i++) {
-			SPParticle itr = _to_add[i];
+			T itr = _to_add[i];
 			_particles.Add(itr);
 		}
 		_to_add.Clear();
 
 		for (int i = 0; i < _particles.Count; i++) {
-			SPParticle itr = _particles[i];
+			T itr = _particles[i];
 			itr.i_update(context);
 			if (itr.should_remove(context)) {
 				itr.do_remove(context);
@@ -37,14 +47,14 @@ public class SPParticleSystem {
 		}
 
 		for (int i = 0; i < _to_remove.Count; i++) {
-			SPParticle itr = _to_remove[i];
+			T itr = _to_remove[i];
 			_particles.Remove(itr);
 		}
 		_to_remove.Clear();
 	}
-	public void clear(Object context) {
+	public virtual void clear(Object context) {
 		for (int i = 0; i < _particles.Count; i++) {
-			SPParticle itr = _particles[i];
+			T itr = _particles[i];
 			itr.do_remove(context);
 		}
 		_particles.Clear();

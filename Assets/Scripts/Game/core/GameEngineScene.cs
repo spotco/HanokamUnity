@@ -4,6 +4,9 @@ using System.Collections.Generic;
 public interface SPGameUpdateable {
 	void i_update(GameEngineScene g);
 }
+public interface SPGameHierarchyElement {
+	void add_to_parent(SPNode parent);
+}
 
 public class GameEngineScene : SPScene {
 	
@@ -21,13 +24,14 @@ public class GameEngineScene : SPScene {
 	public GameCameraController _camerac;
 	public ControlManager _controls;
 	public PlayerCharacter _player;
+	public DelayActionQueue _delayed_actions;
 
 	private List<SPGameUpdateable> _bg_elements;
-	private SPParticleSystem _particles;
+	private SPParticleSystem<SPGameEngineParticle> _particles;
 	private SPNode _particle_root;
-	public SPNode get_particle_root() { return _particle_root; }
-	public void add_particle(SPParticle particle) {
+	public void add_particle(SPGameEngineParticle particle) {
 		_particles.add_particle(particle);
+		particle.add_to_parent(_particle_root);
 	}
 	
 	private List<GameStateBase> _game_state_stack;
@@ -36,6 +40,7 @@ public class GameEngineScene : SPScene {
 		__cached_viewbox_dirty = true;
 		_camera_active = true;
 		
+		_delayed_actions = DelayActionQueue.cons();
 		_game_state_stack = new List<GameStateBase>(){ IdleGameState.cons() };
 		_camerac = GameCameraController.cons(this);
 		_game_ui = GameUI.cons(this);
@@ -52,7 +57,7 @@ public class GameEngineScene : SPScene {
 
 		_particle_root = SPNode.cons_node();
 		_particle_root.set_name("_particle_root");
-		_particles = SPParticleSystem.cons();
+		_particles = SPParticleSystem<SPGameEngineParticle>.cons();
 		
 		_game_state_stack.Add(OnGroundGameState.cons(this));
 
@@ -74,6 +79,7 @@ public class GameEngineScene : SPScene {
 		__cached_viewbox_dirty = true;
 		_controls.i_update(this);
 		_camerac.i_update(this);
+		_delayed_actions.i_update(this);
 		_particles.i_update(this);
 		for (int i = 0; i < _bg_elements.Count; i++) {
 			SPGameUpdateable itr = _bg_elements[i];

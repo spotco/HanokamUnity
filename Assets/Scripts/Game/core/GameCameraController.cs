@@ -166,12 +166,15 @@ public class GameCameraController : SPGameUpdateable {
 			}
 			
 			if (_has_blur) {
+				_ui_blur_cover.set_enabled(true);
 				if (!_last_has_blur) Graphics.Blit(GameMain._context._game_camera_out,_game_camera_blur_copy);
 				_ui_blur_cover.set_opacity(SPUtil.y_for_point_of_2pt_line(new Vector2(0,0.75f),new Vector2(1,0),_blur_ct/_blur_ct_max));
 				_blur_ct += SPUtil.dt_scale_get();
 				if (_blur_ct >= _blur_ct_max) {
 					_has_camera_motion_blur = false;
 				}
+			} else {
+				_ui_blur_cover.set_enabled(false);
 			}
 			_last_has_blur = _has_blur;
 			

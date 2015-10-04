@@ -117,7 +117,7 @@ public class OnGroundGameState : GameStateBase {
 			
 			if (g._player._u_y < -250) {
 				g.pop_top_game_state();
-				g.push_game_state(DiveGameState.cons(g, _params._vel));
+				g.push_game_state(DiveGameState.cons(g));
 				g._camerac.camera_shake(new Vector2(-1.7f,2.1f),80,400, 1/300.0f);
 				g._camerac.camera_motion_blur(new Vector3(0,500,500), 60.0f);
 				g._camerac.camera_blur(45.0f);

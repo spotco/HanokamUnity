@@ -31,7 +31,7 @@ public class SPNode : SPBaseBehavior {
 
 	[SerializeField] private bool __ACTIVE = false;
 	public bool get_obj_active() { return __ACTIVE; }
-	public virtual SPNode repool() {
+	public new virtual SPNode repool() {
 		return SPNode.generic_repool<SPNode>(this);
 	}
 	

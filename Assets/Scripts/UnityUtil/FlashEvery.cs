@@ -1,0 +1,44 @@
+﻿using UnityEngine;
+using System.Collections.Generic;
+
+public class FlashEvery : SPGameUpdateable {
+	public float _max_time;
+	private float _time;
+	public static FlashEvery cons(float time) {
+		return new FlashEvery() { _max_time = time };
+	}
+	public void i_update(GameEngineScene g) {
+		_time -= SPUtil.dt_scale_get();
+	}
+	public bool do_flash() {
+		bool rtv = _time <= 0;
+		if (rtv) _time = _max_time;
+		return rtv;
+	}
+}
+
+public class FlashCount {
+	private List<float> _counts = new List<float>();
+	private bool _sorted = true;
+	private int _i = 0;
+	public static FlashCount cons() {
+		return (new FlashCount());
+	}
+	public void add_flash_at(float time) {
+		_counts.Add(time);
+		_sorted = false;
+	}
+	public void reset() {
+		_i = 0;
+	}
+	public bool do_flash_given_time(float time) {
+		if (!_sorted) {
+			_sorted = true;
+			_counts.Sort();
+		}
+		if (_i >= _counts.Count) return false;
+		bool rtv = _counts[_i] >= time;
+		if (rtv) _i++;
+		return rtv;
+	}
+}
