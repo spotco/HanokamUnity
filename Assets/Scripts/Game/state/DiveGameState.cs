@@ -1,6 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+public interface DiveGameStateUpdateable {
+	void i_update(GameEngineScene g, DiveGameState state);
+}
+
 public class DiveGameState : GameStateBase {
 
 	public struct DiveGameStateParams {
@@ -90,8 +94,8 @@ public class DiveGameState : GameStateBase {
 		} break;
 		case (State.Gameplay): {
 		
-			float MIN_Y_OFFSET = -350;
-			float MAX_Y_OFFSET = 200;
+			float MIN_Y_OFFSET = -400;
+			float MAX_Y_OFFSET = 400;
 			_camera_offset_y = SPUtil.eclamp(
 				SPUtil.y_for_point_of_2pt_line(
 				new Vector2(-MAX_MOVE_SPEED,MIN_Y_OFFSET),
@@ -112,11 +116,13 @@ public class DiveGameState : GameStateBase {
 					_params._dashing = false;
 				}
 				
-				Vector2 move_dir = g._controls.get_move();
-				Vector2 vel = (_params._vel).normalized;
-				_params._vel = SPUtil.vec_scale(
-					SPUtil.vec_add(SPUtil.vec_scale(move_dir,1.5f),vel).normalized
-				,DASH_SPEED);
+				if (g._controls.is_move_x() || g._controls.is_move_y()) {
+					Vector2 move_dir = g._controls.get_move();
+					Vector2 vel = (_params._vel).normalized;
+					_params._vel = SPUtil.vec_scale(
+						move_dir.normalized
+					,DASH_SPEED);
+				}
 				
 			} else {				
 				Vector2 move = g._controls.get_move();

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public class SPNode_Bone : SPNode {
 	public int _timeline_id;
 	public static SPNode_Bone cons_bone() { return SPNode.generic_cons<SPNode_Bone>(); }
-	public override SPNode repool() { return SPNode.generic_repool<SPNode_Bone>(this); }
+	public override void repool() { SPNode.generic_repool<SPNode_Bone>(this); }
 }
 
 public class SPSprite_Object : SPSprite {
@@ -15,7 +15,7 @@ public class SPSprite_Object : SPSprite {
 		rtv.i_cons_sprite_texkey_texrect(RTex.BLANK,new Rect(0,0,1,1));
 		return rtv;
 	}
-	public override SPNode repool() { this.gameObject.layer = 0; return SPNode.generic_repool<SPSprite_Object>(this); }
+	public override void repool() { this.gameObject.layer = 0; SPNode.generic_repool<SPSprite_Object>(this); }
 }
 
 public class SpriterNode : SPNode, CameraRenderHookDelegate {
@@ -40,9 +40,9 @@ public class SpriterNode : SPNode, CameraRenderHookDelegate {
 	public static SpriterNode cons_spriternode_from_data(SpriterData data) {
 		return SPNode.generic_cons<SpriterNode>().i_cons_spriternode_from_data(data);
 	}
-	public override SPNode repool() {
+	public override void repool() {
 		this.reset_fields();
-		return SPNode.generic_repool<SpriterNode>(this);
+		SPNode.generic_repool<SpriterNode>(this);
 	}
 
 	private void reset_fields() {

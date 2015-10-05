@@ -13,9 +13,9 @@ public class SPSprite : SPNode {
 
 	public new static SPNode cons_node() { throw new System.Exception("SPSprite::cons_node"); }
 
-	public override SPNode repool() {
+	public override void repool() {
 		this.GetComponent<MeshRenderer>().material = null;
-		return SPNode.generic_repool<SPSprite>(this);
+		SPNode.generic_repool<SPSprite>(this);
 	}
 
 	[SerializeField] private string _texkey;

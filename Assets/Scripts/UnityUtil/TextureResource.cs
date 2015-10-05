@@ -78,10 +78,10 @@ public class TextureResource {
 		Texture tex = 
 		//null;
 		Resources.Load<Texture2D>(CachedStreamingAssets.texture_key_to_resource_path(texkey));
-		tex.filterMode = FilterMode.Point;
 		if (tex == null) {
 			tex = this.load_texture_from_streamingassets(texkey);
 		}
+		tex.filterMode = FilterMode.Point;
 		return new TextureResourceValue() {
 			_tex = tex
 		};

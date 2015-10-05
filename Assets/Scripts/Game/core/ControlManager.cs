@@ -17,22 +17,22 @@ public class ControlManager : SPGameUpdateable {
 		switch (test) {
 		case Control.MoveLeft: {
 			return Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.Keypad4);
-		} break;
+		}
 		case Control.MoveRight: {
 			return Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.Keypad6);
-		} break;
+		}
 		case Control.MoveUp: {
 			return Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.Keypad8);
-		} break;
+		}
 		case Control.MoveDown: {
 			return Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow) || Input.GetKey(KeyCode.Keypad5);
-		} break;
+		}
 		case Control.OnGround_Jump: {
 			return Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow) || Input.GetKey(KeyCode.Keypad5);
-		} break;
+		}
 		case Control.Dash: {
 			return Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.Z);
-		} break;
+		}
 		}
 		return false;
 	}
@@ -59,9 +59,10 @@ public class ControlManager : SPGameUpdateable {
 	}
 	
 	public void i_update(GameEngineScene g) {
+		/*
 		Cursor.visible = false;
 		Cursor.lockState = CursorLockMode.Locked;
-		
+		*/
 		for (int i_test = 0; i_test < _controls_to_test.Count; i_test++) {
 			Control itr_test = _controls_to_test[i_test];
 			

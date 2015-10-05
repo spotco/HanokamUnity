@@ -8,6 +8,12 @@ public struct SPRange {
 public struct SPHitRect {
 	public float _x1,_y1,_x2,_y2;
 	public Vector2 get_center() { return new Vector2((_x2-_x1)/2.0f+_x1,(_y2-_y1)/2.0f+_y1); }
+	public static bool hitrect_touch(SPHitRect r1, SPHitRect r2) {
+		return !(r1._x1 > r2._x2 ||
+		         r2._x1 > r1._x2 ||
+		         r1._y1 > r2._y2 ||
+		         r2._y1 > r1._y2);
+	}
 }
 
 public interface CameraRenderHookDelegate {
@@ -117,22 +123,7 @@ public class SPUtil {
 	public static float lerp(float a, float b, float t) {
 		return a + (b - a) * t;
 	}
-	public static Vector3 vec_mid(Vector3 a, Vector3 b) {
-		Vector3 add = a + b;
-		return new Vector3(add.x/2,add.y/2,add.z/2);
-	}
-	public static Vector3 vec_mult(Vector3 a, Vector3 b) {
-		return new Vector3(a.x*b.x,a.y*b.y,a.z*b.z);
-	}
-	public static Vector3 vec_add(Vector3 a, Vector3 b) {
-		return a + b;
-	}
-	public static Vector3 vec_sub(Vector3 a, Vector3 b) {
-		return a - b;
-	}
-	public static Vector3 vec_scale(Vector3 vec, float scale) {
-		return new Vector3(vec.x * scale, vec.y * scale, vec.z * scale);
-	}
+	
 	public static float dir_ang_deg(float x, float y) {
 		return SPUtil.rad_to_deg(Mathf.Atan2(y,x));
 	}
@@ -140,7 +131,6 @@ public class SPUtil {
 		float rad = SPUtil.deg_to_rad(deg);
 		return new Vector2(Mathf.Cos(rad),Mathf.Sin(rad));
 	}
-
 	public static bool flt_cmp_delta(float a, float b, float delta) {
 		return Mathf.Abs(a-b) <= delta;
 	}
@@ -198,9 +188,7 @@ public class SPUtil {
 		return shortest_angle;
 	}
 
-	public static bool vec_eq(Vector3 a, Vector3 b) {
-		return a.x == b.x && a.y == b.y && a.z == b.z;
-	}
+
 	public static float bezier_val_for_t(float p0, float p1, float p2, float p3, float t) {
 		float cp0 = (1 - t)*(1 - t)*(1 - t);
 		float cp1 = 3 * t * (1-t)*(1-t);
@@ -297,6 +285,41 @@ public class SPUtil {
 			output = default(T);
 			return false;
 		}
+	}
+	
+	public static Vector3 vec_mid(Vector3 a, Vector3 b) {
+		Vector3 add = a + b;
+		return new Vector3(add.x/2,add.y/2,add.z/2);
+	}
+	public static Vector3 vec_mult(Vector3 a, Vector3 b) {
+		return new Vector3(a.x*b.x,a.y*b.y,a.z*b.z);
+	}
+	public static Vector3 vec_add(Vector3 a, Vector3 b) {
+		return a + b;
+	}
+	public static Vector3 vec_sub(Vector3 a, Vector3 b) {
+		return a - b;
+	}
+	public static Vector3 vec_scale(Vector3 vec, float scale) {
+		return new Vector3(vec.x * scale, vec.y * scale, vec.z * scale);
+	}
+	public static Vector3 vec_cross(Vector3 v1, Vector3 a) {
+		float x1, y1, z1;
+		x1 = (v1.y*a.z) - (a.y*v1.z);
+		y1 = -((v1.x*a.z) - (v1.z*a.x));
+		z1 = (v1.x*a.y) - (a.x*v1.y);
+		return new Vector3(x1, y1, z1);
+	}
+	public static bool vec_eq(Vector3 a, Vector3 b) {
+		return a.x == b.x && a.y == b.y && a.z == b.z;
+	}
+	public static Vector2 vec_basis_transform_point(Vector2 pt, Vector2 a, float a_s, Vector2 b, float b_s) {
+		a = SPUtil.vec_scale(a.normalized,a_s);
+		b = SPUtil.vec_scale(b.normalized,b_s);
+		return new Vector2(
+			pt.x + a.x + b.x,
+			pt.y + a.y + b.y
+		);
 	}
 }
 

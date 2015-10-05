@@ -28,6 +28,7 @@ public class GameMain : SPBaseBehavior {
 	private SPScene _current_scene;
 	[System.NonSerialized] public TextureResource _tex_resc;
 	public FileCache _file_cache;
+	public SPDebugRender _debug_render;
 
 	private const float ROOT_SCF = 0.1f;
 
@@ -113,32 +114,13 @@ public class GameMain : SPBaseBehavior {
 		_overlay_camera.cullingMask = (1 << RLayer.get_layer(RLayer.OUTPUT));
 		_current_scene = GameEngineScene.cons();
 		
-		/*
-		_tmp = new RenderTexture(
-			Screen.width / 4,
-			Screen.height / 4,
-			16,
-			RenderTextureFormat.Default);
-		_tmp.Create();
-		SPSprite tmp_render = SPSprite.cons_sprite_texkey_texrect(RTex.BLANK,new Rect(0,0,1,1));
-		tmp_render.set_u_pos(0,0);
-		tmp_render.manual_set_texture(_tmp);
-		tmp_render.manual_set_mesh_size(
-			Screen.width * game_cam_rect.width,
-			Screen.height * game_cam_rect.height
-			);
-		tmp_render.gameObject.layer = RLayer.get_layer(RLayer.OUTPUT);
-		tmp_render.set_name("tmp_render");
-		tmp_render.transform.parent = _overlay_camera.transform.parent;
-		_tmp_material = new Material(Shader.Find(RSha.ALPHA));
-		*/
+		
+		_debug_render = (SPDebugRender.cons());
+		_game_camera.gameObject.AddComponent<CameraRenderHookDispatcher>()._delegate = _debug_render;
+		
 	}
-	//private RenderTexture _tmp;
-	//private Material _tmp_material;
 
 	public override void Update () {
-		//Graphics.Blit(_game_camera_out,_tmp);
-		
 		float dt_scale = (Time.deltaTime)/(1/60.0f);
 		_current_scene.i_update(dt_scale);
 	}

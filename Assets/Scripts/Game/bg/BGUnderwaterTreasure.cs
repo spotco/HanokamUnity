@@ -10,7 +10,7 @@ public class BGUnderwaterTreasure : SPGameUpdateable {
 	private SPNode _root;
 	private SPSprite _img;
 	private List<SPSprite> _lights = new List<SPSprite>();
-	private bool _play_anim;
+	//private bool _play_anim;
 
 	public BGUnderwaterTreasure i_cons(SPNode parent) {
 		_root = SPNode.cons_node();
@@ -40,7 +40,7 @@ public class BGUnderwaterTreasure : SPGameUpdateable {
 			_root.add_child(itr);
 			_lights.Add(itr);
 		}
-		_play_anim = true;
+		//_play_anim = true;
 		return this;
 	}
 

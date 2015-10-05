@@ -12,7 +12,7 @@ public class SPNode : SPBaseBehavior {
 		return rtv;
 	}
 
-	protected static T generic_repool<T>(T obj) where T : SPNode {
+	protected static void generic_repool<T>(T obj) where T : SPNode {
 		if (!obj.__ACTIVE) {
 			Debug.LogError("repool OPERATION ON POOLED SPNODE!");
 		}
@@ -22,7 +22,6 @@ public class SPNode : SPBaseBehavior {
 		obj.remove_all_children(true);
 		obj.__ACTIVE = false;
 		GameMain._context._objpool.spbasebehavior_repool<T>(obj);
-		return null;
 	}
 
 	public static SPNode cons_node() {
@@ -31,8 +30,8 @@ public class SPNode : SPBaseBehavior {
 
 	[SerializeField] private bool __ACTIVE = false;
 	public bool get_obj_active() { return __ACTIVE; }
-	public new virtual SPNode repool() {
-		return SPNode.generic_repool<SPNode>(this);
+	public new virtual void repool() {
+		SPNode.generic_repool<SPNode>(this);
 	}
 	
 	private SPNode i_spnode_cons() {

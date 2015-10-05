@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-public class PlayerCharacter : SPGameUpdateable {
+public class PlayerCharacter : SPGameUpdateable, SPHitPolyOwner {
 	
 	public static PlayerCharacter cons(GameEngineScene g) {
 		return (new PlayerCharacter()).i_cons(g);
@@ -53,7 +53,15 @@ public class PlayerCharacter : SPGameUpdateable {
 	
 	public void i_update(GameEngineScene g) {
 	
-	}	
+	}
+	
+	public SPHitRect get_hit_rect() {
+		return new SPHitRect();
+	}
+	
+	public SPHitPoly get_hit_poly() {
+		return new SPHitPoly();
+	}
 }
 
 public class PlayerCharacterAnims {
