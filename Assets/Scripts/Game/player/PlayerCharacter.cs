@@ -56,11 +56,22 @@ public class PlayerCharacter : SPGameUpdateable, SPHitPolyOwner {
 	}
 	
 	public SPHitRect get_hit_rect() {
-		return new SPHitRect();
+		return SPHitPoly.hitpoly_to_bounding_hitrect(
+			this.get_hit_poly(),
+			new Vector2(-10,-10),
+			new Vector2(10,10)
+		);
 	}
 	
 	public SPHitPoly get_hit_poly() {
-		return new SPHitPoly();
+		return SPHitPoly.cons_with_basis_offset(
+			this.get_center(),
+			this.rotation(),
+			new Vector2(40,130),
+			new Vector2(1,1),
+			1,
+			new Vector2(-40,0)
+		);
 	}
 }
 

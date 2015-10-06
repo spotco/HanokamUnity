@@ -30,6 +30,8 @@ public class RTex {
 	
 	public static string PARTICLES_SPRITESHEET = "effects/particles_spritesheet";
 	public static string FX_SPLASH = "effects/ss_splash_fx";
+	
+	public static string ENEMY_PUFFER = "monster/enemy_puffer/puffer_enemy_ss";
 
 	public static string BLANK = "misc/blank";
 

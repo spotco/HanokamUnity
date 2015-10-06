@@ -36,7 +36,7 @@ public class GameMain : SPBaseBehavior {
 
 		Application.targetFrameRate = 30;
 		this.transform.localScale = new Vector3(ROOT_SCF,ROOT_SCF,ROOT_SCF);
-
+		
 		_context = this;
 		_objpool = ObjectPool.cons();
 		_tex_resc = TextureResource.cons();
@@ -117,7 +117,6 @@ public class GameMain : SPBaseBehavior {
 		
 		_debug_render = (SPDebugRender.cons());
 		_game_camera.gameObject.AddComponent<CameraRenderHookDispatcher>()._delegate = _debug_render;
-		
 	}
 
 	public override void Update () {

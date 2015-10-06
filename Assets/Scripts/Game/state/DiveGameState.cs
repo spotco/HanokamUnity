@@ -26,6 +26,7 @@ public class DiveGameState : GameStateBase {
 
 	public DiveGameStateParams _params;
 	private FlashEvery _bubble_every;
+	private WaterEnemyManager _enemy_manager;
 
 	public DiveGameState i_cons(GameEngineScene g) {
 		_params._vel = new Vector2(0,-22);
@@ -62,6 +63,8 @@ public class DiveGameState : GameStateBase {
 		
 		_bubble_every = FlashEvery.cons(30);
 		
+		_enemy_manager = WaterEnemyManager.cons(g);
+		
 		return this;
 	}
 
@@ -69,6 +72,7 @@ public class DiveGameState : GameStateBase {
 	float TURN_SPEED = 3;
 	private float _camera_offset_y;
 	public override void i_update(GameEngineScene g) {
+		_enemy_manager.i_update(g, this);
 		switch (_params._state) {
 		case (State.TransitionIn): {
 			g._camerac.set_target_camera_focus_on_character(g,0,-200);

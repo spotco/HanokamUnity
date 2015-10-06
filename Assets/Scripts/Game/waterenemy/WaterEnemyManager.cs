@@ -4,7 +4,7 @@ using System.Collections.Generic;
 public abstract class BaseWaterEnemy : DiveGameStateUpdateable, SPGameHierarchyElement {
 	public virtual void i_update(GameEngineScene g, DiveGameState state) {}
 	public virtual void add_to_parent(SPNode parent) {}
-	public virtual bool should_remove(GameEngineScene g, DiveGameState state) { return true; }
+	public virtual bool should_remove(GameEngineScene g, DiveGameState state) { return false; }
 	public virtual void do_remove(GameEngineScene g, DiveGameState state) {}
 	public virtual SPHitRect get_hit_rect() { return new SPHitRect(); }
 	public virtual SPHitPoly get_hit_poly() { return new SPHitPoly(); }
@@ -12,7 +12,7 @@ public abstract class BaseWaterEnemy : DiveGameStateUpdateable, SPGameHierarchyE
 
 public class WaterEnemyManager : DiveGameStateUpdateable, GenericPooledObject {	
 	public static WaterEnemyManager cons(GameEngineScene g) {
-		return (new WaterEnemyManager()).i_cons(g);
+		return (ObjectPool.inst().generic_depool<WaterEnemyManager>()).i_cons(g);
 	}
 	
 	public void depool() {
@@ -26,6 +26,11 @@ public class WaterEnemyManager : DiveGameStateUpdateable, GenericPooledObject {
 	private SPNode _root;
 	private List<BaseWaterEnemy> _enemies = new List<BaseWaterEnemy>();
 	public WaterEnemyManager i_cons(GameEngineScene g) {
+	
+		this.add_enemy(PufferBasicWaterEnemy.cons(
+			g, new Vector2(-250,-500), new Vector2(250,-500)
+		));
+	
 		return this;
 	}
 	

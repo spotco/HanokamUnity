@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 
-public class MultiList<TKey, TValue> {
+public class MultiMap<TKey, TValue> {
 	public Dictionary<TKey,List<TValue>> _key_to_list = new Dictionary<TKey, List<TValue>>();
 	public int count_of(TKey key) {
 		if (!_key_to_list.ContainsKey(key)) _key_to_list[key] = new List<TValue>();
@@ -39,7 +39,7 @@ public class ObjectPool : SPBaseBehavior {
 		return neu_obj.AddComponent<ObjectPool>().i_cons();	
 	}
 
-	private MultiList<string,SPBaseBehavior> _spbasebehavior_typekey_to_objlist = new MultiList<string, SPBaseBehavior>();
+	private MultiMap<string,SPBaseBehavior> _spbasebehavior_typekey_to_objlist = new MultiMap<string,SPBaseBehavior>();
 
 	public ObjectPool i_cons() {
 		return this;
@@ -73,7 +73,7 @@ public class ObjectPool : SPBaseBehavior {
 	}
 
 
-	private MultiList<string,GenericPooledObject> _generic_typekey_to_objlist = new MultiList<string, GenericPooledObject>();
+	private MultiMap<string,GenericPooledObject> _generic_typekey_to_objlist = new MultiMap<string,GenericPooledObject>();
 	public T generic_depool<T>() where T : GenericPooledObject {
 		string key = typeof(T).ToString();
 		List<GenericPooledObject> tar_list = _generic_typekey_to_objlist.list(key);

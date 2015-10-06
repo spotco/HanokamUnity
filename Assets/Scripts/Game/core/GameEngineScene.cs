@@ -64,6 +64,8 @@ public class GameEngineScene : SPScene {
 		return this;
 	}
 	
+	PufferEnemySprite __tmp;
+	
 	public GameStateBase get_top_game_state() { 
 		return _game_state_stack[_game_state_stack.Count-1]; 
 	}
@@ -87,7 +89,12 @@ public class GameEngineScene : SPScene {
 			SPGameUpdateable itr = _bg_elements[i];
 			itr.i_update(this);
 		}
-		
+		this.debug_update_preview_hitboxes();
+	}
+	
+	private void debug_update_preview_hitboxes() {
+		GameMain._context._debug_render.clear_draw_queue();
+		GameMain._context._debug_render.draw_hitpoly_owner(_player, new Color(0,1,0,0.25f), new Color(0,1,0,0.5f));
 	}
 
 	private SPHitRect __cached_viewbox;

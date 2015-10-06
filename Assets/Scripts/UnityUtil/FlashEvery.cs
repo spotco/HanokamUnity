@@ -24,9 +24,10 @@ public class FlashCount {
 	public static FlashCount cons() {
 		return (new FlashCount());
 	}
-	public void add_flash_at(float time) {
+	public FlashCount add_flash_at(float time) {
 		_counts.Add(time);
 		_sorted = false;
+		return this;
 	}
 	public void reset() {
 		_i = 0;
