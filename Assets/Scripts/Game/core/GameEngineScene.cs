@@ -64,8 +64,6 @@ public class GameEngineScene : SPScene {
 		return this;
 	}
 	
-	PufferEnemySprite __tmp;
-	
 	public GameStateBase get_top_game_state() { 
 		return _game_state_stack[_game_state_stack.Count-1]; 
 	}
@@ -89,7 +87,7 @@ public class GameEngineScene : SPScene {
 			SPGameUpdateable itr = _bg_elements[i];
 			itr.i_update(this);
 		}
-		this.debug_update_preview_hitboxes();
+		//this.debug_update_preview_hitboxes();
 	}
 	
 	private void debug_update_preview_hitboxes() {

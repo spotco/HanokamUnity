@@ -27,6 +27,12 @@ public class RTex {
 	public static string SPRITER_HANOKA_BOW = "character/hanoka/hanoka_bow";
 	public static string SPRITER_HANOKA_REDGARB = "character/hanoka/hanoka_armors/hanoka_player_redgarb";
 	public static string SPRITER_BOY = "character/boy/boy";
+	public static string SPRITER_SHOPKEEP = "character/shopkeep/shopkeep";
+	
+	public static string SHOP_SHOPBG = "shop/shopbg";
+	public static string SHOP_SHOPUI = "shop/shopui";
+	
+	public static string DIALOG_UI = "dialog/dialog_ui_ss";
 	
 	public static string PARTICLES_SPRITESHEET = "effects/particles_spritesheet";
 	public static string FX_SPLASH = "effects/ss_splash_fx";

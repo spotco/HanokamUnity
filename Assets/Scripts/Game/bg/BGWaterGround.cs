@@ -34,7 +34,7 @@ public class BGWaterGround : SPGameUpdateable {
 			FileCache.inst().get_texrect(RTex.BG_SPRITESHEET_1,"underwater_temple.png")
 		);
 		_ground_fill.set_manual_sort_z_order(GameAnchorZ.BGWater_Ground_Fill);
-		_ground_fill.set_color(new Vector4(5.0f/255.0f,44.0f/255.0f,92.0f/255.0f,1.0f));
+		_ground_fill.set_color(new Vector4(8.0f/255.0f,25.0f/255.0f,55.0f/255.0f,1.0f));
 		_ground_fill.set_anchor_point(0.5f,1.0f);
 		_ground_fill.set_u_pos(0,-130);
 		_ground_fill.set_name("_ground_fill");
@@ -55,7 +55,7 @@ public class BGWaterGround : SPGameUpdateable {
 		_root.add_child(_bottom_fade);
 
 		_underwater_temple_treasure = BGUnderwaterTreasure.cons(_root);
-		_underwater_temple_treasure.set_u_pos(0,172);
+		_underwater_temple_treasure.set_u_pos(0,256);
 
 		return this;
 	}

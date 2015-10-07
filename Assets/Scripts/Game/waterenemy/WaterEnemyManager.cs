@@ -28,7 +28,7 @@ public class WaterEnemyManager : DiveGameStateUpdateable, GenericPooledObject {
 	public WaterEnemyManager i_cons(GameEngineScene g) {
 	
 		this.add_enemy(PufferBasicWaterEnemy.cons(
-			g, new Vector2(-250,-500), new Vector2(250,-500)
+			g, new Vector2(-250,-1500), new Vector2(250,-1500)
 		));
 	
 		return this;

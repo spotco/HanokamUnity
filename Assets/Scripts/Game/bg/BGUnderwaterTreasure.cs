@@ -23,7 +23,7 @@ public class BGUnderwaterTreasure : SPGameUpdateable {
 		);
 		_img.set_manual_sort_z_order(GameAnchorZ.BGWater_Ground_Treasure);
 		_img.set_name("_img");
-		_img.set_scale(2.0f);
+		_img.set_scale(0.75f);
 		_root.add_child(_img);
 
 		_lights = new List<SPSprite>();
