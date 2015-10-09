@@ -28,10 +28,8 @@ public class OnGroundGameState : GameStateBase {
 	public OnGroundGameState i_cons(GameEngineScene g) {
 		_params = OnGroundGameStateParams.cons();
 		_current_state = State.Gameplay;
-		g._camerac.set_zoom_speed(1/20.0f);
+		g._camerac.set_zoom_speed(1/10.0f);
 		g._camerac.set_camera_follow_speed(1/30.0f);
-		
-		g._game_ui._cursor.set_enabled(false);
 		return this;
 	}
 	
@@ -85,7 +83,6 @@ public class OnGroundGameState : GameStateBase {
 		case State.JumpCharge:{
 			g._camerac.set_target_camera_focus_on_character(g,0,120);
 			g._camerac.set_target_zoom(500);
-			g._game_ui._cursor.set_enabled(false);
 			
 			_params._jump_charge_t = Mathf.Clamp(_params._jump_charge_t + SPUtil.dt_scale_get() * SPUtil.sec_to_tick(1.0f),0,1);
 			
@@ -95,7 +92,7 @@ public class OnGroundGameState : GameStateBase {
 				
 			} else if (!g._controls.get_control_down(ControlManager.Control.OnGround_Jump)) {
 				_current_state = State.Gameplay;
-				g._camerac.set_zoom_speed(1/60.0f);
+				g._camerac.set_zoom_speed(1/10.0f);
 			}
 			
 		} break;
@@ -124,7 +121,7 @@ public class OnGroundGameState : GameStateBase {
 			if (g._player._u_y < -250) {
 				g.pop_top_game_state();
 				g.push_game_state(DiveGameState.cons(g));
-				g._camerac.camera_shake(new Vector2(-1.7f,2.1f),80,400, 1/300.0f);
+				g._camerac.camera_shake(new Vector2(-1.7f,2.1f),80,400, 1/100.0f);
 				g._camerac.camera_motion_blur(new Vector3(0,500,500), 60.0f);
 				g._camerac.camera_blur(45.0f);
 			}

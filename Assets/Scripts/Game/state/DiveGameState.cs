@@ -90,7 +90,7 @@ public class DiveGameState : GameStateBase {
 			);
 			if (g._player._u_y < -1000) {
 				_params._state = State.Gameplay;
-				g._camerac.set_zoom_speed(1/100.0f);
+				g._camerac.set_zoom_speed(1/20.0f);
 				g._camerac.set_camera_follow_speed(1/40.0f);
 				g._camerac.set_target_zoom(1500);
 			}

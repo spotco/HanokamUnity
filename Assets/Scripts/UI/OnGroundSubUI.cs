@@ -1,8 +1,8 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class OnGroundSubUI : GameUISubUI {
-	public static OnGroundSubUI cons(GameUI ui, SPNode parent) {
+	public static OnGroundSubUI cons(UIRoot ui, SPNode parent) {
 		return (new OnGroundSubUI()).i_cons(ui,parent);
 	}
 	
@@ -11,7 +11,7 @@ public class OnGroundSubUI : GameUISubUI {
 	private SPNode _gameplay_ui_root;
 	private OnGroundSubUI_JumpChargeUI _jump_charge_ui_root;
 				
-	private OnGroundSubUI i_cons(GameUI ui, SPNode parent) {
+	private OnGroundSubUI i_cons(UIRoot ui, SPNode parent) {
 		_root = SPNode.cons_node();
 		parent.add_child(_root);
 		_root.set_name("OnGroundSubUI");
@@ -50,14 +50,14 @@ public class OnGroundSubUI : GameUISubUI {
 }
 
 public class OnGroundSubUI_JumpChargeUI : SPGameUpdateable {
-	public static OnGroundSubUI_JumpChargeUI cons(GameUI ui, SPNode parent) {
+	public static OnGroundSubUI_JumpChargeUI cons(UIRoot ui, SPNode parent) {
 		return (new OnGroundSubUI_JumpChargeUI()).i_cons(ui,parent);
 	}
 	
 	private SPNode _root;
 	private SPSprite _charge_bar_bg,_charge_bar_fill;
 	
-	private OnGroundSubUI_JumpChargeUI i_cons(GameUI ui, SPNode parent) {
+	private OnGroundSubUI_JumpChargeUI i_cons(UIRoot ui, SPNode parent) {
 		_root = SPNode.cons_node();
 		parent.add_child(_root);
 		_root.set_name("_jumpcharge_ui_root");

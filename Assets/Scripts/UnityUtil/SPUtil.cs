@@ -101,7 +101,7 @@ public class SPUtil {
 	}
 
 	public static float dt_scale_get() {
-		return (Time.deltaTime) / (1/60.0f);
+		return (Time.deltaTime) / (1 / 60.0f);
 	}
 
 	public static Rect texture_default_rect(string key) {
@@ -111,7 +111,7 @@ public class SPUtil {
 	public static float sec_to_tick(float sec) {
 		return (1 / 60.0f) / sec;
 	}
-	public static float drpt(float from, float to, float fric) {
+	public static float drpt(float start, float to, float fric) {
 		// y = e ^ (-a * timescale)
 		fric = 1 - fric;
 		float a = -Mathf.Log(fric);
@@ -216,8 +216,8 @@ public class SPUtil {
 	}
 	
 	public static float running_avg(float avg, float val, float ct) {
-		avg -= avg / ct;
-		avg += val / ct;
+		avg -= (avg / ct) * SPUtil.dt_scale_get();
+		avg += (val / ct) * SPUtil.dt_scale_get();
 		return avg;
 	}
 	

@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 
 public interface SPParticle {
-	void i_update(Object context);
-	bool should_remove(Object context);
-	void do_remove(Object context);
+	void i_update(System.Object context);
+	bool should_remove(System.Object context);
+	void do_remove(System.Object context);
 }
 public abstract class SPGameEngineParticle : SPParticle, SPGameUpdateable, SPGameHierarchyElement {
-	public void i_update(Object context) { this.i_update(context as GameEngineScene); }
-	public bool should_remove(Object context) { return this.should_remove(context as GameEngineScene); }
-	public void do_remove(Object context) { this.do_remove(context as GameEngineScene); }
+	public void i_update(System.Object context) { this.i_update(context as GameEngineScene); }
+	public bool should_remove(System.Object context) { return this.should_remove(context as GameEngineScene); }
+	public void do_remove(System.Object context) { this.do_remove(context as GameEngineScene); }
 	
 	public virtual void i_update(GameEngineScene g) { throw new System.Exception(this.GetType()+" must Implement i_update(g)"); }
 	public virtual bool should_remove(GameEngineScene g) { throw new System.Exception(this.GetType()+" must Implement should_remove(g)"); }
@@ -30,7 +30,7 @@ public class SPParticleSystem<T> where T : SPParticle {
 	}
 
 	public virtual void add_particle(T p) { _to_add.Add(p); }
-	public virtual void i_update(Object context) {
+	public virtual void i_update(System.Object context) {
 		for (int i = 0; i < _to_add.Count; i++) {
 			T itr = _to_add[i];
 			_particles.Add(itr);

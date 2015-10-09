@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-public class ControlManager : SPGameUpdateable {
+public class ControlManager : SPMainUpdateable {
 	
 	public enum Control {
 		MoveLeft,
@@ -58,11 +58,7 @@ public class ControlManager : SPGameUpdateable {
 		return this;
 	}
 	
-	public void i_update(GameEngineScene g) {
-		/*
-		Cursor.visible = false;
-		Cursor.lockState = CursorLockMode.Locked;
-		*/
+	public void i_update() {
 		for (int i_test = 0; i_test < _controls_to_test.Count; i_test++) {
 			Control itr_test = _controls_to_test[i_test];
 			
@@ -87,20 +83,20 @@ public class ControlManager : SPGameUpdateable {
 		bool frame_is_move_y = false;
 		Vector2 move_mag = Vector2.zero;
 		if (this.get_control_down(Control.MoveLeft)) {
-			move_mag.x = SPUtil.drpt(_move_vec.x,-1,1/20.0f);
+			move_mag.x = SPUtil.drpt(_move_vec.x,-1,1/10.0f);
 			frame_is_move_x = true;
 		} else if (this.get_control_down(Control.MoveRight)) {
-			move_mag.x = SPUtil.drpt(_move_vec.x,1,1/20.0f);
+			move_mag.x = SPUtil.drpt(_move_vec.x,1,1/10.0f);
 			frame_is_move_x = true;
 		} else {
 			move_mag.x = 0;
 		}
 		
 		if (this.get_control_down(Control.MoveUp)) {
-			move_mag.y = SPUtil.drpt(_move_vec.y,1,1/20.0f);
+			move_mag.y = SPUtil.drpt(_move_vec.y,1,1/10.0f);
 			frame_is_move_y = true;
 		} else if (this.get_control_down(Control.MoveDown)) {
-			move_mag.y = SPUtil.drpt(_move_vec.y,-1,1/20.0f);
+			move_mag.y = SPUtil.drpt(_move_vec.y,-1,1/10.0f);
 			frame_is_move_y = true;
 		} else {
 			move_mag.y = 0;

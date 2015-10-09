@@ -9,32 +9,29 @@ public abstract class GameUISubUI : SPGameUpdateable {
 	public virtual bool should_show(GameEngineScene g) { return false; }
 }
 
-public class GameUI : SPGameUpdateable {
+public class UIRoot : SPGameUpdateable {
 
-	public static GameUI cons(GameEngineScene g) {
-		return (new GameUI()).i_cons(g);
+	public static UIRoot cons() {
+		return (new UIRoot()).i_cons();
 	}
 	
 	public SPNode _root;
-	public GameUICursor _cursor;
 	public SPSprite _blur_cover;
-	private List<GameUISubUI> _sub_uis;
+	private List<GameUISubUI> _game_sub_uis;
 	
-	public GameUI i_cons(GameEngineScene g) {
+	public UIRoot i_cons() {
 		_root = SPNode.cons_node();
 		_root.transform.SetParent(GameMain._context._game_camera.transform);
 		_root.set_u_pos(0,0);
 		_root.set_u_z(1000);
-		_root.set_name("GameUI");
+		_root.set_name("UIRoot");
 		_root.set_manual_sort_z_order(GameAnchorZ.HUD_BASE);
 		
-		_cursor = GameUICursor.cons(_root);
-		
-		_sub_uis = new List<GameUISubUI>() {
+		_game_sub_uis = new List<GameUISubUI>() {
 			OnGroundSubUI.cons(this,_root)
 		};
 		
-		g._camerac.create_blur_texture(this);
+		GameMain._context._camerac.create_blur_texture(this);
 		
 		return this;
 	}
@@ -56,9 +53,8 @@ public class GameUI : SPGameUpdateable {
 	}
 	
 	public void i_update(GameEngineScene g) {
-		_cursor.i_update(g);
-		for (int i = 0; i < _sub_uis.Count; i++) {
-			GameUISubUI itr = _sub_uis[i];
+		for (int i = 0; i < _game_sub_uis.Count; i++) {
+			GameUISubUI itr = _game_sub_uis[i];
 			if (itr.should_show(g)) {
 				if (!itr._is_showing) {
 					itr.on_show();

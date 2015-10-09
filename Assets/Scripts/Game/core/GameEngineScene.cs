@@ -10,21 +10,26 @@ public interface SPGameHierarchyElement {
 
 public class GameEngineScene : SPScene {
 	
-	[SerializeField] public bool _camera_active;
-	
 	public static GameEngineScene cons() {
-		GameEngineScene rtv = GameMain._context.gameObject.AddComponent<GameEngineScene>();
-		return rtv.i_cons();
+		return (new GameEngineScene()).i_cons();
 	}
 	
 	private SPNode _root;
+	public override void set_enabled(bool val) {
+		_root.set_enabled(val);
+		if (val) {
+			_camerac.SetGameEngineSceneDefaults();
+		}
+	}
 	
-	public GameUI _game_ui;
 	public BGVillage _bg_village;
 	public BGSky _bg_sky;
 	public BGWater _bg_water;
-	public GameCameraController _camerac;
-	public ControlManager _controls;
+	
+	public GameCameraController _camerac { get { return GameMain._context._camerac; } }
+	public ControlManager _controls { get { return GameMain._context._controls; } }
+	public UIRoot _game_ui { get { return GameMain._context._game_ui; } }
+	
 	public PlayerCharacter _player;
 	public DelayActionQueue _delayed_actions;
 
@@ -43,14 +48,9 @@ public class GameEngineScene : SPScene {
 		_root.set_name("GameEngineScene");
 	
 		__cached_viewbox_dirty = true;
-		_camera_active = true;
 		
 		_delayed_actions = DelayActionQueue.cons();
 		_game_state_stack = new List<GameStateBase>(){ IdleGameState.cons() };
-		_camerac = GameCameraController.cons(this);
-		_game_ui = GameUI.cons(this);
-		
-		_controls = ControlManager.cons();
 
 		_bg_village = BGVillage.cons(this);
 		_bg_sky = BGSky.cons(this);
@@ -87,9 +87,12 @@ public class GameEngineScene : SPScene {
 	}
 	
 	public override void i_update() {
+	
+		if (Input.GetKeyUp(KeyCode.P)) {
+			GameMain._context.push_scene(ShopScene.cons());
+		}
+	
 		__cached_viewbox_dirty = true;
-		_controls.i_update(this);
-		_camerac.i_update(this);
 		_delayed_actions.i_update(this);
 		_particles.i_update(this);
 		this.get_top_game_state().i_update(this);

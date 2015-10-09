@@ -1,8 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-public class GameMain : SPBaseBehavior {
+public interface SPMainUpdateable {
+	void i_update();
+}
 
+public class GameMain : SPBaseBehavior {
 	/**
 	TODO--
 	dive mode
@@ -15,6 +18,8 @@ public class GameMain : SPBaseBehavior {
 	**/
 
 	public static GameMain _context;
+	
+	[SerializeField] public bool _camera_active;
 
 	[SerializeField] public Camera _game_camera;
 	[SerializeField] public Camera _ui_camera;
@@ -25,6 +30,9 @@ public class GameMain : SPBaseBehavior {
 	[SerializeField] public Camera _overlay_camera;
 	[System.NonSerialized] public ObjectPool _objpool;
 	
+	[System.NonSerialized] public UIRoot _game_ui;
+	[System.NonSerialized] public GameCameraController _camerac;
+	[System.NonSerialized] public ControlManager _controls;
 	[System.NonSerialized] public TextureResource _tex_resc;
 	[System.NonSerialized] public FileCache _file_cache;
 	[System.NonSerialized] public SPDebugRender _debug_render;
@@ -34,11 +42,12 @@ public class GameMain : SPBaseBehavior {
 	private const float ROOT_SCF = 0.1f;
 
 	public override void Start () {
-
 		Application.targetFrameRate = 30;
 		this.transform.localScale = new Vector3(ROOT_SCF,ROOT_SCF,ROOT_SCF);
 		
 		_context = this;
+		
+		_controls = ControlManager.cons();
 		_objpool = ObjectPool.cons();
 		_tex_resc = TextureResource.cons();
 		_file_cache = FileCache.cons();
@@ -117,6 +126,10 @@ public class GameMain : SPBaseBehavior {
 		_debug_render = (SPDebugRender.cons());
 		_game_camera.gameObject.AddComponent<CameraRenderHookDispatcher>()._delegate = _debug_render;
 	
+		_camerac = GameCameraController.cons();
+		_camera_active = true;
+		_game_ui = UIRoot.cons();
+	
 		this.push_scene(GameEngineScene.cons());
 	}
 	
@@ -124,19 +137,21 @@ public class GameMain : SPBaseBehavior {
 		return _scene_stack[_scene_stack.Count-1];
 	}
 	public void push_scene(SPScene scene) {
-		for (int i = 0; i < _scene_stack.Count; i++) {
-			_scene_stack[i].set_enabled(false);
+		if (_scene_stack.Count-1 >= 0) {
+			_scene_stack[_scene_stack.Count-1].set_enabled(false);
 		}
 		_scene_stack.Add(scene);
 		scene.set_enabled(true);
 	}
-	public void pop_scene(SPScene scene) {
-		SPScene top_scene = this.get_top_scene();
-		top_scene.do_remove();
+	public void pop_scene() {
+		this.get_top_scene().do_remove();
 		_scene_stack.RemoveAt(_scene_stack.Count-1);
+		this.get_top_scene().set_enabled(true);
 	}
 
 	public override void Update () {
-		_current_scene.i_update(dt_scale);
+		_controls.i_update();
+		_camerac.i_update();
+		this.get_top_scene().i_update();
 	}
 }
