@@ -111,10 +111,15 @@ public class SPUtil {
 	public static float sec_to_tick(float sec) {
 		return (1 / 60.0f) / sec;
 	}
-	public static float drpt(float a, float b, float fric) {
-		float deltaf = (b - a);
-		deltaf *= Mathf.Pow(fric,1/SPUtil.dt_scale_get());
-		return a + deltaf;
+	public static float drpt(float from, float to, float fric) {
+		// y = e ^ (-a * timescale)
+		fric = 1 - fric;
+		float a = -Mathf.Log(fric);
+		float y = 1 - Mathf.Exp(-a * SPUtil.dt_scale_get());
+		
+		// rtv = start + (to - start) * timescaled_friction
+		float delta = (to - start) * y;
+		return start + delta;
 	}
 	public static float lerp(float a, float b, float t) {
 		return a + (b - a) * t;
