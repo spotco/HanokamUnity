@@ -26,7 +26,7 @@ public class RTex {
 	public static string SPRITER_HANOKA_SWORD = "character/hanoka/hanoka_sword";
 	public static string SPRITER_HANOKA_BOW = "character/hanoka/hanoka_bow";
 	public static string SPRITER_HANOKA_REDGARB = "character/hanoka/hanoka_armors/hanoka_player_redgarb";
-	public static string SPRITER_BOY = "character/boy/boy";
+	public static string SPRITER_BOY = "character/Boy/boy";
 	public static string SPRITER_SHOPKEEP = "character/shopkeep/shopkeep";
 	
 	public static string SHOP_SHOPBG = "shop/shopbg";
