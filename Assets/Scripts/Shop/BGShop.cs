@@ -11,6 +11,8 @@ public class BGShop : SPShopUpdateable, SPNodeHierarchyElement {
 	private SpriterNode _shopkeeper;
 	private SpriterNode _player;
 	
+	private SPSpriteAnimator _lamp_anim;
+	
 	public BGShop i_cons() {
 		_root = SPNode.cons_node();
 		_root.set_name("BGShop");
@@ -84,6 +86,29 @@ public class BGShop : SPShopUpdateable, SPNodeHierarchyElement {
 			_player.set_img_u_pos(19,191);
 		}
 		
+		{
+			SPSprite animated_lamp = SPSprite.cons_sprite_texkey_texrect(RTex.SHOP_SHOPBG,FileCache.inst().get_texrect(RTex.SHOP_SHOPBG,"Shop Store Flame Anim0000.png"));
+			animated_lamp.set_name("animated_lamp");
+			_root.add_child(animated_lamp);
+			animated_lamp.set_manual_sort_z_order(GameAnchorZ.SHOP_FG);
+			animated_lamp.set_u_pos(-270,93);
+			animated_lamp.set_u_z(-18);
+			animated_lamp.set_scale(1.75f);
+			
+			_lamp_anim = SPSpriteAnimator.cons(animated_lamp);
+			_lamp_anim.add_anim(
+				"play",
+				FileCache.inst().get_rects_list(
+					RTex.SHOP_SHOPBG,
+					"Shop Store Flame Anim000%d.png",
+					0,
+					8
+				),
+				6.0f);
+			_lamp_anim.play_anim("play");
+			
+		}
+		
 		return this;
 	}
 	
@@ -92,7 +117,7 @@ public class BGShop : SPShopUpdateable, SPNodeHierarchyElement {
 	}
 	
 	public void i_update(ShopScene g) {
-	
+		_lamp_anim.i_update();
 	}
 	
 }
