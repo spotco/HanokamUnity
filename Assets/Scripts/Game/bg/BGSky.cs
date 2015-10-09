@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-public class BGSky : SPGameUpdateable {
+public class BGSky : SPGameUpdateable, SPGameHierarchyElement {
 
 	private SPNode _root;
 	private SPSprite _sky_bg;
@@ -16,6 +16,10 @@ public class BGSky : SPGameUpdateable {
 
 	public static BGSky cons(GameEngineScene g) {
 		return (new BGSky()).i_cons(g);
+	}
+	
+	public void add_to_parent(SPNode parent) {
+		parent.add_child(_root);
 	}
 	
 	public BGSky i_cons(GameEngineScene g) {

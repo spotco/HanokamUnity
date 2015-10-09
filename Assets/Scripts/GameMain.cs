@@ -19,16 +19,17 @@ public class GameMain : SPBaseBehavior {
 	[SerializeField] public Camera _game_camera;
 	[SerializeField] public Camera _ui_camera;
 
-	public RenderTexture _game_camera_out;
-	public RenderTexture _ui_camera_out;
+	[System.NonSerialized] public RenderTexture _game_camera_out;
+	[System.NonSerialized] public RenderTexture _ui_camera_out;
 
 	[SerializeField] public Camera _overlay_camera;
 	[System.NonSerialized] public ObjectPool _objpool;
-
-	private SPScene _current_scene;
+	
 	[System.NonSerialized] public TextureResource _tex_resc;
-	public FileCache _file_cache;
-	public SPDebugRender _debug_render;
+	[System.NonSerialized] public FileCache _file_cache;
+	[System.NonSerialized] public SPDebugRender _debug_render;
+	
+	private List<SPScene> _scene_stack = new List<SPScene>();
 
 	private const float ROOT_SCF = 0.1f;
 
@@ -112,15 +113,30 @@ public class GameMain : SPBaseBehavior {
 
 		_ui_camera.cullingMask = (1 << RLayer.get_layer(RLayer.UI));
 		_overlay_camera.cullingMask = (1 << RLayer.get_layer(RLayer.OUTPUT));
-		_current_scene = GameEngineScene.cons();
-		
 		
 		_debug_render = (SPDebugRender.cons());
 		_game_camera.gameObject.AddComponent<CameraRenderHookDispatcher>()._delegate = _debug_render;
+	
+		this.push_scene(GameEngineScene.cons());
+	}
+	
+	public SPScene get_top_scene() {
+		return _scene_stack[_scene_stack.Count-1];
+	}
+	public void push_scene(SPScene scene) {
+		for (int i = 0; i < _scene_stack.Count; i++) {
+			_scene_stack[i].set_enabled(false);
+		}
+		_scene_stack.Add(scene);
+		scene.set_enabled(true);
+	}
+	public void pop_scene(SPScene scene) {
+		SPScene top_scene = this.get_top_scene();
+		top_scene.do_remove();
+		_scene_stack.RemoveAt(_scene_stack.Count-1);
 	}
 
 	public override void Update () {
-		float dt_scale = (Time.deltaTime)/(1/60.0f);
 		_current_scene.i_update(dt_scale);
 	}
 }

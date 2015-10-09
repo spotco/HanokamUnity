@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-public class BGVillage : SPGameUpdateable {
+public class BGVillage : SPGameUpdateable, SPGameHierarchyElement {
 
 	private SPNode _root;
 	public SPSprite _docks, _docks_front, _bldg_1, _bldg_2, _bldg_3, _bldg_4;
@@ -12,6 +12,10 @@ public class BGVillage : SPGameUpdateable {
 
 	public static BGVillage cons(GameEngineScene g) {
 		return (new BGVillage()).i_cons(g);
+	}
+	
+	public void add_to_parent(SPNode parent) {
+		parent.add_child(_root);
 	}
 
 	public BGVillage i_cons(GameEngineScene g) {

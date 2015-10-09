@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-public class PlayerCharacter : SPGameUpdateable, SPHitPolyOwner {
+public class PlayerCharacter : SPGameUpdateable, SPHitPolyOwner, SPGameHierarchyElement {
 	
 	public static PlayerCharacter cons(GameEngineScene g) {
 		return (new PlayerCharacter()).i_cons(g);
@@ -27,6 +27,10 @@ public class PlayerCharacter : SPGameUpdateable, SPHitPolyOwner {
 		_root.add_child(_img);
 		
 		return this;
+	}
+	
+	public void add_to_parent(SPNode parent) {
+		parent.add_child(_root);
 	}
 
 	public PlayerCharacter set_manual_sort_z_order(int val) { _img.set_manual_sort_z_order(val); return this; }

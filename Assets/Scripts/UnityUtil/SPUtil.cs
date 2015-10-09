@@ -100,12 +100,8 @@ public class SPUtil {
 		return new SPRange(){ _min = -500, _max = 500 };
 	}
 
-	private static float _dt_scale = 1;
-	public static void dt_scale_set(float val) {
-		_dt_scale = val;
-	}
 	public static float dt_scale_get() {
-		return _dt_scale;
+		return (Time.deltaTime) / (1/60.0f);
 	}
 
 	public static Rect texture_default_rect(string key) {

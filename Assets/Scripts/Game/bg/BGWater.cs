@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-public class BGWater : SPGameUpdateable, CameraRenderHookDelegate {
+public class BGWater : SPGameUpdateable, CameraRenderHookDelegate, SPGameHierarchyElement {
 
 	private SPNode _root;
 
@@ -18,6 +18,10 @@ public class BGWater : SPGameUpdateable, CameraRenderHookDelegate {
 	
 	public static BGWater cons(GameEngineScene g) {
 		return (new BGWater()).i_cons(g);
+	}
+	
+	public void add_to_parent(SPNode parent) {
+		parent.add_child(_root);
 	}
 	
 	public BGWater i_cons(GameEngineScene g) {

@@ -17,6 +17,8 @@ public class GameEngineScene : SPScene {
 		return rtv.i_cons();
 	}
 	
+	private SPNode _root;
+	
 	public GameUI _game_ui;
 	public BGVillage _bg_village;
 	public BGSky _bg_sky;
@@ -37,6 +39,9 @@ public class GameEngineScene : SPScene {
 	private List<GameStateBase> _game_state_stack;
 
 	private GameEngineScene i_cons() {
+		_root = SPNode.cons_node();
+		_root.set_name("GameEngineScene");
+	
 		__cached_viewbox_dirty = true;
 		_camera_active = true;
 		
@@ -50,13 +55,20 @@ public class GameEngineScene : SPScene {
 		_bg_village = BGVillage.cons(this);
 		_bg_sky = BGSky.cons(this);
 		_bg_water = BGWater.cons(this);
+		
+		_bg_village.add_to_parent(_root);
+		_bg_sky.add_to_parent(_root);
+		_bg_water.add_to_parent(_root);
+		
 		_bg_elements = new List<SPGameUpdateable>() {_bg_village,_bg_sky,_bg_water};
 		
 		_player = PlayerCharacter.cons(this);
 		_player.set_u_pos(0,0);
+		_player.add_to_parent(_root);
 
 		_particle_root = SPNode.cons_node();
 		_particle_root.set_name("_particle_root");
+		_root.add_child(_particle_root);
 		_particles = SPParticleSystem<SPGameEngineParticle>.cons();
 		
 		_game_state_stack.Add(OnGroundGameState.cons(this));
@@ -74,8 +86,7 @@ public class GameEngineScene : SPScene {
 		_game_state_stack.Add(state);
 	}
 	
-	public override void i_update(float dt_scale) {
-		SPUtil.dt_scale_set(dt_scale);
+	public override void i_update() {
 		__cached_viewbox_dirty = true;
 		_controls.i_update(this);
 		_camerac.i_update(this);
