@@ -33,7 +33,7 @@ public class BGWaterLineAbove : SPGameUpdateable {
 			SPUtil.texture_default_rect(RTex.BG_WATER_TOP_WATERLINEGRAD)
 		);
 		_watergrad.set_anchor_point(0.5f,0.0f);
-		_watergrad.set_u_pos(0,23);
+		_watergrad.set_u_pos(0,18);
 		_watergrad.set_scale(1.5f);
 		_watergrad.set_opacity(0.45f);
 		_watergrad.set_name("_watergrad");

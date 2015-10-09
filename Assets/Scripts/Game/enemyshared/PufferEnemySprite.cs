@@ -1,7 +1,7 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections.Generic;
 
-public class PufferEnemySprite : GenericPooledObject, SPGameHierarchyElement, SPGameUpdateable {
+public class PufferEnemySprite : GenericPooledObject, SPNodeHierarchyElement, SPGameUpdateable {
 	public const string ANIM_ATTACK = "ANIM_ATTACK";
 	public const string ANIM_DIE = "ANIM_DIE";
 	public const string ANIM_FOLLOW = "ANIM_FOLLOW";

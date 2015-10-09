@@ -1,6 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
+public interface SPNodeHierarchyElement {
+	void add_to_parent(SPNode parent);
+}
+
 public class SPNode : SPBaseBehavior {
 
 	protected static T generic_cons<T>() where T : SPNode {

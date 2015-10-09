@@ -1,7 +1,7 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections.Generic;
 
-public class BGVillage : SPGameUpdateable, SPGameHierarchyElement {
+public class BGVillage : SPGameUpdateable, SPNodeHierarchyElement {
 
 	private SPNode _root;
 	public SPSprite _docks, _docks_front, _bldg_1, _bldg_2, _bldg_3, _bldg_4;

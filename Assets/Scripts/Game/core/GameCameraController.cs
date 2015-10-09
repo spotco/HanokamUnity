@@ -31,9 +31,7 @@ public class GameCameraController : SPMainUpdateable {
 		_motion_blur.excludeLayers.value = 1 << RLayer.get_layer(RLayer.UI);
 		_bloom.enabled = true;
 		_vignette.enabled = true;
-		_has_camera_motion_blur = false;
-
-		
+		_has_camera_motion_blur = false;		
 		
 		_game_camera_blur_copy = new RenderTexture(
 			GameMain._context._game_camera_out.width / 4,
@@ -58,6 +56,24 @@ public class GameCameraController : SPMainUpdateable {
 		_camera_y = new DrptVal() {
 			_current = 250,
 			_target = 250,
+			_drptval = 1/10.0f
+		};
+		this.apply_camera_values();
+	}
+	public void SetShopSceneDefaults() {
+		_camera_zoom = new DrptVal() {
+			_current = 1500,
+			_target = 1500,
+			_drptval = 1/10.0f
+		};
+		_camera_x = new DrptVal() {
+			_current = 0,
+			_target = 0,
+			_drptval = 1/10.0f
+		};
+		_camera_y = new DrptVal() {
+			_current = 0,
+			_target = 0,
 			_drptval = 1/10.0f
 		};
 		this.apply_camera_values();
@@ -140,7 +156,7 @@ public class GameCameraController : SPMainUpdateable {
 		_last_has_blur = false;
 	}
 
-	public void i_update() {	
+	public void i_update() {
 		if (GameMain._context._camera_active) {
 			_camera_shake_ct = Mathf.Max(0,_camera_shake_ct - SPUtil.dt_scale_get());
 			_camera_shake_theta = (_camera_shake_theta + SPUtil.dt_scale_get() * 0.1f) % (2 * Mathf.PI);

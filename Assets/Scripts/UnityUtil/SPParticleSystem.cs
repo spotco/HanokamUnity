@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections.Generic;
 
 public interface SPParticle {
@@ -6,7 +6,7 @@ public interface SPParticle {
 	bool should_remove(System.Object context);
 	void do_remove(System.Object context);
 }
-public abstract class SPGameEngineParticle : SPParticle, SPGameUpdateable, SPGameHierarchyElement {
+public abstract class SPGameEngineParticle : SPParticle, SPGameUpdateable, SPNodeHierarchyElement {
 	public void i_update(System.Object context) { this.i_update(context as GameEngineScene); }
 	public bool should_remove(System.Object context) { return this.should_remove(context as GameEngineScene); }
 	public void do_remove(System.Object context) { this.do_remove(context as GameEngineScene); }

@@ -1,7 +1,7 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections.Generic;
 
-public class BGSky : SPGameUpdateable, SPGameHierarchyElement {
+public class BGSky : SPGameUpdateable, SPNodeHierarchyElement {
 
 	private SPNode _root;
 	private SPSprite _sky_bg;

@@ -1,7 +1,7 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections.Generic;
 
-public class BGWater : SPGameUpdateable, CameraRenderHookDelegate, SPGameHierarchyElement {
+public class BGWater : SPGameUpdateable, CameraRenderHookDelegate, SPNodeHierarchyElement {
 
 	private SPNode _root;
 

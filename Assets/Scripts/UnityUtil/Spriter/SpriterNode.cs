@@ -68,7 +68,7 @@ public class SpriterNode : SPNode, CameraRenderHookDelegate {
 			_rendertex = null;
 		}
 		if (_rendercam != null) {
-			Destroy(_rendercam);
+			Destroy(_rendercam.gameObject);
 			_rendercam = null;
 		}
 	}
@@ -394,9 +394,14 @@ public class SpriterNode : SPNode, CameraRenderHookDelegate {
 	}
 
 	public void set_img_scale(float sc) {
-		if (_rendered_img != null) {
-			_rendered_img.set_scale(sc);
-		}
+		if (_rendered_img != null) _rendered_img.set_scale(sc);
+	}
+	
+	public void set_img_u_pos(float x, float y) {
+		if (_rendered_img != null) _rendered_img.set_u_pos(x,y);
+	}
+	public void set_rendercam_u_pos(float x, float y) {
+		if (_rendercam != null) _rendercam.transform.localPosition = new Vector3(x,y,_rendercam.transform.localPosition.z);
 	}
 
 }

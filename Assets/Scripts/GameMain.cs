@@ -47,7 +47,6 @@ public class GameMain : SPBaseBehavior {
 		
 		_context = this;
 		
-		_controls = ControlManager.cons();
 		_objpool = ObjectPool.cons();
 		_tex_resc = TextureResource.cons();
 		_file_cache = FileCache.cons();
@@ -125,7 +124,7 @@ public class GameMain : SPBaseBehavior {
 		
 		_debug_render = (SPDebugRender.cons());
 		_game_camera.gameObject.AddComponent<CameraRenderHookDispatcher>()._delegate = _debug_render;
-	
+		_controls = ControlManager.cons();
 		_camerac = GameCameraController.cons();
 		_camera_active = true;
 		_game_ui = UIRoot.cons();

@@ -59,4 +59,10 @@ public class GameAnchorZ {
 	public const int BGSky_BG_ELE2 = -4998;
 
 	public const int BGSky_RepeatBG = -5000;
+	
+	public const int SHOP_FG = 5;
+	public const int SHOP_CHAR = 0;
+	public const int SHOP_TABLE = -3;
+	public const int SHOP_SHOPKEEPER = -4;
+	public const int SHOP_BG = -5;
 }

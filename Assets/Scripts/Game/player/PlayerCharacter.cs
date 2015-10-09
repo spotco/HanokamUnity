@@ -1,7 +1,7 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections.Generic;
 
-public class PlayerCharacter : SPGameUpdateable, SPHitPolyOwner, SPGameHierarchyElement {
+public class PlayerCharacter : SPGameUpdateable, SPHitPolyOwner, SPNodeHierarchyElement {
 	
 	public static PlayerCharacter cons(GameEngineScene g) {
 		return (new PlayerCharacter()).i_cons(g);

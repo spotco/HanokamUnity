@@ -4,9 +4,6 @@ using System.Collections.Generic;
 public interface SPGameUpdateable {
 	void i_update(GameEngineScene g);
 }
-public interface SPGameHierarchyElement {
-	void add_to_parent(SPNode parent);
-}
 
 public class GameEngineScene : SPScene {
 	
@@ -90,6 +87,7 @@ public class GameEngineScene : SPScene {
 	
 		if (Input.GetKeyUp(KeyCode.P)) {
 			GameMain._context.push_scene(ShopScene.cons());
+			return;
 		}
 	
 		__cached_viewbox_dirty = true;
