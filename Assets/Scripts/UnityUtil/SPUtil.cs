@@ -92,8 +92,30 @@ public class SPUtil {
 		return new Vector2(GameMain._context._game_camera.rect.x * Screen.width,GameMain._context._game_camera.rect.y * Screen.height);
 	}
 
-	public static Vector2 pct_of_obj_u_with_anchorpt(SPSprite obj, float x, float y) {
-		return new Vector2(obj.texrect().width*(x-obj.anchorpoint().x),obj.texrect().height*(y-obj.anchorpoint().y));
+	public static Vector2 pct_of_obj(SPSprite obj, float x, float y) {
+		return new Vector2(
+			obj.texrect().width*(x-obj.anchorpoint().x),
+			obj.texrect().height*(y-obj.anchorpoint().y)
+		);
+	}
+	
+	public static Vector2 inverse_scale(SPNode obj) {
+		Vector2 rtv = new Vector2(1,1);
+		SPNode itr = obj;
+		while (itr != null) {
+			rtv.x /= itr.scale_x();
+			rtv.y /= itr.scale_y();
+			itr = itr._parent;
+		}
+		return rtv;
+	}
+	
+	public static Vector2 fit_to_rect(SPSprite obj, SPHitRect rect) {
+		Vector2 obj_size = obj.texrect().size;
+		return new Vector2(
+			(rect._x2 - rect._x1)/obj_size.x,
+			(rect._y2 - rect._y1)/obj_size.y
+		);
 	}
 
 	public static SPRange get_horiz_world_bounds() {

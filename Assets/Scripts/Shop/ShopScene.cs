@@ -28,9 +28,10 @@ public class ShopScene : SPScene {
 	}
 
 	public override void i_update(){
+		GameMain._context._game_ui.i_update(this);
 		_bg_shop.i_update(this);
 		
-		if (Input.GetKeyUp(KeyCode.P)) {
+		if (GameMain._context._controls.get_control_just_released(ControlManager.Control.MoveRight)) {
 			GameMain._context.pop_scene();
 			return;
 		}

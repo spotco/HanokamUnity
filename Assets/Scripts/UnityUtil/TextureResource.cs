@@ -34,6 +34,8 @@ public class RTex {
 	
 	public static string DIALOG_UI = "dialog/dialog_ui_ss";
 	
+	public static string FLAGANIM = "hud/flaganim";
+	
 	public static string PARTICLES_SPRITESHEET = "effects/particles_spritesheet";
 	public static string FX_SPLASH = "effects/ss_splash_fx";
 	

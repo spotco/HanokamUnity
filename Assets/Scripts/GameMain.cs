@@ -141,11 +141,13 @@ public class GameMain : SPBaseBehavior {
 		}
 		_scene_stack.Add(scene);
 		scene.set_enabled(true);
+		_game_ui.on_scene_transition();
 	}
 	public void pop_scene() {
 		this.get_top_scene().do_remove();
 		_scene_stack.RemoveAt(_scene_stack.Count-1);
 		this.get_top_scene().set_enabled(true);
+		_game_ui.on_scene_transition();
 	}
 
 	public override void Update () {

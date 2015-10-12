@@ -63,6 +63,7 @@ public class SpriterNode : SPNode, CameraRenderHookDelegate {
 			_rendered_img.repool();
 			_rendered_img = null;
 		}
+		/*
 		if (_rendertex != null) {
 			_rendertex.Release();
 			_rendertex = null;
@@ -71,6 +72,7 @@ public class SpriterNode : SPNode, CameraRenderHookDelegate {
 			Destroy(_rendercam.gameObject);
 			_rendercam = null;
 		}
+		*/
 	}
 
 	public SPSprite _rendered_img;
@@ -84,24 +86,27 @@ public class SpriterNode : SPNode, CameraRenderHookDelegate {
 		_data = data;
 		_root_bone_holder = SPNode.cons_node().set_name("_root_bone_holder");
 		this.add_child(_root_bone_holder);
-
-		GameObject rendercam_obj = new GameObject("rendercam");
-		rendercam_obj.transform.parent = this.transform;
-		_rendercam = rendercam_obj.AddComponent<Camera>();
+		
+		if (_rendercam == null) {
+			GameObject rendercam_obj = new GameObject("rendercam");
+			rendercam_obj.transform.parent = this.transform;
+			_rendercam = rendercam_obj.AddComponent<Camera>();
+			CameraRenderHookDispatcher rendercam_hook_dispatcher = rendercam_obj.AddComponent<CameraRenderHookDispatcher>();
+			rendercam_hook_dispatcher._delegate = this;
+		}
 		_rendercam.transform.localPosition = new Vector3(0,135,-250.0f);
 		_rendercam.nearClipPlane = 0.1f;
 		_rendercam.farClipPlane = 10000.0f;
 		_rendercam.backgroundColor = new Color(0,0,0,0);
 		_rendercam.cullingMask = (1 << RLayer.get_layer(RLayer.SPRITER_NODE));
 
-		CameraRenderHookDispatcher rendercam_hook_dispatcher = rendercam_obj.AddComponent<CameraRenderHookDispatcher>();
-		rendercam_hook_dispatcher._delegate = this;
-
 		float max_of_widhei = Mathf.Max(SPUtil.game_screen().x,SPUtil.game_screen().y);
 		_rendercam.rect = new Rect(0,0,max_of_widhei/SPUtil.game_screen().x,max_of_widhei/SPUtil.game_screen().y);
-
-		_rendertex = new RenderTexture(256,256,16,RenderTextureFormat.ARGBFloat);
-		_rendertex.Create();
+		
+		if (_rendertex == null) {
+			_rendertex = new RenderTexture(256,256,16,RenderTextureFormat.ARGBFloat);
+			_rendertex.Create();
+		}
 		_rendertex.filterMode = FilterMode.Point;
 		_rendercam.targetTexture = _rendertex;
 

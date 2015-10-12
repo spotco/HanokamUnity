@@ -72,8 +72,8 @@ public class GameCameraController : SPMainUpdateable {
 			_drptval = 1/10.0f
 		};
 		_camera_y = new DrptVal() {
-			_current = 0,
-			_target = 0,
+			_current = -680,
+			_target = -680,
 			_drptval = 1/10.0f
 		};
 		this.apply_camera_values();

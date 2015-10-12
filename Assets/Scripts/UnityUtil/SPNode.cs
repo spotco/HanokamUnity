@@ -175,8 +175,7 @@ public class SPNode : SPBaseBehavior {
 	private void sort_children() {
 		for (int i = 0; i < _children.Count; i++ ){
 			SPNode itr = _children[i];
-			if (itr._has_set_manual_sort_z_order) {
-			} else {
+			if (!itr._has_set_manual_sort_z_order) {
 				itr.set_sort_z(_sort_z+(i+1));
 			}
 

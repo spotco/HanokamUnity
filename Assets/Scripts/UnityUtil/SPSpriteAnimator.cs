@@ -14,6 +14,7 @@ public class SPSpriteAnimator {
 	private float _ct;
 	private int _i;
 	private string _current_anim_name;
+	private int _anim_i_offset;
 
 	public static SPSpriteAnimator cons(SPSprite target) {
 		return (new SPSpriteAnimator()).i_cons(target);
@@ -36,6 +37,11 @@ public class SPSpriteAnimator {
 		};
 		return this;
 	}
+	
+	public SPSpriteAnimator set_anim_i_offset(int i) {
+		_anim_i_offset = i;
+		return this;
+	}
 
 	private bool _is_finished;
 	public bool is_finished() {
@@ -49,7 +55,7 @@ public class SPSpriteAnimator {
 		}
 		if (_current_anim_name != name || force) {
 			_current_anim_name = name;
-			_i = 0;
+			_i = _anim_i_offset;
 			_ct = this.current_anim()._duration;
 			if (_target != null) {
 				_target.set_tex_rect(this.current_frame());

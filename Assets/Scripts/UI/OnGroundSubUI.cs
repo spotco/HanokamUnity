@@ -2,8 +2,8 @@ using UnityEngine;
 using System.Collections;
 
 public class OnGroundSubUI : GameUISubUI {
-	public static OnGroundSubUI cons(UIRoot ui, SPNode parent) {
-		return (new OnGroundSubUI()).i_cons(ui,parent);
+	public static OnGroundSubUI cons(UIRoot ui) {
+		return (new OnGroundSubUI()).i_cons(ui);
 	}
 	
 	private SPNode _root;
@@ -11,9 +11,8 @@ public class OnGroundSubUI : GameUISubUI {
 	private SPNode _gameplay_ui_root;
 	private OnGroundSubUI_JumpChargeUI _jump_charge_ui_root;
 				
-	private OnGroundSubUI i_cons(UIRoot ui, SPNode parent) {
+	private OnGroundSubUI i_cons(UIRoot ui) {
 		_root = SPNode.cons_node();
-		parent.add_child(_root);
 		_root.set_name("OnGroundSubUI");
 		_root.set_enabled(false);
 		
@@ -21,6 +20,8 @@ public class OnGroundSubUI : GameUISubUI {
 		
 		return this;
 	}
+	
+	public override void add_to_parent(SPNode parent) { parent.add_child(_root); }
 	
 	public override void on_show() {
 		_root.set_enabled(true);
@@ -44,8 +45,12 @@ public class OnGroundSubUI : GameUISubUI {
 		}
 	}
 	
-	public override bool should_show(GameEngineScene g) { 
-		return g.get_top_game_state().get_state() == GameStateIdentifier.OnGround;
+	public override bool should_show() {
+		if (base.should_show()) {
+			GameEngineScene g = GameMain._context.get_top_scene() as GameEngineScene;
+			return g.get_top_game_state().get_state() == GameStateIdentifier.OnGround;
+		}
+		return false;	
 	}
 }
 
