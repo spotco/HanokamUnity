@@ -118,6 +118,8 @@ public class BGShop : SPShopUpdateable, SPNodeHierarchyElement {
 	
 	public void i_update(ShopScene g) {
 		_lamp_anim.i_update();
+		_shopkeeper.i_update();
+		_player.i_update();
 	}
 	
 }

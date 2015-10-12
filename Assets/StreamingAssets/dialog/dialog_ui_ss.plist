@@ -5,28 +5,6 @@
 	<key>frames</key>
 	<dict>
 		
-		<key>dialogue_icon.png</key>
-		<dict>
-			<key>aliases</key>
-			<array>
-			
-			</array>
-			<key>spriteColorRect</key>
-			<string>{{0, 0}, {64, 89}}</string>
-			<key>spriteOffset</key>
-			<string>{0, -0}</string>
-			<key>spriteSize</key>
-			<string>{64, 89}</string>
-			<key>spriteSourceSize</key>
-			<string>{64, 89}</string>
-			<key>spriteTrimmed</key>
-			<true/>
-			<key>textureRect</key>
-			<string>{{0, 243}, {64, 89}}</string>
-			<key>textureRotated</key>
-			<false/>
-		</dict>
-		
 		<key>dialogue_window.png</key>
 		<dict>
 			<key>aliases</key>
@@ -66,29 +44,29 @@
 			<key>spriteTrimmed</key>
 			<true/>
 			<key>textureRect</key>
-			<string>{{66, 333}, {250, 61}}</string>
+			<string>{{0, 403}, {250, 61}}</string>
 			<key>textureRotated</key>
 			<false/>
 		</dict>
 		
-		<key>enter_icon.png</key>
+		<key>enter_arrow.png</key>
 		<dict>
 			<key>aliases</key>
 			<array>
 			
 			</array>
 			<key>spriteColorRect</key>
-			<string>{{0, 0}, {64, 88}}</string>
+			<string>{{0, 0}, {210, 158}}</string>
 			<key>spriteOffset</key>
 			<string>{0, -0}</string>
 			<key>spriteSize</key>
-			<string>{64, 88}</string>
+			<string>{210, 158}</string>
 			<key>spriteSourceSize</key>
-			<string>{64, 88}</string>
+			<string>{210, 158}</string>
 			<key>spriteTrimmed</key>
 			<true/>
 			<key>textureRect</key>
-			<string>{{66, 243}, {64, 88}}</string>
+			<string>{{0, 243}, {210, 158}}</string>
 			<key>textureRotated</key>
 			<false/>
 		</dict>
@@ -110,7 +88,95 @@
 			<key>spriteTrimmed</key>
 			<true/>
 			<key>textureRect</key>
-			<string>{{0, 334}, {60, 70}}</string>
+			<string>{{418, 433}, {60, 70}}</string>
+			<key>textureRotated</key>
+			<false/>
+		</dict>
+		
+		<key>icon_back_overhead.png</key>
+		<dict>
+			<key>aliases</key>
+			<array>
+			
+			</array>
+			<key>spriteColorRect</key>
+			<string>{{0, 0}, {164, 202}}</string>
+			<key>spriteOffset</key>
+			<string>{0, -0}</string>
+			<key>spriteSize</key>
+			<string>{164, 202}</string>
+			<key>spriteSourceSize</key>
+			<string>{164, 202}</string>
+			<key>spriteTrimmed</key>
+			<true/>
+			<key>textureRect</key>
+			<string>{{252, 243}, {164, 202}}</string>
+			<key>textureRotated</key>
+			<false/>
+		</dict>
+		
+		<key>icon_dialogue.png</key>
+		<dict>
+			<key>aliases</key>
+			<array>
+			
+			</array>
+			<key>spriteColorRect</key>
+			<string>{{0, 0}, {89, 98}}</string>
+			<key>spriteOffset</key>
+			<string>{0, -0}</string>
+			<key>spriteSize</key>
+			<string>{89, 98}</string>
+			<key>spriteSourceSize</key>
+			<string>{89, 98}</string>
+			<key>spriteTrimmed</key>
+			<true/>
+			<key>textureRect</key>
+			<string>{{418, 243}, {89, 98}}</string>
+			<key>textureRotated</key>
+			<false/>
+		</dict>
+		
+		<key>icon_enemy.png</key>
+		<dict>
+			<key>aliases</key>
+			<array>
+			
+			</array>
+			<key>spriteColorRect</key>
+			<string>{{0, 0}, {84, 88}}</string>
+			<key>spriteOffset</key>
+			<string>{0, -0}</string>
+			<key>spriteSize</key>
+			<string>{84, 88}</string>
+			<key>spriteSourceSize</key>
+			<string>{84, 88}</string>
+			<key>spriteTrimmed</key>
+			<true/>
+			<key>textureRect</key>
+			<string>{{418, 343}, {84, 88}}</string>
+			<key>textureRotated</key>
+			<false/>
+		</dict>
+		
+		<key>icon_quest.png</key>
+		<dict>
+			<key>aliases</key>
+			<array>
+			
+			</array>
+			<key>spriteColorRect</key>
+			<string>{{0, 0}, {38, 98}}</string>
+			<key>spriteOffset</key>
+			<string>{0, -0}</string>
+			<key>spriteSize</key>
+			<string>{38, 98}</string>
+			<key>spriteSourceSize</key>
+			<string>{38, 98}</string>
+			<key>spriteTrimmed</key>
+			<true/>
+			<key>textureRect</key>
+			<string>{{212, 243}, {38, 98}}</string>
 			<key>textureRotated</key>
 			<false/>
 		</dict>

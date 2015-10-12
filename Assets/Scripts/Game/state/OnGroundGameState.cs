@@ -1,21 +1,29 @@
 using UnityEngine;
 using System.Collections.Generic;
 
+public interface OnGroundStateUpdateable {
+	void i_update(GameEngineScene g, OnGroundGameState state);
+}
+
 public class OnGroundGameState : GameStateBase {
 
 	public struct OnGroundGameStateParams {
-	public float _jump_charge_t;
-	public Vector2 _vel;
-	public static OnGroundGameStateParams cons() {
-		OnGroundGameStateParams rtv = new OnGroundGameStateParams();
-		return rtv;
+		public float _jump_charge_t;
+		public Vector2 _vel;
+		
+		public Vector2 _dialogue_focus_pos;
+		
+		public static OnGroundGameStateParams cons() {
+			OnGroundGameStateParams rtv = new OnGroundGameStateParams();
+			return rtv;
+		}
 	}
-}
 
 	public enum State {
 		Gameplay,
 		JumpCharge,
-		JumpInAir
+		JumpInAir,
+		InDialogue
 	}
 
 	public static OnGroundGameState cons(GameEngineScene g) {
@@ -24,19 +32,23 @@ public class OnGroundGameState : GameStateBase {
 	
 	public OnGroundGameStateParams _params;
 	public State _current_state;
+	public VillagerManager _villager_manager;
 	
 	public OnGroundGameState i_cons(GameEngineScene g) {
 		_params = OnGroundGameStateParams.cons();
 		_current_state = State.Gameplay;
 		g._camerac.set_zoom_speed(1/10.0f);
 		g._camerac.set_camera_follow_speed(1/30.0f);
+		_villager_manager = VillagerManager.cons(g);
 		return this;
 	}
 	
 	public override void i_update(GameEngineScene g) {
-
+		g._player.i_update(g);
+		
 		switch (_current_state) {
 		case State.Gameplay:{
+			_villager_manager.i_update(g,this);
 			g._player.set_manual_sort_z_order(GameAnchorZ.Player_Ground);
 			if (g._controls.is_move_x()) {
 				_params._vel.x = g._controls.get_move().x * 8.0f;
@@ -62,15 +74,7 @@ public class OnGroundGameState : GameStateBase {
 				g._player._u_x = SPUtil.get_horiz_world_bounds()._max;
 			}
 			
-			/*
-			Vector3 player_to_cursor_delta = SPUtil.vec_sub(g._game_ui._cursor.get_game_pos(),new Vector2(g._player._u_x,g._player._u_y));
-			player_to_cursor_delta.x = SPUtil.eclamp(player_to_cursor_delta.x,-400,400,new Vector2(0.25f,0),new Vector2(0.75f,1)) * 0.2f;
-			player_to_cursor_delta.y = SPUtil.eclamp(player_to_cursor_delta.y,-100,900,new Vector2(0.25f,0),new Vector2(0.75f,1)) * 0.2f;
-			*/
-			
 			g._camerac.set_target_zoom(1300);
-			//g._camerac.set_target_camera_focus_on_character(g,player_to_cursor_delta.x,player_to_cursor_delta.y);
-			//g._game_ui._cursor.set_enabled(true);
 			g._camerac.set_target_camera_focus_on_character(g,0,200);
 			
 			if (g._controls.get_control_just_pressed(ControlManager.Control.OnGround_Jump)) {
@@ -127,7 +131,20 @@ public class OnGroundGameState : GameStateBase {
 			}
 
 		} break;
+		case State.InDialogue: {
+			g._camerac.set_target_camera_focus_on_character(g,0,70);
+			g._camerac.set_target_zoom(500);
+			if (g._controls.get_control_just_released(ControlManager.Control.Chat)) {
+				_current_state = State.Gameplay;
+			}
+			
+		} break;
 		}
+	}
+	
+	public void notify_chat_with_villager(Villager villager) {
+		_current_state = State.InDialogue;
+		
 	}
 	
 	public override GameStateIdentifier get_state() {

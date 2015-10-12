@@ -157,7 +157,7 @@ public class SpriterNode : SPNode, CameraRenderHookDelegate {
 		this.update_timeline_keyframes();
 	}
 
-	public override void Update() {
+	public void i_update() {
 		_current_anim_time += Time.deltaTime * 1000 * _anim_playback_speed_mult;
 
 		if (_current_anim_time > _anim_duration) {

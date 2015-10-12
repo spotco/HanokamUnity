@@ -56,7 +56,7 @@ public class PlayerCharacter : SPGameUpdateable, SPHitPolyOwner, SPNodeHierarchy
 	}
 	
 	public void i_update(GameEngineScene g) {
-	
+		_img.i_update();
 	}
 	
 	public SPHitRect get_hit_rect() {

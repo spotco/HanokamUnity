@@ -11,6 +11,7 @@ public class ControlManager : SPMainUpdateable {
 		MoveDown,
 		OnGround_Jump,
 		Dash,
+		Chat,
 		None
 	}
 	private static bool control_is_pressed(Control test) {
@@ -31,6 +32,9 @@ public class ControlManager : SPMainUpdateable {
 			return Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow) || Input.GetKey(KeyCode.Keypad5);
 		}
 		case Control.Dash: {
+			return Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.Z);
+		}
+		case Control.Chat: {
 			return Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.Z);
 		}
 		}

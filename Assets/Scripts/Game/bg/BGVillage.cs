@@ -8,7 +8,7 @@ public class BGVillage : SPGameUpdateable, SPNodeHierarchyElement {
 	private List<BGReflection> _reflections;
 	private BGWaterLineAbove _waterlineabove;
 
-	private List<BaseVillager> _villagers = new List<BaseVillager>();
+	private List<Villager> _villagers = new List<Villager>();
 
 	public static BGVillage cons(GameEngineScene g) {
 		return (new BGVillage()).i_cons(g);
@@ -131,8 +131,14 @@ public class BGVillage : SPGameUpdateable, SPNodeHierarchyElement {
 
 		return this;
 	}
-
+	
+	
+	public List<Villager> get_villagers() {
+		return _villagers;
+	}
+	
 	private void test_display_characters() {
+		/*
 		{
 			SpriterData data = SpriterData.cons_data_from_spritesheetreaders(new List<SpriterJSONParser> { 
 				SpriterJSONParser.cons_from_texture_and_file(RTex.SPRITER_OLDMAN,RTex.SPRITER_OLDMAN),
@@ -144,8 +150,11 @@ public class BGVillage : SPGameUpdateable, SPNodeHierarchyElement {
 			test.set_name("OldMan_TEST");
 			test.set_u_pos(-130,225);
 			test.set_u_z(219);
+			
+			_villagers.Add(TestVillager.cons(test));
 			_root.add_child(test);
 		}
+		*/
 		{
 			SpriterData data = SpriterData.cons_data_from_spritesheetreaders(new List<SpriterJSONParser> { 
 				SpriterJSONParser.cons_from_texture_and_file(RTex.SPRITER_FISHGIRL,RTex.SPRITER_FISHGIRL),
@@ -155,10 +164,15 @@ public class BGVillage : SPGameUpdateable, SPNodeHierarchyElement {
 			test.p_play_anim("Idle",true);
 			test.set_manual_sort_z_order(GameAnchorZ.Player_Ground);
 			test.set_name("FishGirl_TEST");
-			test.set_u_pos(407,-7);
-			test.set_u_z(0);
-			_root.add_child(test);
+			
+			Villager tmp = Villager.cons(test);
+			tmp.set_u_pos(350,-7);
+			tmp.set_u_z(0);
+			
+			_villagers.Add(tmp);
+			tmp.add_to_parent(_root);
 		}
+		/*
 		{
 			SpriterData data = SpriterData.cons_data_from_spritesheetreaders(new List<SpriterJSONParser> { 
 				SpriterJSONParser.cons_from_texture_and_file(RTex.SPRITER_DOG,RTex.SPRITER_DOG),
@@ -171,6 +185,8 @@ public class BGVillage : SPGameUpdateable, SPNodeHierarchyElement {
 			test.set_u_pos(-309,4);
 			test.set_u_z(0);
 			test.set_img_scale_x(-1);
+			
+			_villagers.Add(TestVillager.cons(test));
 			_root.add_child(test);
 		}
 		{
@@ -184,6 +200,8 @@ public class BGVillage : SPGameUpdateable, SPNodeHierarchyElement {
 			test.set_name("FishMom_TEST");
 			test.set_u_pos(262,-13);
 			test.set_u_z(0);
+			
+			_villagers.Add(TestVillager.cons(test));
 			_root.add_child(test);
 		}
 		{
@@ -199,16 +217,11 @@ public class BGVillage : SPGameUpdateable, SPNodeHierarchyElement {
 			test.set_u_z(0);
 
 			_villagers.Add(TestBoyVillager.cons(test));
-
 			_root.add_child(test);
-		}
+		}*/
 	}
 
 	public void i_update(GameEngineScene g) {
-		for (int i = 0; i < _villagers.Count; i++) {
-			_villagers[i].i_update(g);
-		}
-
 		for (int i = 0; i < _reflections.Count; i++) {
 			_reflections[i].set_enabled(!g.is_camera_underwater());
 		}
