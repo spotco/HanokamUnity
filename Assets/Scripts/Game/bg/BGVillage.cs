@@ -138,7 +138,6 @@ public class BGVillage : SPGameUpdateable, SPNodeHierarchyElement {
 	}
 	
 	private void test_display_characters() {
-		/*
 		{
 			SpriterData data = SpriterData.cons_data_from_spritesheetreaders(new List<SpriterJSONParser> { 
 				SpriterJSONParser.cons_from_texture_and_file(RTex.SPRITER_OLDMAN,RTex.SPRITER_OLDMAN),
@@ -148,13 +147,14 @@ public class BGVillage : SPGameUpdateable, SPNodeHierarchyElement {
 			test.p_play_anim("Idle",true);
 			test.set_manual_sort_z_order(GameAnchorZ.Player_Ground);
 			test.set_name("OldMan_TEST");
-			test.set_u_pos(-130,225);
-			test.set_u_z(219);
 			
-			_villagers.Add(TestVillager.cons(test));
-			_root.add_child(test);
+			Villager tmp = Villager.cons(test);
+			tmp._can_chat = false;
+			tmp.set_u_pos(-130,225);
+			tmp.set_u_z(219);
+			_villagers.Add(tmp);
+			tmp.add_to_parent(_root);
 		}
-		*/
 		{
 			SpriterData data = SpriterData.cons_data_from_spritesheetreaders(new List<SpriterJSONParser> { 
 				SpriterJSONParser.cons_from_texture_and_file(RTex.SPRITER_FISHGIRL,RTex.SPRITER_FISHGIRL),
@@ -172,7 +172,6 @@ public class BGVillage : SPGameUpdateable, SPNodeHierarchyElement {
 			_villagers.Add(tmp);
 			tmp.add_to_parent(_root);
 		}
-		/*
 		{
 			SpriterData data = SpriterData.cons_data_from_spritesheetreaders(new List<SpriterJSONParser> { 
 				SpriterJSONParser.cons_from_texture_and_file(RTex.SPRITER_DOG,RTex.SPRITER_DOG),
@@ -182,13 +181,16 @@ public class BGVillage : SPGameUpdateable, SPNodeHierarchyElement {
 			test.p_play_anim("idle",true);
 			test.set_manual_sort_z_order(GameAnchorZ.Player_Ground);
 			test.set_name("Dog_TEST");
-			test.set_u_pos(-309,4);
 			test.set_u_z(0);
 			test.set_img_scale_x(-1);
 			
-			_villagers.Add(TestVillager.cons(test));
-			_root.add_child(test);
+			Villager tmp = Villager.cons(test);
+			tmp.set_u_pos(-395,-5);
+			tmp.set_u_z(0);
+			_villagers.Add(tmp);
+			tmp.add_to_parent(_root);
 		}
+		
 		{
 			SpriterData data = SpriterData.cons_data_from_spritesheetreaders(new List<SpriterJSONParser> { 
 				SpriterJSONParser.cons_from_texture_and_file(RTex.SPRITER_FISHMOM,RTex.SPRITER_FISHMOM),
@@ -198,11 +200,13 @@ public class BGVillage : SPGameUpdateable, SPNodeHierarchyElement {
 			test.p_play_anim("Idle",true);
 			test.set_manual_sort_z_order(GameAnchorZ.Player_Ground);
 			test.set_name("FishMom_TEST");
-			test.set_u_pos(262,-13);
-			test.set_u_z(0);
 			
-			_villagers.Add(TestVillager.cons(test));
-			_root.add_child(test);
+			Villager tmp = Villager.cons(test);
+			tmp._can_chat = false;
+			tmp.set_u_pos(262,-13);
+			tmp.set_u_z(0);
+			_villagers.Add(tmp);
+			tmp.add_to_parent(_root);
 		}
 		{
 			SpriterData data = SpriterData.cons_data_from_spritesheetreaders(new List<SpriterJSONParser> { 
@@ -213,12 +217,14 @@ public class BGVillage : SPGameUpdateable, SPNodeHierarchyElement {
 			test.p_play_anim("Idle",true);
 			test.set_manual_sort_z_order(GameAnchorZ.Player_Ground);
 			test.set_name("Boy_TEST");
-			test.set_u_pos(-100,10);
-			test.set_u_z(0);
 
-			_villagers.Add(TestBoyVillager.cons(test));
-			_root.add_child(test);
-		}*/
+			Villager tmp = Villager.cons(test);
+			tmp._can_chat = false;
+			tmp.set_u_pos(-100,10);
+			tmp.set_u_z(0);
+			_villagers.Add(tmp);
+			tmp.add_to_parent(_root);
+		}
 	}
 
 	public void i_update(GameEngineScene g) {

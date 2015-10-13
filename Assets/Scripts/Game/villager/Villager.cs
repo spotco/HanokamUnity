@@ -26,16 +26,24 @@ public class Villager : SPGameUpdateable, SPNodeHierarchyElement {
 		_root.add_child(_img);
 		_img.set_u_pos(0,0);
 		
+		_can_chat = true;
+		
 		this.setup_overhead_icon(new Vector2(0,175));
 		return this;
 	}
 	
+	public bool _can_chat;
+	
 	public void i_update(GameEngineScene g) { 
 		_img.i_update(); 
-		if (this.is_in_chat_range_with_player(g)) {
-			_overhead_icon.set_target_status(VillagerOverheadIcon.Status.Large);
+		if (_can_chat) {
+			if (this.is_in_chat_range_with_player(g)) {
+				_overhead_icon.set_target_status(VillagerOverheadIcon.Status.Large);
+			} else {
+				_overhead_icon.set_target_status(VillagerOverheadIcon.Status.Small);
+			}
 		} else {
-			_overhead_icon.set_target_status(VillagerOverheadIcon.Status.Small);
+			_overhead_icon.set_target_status(VillagerOverheadIcon.Status.Hidden);
 		}
 		
 		_overhead_icon.i_update();
@@ -103,15 +111,19 @@ public class VillagerOverheadIcon : SPNodeHierarchyElement {
 	
 	public enum Status {
 		Small,
-		Large
+		Large,
+		Hidden
 	}
 	public void set_target_status(Status status) {
+		_root.set_enabled(true);
 		if (status == Status.Small) {
 			_scale._target = 0.5f;
 			_opacity._target = 0.5f;
-		} else {
+		} else if (status == Status.Large) {
 			_scale._target = 0.85f;
 			_opacity._target = 0.75f;
+		} else if (status == Status.Hidden) {
+			_root.set_enabled(false);
 		}
 	}
 	

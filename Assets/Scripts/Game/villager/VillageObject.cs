@@ -19,6 +19,7 @@ public class VillageObject : OnGroundStateUpdateable, SPNodeHierarchyElement {
 		_icon.set_name("icon");
 		_root.add_child(_icon);
 		_icon.set_u_pos(0,0);
+		_icon.set_manual_sort_z_order(GameAnchorZ.HUD_BASE);
 		
 		_anim_t = 0;
 		
@@ -43,6 +44,7 @@ public class VillageObject : OnGroundStateUpdateable, SPNodeHierarchyElement {
 	}
 	
 	public void set_u_pos(float x, float y) { _root.set_u_pos(x,y); }
+	public void set_u_z(float z) { _root.set_u_z(z); }
 	
 	public void add_to_parent(SPNode parent) {
 		parent.add_child(_root);
