@@ -131,6 +131,7 @@ public class DiveGameState : GameStateBase {
 			float move_speed = _params._dashing ? DASH_SPEED : MAX_MOVE_SPEED;
 								
 			Vector2 move = g._controls.get_move();
+			if (move.magnitude > 1) move.Normalize();
 			if (g._controls.is_move_x()) {
 				float cur_vel_x = _params._vel.x;
 				float tar_vel_x = Mathf.Clamp(_params._vel.x + move.x * TURN_SPEED, -move_speed, move_speed);

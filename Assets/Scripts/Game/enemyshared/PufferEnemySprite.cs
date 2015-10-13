@@ -39,6 +39,9 @@ public class PufferEnemySprite : GenericPooledObject, SPNodeHierarchyElement, SP
 		_animator.play_anim(anim);
 	}
 	
+	public void set_rotation(float val) { _img.set_rotation(val); }
+	public float rotation() { return _img.rotation(); }
+	
 	private static MultiMap<string,Rect> __cached_anim_rects;
 	private void cons_anims() {
 		if (__cached_anim_rects == null) {

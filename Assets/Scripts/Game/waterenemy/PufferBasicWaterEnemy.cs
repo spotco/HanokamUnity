@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class PufferBasicWaterEnemy : BasicWaterEnemy, GenericPooledObject {
+public class PufferBasicWaterEnemy : BasicWaterEnemy, GenericPooledObject, SPHitPolyOwner {
 
 	public static PufferBasicWaterEnemy cons(GameEngineScene g, Vector2 pt1, Vector2 pt2) {
 		return (ObjectPool.inst().generic_depool<PufferBasicWaterEnemy>()).i_cons(g,pt1,pt2);
@@ -29,6 +29,10 @@ public class PufferBasicWaterEnemy : BasicWaterEnemy, GenericPooledObject {
 			.add_flash_at(20)
 			.add_flash_at(10);
 		return this;
+	}
+	
+	protected override void set_target_rotation(float val) {
+		_img.set_rotation(SPUtil.drpt(_img.rotation(), _img.rotation() + SPUtil.shortest_angle(_img.rotation(),val), 1/10.0f));
 	}
 	
 	public override void i_update (GameEngineScene g, DiveGameState state) {

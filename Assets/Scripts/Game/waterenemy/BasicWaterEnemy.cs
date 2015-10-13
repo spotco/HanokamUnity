@@ -74,11 +74,20 @@ public abstract class BasicWaterEnemy : BaseWaterEnemy {
 		}
 	}
 	
+	protected virtual void set_target_rotation(float val) {}
+	
 	private void i_update_dive(GameEngineScene g, DiveGameState state) {
 		switch (this._current_mode) {
 		case Mode.IdleMove: {
 			_idle_move_anim_theta += 0.025f * SPUtil.dt_scale_get();
-			this.set_u_pos(Vector2.Lerp(_pt1,_pt2,(Mathf.Sin(_idle_move_anim_theta)+1)/2.0f));
+			Vector2 neu_pos = Vector2.Lerp(_pt1,_pt2,(Mathf.Sin(_idle_move_anim_theta)+1)/2.0f);
+			this.set_u_pos(neu_pos.x, neu_pos.y);
+			
+			Vector2 delta = SPUtil.vec_sub(neu_pos,_last_pos);
+			float tar_rotation = SPUtil.dir_ang_deg(delta.x,delta.y) - 90;
+			this.set_target_rotation(tar_rotation);
+			
+			_last_pos = neu_pos;
 			
 		} break;
 		case Mode.IdleNoticed: {

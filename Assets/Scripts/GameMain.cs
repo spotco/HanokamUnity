@@ -9,7 +9,8 @@ public class GameMain : SPBaseBehavior {
 	/**
 	TODO--
 	dive mode
-	bounding box debug render
+		-basicwaterenemy slot-component based architecture
+	
 	air mode
 	gameui
 

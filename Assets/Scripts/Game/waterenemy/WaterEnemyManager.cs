@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-public abstract class BaseWaterEnemy : DiveGameStateUpdateable, SPNodeHierarchyElement {
+public abstract class BaseWaterEnemy : DiveGameStateUpdateable, SPNodeHierarchyElement, SPHitPolyOwner {
 	public virtual void i_update(GameEngineScene g, DiveGameState state) {}
 	public virtual void add_to_parent(SPNode parent) {}
 	public virtual bool should_remove(GameEngineScene g, DiveGameState state) { return false; }
