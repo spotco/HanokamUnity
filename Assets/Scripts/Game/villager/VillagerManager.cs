@@ -16,6 +16,7 @@ public class VillagerManager : OnGroundStateUpdateable, SPNodeHierarchyElement {
 		_root.set_name("VillagerManager");
 	
 		//TODO -- should be generated here
+		//TODO -- recycle the head top icons
 		_villagers = g._bg_village.get_villagers();		
 		
 		VillageObject tmp = VillageObject.cons(g);

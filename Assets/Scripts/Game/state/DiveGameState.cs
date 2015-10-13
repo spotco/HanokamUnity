@@ -67,11 +67,13 @@ public class DiveGameState : GameStateBase {
 		
 		return this;
 	}
-
+	
+	float DASH_SPEED = 23;
 	float MAX_MOVE_SPEED = 10;
 	float TURN_SPEED = 3;
 	private float _camera_offset_y;
 	public override void i_update(GameEngineScene g) {
+		g._player.i_update(g);
 		_enemy_manager.i_update(g, this);
 		switch (_params._state) {
 		case (State.TransitionIn): {
@@ -81,7 +83,7 @@ public class DiveGameState : GameStateBase {
 				Vector2 move = g._controls.get_move();
 				_params._vel.x = Mathf.Clamp(_params._vel.x + move.x * TURN_SPEED, -MAX_MOVE_SPEED, MAX_MOVE_SPEED);
 			} else {
-				_params._vel.x = SPUtil.drpt(_params._vel.x,0,1/60.0f);
+				_params._vel.x = SPUtil.drpt(_params._vel.x,0,1/30.0f);
 			}
 			PlayerCharacterUtil.rotate_to_rotation_for_vel(g._player,_params._vel.x,_params._vel.y,1/10.0f);
 			g._player.set_u_pos(
@@ -90,8 +92,7 @@ public class DiveGameState : GameStateBase {
 			);
 			if (g._player._u_y < -1000) {
 				_params._state = State.Gameplay;
-				g._camerac.set_zoom_speed(1/20.0f);
-				g._camerac.set_camera_follow_speed(1/40.0f);
+				g._camerac.set_camera_follow_speed(1/15.0f);
 				g._camerac.set_target_zoom(1500);
 			}
 
@@ -110,7 +111,7 @@ public class DiveGameState : GameStateBase {
 				new Vector2(0.5f,0), new Vector2(0.5f,1));
 			g._camerac.set_target_camera_focus_on_character(g,0,_camera_offset_y);
 			
-			float DASH_SPEED = 23;
+			
 			
 			if (_params._dashing) {
 				_camera_offset_y = SPUtil.y_for_point_of_2pt_line(new Vector2(-10,-450),new Vector2(10,100),_params._vel.y);
@@ -119,42 +120,7 @@ public class DiveGameState : GameStateBase {
 				if (_params._dash_ct <= 0) {
 					_params._dashing = false;
 				}
-				
-				if (g._controls.is_move_x() || g._controls.is_move_y()) {
-					Vector2 move_dir = g._controls.get_move();
-					Vector2 vel = (_params._vel).normalized;
-					_params._vel = SPUtil.vec_scale(
-						move_dir.normalized
-					,DASH_SPEED);
-				}
-				
-			} else {				
-				Vector2 move = g._controls.get_move();
-				if (g._controls.is_move_x()) {
-					float cur_vel_x = _params._vel.x;
-					float tar_vel_x = Mathf.Clamp(_params._vel.x + move.x * TURN_SPEED, -MAX_MOVE_SPEED, MAX_MOVE_SPEED);
-					float drpt_spd = Mathf.Abs(cur_vel_x) < MAX_MOVE_SPEED ? 1.0f : 1/20.0f;
-					_params._vel.x = SPUtil.drpt(cur_vel_x,tar_vel_x,drpt_spd);
-				} else {
-					_params._vel.x = SPUtil.drpt(_params._vel.x,0,1/60.0f);
-				}
-				if (g._controls.is_move_y()) {
-					float cur_vel_y = _params._vel.y;
-					float tar_vel_y = Mathf.Clamp(_params._vel.y + move.y * TURN_SPEED, -MAX_MOVE_SPEED, MAX_MOVE_SPEED);
-					float drpt_spd = Mathf.Abs(cur_vel_y) < MAX_MOVE_SPEED ? 1.0f : 1/20.0f;
-					_params._vel.y = SPUtil.drpt(cur_vel_y,tar_vel_y,drpt_spd);
-				} else {
-					_params._vel.y = SPUtil.drpt(_params._vel.y,0,1/60.0f);
-				}
-				
-				if (g._controls.get_control_just_released(ControlManager.Control.Dash)) {
-					Vector2 dir = SPUtil.ang_deg_dir(g._player.rotation() + 90);
-					dir = SPUtil.vec_scale(dir,DASH_SPEED);
-					_params._vel = dir;
-					_params._dashing = true;
-					_params._dash_ct += 20;
-					UnderwaterBubbleParticle.proc_multiple_bubbles(g);
-				}
+			} else {
 				if (_params._vel.magnitude > 2) {
 					g._player.play_anim(PlayerCharacterAnims.SWIM);
 				} else {
@@ -162,19 +128,48 @@ public class DiveGameState : GameStateBase {
 				}
 			}
 			
-			PlayerCharacterUtil.move_in_bounds(
-				g._player,
-				g._player._u_x + _params._vel.x * SPUtil.dt_scale_get(),
-				g._player._u_y + _params._vel.y * SPUtil.dt_scale_get()
-			);
-			
-			PlayerCharacterUtil.rotate_to_rotation_for_vel(g._player,_params._vel.x,_params._vel.y,1/10.0f);
-			
-			_bubble_every.i_update(g);
-			if (_bubble_every.do_flash()) {
-				_bubble_every._max_time = SPUtil.int_random(0,4) == 0 ? SPUtil.float_random(1,3) : SPUtil.float_random(20,40);
-				UnderwaterBubbleParticle.proc_bubble(g);
+			float move_speed = _params._dashing ? DASH_SPEED : MAX_MOVE_SPEED;
+								
+			Vector2 move = g._controls.get_move();
+			if (g._controls.is_move_x()) {
+				float cur_vel_x = _params._vel.x;
+				float tar_vel_x = Mathf.Clamp(_params._vel.x + move.x * TURN_SPEED, -move_speed, move_speed);
+				float drpt_spd = Mathf.Abs(cur_vel_x) < MAX_MOVE_SPEED ? 1.0f : 1/2.0f;
+				_params._vel.x = SPUtil.drpt(cur_vel_x,tar_vel_x,drpt_spd);
+			} else {
+				_params._vel.x = SPUtil.drpt(_params._vel.x,0,1/30.0f);
 			}
+			if (g._controls.is_move_y()) {
+				float cur_vel_y = _params._vel.y;
+				float tar_vel_y = Mathf.Clamp(_params._vel.y + move.y * TURN_SPEED, -move_speed, move_speed);
+				float drpt_spd = Mathf.Abs(cur_vel_y) < move_speed ? 1.0f : 1/2.0f;
+				_params._vel.y = SPUtil.drpt(cur_vel_y,tar_vel_y,drpt_spd);
+			} else {
+				_params._vel.y = SPUtil.drpt(_params._vel.y,0,1/30.0f);
+			}
+			
+			if (g._controls.get_control_just_released(ControlManager.Control.Dash)) {
+				Vector2 dir = SPUtil.ang_deg_dir(g._player.rotation() + 90);
+				dir = SPUtil.vec_scale(dir,DASH_SPEED);
+				_params._vel = dir;
+				_params._dashing = true;
+				_params._dash_ct += 20;
+				UnderwaterBubbleParticle.proc_multiple_bubbles(g);
+			}
+		
+		PlayerCharacterUtil.move_in_bounds(
+			g._player,
+			g._player._u_x + _params._vel.x * SPUtil.dt_scale_get(),
+			g._player._u_y + _params._vel.y * SPUtil.dt_scale_get()
+		);
+		
+		PlayerCharacterUtil.rotate_to_rotation_for_vel(g._player,_params._vel.x,_params._vel.y,1/10.0f);
+		
+		_bubble_every.i_update(g);
+		if (_bubble_every.do_flash()) {
+			_bubble_every._max_time = SPUtil.int_random(0,4) == 0 ? SPUtil.float_random(1,3) : SPUtil.float_random(20,40);
+			UnderwaterBubbleParticle.proc_bubble(g);
+		}
 			
 		} break;
 		}
