@@ -11,8 +11,6 @@ public class OnGroundGameState : GameStateBase {
 		public float _jump_charge_t;
 		public Vector2 _vel;
 		
-		public Vector2 _dialogue_focus_pos;
-		
 		public static OnGroundGameStateParams cons() {
 			OnGroundGameStateParams rtv = new OnGroundGameStateParams();
 			return rtv;
@@ -22,8 +20,7 @@ public class OnGroundGameState : GameStateBase {
 	public enum State {
 		Gameplay,
 		JumpCharge,
-		JumpInAir,
-		InDialogue
+		JumpInAir
 	}
 
 	public static OnGroundGameState cons(GameEngineScene g) {
@@ -131,20 +128,15 @@ public class OnGroundGameState : GameStateBase {
 			}
 
 		} break;
-		case State.InDialogue: {
-			g._camerac.set_target_camera_focus_on_character(g,0,70);
-			g._camerac.set_target_zoom(500);
-			if (g._controls.get_control_just_released(ControlManager.Control.Chat)) {
-				_current_state = State.Gameplay;
-			}
-			
-		} break;
 		}
 	}
 	
-	public void notify_chat_with_villager(Villager villager) {
-		_current_state = State.InDialogue;
-		
+	public void notify_chat_with_villager(GameEngineScene g, Villager villager) {
+		g.push_game_state(DialogueGameState.cons(g, villager));
+	}
+	
+	public void notify_enter_shop(GameEngineScene g) {
+		GameMain._context.push_scene(ShopScene.cons());
 	}
 	
 	public override GameStateIdentifier get_state() {
@@ -152,6 +144,6 @@ public class OnGroundGameState : GameStateBase {
 	}
 	
 	public override void on_state_end(GameEngineScene g) {
-		Debug.Log("state end");
+		_villager_manager.repool();
 	}
 }

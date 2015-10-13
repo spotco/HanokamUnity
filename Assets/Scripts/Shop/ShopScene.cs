@@ -19,19 +19,18 @@ public class ShopScene : SPScene {
 		_root = SPNode.cons_node();
 		_root.set_name("ShopScene");
 		
-		GameMain._context._camerac.SetShopSceneDefaults();
-		
 		_bg_shop = BGShop.cons();
 		_bg_shop.add_to_parent(_root);
 		
 		return this;
 	}
 
-	public override void i_update(){
+	public override void i_update() {
+		GameMain._context._camerac.SetShopSceneDefaults();
 		GameMain._context._game_ui.i_update(this);
 		_bg_shop.i_update(this);
 		
-		if (GameMain._context._controls.get_control_just_released(ControlManager.Control.MoveRight)) {
+		if (GameMain._context._controls.get_control_just_released(ControlManager.Control.Chat)) {
 			GameMain._context.pop_scene();
 			return;
 		}

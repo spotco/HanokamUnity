@@ -4,15 +4,23 @@ using System.Collections;
 // TODO -- refactor for injection of behavior
 public class Villager : SPGameUpdateable, SPNodeHierarchyElement {
 	
+	public enum Mode {
+		Idle,
+		Chatting
+	}
+	
 	public static Villager cons(SpriterNode img) {
 		return (new Villager()).i_cons(img);
 	}
 	
+	private Mode _current_mode;
 	private SPNode _root;
 	private SpriterNode _img;
 	private Villager i_cons(SpriterNode img) {
 		_root = SPNode.cons_node();
 		_root.name = "Villager";
+		
+		_current_mode = Mode.Idle;
 		
 		_img = img;
 		_root.add_child(_img);
@@ -36,6 +44,11 @@ public class Villager : SPGameUpdateable, SPNodeHierarchyElement {
 	public bool is_in_chat_range_with_player(GameEngineScene g) {
 		return Mathf.Abs(g._player._u_x - _root._u_x) < 100;
 	}
+	
+	public void set_mode(Mode mode) {
+		_current_mode = mode;
+	}
+	
 	
 	public void add_to_parent(SPNode parent) { parent.add_child(_root); }
 	public void add_child(SPNode child) { _root.add_child(child); }

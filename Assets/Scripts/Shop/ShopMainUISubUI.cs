@@ -89,7 +89,7 @@ public class ShopMainUISubUI : ShopUISubUI, SPNodeHierarchyElement {
 		_flag_1_anim.i_update();
 		_flag_2_anim.i_update();
 		
-		if (GameMain._context._controls.get_control_down(ControlManager.Control.MoveRight)) {
+		if (GameMain._context._controls.get_control_down(ControlManager.Control.Chat)) {
 			_test_button_left.set_scale(SPUtil.drpt(_test_button_left.scale_x(), 1.35f, 1/10.0f));
 		} else {
 			_test_button_left.set_scale(SPUtil.drpt(_test_button_left.scale_x(), 0.85f, 1/10.0f));

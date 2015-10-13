@@ -77,19 +77,15 @@ public class GameEngineScene : SPScene {
 		return _game_state_stack[_game_state_stack.Count-1]; 
 	}
 	public void pop_top_game_state() {
-		_game_state_stack.RemoveAt(_game_state_stack.Count-1);
+		int i = _game_state_stack.Count-1;
+		_game_state_stack[i].on_state_end(this);
+		_game_state_stack.RemoveAt(i);
 	}
 	public void push_game_state(GameStateBase state) {
 		_game_state_stack.Add(state);
 	}
 	
-	public override void i_update() {
-	
-		if (Input.GetKeyUp(KeyCode.P)) {
-			GameMain._context.push_scene(ShopScene.cons());
-			return;
-		}
-	
+	public override void i_update() {	
 		__cached_viewbox_dirty = true;
 		_delayed_actions.i_update(this);
 		_particles.i_update(this);

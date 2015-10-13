@@ -80,6 +80,7 @@ public class UIRoot : SPGameUpdateable {
 		_root.set_manual_sort_z_order(GameAnchorZ.HUD_BASE);
 		
 		this.add_game_ui(OnGroundSubUI.cons(this));
+		this.add_game_ui(InDialogueSubUI.cons(this));
 		this.add_shop_ui(ShopMainUISubUI.cons(this));
 		
 		GameMain._context._camerac.create_blur_texture(this);
