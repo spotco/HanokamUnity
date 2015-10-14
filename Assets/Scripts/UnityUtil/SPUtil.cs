@@ -344,6 +344,13 @@ public class SPUtil {
 			pt.y + a.y + b.y
 		);
 	}
+	public static Vector3 vec_cons_norm(float x, float y = 0, float z = 0) {
+		return (new Vector3(x,y,z)).normalized;
+	}
+	public static float vec_dist(Vector3 a, Vector3 b) {
+		return Mathf.Sqrt(Mathf.Pow(a.x-b.x,2)+Mathf.Pow(a.y-b.y,2)+Mathf.Pow(a.z-b.z,2));
+	}
+
 }
 
 public struct DrptVal {

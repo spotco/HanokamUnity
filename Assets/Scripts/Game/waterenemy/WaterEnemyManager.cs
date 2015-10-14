@@ -30,6 +30,12 @@ public class WaterEnemyManager : DiveGameStateUpdateable, GenericPooledObject {
 		this.add_enemy(PufferBasicWaterEnemy.cons(
 			g, new Vector2(-250,-1500), new Vector2(250,-1500)
 		));
+		this.add_enemy(PufferBasicWaterEnemy.cons(
+			g, new Vector2(0,-2000), new Vector2(500,-2000)
+		));
+		this.add_enemy(PufferBasicWaterEnemy.cons(
+			g, new Vector2(-500,-2500), new Vector2(0,-2500)
+		));
 	
 		return this;
 	}
@@ -42,6 +48,13 @@ public class WaterEnemyManager : DiveGameStateUpdateable, GenericPooledObject {
 				itr.do_remove(g, state);
 				_enemies.RemoveAt(i);
 			}	
+		}
+	}
+
+	public void debug_draw_hitboxes(SPDebugRender draw) {
+		for (int i = _enemies.Count-1; i >= 0; i--) {
+			BaseWaterEnemy itr = _enemies[i];
+			draw.draw_hitpoly_owner(itr,new Color(0.8f, 0.2f, 0.2f, 0.5f), new Color(0.8f, 0.2f, 0.2f, 0.8f));
 		}
 	}
 	

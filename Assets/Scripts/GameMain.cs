@@ -21,6 +21,7 @@ public class GameMain : SPBaseBehavior {
 	public static GameMain _context;
 	
 	[SerializeField] public bool _camera_active;
+	[SerializeField] public bool _draw_hitboxes;
 
 	[SerializeField] public Camera _game_camera;
 	[SerializeField] public Camera _ui_camera;
@@ -128,6 +129,7 @@ public class GameMain : SPBaseBehavior {
 		_controls = ControlManager.cons();
 		_camerac = GameCameraController.cons();
 		_camera_active = true;
+		_draw_hitboxes = false;
 		_game_ui = UIRoot.cons();
 	
 		this.push_scene(GameEngineScene.cons());

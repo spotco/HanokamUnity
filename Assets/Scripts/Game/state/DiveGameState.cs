@@ -158,22 +158,26 @@ public class DiveGameState : GameStateBase {
 				UnderwaterBubbleParticle.proc_multiple_bubbles(g);
 			}
 		
-		PlayerCharacterUtil.move_in_bounds(
-			g._player,
-			g._player._u_x + _params._vel.x * SPUtil.dt_scale_get(),
-			g._player._u_y + _params._vel.y * SPUtil.dt_scale_get()
-		);
-		
-		PlayerCharacterUtil.rotate_to_rotation_for_vel(g._player,_params._vel.x,_params._vel.y,1/10.0f);
-		
-		_bubble_every.i_update(g);
-		if (_bubble_every.do_flash()) {
-			_bubble_every._max_time = SPUtil.int_random(0,4) == 0 ? SPUtil.float_random(1,3) : SPUtil.float_random(20,40);
-			UnderwaterBubbleParticle.proc_bubble(g);
-		}
+			PlayerCharacterUtil.move_in_bounds(
+				g._player,
+				g._player._u_x + _params._vel.x * SPUtil.dt_scale_get(),
+				g._player._u_y + _params._vel.y * SPUtil.dt_scale_get()
+			);
+			
+			PlayerCharacterUtil.rotate_to_rotation_for_vel(g._player,_params._vel.x,_params._vel.y,1/10.0f);
+			
+			_bubble_every.i_update(g);
+			if (_bubble_every.do_flash()) {
+				_bubble_every._max_time = SPUtil.int_random(0,4) == 0 ? SPUtil.float_random(1,3) : SPUtil.float_random(20,40);
+				UnderwaterBubbleParticle.proc_bubble(g);
+			}
 			
 		} break;
 		}
+	}
+
+	public override void debug_draw_hitboxes(SPDebugRender draw) {
+		_enemy_manager.debug_draw_hitboxes(draw);
 	}
 
 	public override GameStateIdentifier get_state() { 

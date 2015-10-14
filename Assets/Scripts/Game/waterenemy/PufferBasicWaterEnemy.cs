@@ -31,10 +31,6 @@ public class PufferBasicWaterEnemy : BasicWaterEnemy, GenericPooledObject, SPHit
 		return this;
 	}
 	
-	protected override void set_target_rotation(float val) {
-		_img.set_rotation(SPUtil.drpt(_img.rotation(), _img.rotation() + SPUtil.shortest_angle(_img.rotation(),val), 1/10.0f));
-	}
-	
 	public override void i_update (GameEngineScene g, DiveGameState state) {
 		base.i_update(g,state);
 		
@@ -44,6 +40,25 @@ public class PufferBasicWaterEnemy : BasicWaterEnemy, GenericPooledObject, SPHit
 	public override void do_remove(GameEngineScene g, DiveGameState state) {
 		_img.repool();
 		base.do_remove(g, state);
+	}
+
+	public SPHitRect get_hit_rect() {
+		return SPHitPoly.hitpoly_to_bounding_hitrect(
+			this.get_hit_poly(),
+			new Vector2(-10,-10),
+			new Vector2(10,10)
+		);
+	}
+	
+	public SPHitPoly get_hit_poly() {
+		return SPHitPoly.cons_with_basis_offset(
+			new Vector2(this.get_root()._u_x, this.get_root()._u_y),
+			this.get_root().rotation(),
+			new Vector2(55,90),
+			new Vector2(1,1),
+			1,
+			new Vector2(-10,0)
+		);
 	}
 	
 }

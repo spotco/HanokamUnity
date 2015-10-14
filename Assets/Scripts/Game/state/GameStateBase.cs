@@ -15,7 +15,7 @@ public abstract class GameStateBase : SPGameUpdateable {
 	public virtual void i_update(GameEngineScene g) {}
 	public virtual GameStateIdentifier get_state() { return GameStateIdentifier.OnGround; }
 	public virtual void on_state_end(GameEngineScene g) {}
-	
+	public virtual void debug_draw_hitboxes(SPDebugRender draw){}
 }
 
 public class IdleGameState : GameStateBase {

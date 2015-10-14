@@ -95,12 +95,19 @@ public class GameEngineScene : SPScene {
 			SPGameUpdateable itr = _bg_elements[i];
 			itr.i_update(this);
 		}
-		//this.debug_update_preview_hitboxes();
+
+		if (GameMain._context._draw_hitboxes) {
+			this.debug_draw_hitboxes();
+		} else {
+			GameMain._context._debug_render.clear_draw_queue();
+		}
 	}
 	
-	private void debug_update_preview_hitboxes() {
-		GameMain._context._debug_render.clear_draw_queue();
-		GameMain._context._debug_render.draw_hitpoly_owner(_player, new Color(0,1,0,0.25f), new Color(0,1,0,0.5f));
+	private void debug_draw_hitboxes() {
+		SPDebugRender draw = GameMain._context._debug_render;
+		draw.clear_draw_queue();
+		draw.draw_hitpoly_owner(_player, new Color(0,1,0,0.25f), new Color(0,1,0,0.5f));
+		this.get_top_game_state().debug_draw_hitboxes(draw);
 	}
 
 	private SPHitRect __cached_viewbox;
