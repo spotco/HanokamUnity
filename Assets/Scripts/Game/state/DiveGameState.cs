@@ -13,11 +13,15 @@ public class DiveGameState : GameStateBase {
 		
 		public bool _dashing;
 		public float _dash_ct;
+
+		public float _ground_depth;
 	}
 
 	public enum State {
 		TransitionIn,
-		Gameplay
+		Gameplay,
+		SwimToUnderwaterTreasure,
+		PickupTreasure
 	}
 
 	public static DiveGameState cons(GameEngineScene g) {
@@ -32,6 +36,9 @@ public class DiveGameState : GameStateBase {
 		_params._vel = new Vector2(0,-22);
 		_params._state = State.TransitionIn;
 		_params._dashing = false;
+		_params._ground_depth = -3500;
+
+		g._bg_water.set_ground_depth(_params._ground_depth);
 
 		g._player.play_anim(PlayerCharacterAnims.SWIM);
 
@@ -64,7 +71,7 @@ public class DiveGameState : GameStateBase {
 		_bubble_every = FlashEvery.cons(30);
 		
 		_enemy_manager = WaterEnemyManager.cons(g);
-		
+		UnderwaterBubbleParticle.proc_multiple_bubbles(g);
 		return this;
 	}
 	
@@ -75,6 +82,7 @@ public class DiveGameState : GameStateBase {
 	public override void i_update(GameEngineScene g) {
 		g._player.i_update(g);
 		_enemy_manager.i_update(g, this);
+
 		switch (_params._state) {
 		case (State.TransitionIn): {
 			g._camerac.set_target_camera_focus_on_character(g,0,-200);
@@ -98,7 +106,6 @@ public class DiveGameState : GameStateBase {
 
 		} break;
 		case (State.Gameplay): {
-		
 			float MIN_Y_OFFSET = -400;
 			float MAX_Y_OFFSET = 400;
 			_camera_offset_y = SPUtil.eclamp(
@@ -171,7 +178,37 @@ public class DiveGameState : GameStateBase {
 				_bubble_every._max_time = SPUtil.int_random(0,4) == 0 ? SPUtil.float_random(1,3) : SPUtil.float_random(20,40);
 				UnderwaterBubbleParticle.proc_bubble(g);
 			}
+
+			if (g._player._u_y < _params._ground_depth + 700) {
+				UnderwaterBubbleParticle.proc_multiple_bubbles(g);
+				_params._state = State.SwimToUnderwaterTreasure;
+			}
+		} break;
+		case State.SwimToUnderwaterTreasure: {
+			g._player.play_anim(PlayerCharacterAnims.SWIM);
+			g._camerac.set_target_zoom(850);
+			g._camerac.set_target_camera_focus_on_character(g,0,200);
+
+			float cur_vel = _params._vel.magnitude;
+			float next_vel = SPUtil.drpt(_params._vel.magnitude,MAX_MOVE_SPEED,1/10.0f);
+			_params._vel = SPUtil.vec_scale(_params._vel.normalized,next_vel);
+
+			Vector2 player_pos = SPUtil.vec_lmovto(g._player.get_center(),g._bg_water.get_underwater_treasure_position(),_params._vel.magnitude);
+
+			if (SPUtil.vec_dist(player_pos,g._bg_water.get_underwater_treasure_position()) < 1) {
+				_params._state = State.PickupTreasure;
+			} else {
+				PlayerCharacterUtil.rotate_to_rotation_for_vel(g._player,player_pos.x - g._player.get_center().x,player_pos.y - g._player.get_center().y,1/10.0f);
+				g._player.set_center_u_pos(player_pos.x,player_pos.y);
+			}
 			
+		} break;
+		case State.PickupTreasure: {
+			UnderwaterBubbleParticle.proc_multiple_bubbles(g);
+			DiveReturnGameState neu_state = DiveReturnGameState.cons(g,_params,_enemy_manager);
+			g.pop_top_game_state();
+			g.push_game_state(neu_state);
+
 		} break;
 		}
 	}
@@ -179,6 +216,8 @@ public class DiveGameState : GameStateBase {
 	public override void debug_draw_hitboxes(SPDebugRender draw) {
 		_enemy_manager.debug_draw_hitboxes(draw);
 	}
+
+	public override void on_state_end(GameEngineScene g) {}
 
 	public override GameStateIdentifier get_state() { 
 		return GameStateIdentifier.Dive; 

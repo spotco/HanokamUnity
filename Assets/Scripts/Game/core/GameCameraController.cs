@@ -207,6 +207,9 @@ public class GameCameraController : SPMainUpdateable {
 	public float get_current_camera_y() {
 		return _camera_y._current;
 	}
+	public float get_target_camera_y() {
+		return _camera_y._target;
+	}
 	
 	public void set_target_camera_focus_on_character(GameEngineScene g, float offset_x = 0, float offset_y = 0) {
 		SPRange camera_bounds = this.get_camera_horiz_bounds();

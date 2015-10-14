@@ -203,7 +203,7 @@ public class BGVillage : SPGameUpdateable, SPNodeHierarchyElement {
 			
 			Villager tmp = Villager.cons(test);
 			tmp._can_chat = false;
-			tmp.set_u_pos(262,-13);
+			tmp.set_u_pos(200,-13);
 			tmp.set_u_z(0);
 			_villagers.Add(tmp);
 			tmp.add_to_parent(_root);

@@ -48,6 +48,8 @@ public class BGUnderwaterTreasure : SPGameUpdateable {
 		_root.set_u_pos(x,y);
 		return this;
 	}
+	public float _u_x { get { return _root._u_x; } }
+	public float _u_y { get { return _root._u_y; } }
 
 	public void i_update(GameEngineScene g) {
 		for (int i = 0; i < _lights.Count; i++) {

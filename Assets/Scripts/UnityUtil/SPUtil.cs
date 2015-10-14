@@ -272,22 +272,13 @@ public class SPUtil {
 		return true;
 	}
 
-	public static float lmovt(float a, float b, float vmax) {
-		float dir = SPUtil.sig(b-a);
-		float mag = Mathf.Abs(b-a) > vmax * SPUtil.dt_scale_get() ? vmax * SPUtil.dt_scale_get() : Mathf.Abs(b-a);
-		return a + dir * mag;
-	}
-
-	public static float elmovt(float a, float b, float vmax, float accel, float vcur, out float vnext) {
-		float dir = SPUtil.sig(b-a);
-		float dt_vel = vcur * SPUtil.dt_scale_get();
-		float mag = Mathf.Abs(b-a) > dt_vel ? dt_vel : Mathf.Abs(b-a);
-		if (dir != 0) {
-			vnext = vcur + accel * SPUtil.dt_scale_get();
+	public static Vector3 vec_lmovto(Vector3 a, Vector3 b, float vmax) {
+		Vector3 delta = SPUtil.vec_sub(b,a);
+		if (delta.magnitude <= vmax) {
+			return b;
 		} else {
-			vnext = 0;
+			return SPUtil.vec_add(a,SPUtil.vec_scale(delta.normalized,vmax * SPUtil.dt_scale_get()));
 		}
-		return a + dir * mag;
 	}
 
 	public static int sig(float a) {

@@ -68,4 +68,9 @@ public class BGWaterGround : SPGameUpdateable {
 	public void i_update(GameEngineScene g) {
 		_underwater_temple_treasure.i_update(g);
 	}
+
+	public Vector2 get_underwater_treasure_position() {
+		return SPUtil.vec_add(new Vector2(_root._u_x, _root._u_y), 
+			new Vector2(_underwater_temple_treasure._u_x,_underwater_temple_treasure._u_y));
+	}
 }

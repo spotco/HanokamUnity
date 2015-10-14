@@ -43,6 +43,11 @@ public class PlayerCharacter : SPGameUpdateable, SPHitPolyOwner, SPNodeHierarchy
 	public Vector2 get_center() {
 		return new Vector2(_root._u_x,_root._u_y+128);
 	}
+	public void set_center_u_pos(float x, float y) {
+		Vector2 center_delta = new Vector2(this.get_center().x-_root._u_x,this.get_center().y-_root._u_y);
+		Vector2 inv_center_delta = SPUtil.vec_scale(center_delta,-1);
+		this.set_u_pos(x+inv_center_delta.x,y+inv_center_delta.y);
+	}
 	
 	public PlayerCharacter play_anim(string anim, bool repeat = true) { 
 		if (anim == PlayerCharacterAnims.SWIM_SLOW) {

@@ -163,6 +163,14 @@ public class BGWater : SPGameUpdateable, CameraRenderHookDelegate, SPNodeHierarc
 		return this;
 	}
 
+	public void set_ground_depth(float depth) {
+		_lake_bottom_ground.set_u_pos(0,depth);
+	}
+
+	public Vector2 get_underwater_treasure_position() {
+		return _lake_bottom_ground.get_underwater_treasure_position();
+	}
+
 	private BGVillage _surface_reflection_bgvillage_hook_target = null;
 	private SPDict<string,Vector3> __bgvillage_hook_lpos_prev = new SPDict<string, Vector3>();
 	private SPDict<string,Vector3> __bgvillage_hook_scale_prev = new SPDict<string, Vector3>();

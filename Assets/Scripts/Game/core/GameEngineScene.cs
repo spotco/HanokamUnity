@@ -141,5 +141,10 @@ public class GameEngineScene : SPScene {
 		return GameMain._context._game_camera.transform.localPosition.y < -100;
 	}
 
+	public Vector2 convert_u_pos_to_screen_pos(float x, float y) {
+		Vector3 world_pos = GameMain._context.transform.TransformPoint(new Vector3(x,y));
+		return GameMain._context._game_camera.WorldToScreenPoint(world_pos);
+	}
+
 
 }

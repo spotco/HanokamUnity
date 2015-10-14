@@ -36,11 +36,6 @@ public class PufferBasicWaterEnemy : BasicWaterEnemy, GenericPooledObject, SPHit
 		
 		_img.i_update(g);
 	}
-	
-	public override void do_remove(GameEngineScene g, DiveGameState state) {
-		_img.repool();
-		base.do_remove(g, state);
-	}
 
 	public SPHitRect get_hit_rect() {
 		return SPHitPoly.hitpoly_to_bounding_hitrect(

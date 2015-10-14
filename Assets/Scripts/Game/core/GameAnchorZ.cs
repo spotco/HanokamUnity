@@ -3,8 +3,8 @@ using System.Collections;
 
 public class GameAnchorZ {
 
-	public const int HUD_BASE = 5000;
-	public const int HUD_BLUR_COVER = 4999;
+	public const int HUD_BASE = 1000;
+	public const int HUD_BLUR_COVER = 999;
 
 	public const int BGWater_FX = 510;
 	public const int BGWater_WaterLineBelow_Line_LightRays = 506;

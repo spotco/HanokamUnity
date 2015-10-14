@@ -1,11 +1,11 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-public abstract class BaseWaterEnemy : DiveGameStateUpdateable, SPNodeHierarchyElement, SPHitPolyOwner {
+public abstract class BaseWaterEnemy : DiveGameStateUpdateable, DiveReturnGameStateUpdateable, SPNodeHierarchyElement, SPHitPolyOwner {
 	public virtual void i_update(GameEngineScene g, DiveGameState state) {}
+	public virtual void i_update(GameEngineScene g, DiveReturnGameState state) {}
+	public virtual void do_remove(GameEngineScene g) {}
 	public virtual void add_to_parent(SPNode parent) {}
-	public virtual bool should_remove(GameEngineScene g, DiveGameState state) { return false; }
-	public virtual void do_remove(GameEngineScene g, DiveGameState state) {}
 	public virtual SPHitRect get_hit_rect() { return new SPHitRect(); }
 	public virtual SPHitPoly get_hit_poly() { return new SPHitPoly(); }
 }
@@ -28,13 +28,13 @@ public class WaterEnemyManager : DiveGameStateUpdateable, GenericPooledObject {
 	public WaterEnemyManager i_cons(GameEngineScene g) {
 	
 		this.add_enemy(PufferBasicWaterEnemy.cons(
-			g, new Vector2(-250,-1500), new Vector2(250,-1500)
+			g, new Vector2(-250,-800), new Vector2(250,-800)
 		));
 		this.add_enemy(PufferBasicWaterEnemy.cons(
-			g, new Vector2(0,-2000), new Vector2(500,-2000)
+			g, new Vector2(0,-1000), new Vector2(500,-1000)
 		));
 		this.add_enemy(PufferBasicWaterEnemy.cons(
-			g, new Vector2(-500,-2500), new Vector2(0,-2500)
+			g, new Vector2(-500,-1200), new Vector2(0,-1200)
 		));
 	
 		return this;
@@ -44,10 +44,13 @@ public class WaterEnemyManager : DiveGameStateUpdateable, GenericPooledObject {
 		for (int i = _enemies.Count-1; i >= 0; i--) {
 			BaseWaterEnemy itr = _enemies[i];
 			itr.i_update(g, state);
-			if (itr.should_remove(g, state)) {
-				itr.do_remove(g, state);
-				_enemies.RemoveAt(i);
-			}	
+		}
+	}
+
+	public void i_update(GameEngineScene g, DiveReturnGameState state) {
+		for (int i = _enemies.Count-1; i >= 0; i--) {
+			BaseWaterEnemy itr = _enemies[i];
+			itr.i_update(g, state);
 		}
 	}
 

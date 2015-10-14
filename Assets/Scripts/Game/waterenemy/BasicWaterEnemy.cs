@@ -66,7 +66,7 @@ public abstract class BasicWaterEnemy : BaseWaterEnemy {
 	public override void add_to_parent(SPNode parent) {
 		parent.add_child(_root);
 	}
-	public override void do_remove(GameEngineScene g, DiveGameState state) {
+	public override void do_remove(GameEngineScene g) {
 		_root.repool();
 		_root = null;
 	}
@@ -120,25 +120,40 @@ public abstract class BasicWaterEnemy : BaseWaterEnemy {
 		
 		} break;
 		case Mode.InPack: {
-			this.set_target_rotation(SPUtil.dir_ang_deg(g._player.get_center().x-_root._u_x,g._player.get_center().y-_root._u_y) - 90);
-
-			_pack_ud_theta += _pack_ud_vtheta * SPUtil.dt_scale_get();
-			_pack_lr_theta += _pack_lr_vtheta * SPUtil.dt_scale_get();
-
-			Vector2 target_pos = SPUtil.vec_add(
-				g._player.get_center(),
-				new Vector2(_pack_x_var * Mathf.Sin(_pack_lr_theta), _pack_y_var * Mathf.Cos(_pack_ud_theta) + _pack_y_var + 200));
-
-			Vector2 delta = SPUtil.vec_cons_norm(target_pos.x-_root._u_x,target_pos.y-_root._u_y);
-			_pack_cur_vel = Mathf.Min(
-				SPUtil.drpt(_pack_cur_vel, 13, 1/15.0f),
-				SPUtil.vec_dist(target_pos,new Vector2(_root._u_x,_root._u_y)));
-			delta = SPUtil.vec_scale(delta,_pack_cur_vel);
-
-			_root._u_x += delta.x * SPUtil.dt_scale_get();
-			_root._u_y += delta.y * SPUtil.dt_scale_get();
-			_last_move_rotation = _root.rotation();
+			this.in_pack_update(g);
 			this.check_hit(g, state);
+
+		} break;
+		}
+	}
+
+	private void in_pack_update(GameEngineScene g, float height_offset = 200) {
+		this.set_target_rotation(SPUtil.dir_ang_deg(g._player.get_center().x-_root._u_x,g._player.get_center().y-_root._u_y) - 90);
+		_pack_ud_theta += _pack_ud_vtheta * SPUtil.dt_scale_get();
+		_pack_lr_theta += _pack_lr_vtheta * SPUtil.dt_scale_get();
+
+		Vector2 target_pos = SPUtil.vec_add(
+			g._player.get_center(),
+			new Vector2(_pack_x_var * Mathf.Sin(_pack_lr_theta), _pack_y_var * Mathf.Cos(_pack_ud_theta) + _pack_y_var + height_offset));
+
+		Vector2 delta = SPUtil.vec_cons_norm(target_pos.x-_root._u_x,target_pos.y-_root._u_y);
+		_pack_cur_vel = Mathf.Min(
+			SPUtil.drpt(_pack_cur_vel, 13, 1/15.0f),
+			SPUtil.vec_dist(target_pos,new Vector2(_root._u_x,_root._u_y)));
+		delta = SPUtil.vec_scale(delta,_pack_cur_vel);
+
+		_root._u_x += delta.x * SPUtil.dt_scale_get();
+		_root._u_y += delta.y * SPUtil.dt_scale_get();
+		_last_move_rotation = _root.rotation();
+	}
+
+	public override void i_update(GameEngineScene g, DiveReturnGameState state) {
+		switch (_current_divereturn_mode) {
+		case DiveReturnMode.Normal: {
+			this.in_pack_update(g, 500);
+
+		} break;
+		case DiveReturnMode.Hit: {
 
 		} break;
 		}
