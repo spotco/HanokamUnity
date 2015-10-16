@@ -1,10 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class RSha {
+public class RShader {
 	public static string DEFAULT = "Custom/SPSpriteDefault";
 	public static string SURFACE_REFLECTION = "Custom/SurfaceReflection";
-	//public static string ALPHA = "Custom/SPSpriteAlpha";
+	public static string ALPHA_GRADIENT = "Custom/SPAlphaGradientSprite";
     public static string NOALPHA = "Custom/SPNoAlphaShader";
 
 }

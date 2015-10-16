@@ -9,6 +9,11 @@ public class PlayerCharacter : SPGameUpdateable, SPHitPolyOwner, SPNodeHierarchy
 	
 	private SPNode _root;
 	private SpriterNode _img;
+
+	private SPSprite _streak_left, _streak_right;
+	private SPSpriteAnimator _streak_left_anim, _streak_right_anim;
+
+	private SPSprite _trail;
 	
 	public PlayerCharacter i_cons(GameEngineScene g) {
 		_root = SPNode.cons_node();
@@ -25,6 +30,44 @@ public class PlayerCharacter : SPGameUpdateable, SPHitPolyOwner, SPNodeHierarchy
 		_img.set_manual_sort_z_order(GameAnchorZ.Player_Ground);
 		_img.set_name("_img");
 		_root.add_child(_img);
+
+		_streak_left = SPAlphaGradientSprite.cons_alphagradient_sprite(
+			RTex.HANOKA_EFFECTS,
+			FileCache.inst().get_texrect(RTex.HANOKA_EFFECTS,"sword_plant_energy_000.png"), 
+			new SPRange() { _min = 1, _max = 1 }, 
+			new SPRange() { _min = 1, _max = 0 });
+		_streak_left.set_anchor_point(0,0);
+		_streak_left.set_manual_sort_z_order(GameAnchorZ.Player_FX);
+		_streak_left.set_u_pos(24,-24);
+		_root.add_child(_streak_left);
+
+		_streak_left_anim = SPSpriteAnimator.cons(_streak_left)
+			.add_anim("play",
+				FileCache.inst().get_rects_list(
+					RTex.HANOKA_EFFECTS,"sword_plant_energy_00%d.png",0,3),6).play_anim("play");
+
+
+		_streak_right = SPAlphaGradientSprite.cons_alphagradient_sprite(
+			RTex.HANOKA_EFFECTS,
+			FileCache.inst().get_texrect(RTex.HANOKA_EFFECTS,"sword_plant_energy_000.png"), 
+			new SPRange() { _min = 1, _max = 1 }, 
+			new SPRange() { _min = 1, _max = 0 });
+		_streak_right.set_anchor_point(0,0);
+		_streak_right.set_manual_sort_z_order(GameAnchorZ.Player_FX);
+		_streak_right.set_u_pos(-24,-24);
+		_streak_right.set_scale_x(-1);
+		_root.add_child(_streak_right);
+
+		_streak_right_anim = SPSpriteAnimator.cons(_streak_right)
+			.add_anim("play",
+				FileCache.inst().get_rects_list(
+					RTex.HANOKA_EFFECTS,"sword_plant_energy_00%d.png",0,3),7).play_anim("play");
+
+		_trail = SPSprite.cons_sprite_texkey_texrect(RTex.HANOKA_EFFECTS,FileCache.inst().get_texrect(RTex.HANOKA_EFFECTS,"sword_stab-fall-air.png"));
+		_trail.set_anchor_point(0.5f,0);
+		_trail.set_manual_sort_z_order(GameAnchorZ.Player_FX);
+		_root.add_child(_trail);
+
 		
 		return this;
 	}
@@ -62,6 +105,8 @@ public class PlayerCharacter : SPGameUpdateable, SPHitPolyOwner, SPNodeHierarchy
 	
 	public void i_update(GameEngineScene g) {
 		_img.i_update();
+		_streak_left_anim.i_update();
+		_streak_right_anim.i_update();
 	}
 	
 	public SPHitRect get_hit_rect() {

@@ -23,7 +23,8 @@ public class SPSprite : SPNode {
 	[SerializeField] private MaterialPropertyBlock _material_block;
 	[SerializeField] private Rect _texrect;
 
-	private MeshRenderer _meshrenderer;
+	protected MeshRenderer _meshrenderer;
+	protected MeshFilter _meshfilter;
 
 	//subclasses must call this
 	protected SPSprite i_cons_sprite_texkey_texrect(string texkey, Rect texrect) {
@@ -31,6 +32,7 @@ public class SPSprite : SPNode {
 			this.gameObject.AddComponent<MeshFilter>().mesh = MeshGen.get_unit_quad_mesh();
 			this.gameObject.AddComponent<MeshRenderer>();
 			_meshrenderer = this.gameObject.GetComponent<MeshRenderer>();
+			_meshfilter = this.gameObject.GetComponent<MeshFilter>();
 		}
 		this.set_texkey(texkey);
 
@@ -53,7 +55,7 @@ public class SPSprite : SPNode {
 		if (_texkey != null) {
 			_meshrenderer.material = GameMain._context._tex_resc.get_material(_texkey,shader_key);
 		} else {
-			_meshrenderer.material.shader = ShaderResource.get_shader(RSha.SURFACE_REFLECTION);
+			_meshrenderer.material.shader = ShaderResource.get_shader(RShader.SURFACE_REFLECTION);
 		}
 		
 		return this;
@@ -104,7 +106,7 @@ public class SPSprite : SPNode {
 		if (texrect.x == _texrect.x && texrect.y == _texrect.y && texrect.width == _texrect.width && texrect.height == _texrect.height) return this;
 		_texrect = texrect;
 
-		Mesh sprite_mesh = this.gameObject.GetComponent<MeshFilter>().mesh;
+		Mesh sprite_mesh = _meshfilter.mesh;
 		Texture sprite_tex;
 		if (_texkey != null) {
 			sprite_tex = GameMain._context._tex_resc.get_tex(_texkey);
@@ -142,7 +144,7 @@ public class SPSprite : SPNode {
 		_has_set_initial_anchor_point = true;
 		base.set_anchor_point(x,y);
 		
-		Mesh sprite_mesh = this.gameObject.GetComponent<MeshFilter>().mesh;
+		Mesh sprite_mesh = _meshfilter.mesh;
 
 		float tex_wid = _texrect.width;
 		float tex_hei = _texrect.height;
@@ -172,7 +174,7 @@ public class SPSprite : SPNode {
 	}
 
 	public Vector3 w_pos_of_vertex(int i) {
-		MeshFilter mesh = this.GetComponent<MeshFilter>();
+		MeshFilter mesh = _meshfilter;
 		return this.transform.TransformPoint(mesh.sharedMesh.vertices[i]);
 	}
 
@@ -211,7 +213,7 @@ public class SPSprite : SPNode {
 		_meshrenderer.material.SetTexture("_MainTex",tex);
 	}
 	public void manual_set_mesh_size(float tex_wid, float tex_hei) {
-		Mesh sprite_mesh = this.gameObject.GetComponent<MeshFilter>().mesh;
+		Mesh sprite_mesh = _meshfilter.mesh;
 		Vector3[] verts = sprite_mesh.vertices;
 		verts[VTX_0_0] = new Vector3(
 			(-_anchorpoint.x) * tex_wid,

@@ -28,6 +28,8 @@ public class RTex {
 	public static string SPRITER_HANOKA_REDGARB = "character/hanoka/hanoka_armors/hanoka_player_redgarb";
 	public static string SPRITER_BOY = "character/Boy/boy";
 	public static string SPRITER_SHOPKEEP = "character/shopkeep/shopkeep";
+
+	public static string HANOKA_EFFECTS = "effects/effects_hanoka_ss";
 	
 	public static string SHOP_SHOPBG = "shop/shopbg";
 	public static string SHOP_SHOPUI = "shop/shopui";
@@ -103,7 +105,7 @@ public class TextureResource {
 	}
 
 	public Material get_material_default(string texkey) {
-		return get_material(texkey,RSha.DEFAULT);
+		return get_material(texkey,RShader.DEFAULT);
 	}
 
 	public Material get_material(string texkey, string shaderkey) {

@@ -38,7 +38,7 @@ public class BGReflection {
 		_reflection_image.set_u_z(1046.0f);
 		_reflection_image.gameObject.layer = RLayer.get_layer(RLayer.REFLECTIONS);
 		_reflection_image.set_manual_sort_z_order(GameAnchorZ.BGVillage_Reflection_3);
-		_reflection_image.set_shader(RSha.SURFACE_REFLECTION);
+		_reflection_image.set_shader(RShader.SURFACE_REFLECTION);
 		_root.add_child(_reflection_image);
 
 		return this;

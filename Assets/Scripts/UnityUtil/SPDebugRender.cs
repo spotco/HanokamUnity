@@ -14,7 +14,7 @@ public class SPDebugRender : CameraRenderHookDelegate {
 	
 	private Material _mat; 
 	public SPDebugRender i_cons() {
-		_mat = new Material(ShaderResource.get_shader(RSha.DEFAULT));
+		_mat = new Material(ShaderResource.get_shader(RShader.DEFAULT));
 		return this;
 	}
 	
