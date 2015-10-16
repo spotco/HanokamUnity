@@ -15,15 +15,15 @@ public abstract class BasicWaterEnemy : BaseWaterEnemy {
 		Hit
 	}
 	
-	public Mode _current_mode;
-	public DiveReturnMode _current_divereturn_mode; 
+	protected Mode _current_mode;
+	protected DiveReturnMode _current_divereturn_mode; 
 	
 	private Vector2 _pt1, _pt2;
 	private float _idle_move_anim_theta;
 	private Vector2 _last_pos, _stun_vel;
 	private float _stunned_anim_ct_max;
 	private float _anim_theta;
-	private float _stunned_anim_ct;
+	protected float _stunned_anim_ct;
 	private float _last_move_rotation;
 	
 	private float _idle_noticed_ct;
@@ -154,13 +154,38 @@ public abstract class BasicWaterEnemy : BaseWaterEnemy {
 
 		} break;
 		case DiveReturnMode.Hit: {
+			_stunned_anim_ct -= SPUtil.dt_scale_get();
+			_anim_theta = (_anim_theta + SPUtil.dt_scale_get() / (6.28f)) % 6.28f;
+			_root.set_rotation(
+				_last_move_rotation
+					+ SPUtil.lerp(30, 5, 1-_stunned_anim_ct/_stunned_anim_ct_max)
+					* Mathf.Sin(_anim_theta * SPUtil.lerp(1,7,1-_stunned_anim_ct/_stunned_anim_ct_max))
+			);
+			this.set_u_pos(SPUtil.vec_add(new Vector2(_root._u_x,_root._u_y),SPUtil.vec_scale(_stun_vel,SPUtil.dt_scale_get())));
+			_stun_vel.x = SPUtil.drpt(_stun_vel.x,0,1/20.0f);
+			_stun_vel.y = SPUtil.drpt(_stun_vel.y,0,1/20.0f);
+			if (_stunned_anim_ct <= 0) {
+				_current_divereturn_mode = DiveReturnMode.Normal;
+			}
 
 		} break;
 		}
+		float dist = SPUtil.vec_dist(g._player.get_center(), new Vector2(_root._u_x, _root._u_y));
+		if (dist < 100) {
+			_current_divereturn_mode = DiveReturnMode.Hit;
+			Vector2 dir_vec = SPUtil.vec_cons_norm(_root._u_x-g._player.get_center().x,_root._u_y-g._player.get_center().y);
+			dir_vec.y *= 0.75f;
+			dir_vec = SPUtil.vec_scale(dir_vec,SPUtil.y_for_point_of_2pt_line(new Vector2(0,25),new Vector2(100,10),dist));
+			_stun_vel = dir_vec;
+			_stunned_anim_ct = _stunned_anim_ct_max = 50;
+		}
+
+		_last_move_rotation = _root.rotation();
+		_last_pos = new Vector2(_root._u_x,_root._u_y);
 	}
 
 	public void check_hit(GameEngineScene g, DiveGameState state) {
-		if (this.is_active() && state._params._state == DiveGameState.State.Gameplay && SPHitPoly.polyowners_intersect(this, g._player)) {
+		if (this.is_active() && state._params._mode == DiveGameState.Mode.Gameplay && SPHitPoly.polyowners_intersect(this, g._player)) {
 			_current_mode = Mode.Stunned;
 
 			_stunned_anim_ct = _stunned_anim_ct_max = 50;

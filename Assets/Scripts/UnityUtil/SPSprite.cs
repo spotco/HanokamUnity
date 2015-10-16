@@ -14,7 +14,7 @@ public class SPSprite : SPNode {
 	public new static SPNode cons_node() { throw new System.Exception("SPSprite::cons_node"); }
 
 	public override void repool() {
-		this.GetComponent<MeshRenderer>().material = null;
+		_meshrenderer.material = null;
 		SPNode.generic_repool<SPSprite>(this);
 	}
 
@@ -23,18 +23,21 @@ public class SPSprite : SPNode {
 	[SerializeField] private MaterialPropertyBlock _material_block;
 	[SerializeField] private Rect _texrect;
 
+	private MeshRenderer _meshrenderer;
+
 	//subclasses must call this
 	protected SPSprite i_cons_sprite_texkey_texrect(string texkey, Rect texrect) {
-		if (this.GetComponent<MeshFilter>() == null) {
+		if (_meshrenderer == null) {
 			this.gameObject.AddComponent<MeshFilter>().mesh = MeshGen.get_unit_quad_mesh();
 			this.gameObject.AddComponent<MeshRenderer>();
+			_meshrenderer = this.gameObject.GetComponent<MeshRenderer>();
 		}
 		this.set_texkey(texkey);
 
-		this.gameObject.GetComponent<MeshRenderer>().receiveShadows = false;
-		this.gameObject.GetComponent<MeshRenderer>().useLightProbes = false;
-		this.gameObject.GetComponent<MeshRenderer>().reflectionProbeUsage = UnityEngine.Rendering.ReflectionProbeUsage.Off;
-		this.gameObject.GetComponent<MeshRenderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+		_meshrenderer.receiveShadows = false;
+		_meshrenderer.useLightProbes = false;
+		_meshrenderer.reflectionProbeUsage = UnityEngine.Rendering.ReflectionProbeUsage.Off;
+		_meshrenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
 
 		this._has_set_initial_anchor_point = false;
 		this.set_tex_rect(texrect);
@@ -48,9 +51,9 @@ public class SPSprite : SPNode {
 
 	public SPSprite set_shader(string shader_key) {
 		if (_texkey != null) {
-			this.gameObject.GetComponent<MeshRenderer>().material = GameMain._context._tex_resc.get_material(_texkey,shader_key);
+			_meshrenderer.material = GameMain._context._tex_resc.get_material(_texkey,shader_key);
 		} else {
-			this.gameObject.GetComponent<MeshRenderer>().material.shader = ShaderResource.get_shader(RSha.SURFACE_REFLECTION);
+			_meshrenderer.material.shader = ShaderResource.get_shader(RSha.SURFACE_REFLECTION);
 		}
 		
 		return this;
@@ -74,10 +77,10 @@ public class SPSprite : SPNode {
 		_color = color;
 
 		if (_texkey != null) {
-			this.gameObject.GetComponent<MeshRenderer>().material = GameMain._context._tex_resc.get_material_default(_texkey);
+			_meshrenderer.material = GameMain._context._tex_resc.get_material_default(_texkey);
 		}
 
-		MeshRenderer renderer = this.GetComponent<MeshRenderer>();
+		MeshRenderer renderer = _meshrenderer;
 		if (_material_block == null) {
 			_material_block = new MaterialPropertyBlock();
 			renderer.GetPropertyBlock(_material_block);
@@ -87,6 +90,8 @@ public class SPSprite : SPNode {
 		renderer.SetPropertyBlock(_material_block);
 		return this;
 	}
+
+	public Vector4 color() { return _color; }
 
 	public const int VTX_0_0 = 0;
 	public const int VTX_1_0 = 1;
@@ -195,7 +200,7 @@ public class SPSprite : SPNode {
 	}
 
 	public override void set_sort_z(int zt) {
-		if (this.GetComponent<MeshRenderer>() != null) this.GetComponent<MeshRenderer>().sortingOrder = zt;
+		if (_meshrenderer != null) _meshrenderer.sortingOrder = zt;
 		base.set_sort_z(zt);
 	}
 
@@ -203,7 +208,7 @@ public class SPSprite : SPNode {
 	public void manual_set_texture(Texture tex) {
 		_texkey = null;
 		_manually_set_texture = tex;
-		this.GetComponent<MeshRenderer>().material.SetTexture("_MainTex",tex);
+		_meshrenderer.material.SetTexture("_MainTex",tex);
 	}
 	public void manual_set_mesh_size(float tex_wid, float tex_hei) {
 		Mesh sprite_mesh = this.gameObject.GetComponent<MeshFilter>().mesh;

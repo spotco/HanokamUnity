@@ -7,9 +7,9 @@ public interface DiveGameStateUpdateable {
 
 public class DiveGameState : GameStateBase {
 
-	public struct DiveGameStateParams {
+	public struct Params {
 		public Vector2 _vel;
-		public DiveGameState.State _state;
+		public DiveGameState.Mode _mode;
 		
 		public bool _dashing;
 		public float _dash_ct;
@@ -17,7 +17,7 @@ public class DiveGameState : GameStateBase {
 		public float _ground_depth;
 	}
 
-	public enum State {
+	public enum Mode {
 		TransitionIn,
 		Gameplay,
 		SwimToUnderwaterTreasure,
@@ -28,13 +28,13 @@ public class DiveGameState : GameStateBase {
 		return (new DiveGameState()).i_cons(g);
 	}
 
-	public DiveGameStateParams _params;
+	public Params _params;
 	private FlashEvery _bubble_every;
 	private WaterEnemyManager _enemy_manager;
 
 	public DiveGameState i_cons(GameEngineScene g) {
 		_params._vel = new Vector2(0,-22);
-		_params._state = State.TransitionIn;
+		_params._mode = Mode.TransitionIn;
 		_params._dashing = false;
 		_params._ground_depth = -3500;
 
@@ -83,8 +83,8 @@ public class DiveGameState : GameStateBase {
 		g._player.i_update(g);
 		_enemy_manager.i_update(g, this);
 
-		switch (_params._state) {
-		case (State.TransitionIn): {
+		switch (_params._mode) {
+		case (Mode.TransitionIn): {
 			g._camerac.set_target_camera_focus_on_character(g,0,-200);
 			g._camerac.set_target_zoom(1000);
 			if (g._controls.is_move_x()) {
@@ -99,13 +99,13 @@ public class DiveGameState : GameStateBase {
 				g._player._u_y + _params._vel.y * SPUtil.dt_scale_get()
 			);
 			if (g._player._u_y < -1000) {
-				_params._state = State.Gameplay;
+				_params._mode = Mode.Gameplay;
 				g._camerac.set_camera_follow_speed(1/15.0f);
 				g._camerac.set_target_zoom(1500);
 			}
 
 		} break;
-		case (State.Gameplay): {
+		case (Mode.Gameplay): {
 			float MIN_Y_OFFSET = -400;
 			float MAX_Y_OFFSET = 400;
 			_camera_offset_y = SPUtil.eclamp(
@@ -181,10 +181,10 @@ public class DiveGameState : GameStateBase {
 
 			if (g._player._u_y < _params._ground_depth + 700) {
 				UnderwaterBubbleParticle.proc_multiple_bubbles(g);
-				_params._state = State.SwimToUnderwaterTreasure;
+				_params._mode = Mode.SwimToUnderwaterTreasure;
 			}
 		} break;
-		case State.SwimToUnderwaterTreasure: {
+		case Mode.SwimToUnderwaterTreasure: {
 			g._player.play_anim(PlayerCharacterAnims.SWIM);
 			g._camerac.set_target_zoom(850);
 			g._camerac.set_target_camera_focus_on_character(g,0,200);
@@ -196,14 +196,14 @@ public class DiveGameState : GameStateBase {
 			Vector2 player_pos = SPUtil.vec_lmovto(g._player.get_center(),g._bg_water.get_underwater_treasure_position(),_params._vel.magnitude);
 
 			if (SPUtil.vec_dist(player_pos,g._bg_water.get_underwater_treasure_position()) < 1) {
-				_params._state = State.PickupTreasure;
+				_params._mode = Mode.PickupTreasure;
 			} else {
 				PlayerCharacterUtil.rotate_to_rotation_for_vel(g._player,player_pos.x - g._player.get_center().x,player_pos.y - g._player.get_center().y,1/10.0f);
 				g._player.set_center_u_pos(player_pos.x,player_pos.y);
 			}
 			
 		} break;
-		case State.PickupTreasure: {
+		case Mode.PickupTreasure: {
 			UnderwaterBubbleParticle.proc_multiple_bubbles(g);
 			DiveReturnGameState neu_state = DiveReturnGameState.cons(g,_params,_enemy_manager);
 			g.pop_top_game_state();

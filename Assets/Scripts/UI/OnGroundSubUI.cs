@@ -34,7 +34,7 @@ public class OnGroundSubUI : GameUISubUI {
 	public override void i_update(GameEngineScene g) {
 		OnGroundGameState ground_state;
 		if (SPUtil.cond_cast<OnGroundGameState>(g.get_top_game_state(),out ground_state)) {
-			if (ground_state._current_state == OnGroundGameState.State.JumpCharge) {
+			if (ground_state._current_state == OnGroundGameState.Mode.JumpCharge) {
 				_jump_charge_ui_root.i_update(g);
 				_jump_charge_ui_root.set_enabled(true);
 				

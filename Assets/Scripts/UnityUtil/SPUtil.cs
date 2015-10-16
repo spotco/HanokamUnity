@@ -324,8 +324,8 @@ public class SPUtil {
 		z1 = (v1.x*a.y) - (a.x*v1.y);
 		return new Vector3(x1, y1, z1);
 	}
-	public static bool vec_eq(Vector3 a, Vector3 b) {
-		return a.x == b.x && a.y == b.y && a.z == b.z;
+	public static bool vec_eq(Vector4 a, Vector4 b) {
+		return a.x == b.x && a.y == b.y && a.z == b.z && a.w == b.w;
 	}
 	public static Vector2 vec_basis_transform_point(Vector2 pt, Vector2 a, float a_s, Vector2 b, float b_s) {
 		a = SPUtil.vec_scale(a.normalized,a_s);

@@ -35,7 +35,7 @@ public class FlashCount {
 	public bool do_flash_given_time(float time) {
 		if (!_sorted) {
 			_sorted = true;
-			_counts.Sort();
+			_counts.Sort((float a, float b)=>{return (int)(b-a);});
 		}
 		if (_i >= _counts.Count) return false;
 		bool rtv = _counts[_i] >= time;

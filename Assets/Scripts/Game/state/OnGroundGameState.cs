@@ -7,17 +7,17 @@ public interface OnGroundStateUpdateable {
 
 public class OnGroundGameState : GameStateBase {
 
-	public struct OnGroundGameStateParams {
+	public struct Params {
 		public float _jump_charge_t;
 		public Vector2 _vel;
 		
-		public static OnGroundGameStateParams cons() {
-			OnGroundGameStateParams rtv = new OnGroundGameStateParams();
+		public static Params cons() {
+			Params rtv = new Params();
 			return rtv;
 		}
 	}
 
-	public enum State {
+	public enum Mode {
 		Gameplay,
 		JumpCharge,
 		JumpInAir
@@ -27,13 +27,13 @@ public class OnGroundGameState : GameStateBase {
 		return (new OnGroundGameState()).i_cons(g);
 	}
 	
-	public OnGroundGameStateParams _params;
-	public State _current_state;
+	public Params _params;
+	public Mode _current_state;
 	public VillagerManager _villager_manager;
 	
 	public OnGroundGameState i_cons(GameEngineScene g) {
-		_params = OnGroundGameStateParams.cons();
-		_current_state = State.Gameplay;
+		_params = Params.cons();
+		_current_state = Mode.Gameplay;
 		g._camerac.set_zoom_speed(1/10.0f);
 		g._camerac.set_camera_follow_speed(1/30.0f);
 		_villager_manager = VillagerManager.cons(g);
@@ -44,7 +44,7 @@ public class OnGroundGameState : GameStateBase {
 		g._player.i_update(g);
 		
 		switch (_current_state) {
-		case State.Gameplay:{
+		case Mode.Gameplay:{
 			_villager_manager.i_update(g,this);
 			g._player.set_manual_sort_z_order(GameAnchorZ.Player_Ground);
 			if (g._controls.is_move_x()) {
@@ -75,29 +75,29 @@ public class OnGroundGameState : GameStateBase {
 			g._camerac.set_target_camera_focus_on_character(g,0,200);
 			
 			if (g._controls.get_control_just_pressed(ControlManager.Control.OnGround_Jump)) {
-				_current_state = State.JumpCharge;
+				_current_state = Mode.JumpCharge;
 				g._player.play_anim(PlayerCharacterAnims.PREPDIVE,false);
 				_params._jump_charge_t = 0;
 			}
 			
 		} break;
-		case State.JumpCharge:{
+		case Mode.JumpCharge:{
 			g._camerac.set_target_camera_focus_on_character(g,0,120);
 			g._camerac.set_target_zoom(500);
 			
 			_params._jump_charge_t = Mathf.Clamp(_params._jump_charge_t + SPUtil.dt_scale_get() * SPUtil.sec_to_tick(1.0f),0,1);
 			
 			if (_params._jump_charge_t >= 1) {
-				_current_state = State.JumpInAir;
+				_current_state = Mode.JumpInAir;
 				_params._vel = new Vector2(0,15);
 				
 			} else if (!g._controls.get_control_down(ControlManager.Control.OnGround_Jump)) {
-				_current_state = State.Gameplay;
+				_current_state = Mode.Gameplay;
 				g._camerac.set_zoom_speed(1/10.0f);
 			}
 			
 		} break;
-		case State.JumpInAir:{
+		case Mode.JumpInAir:{
 			g._player.set_manual_sort_z_order(GameAnchorZ.Player_InAir);
 			g._camerac.set_target_camera_focus_on_character(g,0,-60);
 			g._camerac.set_target_zoom(1000);

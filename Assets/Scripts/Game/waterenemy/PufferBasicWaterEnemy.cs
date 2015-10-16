@@ -25,15 +25,52 @@ public class PufferBasicWaterEnemy : BasicWaterEnemy, GenericPooledObject, SPHit
 		_tar_color = Color.white;
 		_flashcount = FlashCount.cons();
 		_flashcount
+			.add_flash_at(50)
 			.add_flash_at(30)
-			.add_flash_at(20)
-			.add_flash_at(10);
+			.add_flash_at(15);
 		return this;
 	}
 	
-	public override void i_update (GameEngineScene g, DiveGameState state) {
+	public override void i_update(GameEngineScene g, DiveGameState state) {
 		base.i_update(g,state);
-		
+
+		Vector4 img_color = _img.color();
+		img_color.y = SPUtil.drpt(img_color.y,1,1/8.0f);
+		img_color.z = SPUtil.drpt(img_color.z,1,1/8.0f);
+
+		switch(this._current_mode) {
+		case Mode.IdleMove: {
+			_img.play_anim(PufferEnemySprite.ANIM_IDLE);
+		} break;
+		case Mode.InPack: {
+			_img.play_anim(PufferEnemySprite.ANIM_FOLLOW);
+			_flashcount.reset();
+		} break;
+		case Mode.Stunned: {
+			_img.play_anim(PufferEnemySprite.ANIM_HURT);
+			if (_flashcount.do_flash_given_time(this._stunned_anim_ct)) {
+				img_color.y = 0;
+				img_color.z = 0;
+			}
+		} break;
+		default: break;
+		}
+
+		_img.set_color(img_color);
+		_img.i_update(g);
+	}
+
+	public override void i_update(GameEngineScene g, DiveReturnGameState state) {
+		base.i_update(g, state);
+
+		switch(this._current_divereturn_mode) {
+		case DiveReturnMode.Normal: {
+			_img.play_anim(PufferEnemySprite.ANIM_FOLLOW);
+		} break;
+		case DiveReturnMode.Hit: {
+			_img.play_anim(PufferEnemySprite.ANIM_HURT);
+		} break;
+		}
 		_img.i_update(g);
 	}
 

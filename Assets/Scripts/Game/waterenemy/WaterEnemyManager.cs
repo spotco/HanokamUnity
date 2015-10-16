@@ -26,16 +26,17 @@ public class WaterEnemyManager : DiveGameStateUpdateable, GenericPooledObject {
 	private SPNode _root;
 	private List<BaseWaterEnemy> _enemies = new List<BaseWaterEnemy>();
 	public WaterEnemyManager i_cons(GameEngineScene g) {
-	
-		this.add_enemy(PufferBasicWaterEnemy.cons(
-			g, new Vector2(-250,-800), new Vector2(250,-800)
-		));
-		this.add_enemy(PufferBasicWaterEnemy.cons(
-			g, new Vector2(0,-1000), new Vector2(500,-1000)
-		));
-		this.add_enemy(PufferBasicWaterEnemy.cons(
-			g, new Vector2(-500,-1200), new Vector2(0,-1200)
-		));
+		for (int i = 0; i < 5; i++) {
+			this.add_enemy(PufferBasicWaterEnemy.cons(
+				g, new Vector2(-250,-800), new Vector2(250,-800)
+			));
+			this.add_enemy(PufferBasicWaterEnemy.cons(
+				g, new Vector2(0,-1000), new Vector2(500,-1000)
+			));
+			this.add_enemy(PufferBasicWaterEnemy.cons(
+				g, new Vector2(-500,-1200), new Vector2(0,-1200)
+			));
+		}
 	
 		return this;
 	}

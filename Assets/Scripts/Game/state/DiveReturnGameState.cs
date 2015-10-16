@@ -7,23 +7,23 @@ public interface DiveReturnGameStateUpdateable {
 
 public class DiveReturnGameState : GameStateBase {
 
-	public static DiveReturnGameState cons(GameEngineScene g, DiveGameState.DiveGameStateParams param, WaterEnemyManager enemy_manager) {
+	public static DiveReturnGameState cons(GameEngineScene g, DiveGameState.Params param, WaterEnemyManager enemy_manager) {
 		return (new DiveReturnGameState()).i_cons(g,param,enemy_manager);
 	}
 
-	public enum State {
+	public enum Mode {
 		CameraPanUp,
 		CameraPanUpPostPause,
 		BreakThrough,
 		FollowUp
 	}
 
-	private State _current_state;
+	private Mode _current_state;
 	private WaterEnemyManager _enemy_manager;
 	private float _anim_t;
 
-	public DiveReturnGameState i_cons(GameEngineScene g, DiveGameState.DiveGameStateParams param, WaterEnemyManager enemy_manager) {
-		_current_state = State.CameraPanUp;
+	public DiveReturnGameState i_cons(GameEngineScene g, DiveGameState.Params param, WaterEnemyManager enemy_manager) {
+		_current_state = Mode.CameraPanUp;
 		_enemy_manager = enemy_manager;
 		g._camerac.set_camera_follow_speed(1/15.0f);
 		g._camerac.set_target_zoom(1000);
@@ -34,23 +34,23 @@ public class DiveReturnGameState : GameStateBase {
 	public override void i_update(GameEngineScene g) {
 		_enemy_manager.i_update(g, this);
 		switch (_current_state) {
-		case State.CameraPanUp: {
+		case Mode.CameraPanUp: {
 			if (SPUtil.flt_cmp_delta(g._camerac.get_current_camera_y(),g._camerac.get_target_camera_y(),10)) {
-				_current_state = State.CameraPanUpPostPause;
+				_current_state = Mode.CameraPanUpPostPause;
 				_anim_t = 0;
 			}
 
 		} break;
-		case State.CameraPanUpPostPause: {
+		case Mode.CameraPanUpPostPause: {
 			_anim_t += 0.2f * SPUtil.dt_scale_get();
 			if (_anim_t >= 1) {
 				g._player.set_rotation(0);
-				_current_state = State.BreakThrough;
+				_current_state = Mode.BreakThrough;
 				g._camerac.camera_shake(new Vector2(-2,3.3f),35,30);
 			}
 
 		} break;
-		case State.BreakThrough: {
+		case Mode.BreakThrough: {
 			g._player.play_anim(PlayerCharacterAnims.SWIM);
 			g._player.i_update(g);
 			PlayerCharacterUtil.move_in_bounds(
@@ -60,12 +60,12 @@ public class DiveReturnGameState : GameStateBase {
 			);
 
 			if (g.convert_u_pos_to_screen_pos(g._player._u_x,g._player._u_y).y > SPUtil.game_screen().y * 0.75f) {
-				_current_state = State.FollowUp;
+				_current_state = Mode.FollowUp;
 				_anim_t = 0;
 			}
 
 		} break;
-		case State.FollowUp: {
+		case Mode.FollowUp: {
 			g._player.i_update(g);
 			PlayerCharacterUtil.move_in_bounds(
 				g._player,
