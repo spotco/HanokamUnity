@@ -68,8 +68,19 @@ public class PlayerCharacter : SPGameUpdateable, SPHitPolyOwner, SPNodeHierarchy
 		_trail.set_manual_sort_z_order(GameAnchorZ.Player_FX);
 		_root.add_child(_trail);
 
+		this.set_streak_enabled(false);
+		this.set_trail_enabled_and_rotation(false);
 		
 		return this;
+	}
+
+	public void set_streak_enabled(bool val) {
+		_streak_right.set_enabled(val);
+		_streak_left.set_enabled(val);
+	}
+	public void set_trail_enabled_and_rotation(bool val, float angle=0) {
+		_trail.set_enabled(val);
+		_trail.set_rotation(angle);
 	}
 	
 	public void add_to_parent(SPNode parent) {

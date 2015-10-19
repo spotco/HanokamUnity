@@ -47,6 +47,7 @@ public class DiveReturnGameState : GameStateBase {
 				g._player.set_rotation(0);
 				_current_state = Mode.BreakThrough;
 				g._camerac.camera_shake(new Vector2(-2,3.3f),35,30);
+				g._player.set_trail_enabled_and_rotation(true,180);
 			}
 
 		} break;
@@ -75,6 +76,13 @@ public class DiveReturnGameState : GameStateBase {
 			_anim_t = Mathf.Clamp(_anim_t+0.05f*SPUtil.dt_scale_get(),0,1);
 			g._camerac.set_camera_follow_speed(SPUtil.y_for_point_of_2pt_line(new Vector2(0,1/10.0f),new Vector2(1,1),_anim_t));
 			g._camerac.set_target_camera_focus_on_character(g,0,200);
+			if (g._player._u_y >= -250) {
+				g.pop_top_game_state();
+				g.push_game_state(InAirGameState.cons(g));
+				g._camerac.camera_shake(new Vector2(-1.7f,2.1f),80,200, 1/50.0f);
+				g._camerac.camera_motion_blur(new Vector3(0,500,500), 60.0f);
+				g._camerac.camera_blur(45.0f);
+			}
 
 		} break;
 		}
