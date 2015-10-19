@@ -90,6 +90,7 @@ public class PlayerCharacter : SPGameUpdateable, SPHitPolyOwner, SPNodeHierarchy
 	public PlayerCharacter set_manual_sort_z_order(int val) { _img.set_manual_sort_z_order(val); return this; }
 	public float _u_x { get { return _root._u_x; } set { this.set_u_pos(value,this._u_y); } }
 	public float _u_y { get { return _root._u_y; } set { this.set_u_pos(this._u_x,value); } }
+	public Vector2 get_u_pos() { return _root.get_u_pos(); }
 	public PlayerCharacter set_u_pos(float x, float y) { _root.set_u_pos(x,y); return this; }
 	public PlayerCharacter set_scale_x(float val) { _img.set_img_scale_x(val); return this; }
 	public float rotation() { return _img._rendered_img.rotation(); }
@@ -97,6 +98,7 @@ public class PlayerCharacter : SPGameUpdateable, SPHitPolyOwner, SPNodeHierarchy
 	public Vector2 get_center() {
 		return new Vector2(_root._u_x,_root._u_y+128);
 	}
+	public void set_center_u_pos(Vector2 vec) { this.set_center_u_pos(vec.x,vec.y); }
 	public void set_center_u_pos(float x, float y) {
 		Vector2 center_delta = new Vector2(this.get_center().x-_root._u_x,this.get_center().y-_root._u_y);
 		Vector2 inv_center_delta = SPUtil.vec_scale(center_delta,-1);

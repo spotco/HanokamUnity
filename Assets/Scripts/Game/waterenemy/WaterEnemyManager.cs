@@ -8,6 +8,7 @@ public abstract class BaseWaterEnemy : DiveGameStateUpdateable, DiveReturnGameSt
 	public virtual void add_to_parent(SPNode parent) {}
 	public virtual SPHitRect get_hit_rect() { return new SPHitRect(); }
 	public virtual SPHitPoly get_hit_poly() { return new SPHitPoly(); }
+	public virtual void do_remove() {}
 }
 
 public class WaterEnemyManager : DiveGameStateUpdateable, GenericPooledObject {	
@@ -20,6 +21,10 @@ public class WaterEnemyManager : DiveGameStateUpdateable, GenericPooledObject {
 		_root.set_name("WaterEnemyRoot");
 	}
 	public void repool() {
+		for (int i = 0; i < _enemies.Count; i++) {
+			_enemies[i].do_remove();
+		}
+		_enemies.Clear();
 		_root.repool();
 	}
 	

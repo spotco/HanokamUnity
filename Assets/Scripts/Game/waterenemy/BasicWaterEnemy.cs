@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public abstract class BasicWaterEnemy : BaseWaterEnemy {
+public abstract class BasicWaterEnemy : BaseWaterEnemy, GenericPooledObject {
 
 	public enum Mode {
 		IdleMove,
@@ -13,6 +13,18 @@ public abstract class BasicWaterEnemy : BaseWaterEnemy {
 	public enum DiveReturnMode {
 		Normal,
 		Hit
+	}
+
+	public virtual void depool() {
+		_root = SPNode.cons_node();
+		_root.set_name("BasicWaterEnemy");
+	}
+	public virtual void repool() {
+		_root.repool();
+	}
+
+	public override void do_remove() {
+		throw new System.Exception("MUST OVERRIDE DO_REMOVE BASICWATERENEMY");
 	}
 	
 	protected Mode _current_mode;
@@ -37,9 +49,6 @@ public abstract class BasicWaterEnemy : BaseWaterEnemy {
 	private SPNode _root;
 	
 	protected BasicWaterEnemy i_cons(GameEngineScene g, Vector2 pt1, Vector2 pt2) {
-		_root = SPNode.cons_node();
-		_root.set_name("BasicWaterEnemy");
-		
 		this._current_mode = Mode.IdleMove;
 		this._current_divereturn_mode = DiveReturnMode.Normal;
 		

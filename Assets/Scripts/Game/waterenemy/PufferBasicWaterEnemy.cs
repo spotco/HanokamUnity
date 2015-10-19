@@ -1,16 +1,21 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class PufferBasicWaterEnemy : BasicWaterEnemy, GenericPooledObject, SPHitPolyOwner {
+public class PufferBasicWaterEnemy : BasicWaterEnemy, SPHitPolyOwner {
 
 	public static PufferBasicWaterEnemy cons(GameEngineScene g, Vector2 pt1, Vector2 pt2) {
 		return (ObjectPool.inst().generic_depool<PufferBasicWaterEnemy>()).i_cons(g,pt1,pt2);
 	}
-	public void depool() {
+	public override void depool() {
+		base.depool();
 		_img = PufferEnemySprite.cons();
 	}
-	public void repool() {
+	public override void repool() {
 		_img.repool();
+		base.repool();
+	}
+	public override void do_remove() {
+		ObjectPool.inst().generic_repool(this);
 	}
 	
 	private PufferEnemySprite _img;

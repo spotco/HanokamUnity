@@ -13,7 +13,6 @@ public class UnderwaterBubbleParticle : SPGameEngineParticle, GenericPooledObjec
 		_img.set_name("UnderwaterBubbleParticle");
 	}
 	public void repool() {
-		_img.set_name("SPSprite");
 		_img.repool();
 		_img = null;
 	}

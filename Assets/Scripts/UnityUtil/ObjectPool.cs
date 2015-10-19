@@ -90,7 +90,10 @@ public class ObjectPool : SPBaseBehavior {
 	}
 
 	public void generic_repool<T>(T obj) where T : GenericPooledObject {
-		string key = typeof(T).ToString();
+		this.type_repool(obj,typeof(T));
+	}
+	public void type_repool(GenericPooledObject obj, System.Type type) {
+		string key = type.ToString();
 		obj.repool();
 		_generic_typekey_to_objlist.list(key).Add(obj);
 	}

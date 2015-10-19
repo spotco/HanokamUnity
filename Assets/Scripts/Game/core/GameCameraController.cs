@@ -231,7 +231,19 @@ public class GameCameraController : SPMainUpdateable {
 	public float get_zoom() {
 		return _camera_zoom._current;
 	}
-	
+
+	public static Vector2 u_pos_to_c_pos(Vector2 vec) { return GameCameraController.u_pos_to_c_pos(vec.x,vec.y); }
+	public static Vector2 u_pos_to_c_pos(float x, float y) {
+		Vector2 u_pos = new Vector2(x,y);
+		Vector2 camera = GameMain._context._game_camera.transform.localPosition;
+		return SPUtil.vec_sub(u_pos, new Vector2(camera.x,camera.y));
+	}
+	public static Vector2 c_pos_to_u_pos(Vector2 vec) { return GameCameraController.c_pos_to_u_pos(vec.x,vec.y); }
+	public static Vector2 c_pos_to_u_pos(float x, float y) {
+		Vector2 c_pos = new Vector2(x,y);
+		Vector2 camera = GameMain._context._game_camera.transform.localPosition;
+		return SPUtil.vec_add(c_pos,new Vector2(camera.x,camera.y));
+	}
 
 
 }

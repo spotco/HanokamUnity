@@ -100,6 +100,7 @@ public class SPNode : SPBaseBehavior {
 		_u_z = z;
 		return this; 
 	}
+	public Vector2 get_u_pos() { return new Vector2(_u_x,_u_y); }
 	
 	
 	public SPNode set_rotation(float deg) { this.transform.localEulerAngles = new Vector3(this.transform.localEulerAngles.x,this.transform.localEulerAngles.y, deg); _rotation = deg; return this; }
