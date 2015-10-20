@@ -18,6 +18,11 @@ public class RTex {
 	public static string BG_WATER_TOP_WATERLINEGRAD = "background/waterline_tex/bg_water_top_waterlinegrad";
 	public static string BG_WATER_BOTTOM_SURFACEGRAD = "background/waterline_tex/bg_water_bottom_surfacegrad";
 
+	public static string BG_NUNDERWATER_BG = "background/nunderwater/nunderwater_bg";
+	public static string BG_NUNDERWATER_TEMPLE = "background/nunderwater/nunderwater_temple";
+	public static string BG_NUNDERWATER_FADE = "background/nunderwater/nunderwater_fade";
+	public static string BG_NUNDERWATER_FISH_TEST = "background/nunderwater/fish_test_1";
+
 	public static string SPRITER_OLDMAN = "character/oldman/Oldman";
 	public static string SPRITER_FISHGIRL = "character/Fishgirl/Fishgirl";
 	public static string SPRITER_DOG = "character/dog/dog";

@@ -47,13 +47,15 @@ public class GameAnchorZ {
 	public const int BGWater_Ground_Treasure = -898;
 	public const int BGWater_Ground_Treasure_Light = -899;
 	public const int BGWater_Ground = -900;
-	public const int BGWater_Ground_Fill = -901;
-	public const int BGWater_Ground_BottomFade = -902;
+	public const int BGWater_Ground_Pillar = -901;
+	public const int BGWater_Ground_Fill = -902;
+	public const int BGWater_Ground_BottomFade = -903;
 
 	public const int BGWater_TOP_FADE = -950;
 	public const int BGWater_BG_ELE1 = -998;
 	public const int BGWater_BG_ELE2 = -999;
 	public const int BGWater_BG_ELE3 = -1000;
+	public const int BGWater_BG_ELE4 = -1001;
 
 
 	public const int BGSky_BG_ELE1 = -4997;

@@ -18,12 +18,12 @@ public class BGUnderwaterTreasure : SPGameUpdateable {
 		parent.add_child(_root);
 
 		_img = SPSprite.cons_sprite_texkey_texrect(
-			RTex.BG_SPRITESHEET_1,
-			FileCache.inst().get_texrect(RTex.BG_SPRITESHEET_1,"underwater_temple_treasure.png")
+			RTex.BG_NUNDERWATER_TEMPLE,
+			FileCache.inst().get_texrect(RTex.BG_NUNDERWATER_TEMPLE,"underwater_treasure_orb.png")
 		);
 		_img.set_manual_sort_z_order(GameAnchorZ.BGWater_Ground_Treasure);
 		_img.set_name("_img");
-		_img.set_scale(0.75f);
+		_img.set_scale(1.0f);
 		_root.add_child(_img);
 
 		_lights = new List<SPSprite>();
