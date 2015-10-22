@@ -15,6 +15,8 @@ public class PlayerCharacter : SPGameUpdateable, SPHitPolyOwner, SPNodeHierarchy
 
 	private SPSprite _trail;
 	
+	public PlayerAimReticule _aim_retic;
+	
 	public PlayerCharacter i_cons(GameEngineScene g) {
 		_root = SPNode.cons_node();
 		_root.set_name("PlayerCharacter");
@@ -71,6 +73,11 @@ public class PlayerCharacter : SPGameUpdateable, SPHitPolyOwner, SPNodeHierarchy
 		this.set_streak_enabled(false);
 		this.set_trail_enabled_and_rotation(false);
 		
+		_aim_retic = PlayerAimReticule.cons();
+		_aim_retic.set_u_pos(this.get_center_offset());
+		_aim_retic.add_to_parent(_root);
+		_aim_retic.set_enabled(false);
+		
 		return this;
 	}
 
@@ -93,10 +100,12 @@ public class PlayerCharacter : SPGameUpdateable, SPHitPolyOwner, SPNodeHierarchy
 	public Vector2 get_u_pos() { return _root.get_u_pos(); }
 	public PlayerCharacter set_u_pos(float x, float y) { _root.set_u_pos(x,y); return this; }
 	public PlayerCharacter set_scale_x(float val) { _img.set_img_scale_x(val); return this; }
+	public float scale_x() { return _img.img_scale_x(); }
 	public float rotation() { return _img._rendered_img.rotation(); }
 	public PlayerCharacter set_rotation(float deg) { _img._rendered_img.set_rotation(deg); return this; }
+	private Vector2 get_center_offset() { return new Vector2(0,128); }
 	public Vector2 get_center() {
-		return new Vector2(_root._u_x,_root._u_y+128);
+		return SPUtil.vec_add(_root.get_u_pos(), this.get_center_offset());
 	}
 	public void set_center_u_pos(Vector2 vec) { this.set_center_u_pos(vec.x,vec.y); }
 	public void set_center_u_pos(float x, float y) {
@@ -120,6 +129,7 @@ public class PlayerCharacter : SPGameUpdateable, SPHitPolyOwner, SPNodeHierarchy
 		_img.i_update();
 		_streak_left_anim.i_update();
 		_streak_right_anim.i_update();
+		_aim_retic.i_update(g);
 	}
 	
 	public SPHitRect get_hit_rect() {
@@ -139,6 +149,16 @@ public class PlayerCharacter : SPGameUpdateable, SPHitPolyOwner, SPNodeHierarchy
 			1,
 			new Vector2(-40,0)
 		);
+	}
+	
+	public float get_arrow_target_rotation() {
+		float line_target_rotation = this.rotation() + (this.scale_x() > 0 ? 120 : -120);
+		return line_target_rotation;
+	}
+	
+	public float get_target_rotation_for_aim_direction(Vector2 dir) {
+		float ang = SPUtil.dir_ang_deg(dir.x,dir.y);
+		return ang + (this.scale_x() > 0 ? 150 : -150 + 180);
 	}
 }
 
@@ -174,6 +194,9 @@ public class PlayerCharacterUtil {
 	}
 	public static void rotate_to_rotation_for_vel(PlayerCharacter player, float vx, float vy, float fric) {
 		float tar_rotation = SPUtil.dir_ang_deg(vx,vy) - 90;
+		PlayerCharacterUtil.rotate_to_rotation(player,tar_rotation,fric);
+	}
+	public static void rotate_to_rotation(PlayerCharacter player, float tar_rotation, float fric) {
 		player.set_rotation(SPUtil.drpt(player.rotation(), player.rotation() + SPUtil.shortest_angle(player.rotation(),tar_rotation), fric));
 	}
 	

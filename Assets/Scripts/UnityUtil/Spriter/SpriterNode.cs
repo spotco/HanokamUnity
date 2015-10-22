@@ -396,6 +396,7 @@ public class SpriterNode : SPNode, CameraRenderHookDelegate {
 			_rendered_img.set_scale_x(scx);
 		}
 	}
+	public float img_scale_x() { return _rendered_img.scale_x(); }
 
 	public void set_img_scale(float sc) {
 		if (_rendered_img != null) _rendered_img.set_scale(sc);

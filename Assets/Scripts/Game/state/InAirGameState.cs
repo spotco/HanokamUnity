@@ -100,10 +100,21 @@ public class InAirGameState : GameStateBase {
 			
 			
 			if (g._controls.get_control_down(ControlManager.Control.ShootArrow)) {
+				g._player._aim_retic.set_enabled(true);
 				g._player.play_anim(PlayerCharacterAnims.BOWAIM, false);
+				
+				if (g._controls.is_move_x() || g._controls.is_move_y()) {
+					PlayerCharacterUtil.rotate_to_rotation(g._player,g._player.get_target_rotation_for_aim_direction(g._controls.get_move()), 1/10.0f);
+				}
+				
+				
+				_params._player_c_vel.x = SPUtil.drpt(_params._player_c_vel.x,0,1/5.0f);
 				_params._player_c_vel.y = SPUtil.lmovto(_params._player_c_vel.y, -1f, 5.0f);
 				
 			} else {
+				g._player._aim_retic.set_enabled(false);
+				PlayerCharacterUtil.rotate_to_rotation(g._player,0, 1/10.0f);
+			
 				if (g._controls.get_control_just_released(ControlManager.Control.ShootArrow)) {
 					// SPTODO -- fire arrow
 					_params._player_anim_hold = PlayerCharacterAnims.BOWFIRE;

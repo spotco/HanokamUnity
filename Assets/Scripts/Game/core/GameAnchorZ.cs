@@ -21,10 +21,10 @@ public class GameAnchorZ {
 	public const int BGVillage_WaterLineAbove_BelowLine_LightRays = 197;
 
 	public const int Player_UnderWater = 155;
-	public const int Player_FX = 154;
 
 	public const int BGVillage_Docks_Front = 150;
 	public const int Player_InAir = 149;
+	public const int Player_FX = 148;
 
 	public const int BGSky_BG_SideCliffs = 100;
 
