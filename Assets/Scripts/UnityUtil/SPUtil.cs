@@ -280,6 +280,15 @@ public class SPUtil {
 			return SPUtil.vec_add(a,SPUtil.vec_scale(delta.normalized,vmax * SPUtil.dt_scale_get()));
 		}
 	}
+	
+	public static float lmovto(float a, float b, float vmax) {
+		float delta = Mathf.Abs(b-a);
+		if (delta <= vmax) {
+			return b;
+		} else {
+			return a+SPUtil.sig(b-a)*vmax;
+		}
+	}
 
 	public static int sig(float a) {
 		if (a > 0) {

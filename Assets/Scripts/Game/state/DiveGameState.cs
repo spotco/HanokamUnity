@@ -94,7 +94,8 @@ public class DiveGameState : GameStateBase {
 				_params._vel.x = SPUtil.drpt(_params._vel.x,0,1/30.0f);
 			}
 			PlayerCharacterUtil.rotate_to_rotation_for_vel(g._player,_params._vel.x,_params._vel.y,1/10.0f);
-			g._player.set_u_pos(
+			PlayerCharacterUtil.move_in_bounds(
+				g._player,
 				g._player._u_x + _params._vel.x * SPUtil.dt_scale_get(),
 				g._player._u_y + _params._vel.y * SPUtil.dt_scale_get()
 			);

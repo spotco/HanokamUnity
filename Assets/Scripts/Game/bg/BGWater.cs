@@ -283,7 +283,6 @@ public class BGWater : SPGameUpdateable, CameraRenderHookDelegate, SPNodeHierarc
 
 		Rect fish_test_rect = _fish_test.texrect();
 		fish_test_rect.position = new Vector2((fish_test_rect.position.x + 1.25f * SPUtil.dt_scale_get())%fish_test_rect.size.x,fish_test_rect.position.y);
-		Debug.Log(fish_test_rect.position.x);
 		_fish_test.set_tex_rect(fish_test_rect);
 	}
 

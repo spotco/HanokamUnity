@@ -69,7 +69,7 @@ public class GameEngineScene : SPScene {
 		_particles = SPParticleSystem<SPGameEngineParticle>.cons();
 		
 		_game_state_stack.Add(OnGroundGameState.cons(this));
-
+		
 		return this;
 	}
 	

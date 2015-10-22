@@ -11,6 +11,7 @@ public class ControlManager : SPMainUpdateable {
 		MoveDown,
 		OnGround_Jump,
 		Dash,
+		ShootArrow,
 		Chat,
 		None
 	}
@@ -36,6 +37,9 @@ public class ControlManager : SPMainUpdateable {
 		}
 		case Control.Chat: {
 			return Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.Z);
+		}
+		case Control.ShootArrow: {
+			return Input.GetKey(KeyCode.X);
 		}
 		}
 		return false;
