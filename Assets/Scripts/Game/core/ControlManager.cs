@@ -36,7 +36,7 @@ public class ControlManager : SPMainUpdateable {
 			return Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.X);
 		}
 		case Control.Chat: {
-			return Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.X);
+			return Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.Z);
 		}
 		case Control.ShootArrow: {
 			return Input.GetKey(KeyCode.Z);

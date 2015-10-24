@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 public interface InAirGameStateUpdateable {
-	void i_update(GameEngineScene g, InAirGameStateUpdateable state);
+	void i_update(GameEngineScene g, InAirGameState state);
 }
 
 public class InAirGameState : GameStateBase {

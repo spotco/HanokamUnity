@@ -16,6 +16,7 @@ public class WaterEnemyManager : DiveGameStateUpdateable, GenericPooledObject {
 		return (ObjectPool.inst().generic_depool<WaterEnemyManager>()).i_cons(g);
 	}
 	
+	private SPNode _root;
 	public void depool() {
 		_root = SPNode.cons_node();
 		_root.set_name("WaterEnemyRoot");
@@ -28,7 +29,6 @@ public class WaterEnemyManager : DiveGameStateUpdateable, GenericPooledObject {
 		_root.repool();
 	}
 	
-	private SPNode _root;
 	private List<BaseWaterEnemy> _enemies = new List<BaseWaterEnemy>();
 	public WaterEnemyManager i_cons(GameEngineScene g) {
 		for (int i = 0; i < 5; i++) {
