@@ -60,6 +60,29 @@ public class PlayerAimReticule : SPNodeHierarchyElement, SPGameUpdateable {
 	public void set_u_pos(Vector2 pos) { _root.set_u_pos(pos); }
 	public void set_enabled(bool val) { _root.set_enabled(val); }
 	
+	public void set_aim_variance_and_charge_pct(GameEngineScene g, float aim_variance, float charge_pct) {
+		float inv_charge_pct = 1-charge_pct;
+		float aim_variance_d2 = aim_variance/2.0f;
+		
+		float line_target_rotation = g._player.get_arrow_target_rotation();
+		_left_line.set_rotation(line_target_rotation + aim_variance_d2 * inv_charge_pct);
+		_right_line.set_rotation(line_target_rotation - aim_variance_d2 * inv_charge_pct);
+		
+		_left_line.set_opacity(SPUtil.bezier_val_for_t(
+			new Vector2(0,0), new Vector2(0,1), new Vector2(0.5f,1.25f), new Vector2(1,0), charge_pct
+		).y);
+		_right_line.set_opacity(_left_line.get_opacity());
+		
+		_mega_arrow_line.set_rotation(line_target_rotation + 90);
+		_mega_arrow_line.set_scale_x(Mathf.Lerp(1.5f, 1.25f, charge_pct));
+		_mega_arrow_line.set_scale_y(Mathf.Lerp(1.35f, 1.25f, charge_pct));
+		_mega_arrow_line.set_opacity(SPUtil.bezier_val_for_t(
+			new Vector2(0,0), new Vector2(1,0), new Vector2(1.0f,0.2f), new Vector2(1,1), charge_pct
+		).y);
+		
+		_spark.set_enabled(charge_pct >= 1);
+	}
+	
 	public void i_update(GameEngineScene g) {
 		float line_target_rotation = g._player.get_arrow_target_rotation();
 		_left_line.set_rotation(line_target_rotation + 30);

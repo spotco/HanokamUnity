@@ -10,7 +10,7 @@ public class InAirGameState : GameStateBase {
 	public static InAirGameState cons(GameEngineScene g) {
 		return (new InAirGameState()).i_cons(g);
 	}
-
+	
 	public struct Params {
 		public float _upwards_vel;
 		public float _target_y;
@@ -19,8 +19,21 @@ public class InAirGameState : GameStateBase {
 		public Vector2 _initial_c_pos;
 		public Vector2 _player_c_pos;
 		
-		public Vector2 _player_c_vel;
+		public float _arrow_charge_ct;
+		public float get_arrow_charge_ct_max() { return 50; }
+		public float get_arrow_charge_pct() { return this._arrow_charge_ct / this.get_arrow_charge_ct_max(); }
+		public bool _this_movepress_has_aimed;
 		
+		public enum PlayerMode {
+			None,
+			BowAim,
+			Dash,
+			SwordPlant,
+			Hurt
+		}
+		public PlayerMode _player_mode;
+		public float _dash_ct;
+		public Vector2 _player_c_vel;
 		public string _player_anim_hold;
 		public float _player_anim_hold_ct;
 	}
@@ -55,11 +68,12 @@ public class InAirGameState : GameStateBase {
 		_params._anim_t = 0;
 		_params._player_anim_hold = PlayerCharacterAnims.INAIRIDLE;
 		_params._player_anim_hold_ct = 0;
+		_params._player_mode = Params.PlayerMode.None;
 
 		return this;
 	}
 
-	float MAX_MOVE_SPEED = 25;
+	float MAX_MOVE_SPEED = 18;
 	public override void i_update(GameEngineScene g) {
 		g._player.i_update(g);
 
@@ -83,7 +97,7 @@ public class InAirGameState : GameStateBase {
 				).y
 			);
 			
-			this.move_x(g);
+			this.player_control_move_x(g);
 			_params._player_c_vel.y = 0;
 			this.apply_c_vel(g);
 			this.apply_c_pos_to_player(g);
@@ -94,65 +108,11 @@ public class InAirGameState : GameStateBase {
 
 		} break;
 		case Mode.Combat: {
-			_params._target_y += _params._upwards_vel * SPUtil.dt_scale_get();
-			_params._upwards_vel = SPUtil.drpt(_params._upwards_vel,0,1/50.0f);
-			g._camerac.set_target_camera_y(_params._target_y);
-			
-			
-			if (g._controls.get_control_down(ControlManager.Control.ShootArrow)) {
-				g._player._aim_retic.set_enabled(true);
-				g._player.play_anim(PlayerCharacterAnims.BOWAIM, false);
-				
-				if (g._controls.is_move_x() || g._controls.is_move_y()) {
-					PlayerCharacterUtil.rotate_to_rotation(g._player,g._player.get_target_rotation_for_aim_direction(g._controls.get_move()), 1/10.0f);
-				}
-				
-				
-				_params._player_c_vel.x = SPUtil.drpt(_params._player_c_vel.x,0,1/5.0f);
-				_params._player_c_vel.y = SPUtil.lmovto(_params._player_c_vel.y, -1f, 5.0f);
-				
-			} else {
-				g._player._aim_retic.set_enabled(false);
-				PlayerCharacterUtil.rotate_to_rotation(g._player,0, 1/10.0f);
-			
-				if (g._controls.get_control_just_released(ControlManager.Control.ShootArrow)) {
-					// SPTODO -- fire arrow
-					_params._player_anim_hold = PlayerCharacterAnims.BOWFIRE;
-					_params._player_anim_hold_ct = 30.0f;
-				}
-				
-				if (_params._player_anim_hold_ct > 0) {
-					g._player.play_anim(_params._player_anim_hold, false);
-					_params._player_anim_hold_ct -= SPUtil.dt_scale_get();
-				} else {
-					g._player.play_anim(PlayerCharacterAnims.INAIRIDLE);
-				}
-				
-				this.move_x(g);
-				if (g._controls.is_move_y()) {
-					if (g._controls.get_move().y > 0) {
-						_params._player_c_vel.y = SPUtil.lmovto(_params._player_c_vel.y, -1f, 5.0f);
-					} else {
-						_params._player_c_vel.y = SPUtil.lmovto(_params._player_c_vel.y, -40, 2.5f);
-					}
-					
-				} else {
-					_params._player_c_vel.y = SPUtil.lmovto(_params._player_c_vel.y, -40, 0.12f);
-				}			
-			}
-			
-			this.apply_c_vel(g);
-			this.apply_c_pos_to_player(g);
-			
-			
-			if (g._player.get_center().y < g.get_viewbox()._y1 - 200) {
-				_current_mode = Mode.RescueBackToTop;
-				_params._initial_c_pos = _params._player_c_pos;
-				_params._anim_t = 0;
-			}
+			this.i_update_mode_combat_player_controls(g);
 			
 		} break;
 		case Mode.RescueBackToTop: {
+			g._player.play_anim(PlayerCharacterAnims.INAIRIDLE);
 			_params._anim_t += 0.01f * SPUtil.dt_scale_get();
 			
 			_params._player_c_pos.y = SPUtil.y_for_point_of_2pt_line(
@@ -167,7 +127,7 @@ public class InAirGameState : GameStateBase {
 				).y
 			);
 			
-			this.move_x(g);
+			this.player_control_move_x(g);
 			_params._player_c_vel.y = 0;
 			this.apply_c_vel(g);
 			this.apply_c_pos_to_player(g);
@@ -183,7 +143,167 @@ public class InAirGameState : GameStateBase {
 		}
 	}
 	
-	private void move_x(GameEngineScene g) {
+	private void i_update_mode_combat_player_controls(GameEngineScene g) {
+		_params._target_y += _params._upwards_vel * SPUtil.dt_scale_get();
+		_params._upwards_vel = SPUtil.drpt(_params._upwards_vel,0,1/50.0f);
+		g._camerac.set_target_camera_y(_params._target_y);
+		
+		bool streak_enabled = false;
+		switch (_params._player_mode) {
+		case Params.PlayerMode.None: {
+			g._player._aim_retic.set_enabled(false);
+			
+			if (_params._player_anim_hold_ct > 0) {
+				g._player.play_anim(_params._player_anim_hold, false);
+				_params._player_anim_hold_ct -= SPUtil.dt_scale_get();
+			} else {
+				g._player.play_anim(PlayerCharacterAnims.INAIRIDLE);
+			}
+			
+			if (!_params._this_movepress_has_aimed) {
+				if (g._controls.is_move_x()) {
+					PlayerCharacterUtil.rotate_to_rotation(g._player,0, 1/10.0f);
+				}
+				this.player_control_move_x(g);
+				if (g._controls.is_move_y()) {
+					if (g._controls.get_move().y > 0) {
+						_params._player_c_vel.y = SPUtil.lmovto(_params._player_c_vel.y, -1f, 5.0f);
+					} else {
+						_params._player_c_vel.y = SPUtil.lmovto(_params._player_c_vel.y, -30, 2.5f);
+					}
+					
+				} else {
+					_params._player_c_vel.y = SPUtil.lmovto(_params._player_c_vel.y, -30, 0.12f);
+				}
+			}
+			if (g._controls.get_control_down(ControlManager.Control.ShootArrow)) {
+				_params._arrow_charge_ct = 0;
+				_params._player_mode = Params.PlayerMode.BowAim;
+			}
+			
+			this.player_control_check_sword_move(g);
+			
+		} break;
+		case Params.PlayerMode.BowAim: {
+			_params._arrow_charge_ct = Mathf.Clamp(_params._arrow_charge_ct + SPUtil.dt_scale_get(), 0, _params.get_arrow_charge_ct_max());
+			g._player._aim_retic.set_enabled(true);
+			g._player._aim_retic.set_aim_variance_and_charge_pct(g,30,_params.get_arrow_charge_pct());
+			
+			if (_params.get_arrow_charge_pct() < 1) {
+				g._player.play_anim(PlayerCharacterAnims.BOWAIM, false);
+			} else {
+				g._player.play_anim(PlayerCharacterAnims.BOWHOLD);
+			}
+			
+			if (g._controls.is_move_x() || g._controls.is_move_y()) {
+				_params._this_movepress_has_aimed = true;
+				if (g._controls.get_control_down(ControlManager.Control.MoveLeft)) {
+					if (g._player.scale_x() < 0) {
+						g._player.set_rotation(g._player.rotation() + 120);
+					}
+					g._player.set_scale_x(1);
+				} else if (g._controls.get_control_down(ControlManager.Control.MoveRight)) {
+					if (g._player.scale_x() > 0) {
+						g._player.set_rotation(g._player.rotation() - 120);
+					}
+					g._player.set_scale_x(-1);
+				}
+				PlayerCharacterUtil.rotate_to_rotation(g._player,g._player.get_target_rotation_for_aim_direction(g._controls.get_move()), 1/10.0f);
+			}
+			
+			_params._player_c_vel.x = SPUtil.drpt(_params._player_c_vel.x,0,1/5.0f);
+			_params._player_c_vel.y = SPUtil.lmovto(_params._player_c_vel.y, -1f, 5.0f);
+			
+			if (!g._controls.get_control_down(ControlManager.Control.ShootArrow)) {
+				// SPTODO -- fire arrow
+				// SPTODO -- push back in direction of shot
+				_params._player_anim_hold = PlayerCharacterAnims.BOWFIRE;
+				_params._player_anim_hold_ct = 30.0f;
+				_params._player_mode = Params.PlayerMode.None;
+			}
+			
+			this.player_control_check_sword_move(g);
+			
+		} break;
+		case Params.PlayerMode.Dash: {
+			g._player.play_anim(PlayerCharacterAnims.SPIN);
+			g._player.set_scale_x(1);
+			g._player.set_rotation(0);
+			
+			if (g._controls.is_move_x() || g._controls.is_move_y()) {
+				Vector2 move = SPUtil.vec_scale(g._controls.get_move(),20);
+				_params._player_c_vel = move;
+				PlayerCharacterUtil.rotate_to_rotation_for_vel(g._player,_params._player_c_vel.x,_params._player_c_vel.y,1/5.0f,0);
+			} else {
+				_params._player_c_vel.x = SPUtil.drpt(_params._player_c_vel.x,0,1/20.0f);
+				_params._player_c_vel.y = SPUtil.drpt(_params._player_c_vel.y,0,1/20.0f);
+			}
+			
+			
+			_params._dash_ct -= SPUtil.dt_scale_get();
+			if (_params._dash_ct <= 0) {
+				_params._player_mode = Params.PlayerMode.None;
+			}
+			
+		} break;
+		case Params.PlayerMode.SwordPlant: {
+			g._player.play_anim(PlayerCharacterAnims.SWORDPLANT);
+			g._player.set_rotation(0);
+			streak_enabled = true;
+			_params._player_c_vel.x = SPUtil.drpt(_params._player_c_vel.x, 0, 1/10.0f);
+			_params._player_c_vel.y = SPUtil.drpt(_params._player_c_vel.y, -40, 1/3.0f);
+			if (!g._controls.get_control_down(ControlManager.Control.Dash)) {
+				_params._player_mode = Params.PlayerMode.None;
+				_params._player_c_vel.y = -10;
+			}
+			
+		} break;
+		case Params.PlayerMode.Hurt: {
+			g._player.play_anim(PlayerCharacterAnims.INAIRHURT);
+			
+		} break;
+		}
+		
+		if (g._controls.get_control_just_pressed(ControlManager.Control.MoveDown) ||
+		    g._controls.get_control_just_pressed(ControlManager.Control.MoveUp) ||
+		    g._controls.get_control_just_pressed(ControlManager.Control.MoveLeft) ||
+		    g._controls.get_control_just_pressed(ControlManager.Control.MoveRight)) {
+			_params._this_movepress_has_aimed = false;
+		}
+		
+		
+		this.apply_c_vel(g);
+		this.apply_c_pos_to_player(g);
+		
+		
+		if (g._player.get_center().y < g.get_viewbox()._y1 - 200) {
+			_current_mode = Mode.RescueBackToTop;
+			_params._initial_c_pos = _params._player_c_pos;
+			_params._anim_t = 0;
+			_params._player_mode = Params.PlayerMode.None;
+			_params._player_c_vel = new Vector2(0,0);
+			streak_enabled = false;
+			g._player.set_rotation(0);
+		}
+		g._player.set_streak_enabled(streak_enabled);
+	}
+	
+	private void player_control_check_sword_move(GameEngineScene g) {
+		if (g._controls.get_control_just_pressed(ControlManager.Control.Dash)) {
+			bool down = g._controls.get_control_down(ControlManager.Control.MoveDown);
+			bool up = g._controls.get_control_down(ControlManager.Control.MoveUp);
+			bool left = g._controls.get_control_down(ControlManager.Control.MoveLeft);
+			bool right = g._controls.get_control_down(ControlManager.Control.MoveRight);
+			if (down && !up && !left && !right) {
+				_params._player_mode = Params.PlayerMode.SwordPlant;
+			} else {
+				_params._player_mode = Params.PlayerMode.Dash;
+				_params._dash_ct = 20;
+			}
+		}
+	}
+	
+	private void player_control_move_x(GameEngineScene g) {
 		if (g._controls.is_move_x()) {
 			Vector2 move = g._controls.get_move();
 			_params._player_c_vel.x = move.x * MAX_MOVE_SPEED;

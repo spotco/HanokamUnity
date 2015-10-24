@@ -192,8 +192,8 @@ public class PlayerCharacterUtil {
 	public static void move_center_in_bounds(PlayerCharacter player, float x, float y) {
 		player.set_center_u_pos(Mathf.Clamp(x,SPUtil.get_horiz_world_bounds()._min,SPUtil.get_horiz_world_bounds()._max),y);
 	}
-	public static void rotate_to_rotation_for_vel(PlayerCharacter player, float vx, float vy, float fric) {
-		float tar_rotation = SPUtil.dir_ang_deg(vx,vy) - 90;
+	public static void rotate_to_rotation_for_vel(PlayerCharacter player, float vx, float vy, float fric, float offset = -90) {
+		float tar_rotation = SPUtil.dir_ang_deg(vx,vy) + offset;
 		PlayerCharacterUtil.rotate_to_rotation(player,tar_rotation,fric);
 	}
 	public static void rotate_to_rotation(PlayerCharacter player, float tar_rotation, float fric) {

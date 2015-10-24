@@ -162,7 +162,7 @@ public class DiveGameState : GameStateBase {
 				dir = SPUtil.vec_scale(dir,DASH_SPEED);
 				_params._vel = dir;
 				_params._dashing = true;
-				_params._dash_ct += 20;
+				_params._dash_ct = 20;
 				UnderwaterBubbleParticle.proc_multiple_bubbles(g);
 			}
 		

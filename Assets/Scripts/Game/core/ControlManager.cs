@@ -33,13 +33,13 @@ public class ControlManager : SPMainUpdateable {
 			return Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow) || Input.GetKey(KeyCode.Keypad5);
 		}
 		case Control.Dash: {
-			return Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.Z);
+			return Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.X);
 		}
 		case Control.Chat: {
-			return Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.Z);
+			return Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.X);
 		}
 		case Control.ShootArrow: {
-			return Input.GetKey(KeyCode.X);
+			return Input.GetKey(KeyCode.Z);
 		}
 		}
 		return false;

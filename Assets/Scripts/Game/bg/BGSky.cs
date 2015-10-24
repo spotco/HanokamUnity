@@ -123,6 +123,11 @@ public class BGSky : SPGameUpdateable, SPNodeHierarchyElement {
 				itr.set_enabled(false);
 			}
 		}
+		
+		//SPTODO -- fix
+		_bg_cliff_left.set_enabled(false);
+		_bg_cliff_right.set_enabled(false);
+		//
 
 	}
 
