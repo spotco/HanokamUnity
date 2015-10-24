@@ -8,8 +8,7 @@ public interface SPMainUpdateable {
 public class GameMain : SPBaseBehavior {
 	/**
 	TODO--
-	dive mode
-		-basicwaterenemy slot-component based architecture
+	would put the charge shine over the top of hanoka though, since it'd be odd for her to be blocking the light
 	
 	air mode
 	gameui

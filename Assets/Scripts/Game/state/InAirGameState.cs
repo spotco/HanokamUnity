@@ -22,6 +22,7 @@ public class InAirGameState : GameStateBase {
 		public float _arrow_charge_ct;
 		public float get_arrow_charge_ct_max() { return 50; }
 		public float get_arrow_charge_pct() { return this._arrow_charge_ct / this.get_arrow_charge_ct_max(); }
+		
 		public bool _this_movepress_has_aimed;
 		
 		public enum PlayerMode {
@@ -47,8 +48,11 @@ public class InAirGameState : GameStateBase {
 
 	private Params _params;
 	private Mode _current_mode;
+	private AirProjectileManager _projectiles;
 
 	private InAirGameState i_cons(GameEngineScene g) {
+		_projectiles = AirProjectileManager.cons(g);
+	
 		g._camerac.set_camera_follow_speed(1);
 		g._camerac.set_zoom_speed(1/20.0f);
 		g._camerac.set_target_zoom(GameCameraController.MAX_ZOOM);
@@ -75,6 +79,7 @@ public class InAirGameState : GameStateBase {
 
 	public override void i_update(GameEngineScene g) {
 		g._player.i_update(g);
+		_projectiles.i_update(g, this);
 
 		switch (_current_mode) {
 		case Mode.InitialJumpOut: {
@@ -220,6 +225,10 @@ public class InAirGameState : GameStateBase {
 			if (!g._controls.get_control_down(ControlManager.Control.ShootArrow)) {
 				// SPTODO -- fire arrow
 				// SPTODO -- push back in direction of shot
+				// SPTODO -- arrow gravity
+				// SPTODO -- after dash return to previous rotation
+				_projectiles.add_player_projectile(PlayerArrowAirProjectile.cons(g._player.get_center(), SPUtil.ang_deg_dir(g._player.get_arrow_target_rotation()+90)));
+				
 				_params._player_anim_hold = PlayerCharacterAnims.BOWFIRE;
 				_params._player_anim_hold_ct = 30.0f;
 				_params._player_mode = Params.PlayerMode.None;
@@ -277,6 +286,10 @@ public class InAirGameState : GameStateBase {
 		    g._controls.get_control_just_pressed(ControlManager.Control.MoveLeft) ||
 		    g._controls.get_control_just_pressed(ControlManager.Control.MoveRight)) {
 			_params._this_movepress_has_aimed = false;
+		}
+		
+		if (_params._player_c_pos.y > 500) {
+			_params._player_c_pos.y = SPUtil.drpt(_params._player_c_pos.y, 500, 1/10.0f);
 		}
 		
 		
@@ -337,6 +350,8 @@ public class InAirGameState : GameStateBase {
 		PlayerCharacterUtil.move_center_in_bounds(player, u_pos.x, u_pos.y);
 		return GameCameraController.u_pos_to_c_pos(player.get_center());
 	}
+
+	//TODO -- state end cleanup
 
 	public override GameStateIdentifier get_state() { 
 		return GameStateIdentifier.InAir;
