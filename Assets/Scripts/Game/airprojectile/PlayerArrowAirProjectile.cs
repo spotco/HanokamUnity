@@ -3,8 +3,8 @@ using System.Collections;
 
 public class PlayerArrowAirProjectile : AirProjectileBase, GenericPooledObject {
 
-	public static PlayerArrowAirProjectile cons(Vector2 pos, Vector2 dir) {
-		return (ObjectPool.inst().generic_depool<PlayerArrowAirProjectile>()).i_cons(pos,dir);
+	public static PlayerArrowAirProjectile cons(Vector2 pos, Vector2 dir, float vel) {
+		return (ObjectPool.inst().generic_depool<PlayerArrowAirProjectile>()).i_cons(pos,dir,vel);
 	}
 	
 	private SPNode _root;
@@ -42,20 +42,20 @@ public class PlayerArrowAirProjectile : AirProjectileBase, GenericPooledObject {
 		Falling
 	}
 	
-	private Vector2 _dir;
+	private Vector2 _vel;
 	private float _ct, _trail_tar_alpha;
 	private Mode _current_mode;
 	private Vector2 _stuck_offset;
 	private Vector2 _fall_vel;
 	
-	private PlayerArrowAirProjectile i_cons(Vector2 pos, Vector2 dir) {
+	private PlayerArrowAirProjectile i_cons(Vector2 pos, Vector2 dir, float vel) {
 		_root.set_u_pos(pos);
-		_dir = SPUtil.vec_scale(dir.normalized,30);
-		_ct = 100;
+		_vel = SPUtil.vec_scale(dir.normalized,vel);
+		_ct = 500;
 		_trail_tar_alpha = 0;
 		_trail.set_opacity(0);
 		_sprite_outline.set_opacity(0);
-		_root.set_rotation(SPUtil.dir_ang_deg(dir.x,dir.y));
+		_root.set_rotation(SPUtil.dir_ang_deg(_vel.x,_vel.y));
 		return this;
 	}
 	
@@ -63,16 +63,18 @@ public class PlayerArrowAirProjectile : AirProjectileBase, GenericPooledObject {
 		switch (_current_mode) {
 		case Mode.Flying: {
 			_sprite_outline.set_opacity(SPUtil.drpt(_sprite_outline.get_opacity(),1,1/20.0f));
-			// check hit
-			_root.set_u_pos(SPUtil.vec_add(_root.get_u_pos(),SPUtil.vec_scale(_dir,SPUtil.dt_scale_get())));
+			// SPTODO -- check hit
+			_vel.y += -0.5f * SPUtil.dt_scale_get();
+			_root.set_rotation(SPUtil.dir_ang_deg(_vel.x,_vel.y));
+			_root.set_u_pos(SPUtil.vec_add(_root.get_u_pos(),SPUtil.vec_scale(_vel,SPUtil.dt_scale_get())));
 			_ct -= SPUtil.dt_scale_get();
-			if (_ct > 85) {
+			if (_ct > 485 || _vel.magnitude < 10) {
 				_trail_tar_alpha = 0;
 			} else {
 				_trail_tar_alpha = 1;
 			}
 			_trail.set_opacity(SPUtil.drpt(_trail.get_opacity(),_trail_tar_alpha,1/10.0f));
-			if (_root._u_x < SPUtil.get_horiz_world_bounds()._min || _root._u_x > SPUtil.get_horiz_world_bounds()._max) {
+			if (_root._u_x < SPUtil.get_horiz_world_bounds()._min-500 || _root._u_x > SPUtil.get_horiz_world_bounds()._max+500) {
 				_ct = 0;
 			}
 		} break;
@@ -91,7 +93,22 @@ public class PlayerArrowAirProjectile : AirProjectileBase, GenericPooledObject {
 	public override void add_to_parent(SPNode parent) {
 		parent.add_child(_root);
 	}
-	public override SPHitRect get_hit_rect() { return new SPHitRect(); }
-	public override SPHitPoly get_hit_poly() { return new SPHitPoly(); }
-
+	public override SPHitRect get_hit_rect() {
+		return SPHitPoly.hitpoly_to_bounding_hitrect(
+			this.get_hit_poly(),
+			new Vector2(-10,-10),
+			new Vector2(10,10)
+		);
+	}
+	
+	public override SPHitPoly get_hit_poly() {
+		return SPHitPoly.cons_with_basis_offset(
+			_root.get_u_pos(),
+			_root.rotation()+90,
+			new Vector2(20,65),
+			new Vector2(1,1),
+			1,
+			new Vector2(0,0)
+		);
+	}
 }

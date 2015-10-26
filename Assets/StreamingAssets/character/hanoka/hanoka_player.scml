@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<spriter_data scml_version="1.0" generator="BrashMonkey Spriter" generator_version="b10">
+<spriter_data scml_version="1.0" generator="BrashMonkey Spriter" generator_version="r4.1">
     <atlas>
         <i name="hanoka_player.json"/>
         <i name="hanoka_bow.json"/>
@@ -22,8 +22,8 @@
         <file id="13" name="Player_foot-side.png" width="22" height="12" pivot_x="0" pivot_y="1"/>
         <file id="14" name="Player_idle-rthigh.png" width="27" height="56" pivot_x="0" pivot_y="1"/>
         <file id="15" name="Player_idle-rthigh-garb.png" width="0" height="0" pivot_x="0" pivot_y="1"/>
-        <file id="16" name="Player_idle-waist.png" width="38" height="31" pivot_x="0" pivot_y="1"/>
-        <file id="17" name="Player_waist-bbutton.png" width="1" height="1" pivot_x="0" pivot_y="1"/>
+        <file id="16" name="Player_idle-waist.png" width="37" height="33" pivot_x="0" pivot_y="1"/>
+        <file id="17" name="Player_waist-bbutton.png" width="3" height="10" pivot_x="0" pivot_y="1"/>
         <file id="18" name="Player_idle-waist-garb.png" width="0" height="0" pivot_x="0" pivot_y="1"/>
         <file id="19" name="Player_hand_relax.png" width="12" height="18" pivot_x="0" pivot_y="1"/>
         <file id="20" name="Player_arm-lower.png" width="14" height="25" pivot_x="0" pivot_y="1"/>
@@ -32,7 +32,7 @@
         <file id="23" name="Player_idle-head.png" width="47" height="55" pivot_x="0" pivot_y="1"/>
         <file id="24" name="Player_mouth-neutral.png" width="10" height="3" pivot_x="0" pivot_y="1"/>
         <file id="25" name="Player_eyebrow.png" width="12" height="4" pivot_x="0" pivot_y="1"/>
-        <file id="26" name="Player_Ahoge.png" width="19" height="21" pivot_x="0" pivot_y="1"/>
+        <file id="26" name="Player_Ahoge.png" width="1" height="1" pivot_x="0" pivot_y="1"/>
         <file id="27" name="Player_idle-Headband.png" width="0" height="0" pivot_x="0" pivot_y="1"/>
         <file id="28" name="Player_side-hand-fist.png" width="13" height="15" pivot_x="0" pivot_y="1"/>
         <file id="29" name="Player_hand-fist.png" width="15" height="17" pivot_x="0" pivot_y="1"/>
@@ -65,7 +65,7 @@
         <file id="56" name="Player_swim-waist.png" width="38" height="35" pivot_x="0" pivot_y="1"/>
         <file id="57" name="Player_swim-waist-garb.png" width="0" height="0" pivot_x="0" pivot_y="1"/>
         <file id="58" name="Player_swim-head.png" width="51" height="55" pivot_x="0" pivot_y="1"/>
-        <file id="59" name="Player_swim-headband.png" width="45" height="22" pivot_x="0" pivot_y="1"/>
+        <file id="59" name="Player_swim-headband.png" width="0" height="0" pivot_x="0" pivot_y="1"/>
         <file id="60" name="Player_idle-bangs.png" width="46" height="32" pivot_x="0" pivot_y="1"/>
         <file id="61" name="Player_side-angs.png" width="45" height="32" pivot_x="0" pivot_y="1"/>
         <file id="62" name="Player_idle-lthigh-knee.png" width="26" height="57" pivot_x="0" pivot_y="1"/>
@@ -210,7 +210,7 @@
         <obj_info name="bone_121" type="bone" w="7.15387" h="10"/>
         <obj_info name="bone_122" type="bone" w="7.58134" h="10"/>
         <obj_info name="bone_056" type="bone" w="31.7092" h="10"/>
-        <animation id="0" name="Idle" length="2400">
+        <animation id="0" name="Idle" length="2400" interval="100">
             <mainline>
                 <key id="0" curve_type="quintic" c1="0" c2="0.0142" c3="0.014218" c4="0">
                     <bone_ref id="0" timeline="32" key="0"/>
@@ -3111,7 +3111,7 @@
                 </key>
             </timeline>
         </animation>
-        <animation id="1" name="Run" length="600">
+        <animation id="1" name="Run" length="600" interval="100">
             <mainline>
                 <key id="0">
                     <bone_ref id="0" timeline="19" key="0"/>
@@ -4905,7 +4905,7 @@
                 </key>
             </timeline>
         </animation>
-        <animation id="2" name="Walk" length="800">
+        <animation id="2" name="Walk" length="800" interval="100">
             <mainline>
                 <key id="0">
                     <bone_ref id="0" timeline="19" key="0"/>
@@ -6201,7 +6201,7 @@
                 </key>
             </timeline>
         </animation>
-        <animation id="3" name="Prep Dive" length="600">
+        <animation id="3" name="Prep Dive" length="600" interval="100">
             <mainline>
                 <key id="0" curve_type="quintic" c1="0" c2="0.9953" c3="0.9953" c4="0.9953">
                     <bone_ref id="0" timeline="31" key="0"/>
@@ -6959,7 +6959,7 @@
                 </key>
             </timeline>
         </animation>
-        <animation id="4" name="Dive" length="200">
+        <animation id="4" name="Dive" length="200" interval="100">
             <mainline>
                 <key id="0">
                     <bone_ref id="0" timeline="29" key="0"/>
@@ -7556,7 +7556,7 @@
                 </key>
             </timeline>
         </animation>
-        <animation id="5" name="Spin" length="200">
+        <animation id="5" name="Spin" length="200" interval="100">
             <mainline>
                 <key id="0">
                     <bone_ref id="0" timeline="19" key="0"/>
@@ -8001,13 +8001,13 @@
             </timeline>
             <timeline id="19" obj="0" name="bone_000" object_type="bone">
                 <key id="0">
-                    <bone x="4.685188" y="56.620795" angle="102.921114"/>
+                    <bone x="4.685188" y="100" angle="102.921114"/>
                 </key>
                 <key id="1" time="80">
-                    <bone x="-4.99189" y="67.273328" angle="270.594769"/>
+                    <bone x="-4.99189" y="100" angle="270.594769"/>
                 </key>
                 <key id="2" time="186">
-                    <bone x="-0.845582" y="47.494742" angle="59.932294"/>
+                    <bone x="-0.845582" y="100" angle="59.932294"/>
                 </key>
             </timeline>
             <timeline id="20" obj="1" name="bone_001" object_type="bone">
@@ -8616,7 +8616,7 @@
                 </key>
             </timeline>
         </animation>
-        <animation id="6" name="Swim" length="400">
+        <animation id="6" name="Swim" length="400" interval="100">
             <mainline>
                 <key id="0">
                     <bone_ref id="0" timeline="26" key="0"/>
@@ -9591,7 +9591,7 @@
                 </key>
             </timeline>
         </animation>
-        <animation id="7" name="Swim Hurt" length="300">
+        <animation id="7" name="Swim Hurt" length="300" interval="100">
             <mainline>
                 <key id="0">
                     <bone_ref id="0" timeline="24" key="0"/>
@@ -10410,7 +10410,7 @@
                 </key>
             </timeline>
         </animation>
-        <animation id="8" name="In Air Idle" length="400">
+        <animation id="8" name="In Air Idle" length="400" interval="100">
             <mainline>
                 <key id="0">
                     <bone_ref id="0" timeline="18" key="0"/>
@@ -11937,7 +11937,7 @@
                 </key>
             </timeline>
         </animation>
-        <animation id="9" name="Bow Aim" length="800">
+        <animation id="9" name="Bow Aim" length="800" interval="100">
             <mainline>
                 <key id="0">
                     <bone_ref id="0" timeline="18" key="0"/>
@@ -14040,7 +14040,7 @@
                 </key>
             </timeline>
         </animation>
-        <animation id="10" name="Bow Hold" length="300">
+        <animation id="10" name="Bow Hold" length="300" interval="100">
             <mainline>
                 <key id="0">
                     <bone_ref id="0" timeline="17" key="0"/>
@@ -15209,7 +15209,7 @@
                 </key>
             </timeline>
         </animation>
-        <animation id="11" name="Bow Fire" length="500">
+        <animation id="11" name="Bow Fire" length="500" interval="100">
             <mainline>
                 <key id="0">
                     <bone_ref id="0" timeline="17" key="0"/>
@@ -19804,7 +19804,7 @@
                 </key>
             </timeline>
         </animation>
-        <animation id="12" name="Sword Plant" length="200">
+        <animation id="12" name="Sword Plant" length="200" interval="100">
             <mainline>
                 <key id="0">
                     <bone_ref id="0" timeline="28" key="0"/>
@@ -20245,13 +20245,13 @@
             </timeline>
             <timeline id="26" name="Player_Ahoge">
                 <key id="0">
-                    <object folder="0" file="26" x="1.825069" y="10.43473" pivot_x="0.496339" pivot_y="1.019953" angle="221.007919" scale_y="-1"/>
+                    <object folder="0" file="26" x="0.430953" y="0.903631" pivot_x="0.496339" pivot_y="1.019953" angle="221.007919" scale_y="-1"/>
                 </key>
                 <key id="1">
                     <object folder="0" file="26" x="0.330618" y="0.400443" pivot_x="0.902227" pivot_y="0.706074" angle="221.007919" scale_y="-1"/>
                 </key>
                 <key id="2" time="100">
-                    <object folder="0" file="26" x="1.189293" y="3.751381" pivot_x="0.902227" pivot_y="0.706074" angle="237.03873" scale_x="0.80059" scale_y="0.5383"/>
+                    <object folder="0" file="26" x="7.20692" y="6.82046" pivot_x="0.902227" pivot_y="0.706074" angle="237.03873" scale_x="0.80059" scale_y="0.5383"/>
                 </key>
                 <key id="3" time="100" spin="-1">
                     <object folder="0" file="26" x="7.525481" y="7.001178" pivot_x="0.496339" pivot_y="1.019953" angle="237.03873" scale_x="0.80059" scale_y="0.5383"/>
@@ -20638,7 +20638,7 @@
                 </key>
             </timeline>
         </animation>
-        <animation id="13" name="Dash" length="200">
+        <animation id="13" name="Dash" length="200" interval="100">
             <mainline>
                 <key id="0">
                     <bone_ref id="0" timeline="18" key="0"/>
@@ -21538,7 +21538,7 @@
                 </key>
             </timeline>
         </animation>
-        <animation id="14" name="Dash Slash " length="200">
+        <animation id="14" name="Dash Slash " length="200" interval="100">
             <mainline>
                 <key id="0">
                     <bone_ref id="0" timeline="18" key="0"/>
@@ -23007,7 +23007,7 @@
                 </key>
             </timeline>
         </animation>
-        <animation id="15" name="In Air Hurt" length="300">
+        <animation id="15" name="In Air Hurt" length="300" interval="100">
             <mainline>
                 <key id="0">
                     <bone_ref id="0" timeline="15" key="0"/>
@@ -24638,7 +24638,7 @@
                 </key>
             </timeline>
         </animation>
-        <animation id="16" name="Fall" length="200">
+        <animation id="16" name="Fall" length="200" interval="100">
             <mainline>
                 <key id="0">
                     <bone_ref id="0" timeline="15" key="0"/>
@@ -25348,7 +25348,7 @@
                 </key>
             </timeline>
         </animation>
-        <animation id="17" name="Bow Fall" length="400">
+        <animation id="17" name="Bow Fall" length="400" interval="100">
             <mainline>
                 <key id="0">
                     <bone_ref id="0" timeline="1" key="0"/>
@@ -25389,7 +25389,7 @@
                 </key>
             </timeline>
         </animation>
-        <animation id="18" name="Sword Fall" length="400">
+        <animation id="18" name="Sword Fall" length="400" interval="100">
             <mainline>
                 <key id="0">
                     <bone_ref id="0" timeline="1" key="0"/>

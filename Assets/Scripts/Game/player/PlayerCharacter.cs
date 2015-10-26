@@ -11,8 +11,10 @@ public class PlayerCharacter : SPGameUpdateable, SPHitPolyOwner, SPNodeHierarchy
 	private SpriterNode _img;
 
 	private SPSprite _streak_left, _streak_right;
+	private float _streak_tar_alpha;
 	private SPSpriteAnimator _streak_left_anim, _streak_right_anim;
-
+	
+	private float _trail_tar_alpha;
 	private SPSprite _trail;
 	
 	public PlayerAimReticule _aim_retic;
@@ -82,11 +84,10 @@ public class PlayerCharacter : SPGameUpdateable, SPHitPolyOwner, SPNodeHierarchy
 	}
 
 	public void set_streak_enabled(bool val) {
-		_streak_right.set_enabled(val);
-		_streak_left.set_enabled(val);
+		_streak_tar_alpha = val?1:0;
 	}
 	public void set_trail_enabled_and_rotation(bool val, float angle=0) {
-		_trail.set_enabled(val);
+		_trail_tar_alpha = val?1:0;
 		_trail.set_rotation(angle);
 	}
 	
@@ -127,8 +128,23 @@ public class PlayerCharacter : SPGameUpdateable, SPHitPolyOwner, SPNodeHierarchy
 	
 	public void i_update(GameEngineScene g) {
 		_img.i_update();
-		_streak_left_anim.i_update();
-		_streak_right_anim.i_update();
+		
+		_streak_left.set_opacity(SPUtil.lmovto(_streak_left.get_opacity(),_streak_tar_alpha,0.2f*SPUtil.dt_scale_get()));
+		_streak_right.set_opacity(_streak_left.get_opacity());
+		
+		if (SPUtil.flt_cmp_delta(_streak_left.get_opacity(),0,0.1f)) {
+			_streak_left.set_enabled(false);
+			_streak_right.set_enabled(false);
+		} else {
+			_streak_left.set_enabled(true);
+			_streak_right.set_enabled(true);
+			_streak_left_anim.i_update();
+			_streak_right_anim.i_update();
+		}
+		
+		_trail.set_opacity(SPUtil.lmovto(_trail.get_opacity(),_trail_tar_alpha,0.2f*SPUtil.dt_scale_get()));
+		_trail.set_enabled(!SPUtil.flt_cmp_delta(_trail.get_opacity(),0,0.1f));
+		
 		_aim_retic.i_update(g);
 	}
 	

@@ -20,6 +20,7 @@ public class InAirGameState : GameStateBase {
 		public Vector2 _player_c_pos;
 		
 		public float _arrow_charge_ct;
+		public float _last_arrow_dir_ang, _time_dashing, _pre_dash_rotation;
 		public float get_arrow_charge_ct_max() { return 50; }
 		public float get_arrow_charge_pct() { return this._arrow_charge_ct / this.get_arrow_charge_ct_max(); }
 		
@@ -52,7 +53,7 @@ public class InAirGameState : GameStateBase {
 
 	private InAirGameState i_cons(GameEngineScene g) {
 		_projectiles = AirProjectileManager.cons(g);
-	
+		g._player.set_manual_sort_z_order(GameAnchorZ.Player_InAir);
 		g._camerac.set_camera_follow_speed(1);
 		g._camerac.set_zoom_speed(1/20.0f);
 		g._camerac.set_target_zoom(GameCameraController.MAX_ZOOM);
@@ -155,7 +156,8 @@ public class InAirGameState : GameStateBase {
 		bool streak_enabled = false;
 		bool aim_retic_enabled = false;
 		switch (_params._player_mode) {
-		case Params.PlayerMode.None: {			
+		case Params.PlayerMode.None: {
+			_params._time_dashing = 0;
 			if (_params._player_anim_hold_ct > 0) {
 				g._player.play_anim(_params._player_anim_hold, false);
 				_params._player_anim_hold_ct -= SPUtil.dt_scale_get();
@@ -172,13 +174,15 @@ public class InAirGameState : GameStateBase {
 					if (g._controls.get_move().y > 0 && _params._player_c_vel.y < 0) {
 						_params._player_c_vel.y = SPUtil.lmovto(_params._player_c_vel.y, -1f, 5.0f * SPUtil.dt_scale_get());
 					} else if (g._controls.get_move().y < 0) {
-						_params._player_c_vel.y = SPUtil.lmovto(_params._player_c_vel.y, -30, 2.5f * SPUtil.dt_scale_get());
+						_params._player_c_vel.y = SPUtil.lmovto(_params._player_c_vel.y, -30, 0.45f * SPUtil.dt_scale_get());
 					}
 					
 				} else {
+					_params._player_c_vel.x = SPUtil.drpt(_params._player_c_vel.x,0,1/5.0f);
 					_params._player_c_vel.y = SPUtil.lmovto(_params._player_c_vel.y, -30, 0.12f * SPUtil.dt_scale_get());
 				}
 			} else {
+				_params._player_c_vel.x = SPUtil.drpt(_params._player_c_vel.x,0,1/5.0f);
 				_params._player_c_vel.y = SPUtil.lmovto(_params._player_c_vel.y, -30, 0.12f * SPUtil.dt_scale_get());
 			}
 			if (g._controls.get_control_down(ControlManager.Control.ShootArrow)) {
@@ -218,20 +222,23 @@ public class InAirGameState : GameStateBase {
 				}
 				PlayerCharacterUtil.rotate_to_rotation(g._player,g._player.get_target_rotation_for_aim_direction(g._controls.get_move()), 1/10.0f);
 			}
+			_params._last_arrow_dir_ang = g._player.get_arrow_target_rotation();
 			
 			_params._player_c_vel.x = SPUtil.drpt(_params._player_c_vel.x,0,1/5.0f);
 			_params._player_c_vel.y = SPUtil.lmovto(_params._player_c_vel.y, -1f, 5.0f * SPUtil.dt_scale_get());
 			
 			if (!g._controls.get_control_down(ControlManager.Control.ShootArrow)) {
-				// SPTODO -- fire arrow
-				// SPTODO -- push back in direction of shot
-				// SPTODO -- arrow gravity
-				// SPTODO -- after dash return to previous rotation
-				_projectiles.add_player_projectile(PlayerArrowAirProjectile.cons(g._player.get_center(), SPUtil.ang_deg_dir(g._player.get_arrow_target_rotation()+90)));
+				Vector2 pushback_dir = SPUtil.vec_scale(
+					SPUtil.ang_deg_dir(g._player.get_arrow_target_rotation() + 90).normalized,
+					-1 * SPUtil.y_for_point_of_2pt_line(new Vector2(0,0.25f),new Vector2(1,4),_params.get_arrow_charge_pct()));
+				_params._player_c_vel = SPUtil.vec_add(pushback_dir,pushback_dir);
+				_params._upwards_vel = Mathf.Clamp(pushback_dir.y,0,10);
 				
+				this.shoot_arrow(g,g._player.get_arrow_target_rotation());
 				_params._player_anim_hold = PlayerCharacterAnims.BOWFIRE;
 				_params._player_anim_hold_ct = 30.0f;
 				_params._player_mode = Params.PlayerMode.None;
+				
 			}
 			
 			this.player_control_check_sword_move(g);
@@ -250,13 +257,22 @@ public class InAirGameState : GameStateBase {
 				_params._player_c_vel.y = SPUtil.drpt(_params._player_c_vel.y,0,1/20.0f);
 			}
 			
+			if (_params._time_dashing < 20) {
+				if (_params._arrow_charge_ct > 0 && g._controls.get_control_just_released(ControlManager.Control.ShootArrow)) {
+					this.shoot_arrow(g,_params._last_arrow_dir_ang);
+				}
+			}
+			_params._time_dashing += SPUtil.dt_scale_get();
+			
 			
 			_params._dash_ct -= SPUtil.dt_scale_get();
 			bool down = g._controls.get_control_down(ControlManager.Control.MoveDown);
 			bool up = g._controls.get_control_down(ControlManager.Control.MoveUp);
 			bool left = g._controls.get_control_down(ControlManager.Control.MoveLeft);
 			bool right = g._controls.get_control_down(ControlManager.Control.MoveRight);
+			
 			if (_params._dash_ct <= 0) {
+				g._player.set_rotation(_params._pre_dash_rotation);
 				_params._player_mode = Params.PlayerMode.None;
 			} else if (down && !up && !left && !right && g._controls.get_control_down(ControlManager.Control.Dash)) {
 				_params._player_mode = Params.PlayerMode.SwordPlant;
@@ -266,7 +282,14 @@ public class InAirGameState : GameStateBase {
 		case Params.PlayerMode.SwordPlant: {
 			g._player.play_anim(PlayerCharacterAnims.SWORDPLANT);
 			g._player.set_rotation(0);
+			_params._pre_dash_rotation = 0;
 			streak_enabled = true;
+			if (_params._time_dashing < 20) {
+				if (_params._arrow_charge_ct > 0 && g._controls.get_control_just_released(ControlManager.Control.ShootArrow)) {
+					this.shoot_arrow(g,_params._last_arrow_dir_ang);
+				}
+			}
+			_params._time_dashing += SPUtil.dt_scale_get();
 			_params._player_c_vel.x = SPUtil.drpt(_params._player_c_vel.x, 0, 1/10.0f);
 			_params._player_c_vel.y = SPUtil.drpt(_params._player_c_vel.y, -40, 1/3.0f);
 			if (!g._controls.get_control_down(ControlManager.Control.Dash)) {
@@ -289,7 +312,9 @@ public class InAirGameState : GameStateBase {
 		}
 		
 		if (_params._player_c_pos.y > 500) {
-			_params._player_c_pos.y = SPUtil.drpt(_params._player_c_pos.y, 500, 1/10.0f);
+			float tar_player_c_pos_y = SPUtil.drpt(_params._player_c_pos.y, 500, 1/10.0f);
+			_params._upwards_vel = Mathf.Clamp(_params._player_c_pos.y-tar_player_c_pos_y,0,10);
+			_params._player_c_pos.y = tar_player_c_pos_y;
 		}
 		
 		
@@ -307,7 +332,26 @@ public class InAirGameState : GameStateBase {
 			g._player.set_rotation(0);
 		}
 		g._player.set_streak_enabled(streak_enabled);
+		g._player.set_trail_enabled_and_rotation(streak_enabled,g._player.rotation());
 		g._player._aim_retic.set_enabled(aim_retic_enabled);
+	}
+	
+	private void shoot_arrow(GameEngineScene g, float angle) {
+		if (_params.get_arrow_charge_pct() < 1) {
+			_projectiles.add_player_projectile(
+				PlayerArrowAirProjectile.cons(
+					g._player.get_center(), 
+					SPUtil.ang_deg_dir(angle+90),
+					SPUtil.y_for_point_of_2pt_line(new Vector2(0,13),new Vector2(1,30),_params.get_arrow_charge_pct())));
+		} else {
+			g._camerac.camera_shake(new Vector2(-2,3.3f),35,30);
+			_projectiles.add_player_projectile(
+				PlayerChargedArrowAirProjectile.cons(
+					g._player.get_center(), 
+					SPUtil.ang_deg_dir(angle+90),
+					30));
+		}
+		_params._arrow_charge_ct = 0;
 	}
 	
 	private void player_control_check_sword_move(GameEngineScene g) {
@@ -319,6 +363,7 @@ public class InAirGameState : GameStateBase {
 			if (down && !up && !left && !right) {
 				_params._player_mode = Params.PlayerMode.SwordPlant;
 			} else {
+				_params._pre_dash_rotation = g._player.rotation();
 				_params._player_mode = Params.PlayerMode.Dash;
 				_params._dash_ct = 20;
 			}
@@ -351,10 +396,12 @@ public class InAirGameState : GameStateBase {
 		return GameCameraController.u_pos_to_c_pos(player.get_center());
 	}
 
-	//TODO -- state end cleanup
-
 	public override GameStateIdentifier get_state() { 
 		return GameStateIdentifier.InAir;
+	}
+	
+	public override void debug_draw_hitboxes(SPDebugRender draw) {
+		_projectiles.debug_draw_hitboxes(draw);
 	}
 
 }

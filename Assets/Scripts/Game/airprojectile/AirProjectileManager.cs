@@ -61,7 +61,7 @@ public class AirProjectileManager : InAirGameStateUpdateable, GenericPooledObjec
 	public void debug_draw_hitboxes(SPDebugRender draw) {
 		for (int i = 0; i < _player_projectiles.Count; i++) {
 			AirProjectileBase itr = _player_projectiles[i];
-			draw.draw_hitpoly_owner(itr,new Color(0.8f, 0.2f, 0.2f, 0.5f), new Color(0.8f, 0.2f, 0.2f, 0.8f));
+			draw.draw_hitpoly_owner(itr,new Color(0.8f, 0.8f, 0.2f, 0.5f), new Color(0.8f, 0.8f, 0.2f, 0.8f));
 		}
 		for (int i = 0; i < _enemy_projectiles.Count; i++) {
 			AirProjectileBase itr = _enemy_projectiles[i];

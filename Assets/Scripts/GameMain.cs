@@ -8,13 +8,11 @@ public interface SPMainUpdateable {
 public class GameMain : SPBaseBehavior {
 	/**
 	TODO--
-	would put the charge shine over the top of hanoka though, since it'd be odd for her to be blocking the light
-	
-	air mode
-	gameui
-
-	gameui
-	dialogui
+	inairgamestate mobile feature parity
+	text rendering
+	kelsey underwater art
+	underwater->abovewater splash
+	InAirGameState end cleanup
 	**/
 
 	public static GameMain _context;
