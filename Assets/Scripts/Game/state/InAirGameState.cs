@@ -49,9 +49,11 @@ public class InAirGameState : GameStateBase {
 
 	private Params _params;
 	private Mode _current_mode;
-	private AirProjectileManager _projectiles;
-
+	public AirProjectileManager _projectiles;
+	public AirEnemyManager _enemy_manager;
+	
 	private InAirGameState i_cons(GameEngineScene g) {
+		_enemy_manager = AirEnemyManager.cons(g);
 		_projectiles = AirProjectileManager.cons(g);
 		g._player.set_manual_sort_z_order(GameAnchorZ.Player_InAir);
 		g._camerac.set_camera_follow_speed(1);
@@ -81,6 +83,7 @@ public class InAirGameState : GameStateBase {
 	public override void i_update(GameEngineScene g) {
 		g._player.i_update(g);
 		_projectiles.i_update(g, this);
+		_enemy_manager.i_update(g, this);
 
 		switch (_current_mode) {
 		case Mode.InitialJumpOut: {
