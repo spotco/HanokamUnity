@@ -76,11 +76,17 @@ public class InAirGameState : GameStateBase {
 		_params._player_anim_hold = PlayerCharacterAnims.INAIRIDLE;
 		_params._player_anim_hold_ct = 0;
 		_params._player_mode = Params.PlayerMode.None;
-
+		
 		return this;
 	}
 
 	public override void i_update(GameEngineScene g) {
+		if (_enemy_manager._active_enemies.Count == 0 && _enemy_manager._queued_spawn_enemies.Count == 0) {
+			Vector2 c_bottom = GameCameraController.u_pos_to_c_pos(new Vector2(0,g.get_viewbox()._y1));
+			c_bottom.x = SPUtil.float_random(SPUtil.get_horiz_world_bounds()._min+200,SPUtil.get_horiz_world_bounds()._max-200);
+			_enemy_manager.add_enemy(PufferBasicAirEnemy.cons(g, new Vector2(500,0)), c_bottom, 30);
+		}
+	
 		g._player.i_update(g);
 		_projectiles.i_update(g, this);
 		_enemy_manager.i_update(g, this);
@@ -405,6 +411,7 @@ public class InAirGameState : GameStateBase {
 	
 	public override void debug_draw_hitboxes(SPDebugRender draw) {
 		_projectiles.debug_draw_hitboxes(draw);
+		_enemy_manager.debug_draw_hitboxes(draw);
 	}
 
 }

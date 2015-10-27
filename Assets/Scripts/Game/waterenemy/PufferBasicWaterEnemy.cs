@@ -21,7 +21,7 @@ public class PufferBasicWaterEnemy : BasicWaterEnemy, SPHitPolyOwner {
 	private PufferEnemySprite _img;
 	private Color _tar_color;
 	private FlashCount _flashcount;
-	public PufferBasicWaterEnemy i_cons(GameEngineScene g, Vector2 pt1, Vector2 pt2) {
+	public new PufferBasicWaterEnemy i_cons(GameEngineScene g, Vector2 pt1, Vector2 pt2) {
 		base.i_cons(g, pt1, pt2);
 		
 		this.get_root().set_name("PufferBasicWaterEnemy");
@@ -79,7 +79,7 @@ public class PufferBasicWaterEnemy : BasicWaterEnemy, SPHitPolyOwner {
 		_img.i_update(g);
 	}
 
-	public SPHitRect get_hit_rect() {
+	public override SPHitRect get_hit_rect() {
 		return SPHitPoly.hitpoly_to_bounding_hitrect(
 			this.get_hit_poly(),
 			new Vector2(-10,-10),
@@ -87,7 +87,7 @@ public class PufferBasicWaterEnemy : BasicWaterEnemy, SPHitPolyOwner {
 		);
 	}
 	
-	public SPHitPoly get_hit_poly() {
+	public override SPHitPoly get_hit_poly() {
 		return SPHitPoly.cons_with_basis_offset(
 			new Vector2(this.get_root()._u_x, this.get_root()._u_y),
 			this.get_root().rotation(),
