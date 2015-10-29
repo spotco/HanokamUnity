@@ -50,7 +50,7 @@ public class PlayerChargedArrowAirProjectile : AirProjectileBase, GenericPooledO
 			g.add_particle(SPConfigAnimParticle.cons()
 			    .set_texture(TextureResource.inst().get_tex(RTex.HANOKA_EFFECTS))
 				.set_texrect(FileCache.inst().get_texrect(RTex.HANOKA_EFFECTS,"Arrow-_fire-trail-1.png"))
-				.set_scale(2.0f,0.0f)
+				.set_scale(1.0f,0.0f)
 				.set_ctmax(15)
 				.set_alpha(0.8f,0.0f)
 				.set_pos(_root._u_x,_root._u_y)

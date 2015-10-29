@@ -24,7 +24,7 @@ public class SPTimedSpriteAnimator {
 	public SPTimedSpriteAnimator add_frame_at_time(Rect frame, float time) {
 		_time_to_frames[time] = frame;
 		_sorted_times.Add(time);
-		_sorted_times.Sort((float a, float b) => { return ((int)(a-b)); });
+		_sorted_times.Sort((float a, float b) => { return SPUtil.sig(a-b); });
 		return this;
 	}
 
@@ -33,7 +33,6 @@ public class SPTimedSpriteAnimator {
 		for (int i = 0; i < _sorted_times.Count; i++) {
 			if (t <= _sorted_times[i]) {
 				key = _sorted_times[i];
-			} else {
 				break;
 			}
 		}

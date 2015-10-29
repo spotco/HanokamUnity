@@ -25,6 +25,8 @@ public class InAirGameState : GameStateBase {
 		public float get_arrow_charge_pct() { return this._arrow_charge_ct / this.get_arrow_charge_ct_max(); }
 		
 		public bool _this_movepress_has_aimed;
+		public bool _this_dash_can_become_swordplant;
+		public float _this_dash_ignore_move_y_ct;
 		
 		public enum PlayerMode {
 			None,
@@ -34,6 +36,16 @@ public class InAirGameState : GameStateBase {
 			Hurt
 		}
 		public PlayerMode _player_mode;
+		public float _just_dash_ct;
+		public bool is_check_dash() {
+			return _player_mode == PlayerMode.Dash || _just_dash_ct > 0; 
+		}
+		public float _just_swordplant_ct;
+		public bool is_check_swordplant() {
+			return _player_mode == PlayerMode.SwordPlant || _just_swordplant_ct > 0;
+		}
+		
+		public float _hurt_ct;
 		public float _dash_ct;
 		public Vector2 _player_c_vel;
 		public string _player_anim_hold;
@@ -47,8 +59,8 @@ public class InAirGameState : GameStateBase {
 		FallToGround
 	}
 
-	private Params _params;
-	private Mode _current_mode;
+	public Params _params;
+	public Mode _current_mode;
 	public AirProjectileManager _projectiles;
 	public AirEnemyManager _enemy_manager;
 	
@@ -86,10 +98,6 @@ public class InAirGameState : GameStateBase {
 			c_bottom.x = SPUtil.float_random(SPUtil.get_horiz_world_bounds()._min+200,SPUtil.get_horiz_world_bounds()._max-200);
 			_enemy_manager.add_enemy(PufferBasicAirEnemy.cons(g, new Vector2(500,0)), c_bottom, 30);
 		}
-	
-		g._player.i_update(g);
-		_projectiles.i_update(g, this);
-		_enemy_manager.i_update(g, this);
 
 		switch (_current_mode) {
 		case Mode.InitialJumpOut: {
@@ -155,6 +163,10 @@ public class InAirGameState : GameStateBase {
 
 		} break;
 		}
+		
+		g._player.i_update(g);
+		_projectiles.i_update(g, this);
+		_enemy_manager.i_update(g, this);
 	}
 	
 	private void i_update_mode_combat_player_controls(GameEngineScene g) {
@@ -164,6 +176,7 @@ public class InAirGameState : GameStateBase {
 		
 		bool streak_enabled = false;
 		bool aim_retic_enabled = false;
+		float trail_rotation = g._player.rotation();
 		switch (_params._player_mode) {
 		case Params.PlayerMode.None: {
 			_params._time_dashing = 0;
@@ -241,7 +254,7 @@ public class InAirGameState : GameStateBase {
 					SPUtil.ang_deg_dir(g._player.get_arrow_target_rotation() + 90).normalized,
 					-1 * SPUtil.y_for_point_of_2pt_line(new Vector2(0,0.25f),new Vector2(1,4),_params.get_arrow_charge_pct()));
 				_params._player_c_vel = SPUtil.vec_add(pushback_dir,pushback_dir);
-				_params._upwards_vel = Mathf.Clamp(pushback_dir.y,0,10);
+				_params._upwards_vel = Mathf.Clamp(pushback_dir.y,0,2);
 				
 				this.shoot_arrow(g,g._player.get_arrow_target_rotation());
 				_params._player_anim_hold = PlayerCharacterAnims.BOWFIRE;
@@ -256,15 +269,24 @@ public class InAirGameState : GameStateBase {
 		case Params.PlayerMode.Dash: {
 			g._player.play_anim(PlayerCharacterAnims.SPIN);
 			g._player.set_rotation(0);
+			trail_rotation = 0;
 			
-			if (g._controls.is_move_x() || g._controls.is_move_y()) {
+			if ((g._controls.is_move_x() || g._controls.is_move_y())) {
 				Vector2 move = SPUtil.vec_scale(g._controls.get_move(),20);
-				_params._player_c_vel = move;
+				if (_params._this_dash_ignore_move_y_ct <= 0) {
+					_params._player_c_vel = SPUtil.vec_lmovto(_params._player_c_vel,move,10);
+				} else {
+					_params._player_c_vel.x = SPUtil.lmovto(_params._player_c_vel.x,move.x,10);
+					_params._player_c_vel.y = SPUtil.drpt(_params._player_c_vel.y,0,1/20.0f);
+				}
+				
 				PlayerCharacterUtil.rotate_to_rotation_for_vel(g._player,_params._player_c_vel.x,_params._player_c_vel.y,1/5.0f,0);
 			} else {
 				_params._player_c_vel.x = SPUtil.drpt(_params._player_c_vel.x,0,1/20.0f);
 				_params._player_c_vel.y = SPUtil.drpt(_params._player_c_vel.y,0,1/20.0f);
 			}
+			
+			_params._this_dash_ignore_move_y_ct = SPUtil.lmovto(_params._this_dash_ignore_move_y_ct,0,SPUtil.dt_scale_get());
 			
 			if (_params._time_dashing < 20) {
 				if (_params._arrow_charge_ct > 0 && g._controls.get_control_just_released(ControlManager.Control.ShootArrow)) {
@@ -283,9 +305,11 @@ public class InAirGameState : GameStateBase {
 			if (_params._dash_ct <= 0) {
 				g._player.set_rotation(_params._pre_dash_rotation);
 				_params._player_mode = Params.PlayerMode.None;
-			} else if (down && !up && !left && !right && g._controls.get_control_down(ControlManager.Control.Dash)) {
+			} else if (_params._this_dash_can_become_swordplant && down && !up && !left && !right && g._controls.get_control_down(ControlManager.Control.Dash)) {
 				_params._player_mode = Params.PlayerMode.SwordPlant;
+				_params._this_dash_can_become_swordplant = false;
 			}
+			_params._just_dash_ct = 5;
 			
 		} break;
 		case Params.PlayerMode.SwordPlant: {
@@ -305,13 +329,24 @@ public class InAirGameState : GameStateBase {
 				_params._player_mode = Params.PlayerMode.None;
 				_params._player_c_vel.y = -10;
 			}
+			_params._just_swordplant_ct = 5;
 			
 		} break;
 		case Params.PlayerMode.Hurt: {
+			this.player_control_move_x(g);
+			_params._hurt_ct -= SPUtil.dt_scale_get();
 			g._player.play_anim(PlayerCharacterAnims.INAIRHURT);
+			_params._player_c_vel.x = SPUtil.drpt(_params._player_c_vel.x,0,1/20.0f);
+			_params._player_c_vel.y = SPUtil.drpt(_params._player_c_vel.y,0,1/20.0f);
+			if (_params._hurt_ct <= 0) {
+				_params._player_mode = Params.PlayerMode.None;
+			}
 			
 		} break;
 		}
+		
+		_params._just_dash_ct = SPUtil.lmovto(_params._just_dash_ct,0,SPUtil.dt_scale_get());
+		_params._just_swordplant_ct = SPUtil.lmovto(_params._just_swordplant_ct,0,SPUtil.dt_scale_get());
 		
 		if (g._controls.get_control_just_pressed(ControlManager.Control.MoveDown) ||
 		    g._controls.get_control_just_pressed(ControlManager.Control.MoveUp) ||
@@ -341,7 +376,7 @@ public class InAirGameState : GameStateBase {
 			g._player.set_rotation(0);
 		}
 		g._player.set_streak_enabled(streak_enabled);
-		g._player.set_trail_enabled_and_rotation(streak_enabled,g._player.rotation());
+		g._player.set_trail_enabled_and_rotation(streak_enabled,trail_rotation);
 		g._player._aim_retic.set_enabled(aim_retic_enabled);
 	}
 	
@@ -375,6 +410,7 @@ public class InAirGameState : GameStateBase {
 				_params._pre_dash_rotation = g._player.rotation();
 				_params._player_mode = Params.PlayerMode.Dash;
 				_params._dash_ct = 20;
+				_params._this_dash_can_become_swordplant = true;
 			}
 		}
 	}

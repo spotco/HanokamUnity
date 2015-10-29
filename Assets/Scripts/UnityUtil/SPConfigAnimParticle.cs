@@ -106,6 +106,7 @@ public class SPConfigAnimParticle : SPGameEngineParticle, GenericPooledObject {
 	}
 	public SPConfigAnimParticle set_scale(float min, float max) {
 		_scale = new SPRange() { _min = min, _max = max };
+		_img.set_scale(min);
 		return this;
 	}
 	public SPConfigAnimParticle set_texture(Texture tex) {

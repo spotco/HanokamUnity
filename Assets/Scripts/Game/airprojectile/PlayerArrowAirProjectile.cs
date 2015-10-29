@@ -64,7 +64,7 @@ public class PlayerArrowAirProjectile : AirProjectileBase, GenericPooledObject {
 		case Mode.Flying: {
 			_sprite_outline.set_opacity(SPUtil.drpt(_sprite_outline.get_opacity(),1,1/20.0f));
 			// SPTODO -- check hit
-			_vel.y += -0.5f * SPUtil.dt_scale_get();
+			_vel.y += -0.35f * SPUtil.dt_scale_get();
 			_root.set_rotation(SPUtil.dir_ang_deg(_vel.x,_vel.y));
 			_root.set_u_pos(SPUtil.vec_add(_root.get_u_pos(),SPUtil.vec_scale(_vel,SPUtil.dt_scale_get())));
 			_ct -= SPUtil.dt_scale_get();

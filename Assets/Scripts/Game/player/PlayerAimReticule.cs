@@ -85,9 +85,6 @@ public class PlayerAimReticule : SPNodeHierarchyElement, SPGameUpdateable {
 	
 	public void i_update(GameEngineScene g) {
 		float line_target_rotation = g._player.get_arrow_target_rotation();
-		_left_line.set_rotation(line_target_rotation + 30);
-		_right_line.set_rotation(line_target_rotation - 30);
-		_mega_arrow_line.set_rotation(line_target_rotation + 90);
 		_spark.set_u_pos(SPUtil.vec_scale(SPUtil.ang_deg_dir(line_target_rotation+90),65));
 		_spark_anim.i_update();
 	}

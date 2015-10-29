@@ -151,8 +151,12 @@ public class GameMain : SPBaseBehavior {
 	}
 
 	public override void Update () {
-		_controls.i_update();
-		_camerac.i_update();
-		this.get_top_scene().i_update();
+		if (_camerac._freeze_frame > 0) {
+			_camerac._freeze_frame = SPUtil.lmovto(_camerac._freeze_frame,0,SPUtil.dt_scale_get());
+		} else {
+			_controls.i_update();
+			_camerac.i_update();
+			this.get_top_scene().i_update();
+		}
 	}
 }

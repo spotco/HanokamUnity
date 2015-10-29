@@ -146,12 +146,18 @@ public class CurveMoveBasicAirEnemyModeComponent : BasicAirEnemyModeComponent {
 		} else {
 			enemy.apply_c_pos(SPUtil.vec_add(GameCameraController.u_pos_to_c_pos(enemy.get_root().get_u_pos()),enemy._params._last_move_delta));
 		}
-		
+				
 		if (SPHitPoly.polyowners_intersect(enemy, g._player)) {
-			enemy._params._stun_ct = 0;
-			enemy._params._stun_ct_max = 150;
-			enemy._params._stun_dir = SPUtil.vec_scale(SPUtil.vec_sub(enemy.get_root().get_u_pos(),g._player.get_center()).normalized,10);
-			enemy.transition_to_mode(g, BasicAirEnemy.Mode.Stunned);
+			if (state._params.is_check_dash()) {
+				BasicAirEnemyModeComponentUtility.dash_hit(g,state,enemy);
+			} else if (state._params.is_check_swordplant()) {
+				BasicAirEnemyModeComponentUtility.swordplant_hit(g,state,enemy);
+			} else {
+				BasicAirEnemyModeComponentUtility.none_hit(g,state,enemy);
+			}
+			g._camerac.freeze_frame(2);
+			g._camerac.camera_shake(new Vector2(-1.5f,1.7f),15,30);
+			
 		} else if (out_of_bounds) {
 			enemy.transition_to_mode(g, BasicAirEnemy.Mode.DoRemove);
 		}
@@ -174,6 +180,96 @@ public class KnockbackStunBasicAirEnemyModeComponent : BasicAirEnemyModeComponen
 		enemy._params._stun_ct += SPUtil.dt_scale_get();
 		if (enemy._params._stun_ct >= enemy._params._stun_ct_max) {
 			enemy.transition_to_mode(g,BasicAirEnemy.Mode.Moving);
+		}
+		
+		if (SPHitPoly.polyowners_intersect(enemy, g._player)) {
+			if (state._params.is_check_dash()) {
+				BasicAirEnemyModeComponentUtility.dash_hit(g,state,enemy);
+				g._camerac.freeze_frame(2);
+			} else if (state._params.is_check_swordplant()) {
+				BasicAirEnemyModeComponentUtility.swordplant_hit(g,state,enemy);
+				g._camerac.freeze_frame(2);
+			} else {
+				BasicAirEnemyModeComponentUtility.none_hit(g,state,enemy);
+			}
+			
+			g._camerac.camera_shake(new Vector2(-1.5f,1.7f),15,30);	
+		}
+	}
+}
+
+public class BasicAirEnemyModeComponentUtility {
+	public static void dash_hit(GameEngineScene g, InAirGameState state, BasicAirEnemy enemy) {
+		state._params._dash_ct = 20;
+		g.add_particle(AirSwordSlashParticle.cons(enemy.get_root().get_u_pos(),state._params._player_c_vel));
+		enemy.transition_to_mode(g, BasicAirEnemy.Mode.Dying);
+	}
+	public static void swordplant_hit(GameEngineScene g, InAirGameState state, BasicAirEnemy enemy) {
+		state._params._pre_dash_rotation = g._player.rotation();
+		state._params._player_mode = InAirGameState.Params.PlayerMode.Dash;
+		state._params._dash_ct = 20;
+		state._params._player_c_vel.y = 30;
+		state._params._this_dash_can_become_swordplant = false;
+		state._params._this_dash_ignore_move_y_ct = 20;
+		enemy.transition_to_mode(g, BasicAirEnemy.Mode.Dying);
+		{
+			SPConfigAnimParticle neu_particle = SPConfigAnimParticle.cons();
+			neu_particle.set_ctmax(15);
+			neu_particle.set_manual_sort_z_order(GameAnchorZ.Player_FX-1);
+			neu_particle.set_anchor_point(0.5f,0.3f);
+			neu_particle.set_pos(g._player.get_u_pos().x,g._player.get_u_pos().y);
+			neu_particle.set_scale(0.7f,0.3f);
+			neu_particle.set_texture(TextureResource.inst().get_tex(RTex.HANOKA_EFFECTS));
+			neu_particle.set_texrect(new Rect());
+			neu_particle.set_normalized_timed_sprite_animator(SPTimedSpriteAnimator.cons(null)
+				.add_frame_at_time(FileCache.inst().get_texrect(RTex.HANOKA_EFFECTS,"sword_plant_hit_000.png"),0)
+				.add_frame_at_time(FileCache.inst().get_texrect(RTex.HANOKA_EFFECTS,"sword_plant_hit_001.png"),0.2f)
+				.add_frame_at_time(FileCache.inst().get_texrect(RTex.HANOKA_EFFECTS,"sword_plant_hit_002.png"),0.4f)
+				.add_frame_at_time(FileCache.inst().get_texrect(RTex.HANOKA_EFFECTS,"sword_plant_hit_003.png"),0.6f)
+				.add_frame_at_time(FileCache.inst().get_texrect(RTex.HANOKA_EFFECTS,"sword_plant_hit_004.png"),0.8f)
+			);
+			g.add_particle(neu_particle);
+		}
+		{
+			SPConfigAnimParticle neu_particle = SPConfigAnimParticle.cons();
+			neu_particle.set_ctmax(13);
+			neu_particle.set_manual_sort_z_order(GameAnchorZ.Player_FX);
+			neu_particle.set_pos(g._player.get_u_pos().x,g._player.get_u_pos().y);
+			neu_particle.set_scale(0.4f,0.25f);
+			neu_particle.set_texture(TextureResource.inst().get_tex(RTex.HANOKA_EFFECTS));
+			neu_particle.set_texrect(new Rect());
+			neu_particle.set_normalized_timed_sprite_animator(SPTimedSpriteAnimator.cons(null)
+				.add_frame_at_time(FileCache.inst().get_texrect(RTex.HANOKA_EFFECTS,"stab_000.png"),0)
+				.add_frame_at_time(FileCache.inst().get_texrect(RTex.HANOKA_EFFECTS,"stab_001.png"),0.3f)
+				.add_frame_at_time(FileCache.inst().get_texrect(RTex.HANOKA_EFFECTS,"stab_002.png"),0.6f)
+			);
+			g.add_particle(neu_particle);
+		}
+	}
+	public static void none_hit(GameEngineScene g, InAirGameState state, BasicAirEnemy enemy) {
+		enemy._params._stun_ct = 0;
+		enemy._params._stun_ct_max = 150;
+		enemy._params._stun_dir = SPUtil.vec_scale(SPUtil.vec_sub(enemy.get_root().get_u_pos(),g._player.get_center()).normalized,10);
+		
+		state._params._player_mode = InAirGameState.Params.PlayerMode.Hurt;
+		state._params._hurt_ct = 25;
+		state._params._player_c_vel = SPUtil.vec_scale(SPUtil.vec_sub(g._player.get_u_pos(),enemy.get_root().get_u_pos()).normalized,15);
+		
+		enemy.transition_to_mode(g, BasicAirEnemy.Mode.Stunned);
+	}
+}
+
+public class DeathAnimDelayBasicAirEnemyModeComponent : BasicAirEnemyModeComponent {
+	public static DeathAnimDelayBasicAirEnemyModeComponent cons(float delay) { return (new DeathAnimDelayBasicAirEnemyModeComponent()).i_cons(delay); }
+	private float _ct;
+	private DeathAnimDelayBasicAirEnemyModeComponent i_cons(float delay) {
+		_ct = delay;
+		return this;
+	}
+	public override void i_update(GameEngineScene g, InAirGameState state, BasicAirEnemy enemy) {
+		_ct -= SPUtil.dt_scale_get();
+		if (_ct <= 0) {
+			enemy.transition_to_mode(g,BasicAirEnemy.Mode.DoRemove);
 		}
 	}
 }

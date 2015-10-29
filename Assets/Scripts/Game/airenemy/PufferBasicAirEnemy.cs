@@ -26,6 +26,7 @@ public class PufferBasicAirEnemy : BasicAirEnemy {
 		base.i_cons();
 		this.add_component_for_mode(Mode.Moving, CurveMoveBasicAirEnemyModeComponent.cons(end_pt));
 		this.add_component_for_mode(Mode.Stunned, KnockbackStunBasicAirEnemyModeComponent.cons());
+		this.add_component_for_mode(Mode.Dying, DeathAnimDelayBasicAirEnemyModeComponent.cons(50));
 		
 		_tar_color = Color.white;
 		_flashcount = FlashCount.cons();

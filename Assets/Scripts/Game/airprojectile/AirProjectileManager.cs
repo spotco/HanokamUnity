@@ -33,8 +33,8 @@ public class AirProjectileManager : InAirGameStateUpdateable, GenericPooledObjec
 		_root.repool();
 	}
 	
-	private List<AirProjectileBase> _player_projectiles = new List<AirProjectileBase>();
-	private List<AirProjectileBase> _enemy_projectiles = new List<AirProjectileBase>();
+	public List<AirProjectileBase> _player_projectiles = new List<AirProjectileBase>();
+	public List<AirProjectileBase> _enemy_projectiles = new List<AirProjectileBase>();
 	public AirProjectileManager i_cons(GameEngineScene g) {
 		return this;
 	}
