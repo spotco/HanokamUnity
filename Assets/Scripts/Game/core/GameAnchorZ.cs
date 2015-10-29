@@ -25,6 +25,9 @@ public class GameAnchorZ {
 	public const int BGVillage_Docks_Front = 150;
 	public const int Player_InAir = 149;
 	public const int Player_FX = 148;
+	
+	public const int Enemy_InAir = 145;
+	public const int Player_Arrow = 144;
 
 	public const int BGSky_BG_SideCliffs = 100;
 

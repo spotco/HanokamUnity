@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 
 public enum BaseAirEnemyHitType {
-	Arrow
+	StickyProjectile,
+	PersistentProjectile
 }
 
 public abstract class BaseAirEnemy : InAirGameStateUpdateable, SPNodeHierarchyElement, SPHitPolyOwner {
@@ -16,6 +17,7 @@ public abstract class BaseAirEnemy : InAirGameStateUpdateable, SPNodeHierarchyEl
 	public virtual Vector2 get_u_pos() { return Vector2.zero; }
 	public virtual bool is_alive() { return false; }
 	public virtual void apply_hit(GameEngineScene g, BaseAirEnemyHitType type, float duration, Vector2 dir){}
+	public virtual int get_id() { return 0; }
 }
 
 public class QueuedSpawnAirEnemy {

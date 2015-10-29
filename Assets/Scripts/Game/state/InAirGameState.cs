@@ -176,7 +176,6 @@ public class InAirGameState : GameStateBase {
 		
 		bool streak_enabled = false;
 		bool aim_retic_enabled = false;
-		float trail_rotation = g._player.rotation();
 		switch (_params._player_mode) {
 		case Params.PlayerMode.None: {
 			_params._time_dashing = 0;
@@ -269,7 +268,6 @@ public class InAirGameState : GameStateBase {
 		case Params.PlayerMode.Dash: {
 			g._player.play_anim(PlayerCharacterAnims.SPIN);
 			g._player.set_rotation(0);
-			trail_rotation = 0;
 			
 			if ((g._controls.is_move_x() || g._controls.is_move_y())) {
 				Vector2 move = SPUtil.vec_scale(g._controls.get_move(),20);
@@ -376,7 +374,7 @@ public class InAirGameState : GameStateBase {
 			g._player.set_rotation(0);
 		}
 		g._player.set_streak_enabled(streak_enabled);
-		g._player.set_trail_enabled_and_rotation(streak_enabled,trail_rotation);
+		g._player.set_trail_enabled_and_rotation(streak_enabled,0);
 		g._player._aim_retic.set_enabled(aim_retic_enabled);
 	}
 	

@@ -31,6 +31,11 @@ public class PufferEnemySprite : GenericPooledObject, SPNodeHierarchyElement, SP
 		return this;
 	}
 	
+	public PufferEnemySprite set_manual_sort_z_order(int zord) {
+		_img.set_manual_sort_z_order(zord);
+		return this;
+	}
+	
 	public void i_update(GameEngineScene g) {
 		_animator.i_update();
 	}

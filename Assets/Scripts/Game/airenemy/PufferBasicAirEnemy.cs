@@ -12,6 +12,7 @@ public class PufferBasicAirEnemy : BasicAirEnemy {
 		base.depool();
 		_img = PufferEnemySprite.cons();
 		_img.add_to_parent(this.get_root());
+		_img.set_manual_sort_z_order(GameAnchorZ.Enemy_InAir);
 	}
 	
 	public override void repool() {

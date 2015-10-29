@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 
 public class PlayerChargedArrowAirProjectile : AirProjectileBase, GenericPooledObject {
 	
@@ -27,12 +27,15 @@ public class PlayerChargedArrowAirProjectile : AirProjectileBase, GenericPooledO
 	private float _ct;
 	private FlashEvery _trail_spawn_ct;
 	
+	private HashSet<int> _hit_ids = new HashSet<int>();
+	
 	private PlayerChargedArrowAirProjectile i_cons(Vector2 pos, Vector2 dir, float vel) {
 		_root.set_u_pos(pos);
 		_vel = SPUtil.vec_scale(dir.normalized,vel);
 		_ct = 100;
 		_root.set_rotation(SPUtil.dir_ang_deg(_vel.x,_vel.y));
 		_trail_spawn_ct = FlashEvery.cons(2.2f);
+		_hit_ids.Clear();
 		return this;
 	}
 	
@@ -41,6 +44,7 @@ public class PlayerChargedArrowAirProjectile : AirProjectileBase, GenericPooledO
 		_root.set_rotation(SPUtil.dir_ang_deg(_vel.x,_vel.y));
 		_root.set_u_pos(SPUtil.vec_add(_root.get_u_pos(),SPUtil.vec_scale(_vel,SPUtil.dt_scale_get())));
 		_ct -= SPUtil.dt_scale_get();
+		
 		if (_root._u_x < SPUtil.get_horiz_world_bounds()._min-500 || _root._u_x > SPUtil.get_horiz_world_bounds()._max+500) {
 			_ct = 0;
 		}
@@ -66,6 +70,15 @@ public class PlayerChargedArrowAirProjectile : AirProjectileBase, GenericPooledO
 				));
 		}
 		
+		for (int i_enemy = 0; i_enemy < state._enemy_manager._active_enemies.Count; i_enemy++) {
+			BaseAirEnemy itr_enemy = state._enemy_manager._active_enemies[i_enemy];
+			if (!_hit_ids.Contains(itr_enemy.get_id()) && SPHitPoly.polyowners_intersect(this,itr_enemy)) {
+				itr_enemy.apply_hit(g,BaseAirEnemyHitType.PersistentProjectile,200,SPUtil.vec_sub(itr_enemy.get_u_pos(),_root.get_u_pos()));
+				_hit_ids.Add(itr_enemy.get_id());
+				g._camerac.freeze_frame(2);
+				g._camerac.camera_shake(new Vector2(-1.5f,1.7f),15,30);
+			}
+		}
 	}
 	public override bool should_remove(GameEngineScene g, InAirGameState state) { return _ct <= 0; }
 	public override void do_remove() {

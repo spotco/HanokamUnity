@@ -17,6 +17,7 @@ public abstract class BasicAirEnemy : BaseAirEnemy, GenericPooledObject {
 	public virtual void depool() {
 		_root = SPNode.cons_node();
 		_root.set_name("BasicAirEnemy");
+		_params._id = __allocid++;
 	}
 	public virtual void repool() {
 		_root.repool();
@@ -28,7 +29,9 @@ public abstract class BasicAirEnemy : BaseAirEnemy, GenericPooledObject {
 		_root = null;
 	}
 	
+	private static int __allocid = 0;
 	public struct Params {
+		public int _id;
 		public Vector2 _last_move_delta;
 		public Vector2 _stun_dir;
 		public float _stun_ct, _stun_ct_max;
@@ -43,14 +46,21 @@ public abstract class BasicAirEnemy : BaseAirEnemy, GenericPooledObject {
 		DoRemove
 	}
 	private Mode _current_mode;
-	public override bool is_alive() { 
-		return _current_mode == Mode.Moving || _current_mode == Mode.Stunned;	
-	}
+	public override bool is_alive() { return _current_mode == Mode.Moving || _current_mode == Mode.Stunned;	}
+	public override int get_id() { return _params._id; }
 	public override void apply_hit(GameEngineScene g, BaseAirEnemyHitType type, float duration, Vector2 dir) {
-		_params._stun_ct = 0;
-		_params._stun_ct_max = duration;
-		_params._stun_dir = SPUtil.vec_scale(dir.normalized,10);
-		this.transition_to_mode(g, Mode.Stunned);
+		if (_current_mode != Mode.Moving && _current_mode != Mode.Stunned) return;
+		if (type == BaseAirEnemyHitType.StickyProjectile) {
+			_params._stun_ct = 0;
+			_params._stun_ct_max = duration;
+			_params._stun_dir = SPUtil.vec_scale(dir.normalized,10);
+			this.transition_to_mode(g, Mode.Stunned);
+		} else if (type == BaseAirEnemyHitType.PersistentProjectile) {
+			_params._stun_ct = 0;
+			_params._stun_ct_max = duration;
+			_params._stun_dir = SPUtil.vec_scale(dir.normalized,20);
+			this.transition_to_mode(g, Mode.Stunned);
+		}
 	}
 	public Mode get_current_mode() { return _current_mode; }
 	private SPDict<Mode,BasicAirEnemyModeComponent> _mode_to_state;
@@ -89,8 +99,18 @@ public abstract class BasicAirEnemy : BaseAirEnemy, GenericPooledObject {
 		}
 	}
 	
-	public void apply_c_pos(Vector2 c_pos) {
-		_root.set_u_pos(GameCameraController.c_pos_to_u_pos(c_pos));
+	public Vector2 apply_c_pos(Vector2 c_pos, bool keep_in_bounds = false) {
+		Vector2 u_pos = GameCameraController.c_pos_to_u_pos(c_pos);
+		
+		if (SPUtil.get_horiz_world_bounds().extend(50).contains(u_pos.x) && keep_in_bounds) {
+			SPRange ext_neg_50 = SPUtil.get_horiz_world_bounds().extend(-50);
+			u_pos.x = Mathf.Clamp(u_pos.x,ext_neg_50._min,ext_neg_50._max);
+			_root.set_u_pos(u_pos);
+			c_pos = GameCameraController.u_pos_to_c_pos(_root.get_u_pos());
+		} else {
+			_root.set_u_pos(GameCameraController.c_pos_to_u_pos(c_pos));
+		}
+		return c_pos;
 	}
 	
 	public override bool should_remove() { return _current_mode == Mode.DoRemove; }
@@ -185,7 +205,7 @@ public class KnockbackStunBasicAirEnemyModeComponent : BasicAirEnemyModeComponen
 		_c_pos = SPUtil.vec_add(_c_pos,SPUtil.vec_scale(enemy._params._stun_dir,SPUtil.dt_scale_get()));
 		enemy._params._stun_dir.x = SPUtil.drpt(enemy._params._stun_dir.x,0,1/20.0f);
 		enemy._params._stun_dir.y = SPUtil.drpt(enemy._params._stun_dir.y,0,1/20.0f);
-		enemy.apply_c_pos(_c_pos);
+		_c_pos = enemy.apply_c_pos(_c_pos, true);
 		
 		enemy._params._stun_ct += SPUtil.dt_scale_get();
 		if (enemy._params._stun_ct >= enemy._params._stun_ct_max) {

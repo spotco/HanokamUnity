@@ -75,7 +75,7 @@ public class SpriterData  {
 			TGSpriterConfigNode itr_atlas_element = itr_base._children[i];
 			string itr_atlas_element_name = itr_atlas_element.get_str("name");
 			for (int i_sheetreaders = 0; i_sheetreaders < sheetreaders.Count && i < sheetreaders.Count; i_sheetreaders++) {
-				SpriterJSONParser itr_sheetreaders = sheetreaders[i];
+				SpriterJSONParser itr_sheetreaders = sheetreaders[i_sheetreaders];
 				if ((itr_sheetreaders.filepath()+".json").Contains(itr_atlas_element_name)) {
 					_atlas[i] = itr_sheetreaders;
 					break;

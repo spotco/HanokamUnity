@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections.Generic;
 
 public class PlayerArrowAirProjectile : AirProjectileBase, GenericPooledObject {
@@ -14,7 +14,7 @@ public class PlayerArrowAirProjectile : AirProjectileBase, GenericPooledObject {
 		_root.set_name("PlayerArrowAirProjectile");
 		_sprite = SPSprite.cons_sprite_texkey_texrect(RTex.HANOKA_EFFECTS,FileCache.inst().get_texrect(RTex.HANOKA_EFFECTS,"Arrow Normal NoOutline.png"));
 		_sprite.set_anchor_point(0.5f,0.5f);
-		_sprite.set_manual_sort_z_order(GameAnchorZ.Player_FX);
+		_sprite.set_manual_sort_z_order(GameAnchorZ.Player_Arrow);
 		
 		_sprite_outline = SPSprite.cons_sprite_texkey_texrect(RTex.HANOKA_EFFECTS,FileCache.inst().get_texrect(RTex.HANOKA_EFFECTS,"Arrow Normal.png"));
 		_sprite_outline.set_anchor_point(0.5f,0.5f);
@@ -74,7 +74,9 @@ public class PlayerArrowAirProjectile : AirProjectileBase, GenericPooledObject {
 					_current_mode = Mode.Stuck;
 					_ct = 200;
 					_stuck_enemy = itr;
-					itr.apply_hit(g, BaseAirEnemyHitType.Arrow, 200, _vel.normalized);
+					itr.apply_hit(g, BaseAirEnemyHitType.StickyProjectile, 200, _vel.normalized);
+					g._camerac.freeze_frame(2);
+					g._camerac.camera_shake(new Vector2(-1.5f,1.7f),15,30);
 					break;
 				}
 			}
@@ -143,7 +145,7 @@ public class PlayerArrowAirProjectile : AirProjectileBase, GenericPooledObject {
 			new Vector2(20,65),
 			new Vector2(1,1),
 			1,
-			new Vector2(0,0)
+			new Vector2(15,0)
 		);
 	}
 }

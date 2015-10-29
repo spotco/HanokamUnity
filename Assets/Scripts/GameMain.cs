@@ -8,11 +8,18 @@ public interface SPMainUpdateable {
 public class GameMain : SPBaseBehavior {
 	/**
 	TODO--
-	inairgamestate mobile feature parity
+	inair
+		-delay spawn ui
+		-player health
+		-arrow count
+		-bullets
+		-death transition
+	
+	full loop with cleanup
+	
 	text rendering
 	kelsey underwater art
 	underwater->abovewater splash
-	InAirGameState end cleanup
 	**/
 
 	public static GameMain _context;

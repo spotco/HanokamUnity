@@ -3,6 +3,12 @@ using System.Collections.Generic;
 
 public struct SPRange {
 	public float _min, _max;
+	public bool contains(float val) {
+		return (val >= this._min) && (val <= this._max);
+	}
+	public SPRange extend(float val) {
+		return new SPRange() { _min = this._min - val, _max = this._max + val };
+	}
 }
 
 public struct SPHitRect {
