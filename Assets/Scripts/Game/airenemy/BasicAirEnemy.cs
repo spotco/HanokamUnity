@@ -11,6 +11,7 @@ public abstract class BasicAirEnemyModeComponent {
 public abstract class BasicAirEnemy : BaseAirEnemy, GenericPooledObject {
 	private SPNode _root;
 	public SPNode get_root() { return _root; }
+	public override Vector2 get_u_pos() { return _root.get_u_pos(); }
 	public override void add_to_parent(SPNode parent) { parent.add_child(_root); }
 	
 	public virtual void depool() {
@@ -42,6 +43,15 @@ public abstract class BasicAirEnemy : BaseAirEnemy, GenericPooledObject {
 		DoRemove
 	}
 	private Mode _current_mode;
+	public override bool is_alive() { 
+		return _current_mode == Mode.Moving || _current_mode == Mode.Stunned;	
+	}
+	public override void apply_hit(GameEngineScene g, BaseAirEnemyHitType type, float duration, Vector2 dir) {
+		_params._stun_ct = 0;
+		_params._stun_ct_max = duration;
+		_params._stun_dir = SPUtil.vec_scale(dir.normalized,10);
+		this.transition_to_mode(g, Mode.Stunned);
+	}
 	public Mode get_current_mode() { return _current_mode; }
 	private SPDict<Mode,BasicAirEnemyModeComponent> _mode_to_state;
 	
@@ -201,6 +211,7 @@ public class KnockbackStunBasicAirEnemyModeComponent : BasicAirEnemyModeComponen
 public class BasicAirEnemyModeComponentUtility {
 	public static void dash_hit(GameEngineScene g, InAirGameState state, BasicAirEnemy enemy) {
 		state._params._dash_ct = 20;
+		state._params._upwards_vel = 5;
 		g.add_particle(AirSwordSlashParticle.cons(enemy.get_root().get_u_pos(),state._params._player_c_vel));
 		enemy.transition_to_mode(g, BasicAirEnemy.Mode.Dying);
 	}
@@ -211,6 +222,7 @@ public class BasicAirEnemyModeComponentUtility {
 		state._params._player_c_vel.y = 30;
 		state._params._this_dash_can_become_swordplant = false;
 		state._params._this_dash_ignore_move_y_ct = 20;
+		state._params._upwards_vel = 10;
 		enemy.transition_to_mode(g, BasicAirEnemy.Mode.Dying);
 		{
 			SPConfigAnimParticle neu_particle = SPConfigAnimParticle.cons();
@@ -249,6 +261,7 @@ public class BasicAirEnemyModeComponentUtility {
 	public static void none_hit(GameEngineScene g, InAirGameState state, BasicAirEnemy enemy) {
 		enemy._params._stun_ct = 0;
 		enemy._params._stun_ct_max = 150;
+		state._params._upwards_vel = 10;
 		enemy._params._stun_dir = SPUtil.vec_scale(SPUtil.vec_sub(enemy.get_root().get_u_pos(),g._player.get_center()).normalized,10);
 		
 		state._params._player_mode = InAirGameState.Params.PlayerMode.Hurt;

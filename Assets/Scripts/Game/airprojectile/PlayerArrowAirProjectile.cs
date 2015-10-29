@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 
 public class PlayerArrowAirProjectile : AirProjectileBase, GenericPooledObject {
 
@@ -33,6 +33,7 @@ public class PlayerArrowAirProjectile : AirProjectileBase, GenericPooledObject {
 		_root.add_child(_trail);
 	}
 	public void repool() {
+		_stuck_enemy = null;
 		_root.repool();
 	}
 	
@@ -47,6 +48,7 @@ public class PlayerArrowAirProjectile : AirProjectileBase, GenericPooledObject {
 	private Mode _current_mode;
 	private Vector2 _stuck_offset;
 	private Vector2 _fall_vel;
+	private BaseAirEnemy _stuck_enemy;
 	
 	private PlayerArrowAirProjectile i_cons(Vector2 pos, Vector2 dir, float vel) {
 		_root.set_u_pos(pos);
@@ -63,7 +65,20 @@ public class PlayerArrowAirProjectile : AirProjectileBase, GenericPooledObject {
 		switch (_current_mode) {
 		case Mode.Flying: {
 			_sprite_outline.set_opacity(SPUtil.drpt(_sprite_outline.get_opacity(),1,1/20.0f));
-			// SPTODO -- check hit
+			
+			List<BaseAirEnemy> air_enemies = state._enemy_manager._active_enemies;
+			for (int i = 0; i < air_enemies.Count; i++) {
+				BaseAirEnemy itr = air_enemies[i];
+				if (SPHitPoly.polyowners_intersect(this,itr)) {
+					_stuck_offset = SPUtil.vec_sub(_root.get_u_pos(),itr.get_u_pos());
+					_current_mode = Mode.Stuck;
+					_ct = 200;
+					_stuck_enemy = itr;
+					itr.apply_hit(g, BaseAirEnemyHitType.Arrow, 200, _vel.normalized);
+					break;
+				}
+			}
+			
 			_vel.y += -0.35f * SPUtil.dt_scale_get();
 			_root.set_rotation(SPUtil.dir_ang_deg(_vel.x,_vel.y));
 			_root.set_u_pos(SPUtil.vec_add(_root.get_u_pos(),SPUtil.vec_scale(_vel,SPUtil.dt_scale_get())));
@@ -79,10 +94,30 @@ public class PlayerArrowAirProjectile : AirProjectileBase, GenericPooledObject {
 			}
 		} break;
 		case Mode.Stuck: {
-		
+			_ct -= SPUtil.dt_scale_get();
+			_sprite.set_opacity(SPUtil.y_for_point_of_2pt_line(new Vector2(0,0),new Vector2(200,1),_ct));
+			_sprite_outline.set_opacity(SPUtil.drpt(_sprite_outline.get_opacity(),0,1/5.0f));
+			_trail.set_opacity(SPUtil.drpt(_trail.get_opacity(),0,1/5.0f));
+			if (_stuck_enemy != null && _stuck_enemy.is_alive()) {
+				_root.set_u_pos(SPUtil.vec_add(_stuck_enemy.get_u_pos(),_stuck_offset));
+			} else {
+				_current_mode = Mode.Falling;
+				_stuck_enemy = null;
+				_ct = (_ct/200.0f)*50.0f;
+				_vel.y = 0;
+			}
 		} break;
 		case Mode.Falling: {
-		
+			_sprite_outline.set_opacity(SPUtil.drpt(_sprite_outline.get_opacity(),0,1/5.0f));
+			_trail.set_opacity(SPUtil.drpt(_trail.get_opacity(),0,1/5.0f));
+			_root.set_rotation(SPUtil.drpt(_root.rotation(), _root.rotation() + SPUtil.shortest_angle(_root.rotation(),-90), 1/10.0f));
+			_sprite.set_opacity(SPUtil.y_for_point_of_2pt_line(new Vector2(0,0),new Vector2(50,1),_ct));
+			
+			_ct -= SPUtil.dt_scale_get();
+			_sprite.set_opacity(SPUtil.y_for_point_of_2pt_line(new Vector2(0,0),new Vector2(50,1),_ct));
+			_vel.y -= 0.25f * SPUtil.dt_scale_get();
+			_root._u_y += _vel.y * SPUtil.dt_scale_get();
+			
 		} break;
 		}
 	}

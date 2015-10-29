@@ -1,15 +1,21 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
+public enum BaseAirEnemyHitType {
+	Arrow
+}
+
 public abstract class BaseAirEnemy : InAirGameStateUpdateable, SPNodeHierarchyElement, SPHitPolyOwner {
 	public virtual void spawn_at_c_position(GameEngineScene g, Vector2 pos) {}
 	public virtual void i_update(GameEngineScene g, InAirGameState state) {}
-	public virtual void do_remove(GameEngineScene g) {}
 	public virtual void add_to_parent(SPNode parent) {}
 	public virtual SPHitRect get_hit_rect() { return new SPHitRect(); }
 	public virtual SPHitPoly get_hit_poly() { return new SPHitPoly(); }
 	public virtual bool should_remove() { return true; }
 	public virtual void do_remove() {}
+	public virtual Vector2 get_u_pos() { return Vector2.zero; }
+	public virtual bool is_alive() { return false; }
+	public virtual void apply_hit(GameEngineScene g, BaseAirEnemyHitType type, float duration, Vector2 dir){}
 }
 
 public class QueuedSpawnAirEnemy {
