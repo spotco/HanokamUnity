@@ -12,6 +12,7 @@ public class GameMain : SPBaseBehavior {
 		-delay spawn ui
 		-player health
 		-arrow count
+		-ui red flash
 		-bullets
 		-death transition
 	

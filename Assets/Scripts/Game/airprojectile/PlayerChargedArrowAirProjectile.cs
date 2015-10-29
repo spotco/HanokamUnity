@@ -99,7 +99,7 @@ public class PlayerChargedArrowAirProjectile : AirProjectileBase, GenericPooledO
 		return SPHitPoly.cons_with_basis_offset(
 			_root.get_u_pos(),
 			_root.rotation()+90,
-			new Vector2(25,100),
+			new Vector2(40,100),
 			new Vector2(1,1),
 			1,
 			new Vector2(-30,0)
