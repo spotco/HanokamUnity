@@ -21,7 +21,7 @@ public class PufferBasicAirEnemy : BasicAirEnemy {
 	}
 	
 	private Color _tar_color;
-	private FlashCount _flashcount;
+	private FlashEvery _flashcount;
 	
 	private PufferBasicAirEnemy i_cons(GameEngineScene g, Vector3 end_pt) {
 		base.i_cons();
@@ -30,17 +30,7 @@ public class PufferBasicAirEnemy : BasicAirEnemy {
 		this.add_component_for_mode(Mode.Dying, DeathAnimDelayBasicAirEnemyModeComponent.cons(50));
 		
 		_tar_color = Color.white;
-		_flashcount = FlashCount.cons();
-		_flashcount
-			.add_flash_at(150)
-			.add_flash_at(135)
-			.add_flash_at(120)
-			.add_flash_at(100)
-			.add_flash_at(80)
-			.add_flash_at(60)
-			.add_flash_at(40)
-			.add_flash_at(20)
-			.add_flash_at(10);
+		_flashcount = FlashEvery.cons(15);
 		
 		return this;
 	}
@@ -56,11 +46,11 @@ public class PufferBasicAirEnemy : BasicAirEnemy {
 		switch (this.get_current_mode()) {
 		case Mode.Moving: {
 			_img.play_anim(PufferEnemySprite.ANIM_IDLE);
-			_flashcount.reset();
 		} break;
 		case Mode.Stunned: {
 			_img.play_anim(PufferEnemySprite.ANIM_HURT);
-			if (_flashcount.do_flash_given_time(this._params._stun_ct_max-this._params._stun_ct)) {
+			_flashcount.i_update(g);
+			if (_flashcount.do_flash()) {
 				img_color.y = 0;
 				img_color.z = 0;
 			}

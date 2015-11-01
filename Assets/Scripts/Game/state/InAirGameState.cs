@@ -96,7 +96,7 @@ public class InAirGameState : GameStateBase {
 		if (_enemy_manager._active_enemies.Count == 0 && _enemy_manager._queued_spawn_enemies.Count == 0) {
 			Vector2 c_bottom = GameCameraController.u_pos_to_c_pos(new Vector2(0,g.get_viewbox()._y1));
 			c_bottom.x = SPUtil.float_random(SPUtil.get_horiz_world_bounds()._min+200,SPUtil.get_horiz_world_bounds()._max-200);
-			_enemy_manager.add_enemy(PufferBasicAirEnemy.cons(g, new Vector2(500,0)), c_bottom, 30);
+			_enemy_manager.add_enemy(PufferBasicAirEnemy.cons(g, new Vector2(500,0)), c_bottom, 90);
 		}
 
 		switch (_current_mode) {

@@ -46,7 +46,7 @@ public class SPSprite : SPNode {
 		this.set_anchor_point(0.5f,0.5f);
 		this.set_color(new Vector4(1,1,1,1));
 		this.set_sort_z(_sort_z);
-
+		this.set_layer(RLayer.DEFAULT);
 
 		return this;
 	}
@@ -234,6 +234,10 @@ public class SPSprite : SPNode {
 		sprite_mesh.vertices = verts;
 		sprite_mesh.RecalculateBounds();
 		_texrect = new Rect(0,0,tex_wid,tex_hei);
+	}
+	
+	public void set_layer(string layer_str) {
+		this.gameObject.layer = RLayer.get_layer(layer_str);
 	}
 
 }

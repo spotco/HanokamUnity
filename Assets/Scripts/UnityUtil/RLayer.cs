@@ -2,7 +2,7 @@
 using System.Collections;
 
 public class RLayer {
-
+	public static string DEFAULT = "Default";
 	public static string REFLECTION_OBJECTS_1 = "ReflectionObjects1";
 	public static string REFLECTION_OBJECTS_2 = "ReflectionObjects2";
 	public static string REFLECTION_OBJECTS_3 = "ReflectionObjects3";

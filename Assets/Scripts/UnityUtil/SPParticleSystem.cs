@@ -59,4 +59,5 @@ public class SPParticleSystem<T> where T : SPParticle {
 		}
 		_particles.Clear();
 	}
+	public List<T> list() { return _particles; }
 }

@@ -175,4 +175,12 @@ public class UIRoot : SPGameUpdateable {
 		};
 	}
 	
+	public static Vector2 u_pos_to_ui_pos(Vector2 u_pos) {
+		Vector3 world_pos = GameMain._context.transform.TransformPoint(u_pos);
+		Vector3 screen_pos = GameMain._context._ui_camera.WorldToScreenPoint(world_pos);
+		screen_pos.z = SPUtil.vec_sub(GameMain._context._game_ui._root.transform.position,GameMain._context._game_camera.transform.position).z;
+		Vector3 ui_z_world_pos = GameMain._context._ui_camera.ScreenToWorldPoint(screen_pos);
+		return GameMain._context._game_ui._root.transform.InverseTransformPoint(ui_z_world_pos);
+	}
+	
 }
