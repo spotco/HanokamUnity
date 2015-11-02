@@ -12,6 +12,7 @@ public class InAirGameState : GameStateBase {
 	}
 	
 	public struct Params {
+		public float _player_health;
 		public float _upwards_vel;
 		public float _target_y;
 		public float _anim_t;
@@ -88,6 +89,7 @@ public class InAirGameState : GameStateBase {
 		_params._player_anim_hold = PlayerCharacterAnims.INAIRIDLE;
 		_params._player_anim_hold_ct = 0;
 		_params._player_mode = Params.PlayerMode.None;
+		_params._player_health = g._player._params._max_health;
 		
 		return this;
 	}

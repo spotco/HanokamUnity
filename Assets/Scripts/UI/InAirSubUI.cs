@@ -8,6 +8,7 @@ public class InAirSubUI : GameUISubUI {
 	
 	private SPNode _root;
 	private InAirSubUI_EnemyWarningUI _enemy_warnings;
+	private InAirSubUI_PlayerHealthUI _player_health_ui;
 	
 	private InAirSubUI i_cons(UIRoot ui) {
 		_root = SPNode.cons_node();
@@ -16,6 +17,9 @@ public class InAirSubUI : GameUISubUI {
 		
 		_enemy_warnings = InAirSubUI_EnemyWarningUI.cons(ui);
 		_enemy_warnings.add_to_parent(_root);
+		
+		_player_health_ui = InAirSubUI_PlayerHealthUI.cons(ui);
+		_player_health_ui.add_to_parent(_root);
 		
 		return this;
 	}
@@ -35,6 +39,7 @@ public class InAirSubUI : GameUISubUI {
 		if (!SPUtil.cond_cast<InAirGameState>(g.get_top_game_state(),out inair_state)) return;
 		
 		_enemy_warnings.i_update(g, inair_state);
+		_player_health_ui.i_update(g, inair_state);
 	}
 	
 	public override bool should_show() {

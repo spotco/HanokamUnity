@@ -9,8 +9,6 @@ public class GameMain : SPBaseBehavior {
 	/**
 	TODO--
 	inair
-		-delay spawn ui
-		-player health
 		-arrow count
 		-ui red flash
 		-bullets
