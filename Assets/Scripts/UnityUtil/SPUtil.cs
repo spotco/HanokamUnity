@@ -263,6 +263,12 @@ public class SPUtil {
 		return SPUtil.lerp(min,max,rtv_normalized);
 	}
 	
+	public static int iclamp(float val, float min, float max) {
+		if (val < min) return ((int)min);
+		if (val > max) return ((int)max);
+		return ((int)val);
+	}
+	
 	public static Vector4 color_from_bytes(float r, float g, float b, float a) {
 		return new Vector4(r/255.0f,g/255.0f,b/255.0f,a/255.0f);
 	}

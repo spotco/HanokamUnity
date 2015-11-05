@@ -60,7 +60,7 @@ public class PlayerAimReticule : SPNodeHierarchyElement, SPGameUpdateable {
 	public void set_u_pos(Vector2 pos) { _root.set_u_pos(pos); }
 	public void set_enabled(bool val) { _root.set_enabled(val); }
 	
-	public void set_aim_variance_and_charge_pct(GameEngineScene g, float aim_variance, float charge_pct) {
+	public void set_aim_variance_and_charge_pct(GameEngineScene g, InAirGameState state, float aim_variance, float charge_pct) {
 		float inv_charge_pct = 1-charge_pct;
 		float aim_variance_d2 = aim_variance/2.0f;
 		
@@ -80,7 +80,7 @@ public class PlayerAimReticule : SPNodeHierarchyElement, SPGameUpdateable {
 			new Vector2(0,0), new Vector2(1,0), new Vector2(1.0f,0.2f), new Vector2(1,1), charge_pct
 		).y);
 		
-		_spark.set_enabled(charge_pct >= 1);
+		_spark.set_enabled(charge_pct >= 1 && state._params._arrow_count == state._params.get_arrow_count_max());
 	}
 	
 	public void i_update(GameEngineScene g) {

@@ -9,11 +9,7 @@ public class GameMain : SPBaseBehavior {
 	/**
 	TODO--
 	inair
-		-arrow charge only when full but regen
-		-enemy health implementation
-		-hide player arrows ui when inactive
-		-ui red flash
-		-player health implementation
+		-byron charge arrow ui
 		-enemy bullets
 		-death transition
 	

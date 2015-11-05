@@ -52,9 +52,26 @@ public class InAirSubUI_ArrowsUI : InAirGameStateUpdateable, SPNodeHierarchyElem
 		_bar_fill.set_opacity(_bar_back.get_opacity());
 	}
 	
+	private int _last_frame_arrow_count;
+	private float _time_since_last_arrow_count_change;
+	private float _opacity_anim_t;
+	
 	public void i_update(GameEngineScene g, InAirGameState state) {
 		_root.set_u_pos(SPUtil.vec_add(UIRoot.u_pos_to_ui_pos(g._player.get_u_pos()), new Vector2(-50, 145)));
-		
 		this.set_bar_fill_pct(state._params._arrow_count / ((float)state._params.get_arrow_count_max()));
+		
+		if (_last_frame_arrow_count != state._params._arrow_count) {
+			_time_since_last_arrow_count_change = 0;
+		} else {
+			_time_since_last_arrow_count_change += SPUtil.dt_scale_get();
+		}
+		if (_time_since_last_arrow_count_change > 150) {
+			_opacity_anim_t = SPUtil.drpt(_opacity_anim_t,0,1/10.0f);
+		} else {
+			_opacity_anim_t = SPUtil.drpt(_opacity_anim_t,1,1/10.0f);
+		}
+		this.set_ui_opacity(_opacity_anim_t);
+		
+		_last_frame_arrow_count = state._params._arrow_count;
 	}
 }

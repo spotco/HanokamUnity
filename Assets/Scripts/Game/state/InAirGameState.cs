@@ -13,6 +13,7 @@ public class InAirGameState : GameStateBase {
 	
 	public struct Params {
 		public float _player_health;
+		public float _invuln_ct;
 		public float _upwards_vel;
 		public float _target_y;
 		public float _anim_t;
@@ -27,7 +28,7 @@ public class InAirGameState : GameStateBase {
 		public FlashEvery _arrow_refill_tick;
 		
 		public int _arrow_count;
-		public float _arrow_refill_count ;
+		public float _arrow_refill_count;
 		public int get_arrow_count_max() { return 4; }
 		public float get_arrow_refill_count_limit() { return 40; }
 		
@@ -80,7 +81,6 @@ public class InAirGameState : GameStateBase {
 		g._camerac.set_target_zoom(GameCameraController.MAX_ZOOM);
 		_params._target_y = 0;
 		g._camerac.set_camera_follow_speed(1);
-		//g._camerac.set_target_camera_y(_params._target_y);
 		_params._upwards_vel = 30;
 
 		g._player.set_trail_enabled_and_rotation(false);
@@ -138,7 +138,8 @@ public class InAirGameState : GameStateBase {
 		case Mode.Combat: {
 			_params._upwards_vel = SPUtil.drpt(_params._upwards_vel,0,1/50.0f);
 			_params._target_y += _params._upwards_vel * SPUtil.dt_scale_get();
-		
+			
+			//SPTODO -- actual spawn code
 			if (_enemy_manager._active_enemies.Count == 0 && _enemy_manager._queued_spawn_enemies.Count == 0) {
 				Vector2 c_bottom = GameCameraController.u_pos_to_c_pos(new Vector2(0,g.get_viewbox()._y1));
 				c_bottom.x = SPUtil.float_random(SPUtil.get_horiz_world_bounds()._min+200,SPUtil.get_horiz_world_bounds()._max-200);
@@ -202,7 +203,11 @@ public class InAirGameState : GameStateBase {
 
 	}
 	
+	private bool __last_frame_is_charged;
 	private void i_update_mode_combat_player_controls(GameEngineScene g) {		
+		
+		_params._invuln_ct = SPUtil.lmovto(_params._invuln_ct, 0, SPUtil.dt_scale_get());
+		
 		bool streak_enabled = false;
 		bool aim_retic_enabled = false;
 		switch (_params._player_mode) {
@@ -215,13 +220,7 @@ public class InAirGameState : GameStateBase {
 				g._player.play_anim(PlayerCharacterAnims.INAIRIDLE);
 			}
 			
-			_params._arrow_refill_count = SPUtil.lmovto(_params._arrow_refill_count,_params.get_arrow_refill_count_limit(),SPUtil.dt_scale_get());
-			if (_params._arrow_count < _params.get_arrow_count_max() && SPUtil.flt_cmp_delta(_params._arrow_refill_count, _params.get_arrow_refill_count_limit(), 0.1f)) {
-				_params._arrow_refill_tick.i_update(g);
-				if (_params._arrow_refill_tick.do_flash()) {
-					_params._arrow_count++;
-				}
-			}
+			this.i_update_refill_arrow(g, 10);
 			
 			if (!_params._this_movepress_has_aimed) {
 				if (g._controls.is_move_x()) {
@@ -245,6 +244,7 @@ public class InAirGameState : GameStateBase {
 			}
 			if (g._controls.get_control_down(ControlManager.Control.ShootArrow) && _params._arrow_count > 0) {
 				_params._arrow_charge_ct = 0;
+				_params._arrow_refill_count = 0;
 				_params._player_mode = Params.PlayerMode.BowAim;
 			}
 			if (_params._player_c_vel.y > 0) {
@@ -256,14 +256,22 @@ public class InAirGameState : GameStateBase {
 		} break;
 		case Params.PlayerMode.BowAim: {
 			_params._arrow_charge_ct = Mathf.Clamp(_params._arrow_charge_ct + SPUtil.dt_scale_get(), 0, _params.get_arrow_charge_ct_max());
+			bool cur_is_charged = (_params.get_arrow_charge_pct() >= 1 && _params._arrow_count >= _params.get_arrow_count_max());
+			if (!__last_frame_is_charged && cur_is_charged) {
+				g._camerac.camera_shake(new Vector2(-1.75f,1.3f),7,25);
+			}
+			__last_frame_is_charged = cur_is_charged;
+			
 			aim_retic_enabled = true;
-			g._player._aim_retic.set_aim_variance_and_charge_pct(g,30,_params.get_arrow_charge_pct());
+			g._player._aim_retic.set_aim_variance_and_charge_pct(g,this,30,_params.get_arrow_charge_pct());
 			
 			if (_params.get_arrow_charge_pct() < 1) {
 				g._player.play_anim(PlayerCharacterAnims.BOWAIM, false);
 			} else {
 				g._player.play_anim(PlayerCharacterAnims.BOWHOLD);
 			}
+			
+			this.i_update_refill_arrow(g, 30);
 			
 			if (g._controls.is_move_x() || g._controls.is_move_y()) {
 				_params._this_movepress_has_aimed = true;
@@ -408,6 +416,8 @@ public class InAirGameState : GameStateBase {
 			_params._player_mode = Params.PlayerMode.None;
 			_params._player_c_vel = new Vector2(0,0);
 			streak_enabled = false;
+			g._game_ui.do_red_flash();
+			_params._player_health -= 0.25f;
 			g._player.set_rotation(0);
 		}
 		g._player.set_streak_enabled(streak_enabled);
@@ -415,22 +425,34 @@ public class InAirGameState : GameStateBase {
 		g._player._aim_retic.set_enabled(aim_retic_enabled);
 	}
 	
+	private void i_update_refill_arrow(GameEngineScene g, float refill_every = 40) {
+		_params._arrow_refill_count = SPUtil.lmovto(_params._arrow_refill_count,_params.get_arrow_refill_count_limit(),SPUtil.dt_scale_get());
+		if (_params._arrow_count < _params.get_arrow_count_max() && SPUtil.flt_cmp_delta(_params._arrow_refill_count, _params.get_arrow_refill_count_limit(), 0.1f)) {
+			_params._arrow_refill_tick.i_update(g);
+			_params._arrow_refill_tick._max_time = refill_every;
+			if (_params._arrow_refill_tick.do_flash()) {
+				_params._arrow_count++;
+			}
+		}
+	}
+	
 	private void shoot_arrow(GameEngineScene g, float angle) {
-		if (_params.get_arrow_charge_pct() < 1) {
-			_projectiles.add_player_projectile(
-				PlayerArrowAirProjectile.cons(
-					g._player.get_center(), 
-					SPUtil.ang_deg_dir(angle+90),
-					SPUtil.y_for_point_of_2pt_line(new Vector2(0,13),new Vector2(1,30),_params.get_arrow_charge_pct())));
-			_params._arrow_count--;
-		} else {
+		if (_params.get_arrow_charge_pct() >= 1 && _params._arrow_count == _params.get_arrow_count_max()) {
 			g._camerac.camera_shake(new Vector2(-2,3.3f),35,30);
 			_projectiles.add_player_projectile(
 				PlayerChargedArrowAirProjectile.cons(
-					g._player.get_center(), 
-					SPUtil.ang_deg_dir(angle+90),
-					30));
+				g._player.get_center(), 
+				SPUtil.ang_deg_dir(angle+90),
+				30));
 			_params._arrow_count = 0;
+
+		} else {
+			_projectiles.add_player_projectile(
+				PlayerArrowAirProjectile.cons(
+				g._player.get_center(), 
+				SPUtil.ang_deg_dir(angle+90),
+				SPUtil.y_for_point_of_2pt_line(new Vector2(0,13),new Vector2(1,30),_params.get_arrow_charge_pct())));
+			_params._arrow_count--;
 		}
 		
 		_params._arrow_refill_count = 0;

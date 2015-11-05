@@ -22,7 +22,7 @@ public class InAirSubUI_PlayerHealthUI : InAirGameStateUpdateable, SPNodeHierarc
 		_background = SPSprite.cons_sprite_texkey_texrect(RTex.HUD_SPRITESHEET, FileCache.inst().get_texrect(RTex.HUD_SPRITESHEET,"UI-Heart-Container.png"));
 		_background.set_anchor_point(0,1);
 		_background.set_scale(0.6f);
-		_background.set_opacity(0.85f);
+		_background.set_opacity(0.75f);
 		_background.set_u_pos(ui.get_ui_bounds()._x1,ui.get_ui_bounds()._y2);
 		_background.set_manual_sort_z_order(GameAnchorZ.HUD_BASE);
 		_background.set_layer(RLayer.UI);
@@ -61,23 +61,19 @@ public class InAirSubUI_PlayerHealthUI : InAirGameStateUpdateable, SPNodeHierarc
 		}
 		float player_health = state._params._player_health;
 		
-		UIHealthHeartSprite last = null;
 		for (int i = 0; i < _ui_hearts.Count; i++) {
 			UIHealthHeartSprite itr = _ui_hearts[i];
-			
 			if (i < Mathf.Floor(player_health)) {
 				itr.set_percent(1);
-				last = itr;
 			} else if (i == ((int)Mathf.Floor(player_health))) {
 				itr.set_percent(player_health - i);
-				last = itr;
 			} else {
 				itr.set_percent(0);
 			}
 		}
 		for (int i = 0; i < _ui_hearts.Count; i++) {
 			UIHealthHeartSprite itr = _ui_hearts[i];
-			itr.i_update(itr == last);	
+			itr.i_update(i+1 == Mathf.Ceil(player_health));
 		}
 	}
 	
@@ -123,6 +119,8 @@ public class InAirSubUI_PlayerHealthUI : InAirGameStateUpdateable, SPNodeHierarc
 			_h3.set_anchor_point(0,0);
 			_root.add_child(_h3);
 			
+			this.set_enabled(true);
+			
 			return this;
 		}
 		
@@ -136,8 +134,11 @@ public class InAirSubUI_PlayerHealthUI : InAirGameStateUpdateable, SPNodeHierarc
 		
 		private float _anim_theta;
 		public void i_update(bool selected) {
-			if (selected) {
-				_anim_theta = (_anim_theta + SPUtil.dt_scale_get() * 0.05f) % 3.14f;
+			_anim_theta = (_anim_theta + SPUtil.dt_scale_get() * 0.05f) % 3.14f;
+			if (!_h0.is_enabled()) {
+				_root.set_scale(0.15f +  0.02f * Mathf.Sin(_anim_theta));
+				
+			} else if (selected) {
 				_root.set_scale(0.3f +  0.05f * Mathf.Sin(_anim_theta));
 					
 			} else {
@@ -163,6 +164,10 @@ public class InAirSubUI_PlayerHealthUI : InAirGameStateUpdateable, SPNodeHierarc
 			case 3: return new Rect(r_full.xMin + r_full.width * 0.5f, r_full.yMin, r_full.width * 0.5f, r_full.height * 0.5f);
 			default: return new Rect();
 			}
+		}
+		
+		public void set_enabled(bool val) {
+			_root.set_enabled(val);
 		}
 		
 		public void repool() {

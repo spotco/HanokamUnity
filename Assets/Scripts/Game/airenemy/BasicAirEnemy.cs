@@ -50,26 +50,47 @@ public abstract class BasicAirEnemy : BaseAirEnemy, GenericPooledObject {
 	public override int get_id() { return _params._id; }
 	public override void apply_hit(GameEngineScene g, BaseAirEnemyHitType type, float duration, Vector2 dir) {
 		if (_current_mode != Mode.Moving && _current_mode != Mode.Stunned) return;
-		if (type == BaseAirEnemyHitType.StickyProjectile) {
+		
+		switch (type) {
+		case BaseAirEnemyHitType.StickyProjectile: {
 			_params._stun_ct = 0;
 			_params._stun_ct_max = duration;
 			_params._stun_dir = SPUtil.vec_scale(dir.normalized,10);
-			this.transition_to_mode(g, Mode.Stunned);
-		} else if (type == BaseAirEnemyHitType.PersistentProjectile) {
+			this._current_health -= 1;
+		} break;
+		case BaseAirEnemyHitType.PersistentProjectile: {
 			_params._stun_ct = 0;
 			_params._stun_ct_max = duration;
 			_params._stun_dir = SPUtil.vec_scale(dir.normalized,20);
+			this._current_health -= 3;
+		} break;
+		case BaseAirEnemyHitType.SwordDash: {
+			this._current_health -= 10;
+		} break;
+		case BaseAirEnemyHitType.SwordPlant: {
+			this._current_health -= 10;
+		} break;
+		}
+		
+		if (this._current_health <= 0) {
+			this.transition_to_mode(g, Mode.Dying);
+		} else {
 			this.transition_to_mode(g, Mode.Stunned);
 		}
 	}
 	public Mode get_current_mode() { return _current_mode; }
 	private SPDict<Mode,BasicAirEnemyModeComponent> _mode_to_state;
 	
+	protected float _current_health;
+	public virtual float get_max_health() { return 1; }
+	public override float get_health_bar_percent() { return _current_health / this.get_max_health(); }
+	
 	protected BasicAirEnemy i_cons() {
 		_current_mode = Mode.Unspawned;
 		_params = new Params();
 		_mode_to_state = new SPDict<Mode, BasicAirEnemyModeComponent>();
 		_root.set_enabled(false);
+		_current_health = this.get_max_health();
 		return this;
 	}
 	
@@ -233,7 +254,7 @@ public class BasicAirEnemyModeComponentUtility {
 		state._params._dash_ct = 20;
 		state._params._upwards_vel = 5;
 		g.add_particle(AirSwordSlashParticle.cons(enemy.get_root().get_u_pos(),state._params._player_c_vel));
-		enemy.transition_to_mode(g, BasicAirEnemy.Mode.Dying);
+		enemy.apply_hit(g, BaseAirEnemyHitType.SwordDash, 30, state._params._player_c_vel);
 	}
 	public static void swordplant_hit(GameEngineScene g, InAirGameState state, BasicAirEnemy enemy) {
 		state._params._pre_dash_rotation = g._player.rotation();
@@ -243,7 +264,7 @@ public class BasicAirEnemyModeComponentUtility {
 		state._params._this_dash_can_become_swordplant = false;
 		state._params._this_dash_ignore_move_y_ct = 20;
 		state._params._upwards_vel = 10;
-		enemy.transition_to_mode(g, BasicAirEnemy.Mode.Dying);
+		enemy.apply_hit(g, BaseAirEnemyHitType.SwordPlant, 30, new Vector2(0,-1));
 		{
 			SPConfigAnimParticle neu_particle = SPConfigAnimParticle.cons();
 			neu_particle.set_ctmax(15);
@@ -284,8 +305,13 @@ public class BasicAirEnemyModeComponentUtility {
 		state._params._upwards_vel = 10;
 		enemy._params._stun_dir = SPUtil.vec_scale(SPUtil.vec_sub(enemy.get_root().get_u_pos(),g._player.get_center()).normalized,10);
 		
-		state._params._player_mode = InAirGameState.Params.PlayerMode.Hurt;
-		state._params._hurt_ct = 25;
+		if (state._params._invuln_ct <= 0) {
+			g._game_ui.do_red_flash();
+			state._params._player_mode = InAirGameState.Params.PlayerMode.Hurt;
+			state._params._player_health -= 0.5f;
+			state._params._hurt_ct = 25;
+			state._params._invuln_ct = 25;
+		}
 		state._params._player_c_vel = SPUtil.vec_scale(SPUtil.vec_sub(g._player.get_u_pos(),enemy.get_root().get_u_pos()).normalized,15);
 		
 		enemy.transition_to_mode(g, BasicAirEnemy.Mode.Stunned);

@@ -83,7 +83,8 @@ public class EnemyHealthBarUIParticle : SPParticle, GenericPooledObject, SPNodeH
 		_bar_back = null;
 		_bar_fill = null;
 	}
-
+	
+	private float _opacity_anim_t;
 	private EnemyHealthBarUIParticle i_cons(int enemy_id) {
 		_is_active = true;
 		_enemy_id = enemy_id;
@@ -118,7 +119,17 @@ public class EnemyHealthBarUIParticle : SPParticle, GenericPooledObject, SPNodeH
 		}
 		
 		if (tar != null) {
-			_root.set_u_pos(SPUtil.vec_add(UIRoot.u_pos_to_ui_pos(tar.get_u_pos()), new Vector2(0,0)));
+			_root.set_u_pos(SPUtil.vec_add(UIRoot.u_pos_to_ui_pos(tar.get_u_pos()), tar.get_health_bar_offset()));
+			this.set_bar_fill_pct(tar.get_health_bar_percent());
+			
+			float clamped_pct = Mathf.Clamp(tar.get_health_bar_percent(),0,1);
+			if (clamped_pct == 1 || clamped_pct == 0) {
+				_opacity_anim_t = SPUtil.drpt(_opacity_anim_t,0,1/10.0f);
+			} else {
+				_opacity_anim_t = SPUtil.drpt(_opacity_anim_t,1,1/10.0f);
+			}
+			this.set_ui_opacity(_opacity_anim_t);
+			
 		} else {
 			_is_active = false;
 		}

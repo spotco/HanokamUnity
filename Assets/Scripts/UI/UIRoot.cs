@@ -67,6 +67,7 @@ public class UIRoot : SPGameUpdateable {
 	
 	public SPNode _root;
 	public SPSprite _blur_cover;
+	private SPSprite _red_flash_overlay;
 	
 	private List<GameUISubUI> _game_sub_uis = new List<GameUISubUI>();
 	private List<ShopUISubUI> _shop_sub_uis = new List<ShopUISubUI>();
@@ -87,7 +88,19 @@ public class UIRoot : SPGameUpdateable {
 		
 		GameMain._context._camerac.create_blur_texture(this);
 		
+		_red_flash_overlay = SPSprite.cons_sprite_texkey_texrect(RTex.BLANK, SPUtil.texture_default_rect(RTex.BLANK));
+		_red_flash_overlay.set_layer(RLayer.UI);
+		_red_flash_overlay.set_scale_x((this.get_ui_bounds()._x2 - this.get_ui_bounds()._x1)/_red_flash_overlay.texrect().size.x);
+		_red_flash_overlay.set_scale_y((this.get_ui_bounds()._y2 - this.get_ui_bounds()._y1)/_red_flash_overlay.texrect().size.y);
+		_red_flash_overlay.set_color(new Vector4(1,0.2f,0.2f,1));
+		_red_flash_overlay.set_opacity(0f);
+		_root.add_child(_red_flash_overlay);
+		
 		return this;
+	}
+	
+	public void do_red_flash() {
+		_red_flash_overlay.set_opacity(0.7f);
 	}
 	
 	public void on_scene_transition() {
@@ -133,6 +146,7 @@ public class UIRoot : SPGameUpdateable {
 		for (int i = 0; i < _game_sub_uis.Count; i++) {
 			_game_sub_uis[i].i_update(g);
 		}
+		_red_flash_overlay.set_opacity(SPUtil.drpt(_red_flash_overlay.get_opacity(),0,1/25.0f));
 	}
 	
 	public void i_update(ShopScene shop) {

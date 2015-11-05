@@ -3,7 +3,9 @@ using System.Collections.Generic;
 
 public enum BaseAirEnemyHitType {
 	StickyProjectile,
-	PersistentProjectile
+	PersistentProjectile,
+	SwordPlant,
+	SwordDash
 }
 
 public abstract class BaseAirEnemy : InAirGameStateUpdateable, SPNodeHierarchyElement, SPHitPolyOwner {
@@ -18,6 +20,8 @@ public abstract class BaseAirEnemy : InAirGameStateUpdateable, SPNodeHierarchyEl
 	public virtual bool is_alive() { return false; }
 	public virtual void apply_hit(GameEngineScene g, BaseAirEnemyHitType type, float duration, Vector2 dir){}
 	public virtual int get_id() { return 0; }
+	public virtual float get_health_bar_percent() { return 1.0f; }
+	public virtual Vector2 get_health_bar_offset() { return Vector2.zero; }
 }
 
 public class QueuedSpawnAirEnemy {
