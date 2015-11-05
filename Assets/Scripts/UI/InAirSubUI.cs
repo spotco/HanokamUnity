@@ -9,6 +9,8 @@ public class InAirSubUI : GameUISubUI {
 	private SPNode _root;
 	private InAirSubUI_EnemyWarningUI _enemy_warnings;
 	private InAirSubUI_PlayerHealthUI _player_health_ui;
+	private InAirSubUI_ArrowsUI _player_arrows_ui;
+	private InAirSubUI_EnemyHealthUI _enemy_health_ui;
 	
 	private InAirSubUI i_cons(UIRoot ui) {
 		_root = SPNode.cons_node();
@@ -20,6 +22,12 @@ public class InAirSubUI : GameUISubUI {
 		
 		_player_health_ui = InAirSubUI_PlayerHealthUI.cons(ui);
 		_player_health_ui.add_to_parent(_root);
+		
+		_player_arrows_ui = InAirSubUI_ArrowsUI.cons(ui);
+		_player_arrows_ui.add_to_parent(_root);
+		
+		_enemy_health_ui = InAirSubUI_EnemyHealthUI.cons(ui);
+		_enemy_health_ui.add_to_parent(_root);
 		
 		return this;
 	}
@@ -40,6 +48,8 @@ public class InAirSubUI : GameUISubUI {
 		
 		_enemy_warnings.i_update(g, inair_state);
 		_player_health_ui.i_update(g, inair_state);
+		_player_arrows_ui.i_update(g, inair_state);
+		_enemy_health_ui.i_update(g, inair_state);
 	}
 	
 	public override bool should_show() {

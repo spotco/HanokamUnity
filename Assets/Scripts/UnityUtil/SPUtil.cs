@@ -366,6 +366,11 @@ public struct DrptVal {
 		if (_drptval <= 0) return;
 		_current = SPUtil.drpt(_current,_target,_drptval);
 	}
+	public void clamp_lt(float ltv) {
+		if (SPUtil.flt_cmp_delta(_current,_target, ltv)) {
+			_current = _target;
+		}
+	}
 }
 
 /*

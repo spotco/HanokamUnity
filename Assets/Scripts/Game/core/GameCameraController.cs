@@ -172,6 +172,7 @@ public class GameCameraController : SPMainUpdateable {
 			_camera_x._current = Mathf.Clamp(_camera_x._current,camera_horiz_range._min,camera_horiz_range._max);
 
 			_camera_y.i_update();
+			_camera_y.clamp_lt(0.1f);
 			this.apply_camera_values();
 			
 			

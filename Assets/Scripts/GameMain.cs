@@ -9,9 +9,10 @@ public class GameMain : SPBaseBehavior {
 	/**
 	TODO--
 	inair
-		-arrow count
+		-enemy health
+		-hide player arrows ui when inactive
 		-ui red flash
-		-bullets
+		-enemy bullets
 		-death transition
 	
 	full loop with cleanup
@@ -19,6 +20,7 @@ public class GameMain : SPBaseBehavior {
 	text rendering
 	kelsey underwater art
 	underwater->abovewater splash
+	letterbox
 	**/
 
 	public static GameMain _context;
