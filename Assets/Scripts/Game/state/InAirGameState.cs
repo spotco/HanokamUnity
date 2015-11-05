@@ -78,9 +78,9 @@ public class InAirGameState : GameStateBase {
 		g._camerac.set_camera_follow_speed(1);
 		g._camerac.set_zoom_speed(1/20.0f);
 		g._camerac.set_target_zoom(GameCameraController.MAX_ZOOM);
-		_params._target_y = g._player._u_y + 200;
+		_params._target_y = 0;
 		g._camerac.set_camera_follow_speed(1);
-		g._camerac.set_target_camera_y(_params._target_y);
+		//g._camerac.set_target_camera_y(_params._target_y);
 		_params._upwards_vel = 30;
 
 		g._player.set_trail_enabled_and_rotation(false);
@@ -108,9 +108,8 @@ public class InAirGameState : GameStateBase {
 		switch (_current_mode) {
 		case Mode.InitialJumpOut: {
 			g._player.play_anim("In Air Idle");
-			_params._target_y += _params._upwards_vel * SPUtil.dt_scale_get();
 			_params._upwards_vel = SPUtil.drpt(_params._upwards_vel,0,1/50.0f);
-			g._camerac.set_target_camera_y(_params._target_y);
+			_params._target_y += _params._upwards_vel * SPUtil.dt_scale_get();
 
 			_params._anim_t += 0.02f * SPUtil.dt_scale_get();
 			_params._player_c_pos.y = SPUtil.y_for_point_of_2pt_line(
@@ -137,6 +136,9 @@ public class InAirGameState : GameStateBase {
 
 		} break;
 		case Mode.Combat: {
+			_params._upwards_vel = SPUtil.drpt(_params._upwards_vel,0,1/50.0f);
+			_params._target_y += _params._upwards_vel * SPUtil.dt_scale_get();
+		
 			if (_enemy_manager._active_enemies.Count == 0 && _enemy_manager._queued_spawn_enemies.Count == 0) {
 				Vector2 c_bottom = GameCameraController.u_pos_to_c_pos(new Vector2(0,g.get_viewbox()._y1));
 				c_bottom.x = SPUtil.float_random(SPUtil.get_horiz_world_bounds()._min+200,SPUtil.get_horiz_world_bounds()._max-200);
@@ -152,6 +154,9 @@ public class InAirGameState : GameStateBase {
 		} break;
 		case Mode.RescueBackToTop: {
 			g._player.play_anim(PlayerCharacterAnims.INAIRIDLE);
+			_params._upwards_vel = SPUtil.drpt(_params._upwards_vel,0,1/50.0f);
+			_params._target_y += _params._upwards_vel * SPUtil.dt_scale_get();
+			
 			_params._anim_t += 0.01f * SPUtil.dt_scale_get();
 			
 			_params._player_c_pos.y = SPUtil.y_for_point_of_2pt_line(
@@ -183,16 +188,21 @@ public class InAirGameState : GameStateBase {
 
 		} break;
 		}
+		
+		g._bg_village.set_u_pos(0, -_params._target_y);
+		g._bg_water.set_u_pos(0, g._bg_village.get_u_pos().y);
+		g._bg_sky.set_y_offset(_params._target_y);
+		if (_params._target_y > 6000) {
+			g._bg_village.set_enabled(false);
+			g._bg_water.set_enabled(false);
+		} else {
+			g._bg_village.set_enabled(true);
+			g._bg_water.set_enabled(true);
+		}
 
 	}
 	
-	private void i_update_mode_combat_player_controls(GameEngineScene g) {
-		_params._target_y += _params._upwards_vel * SPUtil.dt_scale_get();
-		_params._upwards_vel = SPUtil.drpt(_params._upwards_vel,0,1/50.0f);
-		g._camerac.set_target_camera_y(_params._target_y);
-		
-		_params._upwards_vel = 15;
-		
+	private void i_update_mode_combat_player_controls(GameEngineScene g) {		
 		bool streak_enabled = false;
 		bool aim_retic_enabled = false;
 		switch (_params._player_mode) {
@@ -382,7 +392,7 @@ public class InAirGameState : GameStateBase {
 		
 		if (_params._player_c_pos.y > 500) {
 			float tar_player_c_pos_y = SPUtil.drpt(_params._player_c_pos.y, 500, 1/10.0f);
-			_params._upwards_vel = Mathf.Clamp(_params._player_c_pos.y-tar_player_c_pos_y,0,10);
+			_params._upwards_vel = Mathf.Max(_params._upwards_vel, Mathf.Clamp(_params._player_c_pos.y-tar_player_c_pos_y,0,10));
 			_params._player_c_pos.y = tar_player_c_pos_y;
 		}
 		

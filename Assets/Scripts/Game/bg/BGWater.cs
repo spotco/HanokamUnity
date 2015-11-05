@@ -4,6 +4,9 @@ using System.Collections.Generic;
 public class BGWater : SPGameUpdateable, CameraRenderHookDelegate, SPNodeHierarchyElement {
 
 	private SPNode _root;
+	public void set_u_pos(float x, float y) { _root.set_u_pos(x,y); }
+	public Vector2 get_u_pos() { return _root.get_u_pos(); }
+	public void set_enabled(bool val) { _root.set_enabled(val); }
 
 	private SPSprite _surf_ele_1, _surf_ele_2, _surf_ele_3;
 

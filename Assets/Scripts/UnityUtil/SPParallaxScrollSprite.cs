@@ -11,6 +11,7 @@ public class SPParallaxScrollSprite : SPGameUpdateable {
 	public float _bg_height;
 	private float _uv_y_size = 1;
 	private Rect _tex_rect;
+	private float _y_offset;
 
 	private SPParallaxScrollSprite i_cons(string tex_key, Rect rect, Vector2 scale, Vector3 lpos) {
 		_tex_rect = rect;
@@ -22,6 +23,7 @@ public class SPParallaxScrollSprite : SPGameUpdateable {
 		_img.set_anchor_point(0.5f,0.5f);
 
 		_uv_y_size = 1;
+		_y_offset = 0;
 
 		_bg_height = Mathf.Abs(_img.u_pos_of_vertex(SPSprite.VTX_1_1).y-_img.u_pos_of_vertex(SPSprite.VTX_0_0).y);
 
@@ -35,7 +37,7 @@ public class SPParallaxScrollSprite : SPGameUpdateable {
 	public void i_update(GameEngineScene g) {
 		_img.set_u_pos(_img._u_x,GameMain._context._game_camera.transform.localPosition.y);
 
-		float normalized_uv_y = GameMain._context._game_camera.transform.localPosition.y/_bg_height;
+		float normalized_uv_y = (GameMain._context._game_camera.transform.localPosition.y  + _y_offset)/ _bg_height;
 		float tex_size_scaled_uv_y = (normalized_uv_y%1.0f) * _tex_rect.size.y;
 
 		_img.set_tex_rect(new Rect(
@@ -44,6 +46,10 @@ public class SPParallaxScrollSprite : SPGameUpdateable {
 			_tex_rect.size.x,
 			_tex_rect.size.y * _uv_y_size
 		));
+	}
+	
+	public void set_y_offset(float val) {
+		_y_offset = (val % _bg_height);
 	}
 
 	public SPParallaxScrollSprite set_enabled(bool val) {

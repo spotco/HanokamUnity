@@ -2,8 +2,12 @@ using UnityEngine;
 using System.Collections.Generic;
 
 public class BGVillage : SPGameUpdateable, SPNodeHierarchyElement {
-
+	
 	private SPNode _root;
+	public void set_u_pos(float x, float y) { _root.set_u_pos(x,y); }
+	public Vector2 get_u_pos() { return _root.get_u_pos(); }
+	public void set_enabled(bool val) { _root.set_enabled(val); }
+	
 	public SPSprite _docks, _docks_front, _bldg_1, _bldg_2, _bldg_3, _bldg_4;
 	private List<BGReflection> _reflections;
 	private BGWaterLineAbove _waterlineabove;

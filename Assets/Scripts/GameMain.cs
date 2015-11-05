@@ -9,18 +9,26 @@ public class GameMain : SPBaseBehavior {
 	/**
 	TODO--
 	inair
-		-enemy health
+		-arrow charge only when full but regen
+		-enemy health implementation
 		-hide player arrows ui when inactive
 		-ui red flash
+		-player health implementation
 		-enemy bullets
 		-death transition
 	
-	full loop with cleanup
-	
 	text rendering
+		-inair arrow count text display
+		
 	kelsey underwater art
 	underwater->abovewater splash
+	full loop with cleanup
 	letterbox
+	
+	underwater gameplay
+		-center at zero like airstate 
+		-make some patterns
+	
 	**/
 
 	public static GameMain _context;

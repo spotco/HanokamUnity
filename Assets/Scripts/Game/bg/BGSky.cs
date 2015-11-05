@@ -130,5 +130,12 @@ public class BGSky : SPGameUpdateable, SPNodeHierarchyElement {
 		//
 
 	}
+	
+	public void set_y_offset(float val) {
+		for (int i = 0; i < _scroll_elements.Count; i++) {
+			SPParallaxScrollSprite itr = _scroll_elements[i];
+			itr.set_y_offset(val);	
+		}
+	}
 
 }
