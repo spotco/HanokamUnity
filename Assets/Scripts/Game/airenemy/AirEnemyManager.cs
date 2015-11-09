@@ -46,7 +46,6 @@ public class AirEnemyManager : InAirGameStateUpdateable, GenericPooledObject {
 		_root.set_name("AirEnemyRoot");
 	}
 	public void repool() {
-		_root.repool();
 		for (int i = _queued_spawn_enemies.Count-1; i >= 0; i--) {
 			_queued_spawn_enemies[i].do_remove();
 		}
@@ -56,7 +55,7 @@ public class AirEnemyManager : InAirGameStateUpdateable, GenericPooledObject {
 		
 		_queued_spawn_enemies.Clear();
 		_active_enemies.Clear();
-		
+		_root.repool();
 		_root = null;
 	}
 	

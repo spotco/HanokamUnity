@@ -20,16 +20,16 @@ public class PlayerCharacter : SPGameUpdateable, SPHitPolyOwner, SPNodeHierarchy
 	public PlayerAimReticule _aim_retic;
 	
 	public struct Params {
-		public int _max_health;
+		public float _max_health;
 	}
 	public Params _params;
 	
-	public PlayerCharacter i_cons(GameEngineScene g) {
+	private PlayerCharacter i_cons(GameEngineScene g) {
 		_root = SPNode.cons_node();
 		_root.set_name("PlayerCharacter");
 		
 		_params = new Params() {
-			_max_health = 3
+			_max_health = 3f
 		};
 		
 		SpriterData data = SpriterData.cons_data_from_spritesheetreaders(new List<SpriterJSONParser> { 

@@ -29,7 +29,7 @@ public class InAirGameState : GameStateBase {
 		
 		public int _arrow_count;
 		public float _arrow_refill_count;
-		public int get_arrow_count_max() { return 4; }
+		public int get_arrow_count_max() { return 3; }
 		public float get_arrow_refill_count_limit() { return 40; }
 		
 		public bool _this_movepress_has_aimed;
@@ -104,7 +104,6 @@ public class InAirGameState : GameStateBase {
 	}
 
 	public override void i_update(GameEngineScene g) {
-
 		switch (_current_mode) {
 		case Mode.InitialJumpOut: {
 			g._player.play_anim("In Air Idle");
@@ -147,14 +146,18 @@ public class InAirGameState : GameStateBase {
 			}
 			this.i_update_mode_combat_player_controls(g);
 			
-			
 			g._player.i_update(g);
 			_projectiles.i_update(g, this);
 			_enemy_manager.i_update(g, this);
 			
+			if (_params._player_health <= 0) {
+				_current_mode = Mode.FallToGround;
+			}
+			
 		} break;
 		case Mode.RescueBackToTop: {
 			g._player.play_anim(PlayerCharacterAnims.INAIRIDLE);
+			_params._invuln_ct = 5;
 			_params._upwards_vel = SPUtil.drpt(_params._upwards_vel,0,1/50.0f);
 			_params._target_y += _params._upwards_vel * SPUtil.dt_scale_get();
 			
@@ -186,7 +189,27 @@ public class InAirGameState : GameStateBase {
 			
 		} break;
 		case Mode.FallToGround: {
-
+			g._game_ui.set_fadeout_overlay(true);
+			_params._invuln_ct = 5;
+			g._player.play_anim("Fall");
+			g._player.i_update(g);
+			
+			_params._player_c_vel.x = SPUtil.drpt(_params._player_c_vel.x, 0, 1/10.0f);
+			_params._player_c_vel.y -= 0.75f * SPUtil.dt_scale_get();
+			g._player.set_u_pos(
+				g._player._u_x + _params._player_c_vel.x * SPUtil.dt_scale_get(),
+				g._player._u_y + _params._player_c_vel.y * SPUtil.dt_scale_get()
+			);
+			
+			_projectiles.i_update(g, this);
+			_enemy_manager.i_update(g, this);
+			
+			if (g._game_ui.get_fadeout_overlay_anim_finished_for_target(true)) {
+				g.pop_top_game_state();
+				g.push_game_state(OnGroundGameState.cons(g));
+				return;
+			}
+			
 		} break;
 		}
 		
@@ -439,11 +462,29 @@ public class InAirGameState : GameStateBase {
 	private void shoot_arrow(GameEngineScene g, float angle) {
 		if (_params.get_arrow_charge_pct() >= 1 && _params._arrow_count == _params.get_arrow_count_max()) {
 			g._camerac.camera_shake(new Vector2(-2,3.3f),35,30);
+			/*
 			_projectiles.add_player_projectile(
 				PlayerChargedArrowAirProjectile.cons(
 				g._player.get_center(), 
 				SPUtil.ang_deg_dir(angle+90),
 				30));
+			*/
+			_projectiles.add_player_projectile(
+				PlayerArrowAirProjectile.cons(
+				g._player.get_center(), 
+				SPUtil.ang_deg_dir(angle+90),
+				SPUtil.y_for_point_of_2pt_line(new Vector2(0,13),new Vector2(1,30),_params.get_arrow_charge_pct())));
+			_projectiles.add_player_projectile(
+				PlayerArrowAirProjectile.cons(
+				g._player.get_center(), 
+				SPUtil.ang_deg_dir(angle+90+7),
+				SPUtil.y_for_point_of_2pt_line(new Vector2(0,13),new Vector2(1,30),_params.get_arrow_charge_pct())));
+			_projectiles.add_player_projectile(
+				PlayerArrowAirProjectile.cons(
+				g._player.get_center(), 
+				SPUtil.ang_deg_dir(angle+90-7),
+				SPUtil.y_for_point_of_2pt_line(new Vector2(0,13),new Vector2(1,30),_params.get_arrow_charge_pct())));
+
 			_params._arrow_count = 0;
 
 		} else {
@@ -504,6 +545,11 @@ public class InAirGameState : GameStateBase {
 
 	public override GameStateIdentifier get_state() { 
 		return GameStateIdentifier.InAir;
+	}
+	
+	public override void on_state_end(GameEngineScene g) {
+		ObjectPool.inst().generic_repool(_projectiles);
+		ObjectPool.inst().generic_repool(_enemy_manager);
 	}
 	
 	public override void debug_draw_hitboxes(SPDebugRender draw) {

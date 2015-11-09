@@ -209,6 +209,7 @@ public class DiveGameState : GameStateBase {
 			DiveReturnGameState neu_state = DiveReturnGameState.cons(g,_params,_enemy_manager);
 			g.pop_top_game_state();
 			g.push_game_state(neu_state);
+			return;
 
 		} break;
 		}

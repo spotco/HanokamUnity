@@ -49,9 +49,11 @@ public class PlayerArrowAirProjectile : AirProjectileBase, GenericPooledObject {
 	private Vector2 _stuck_offset;
 	private Vector2 _fall_vel;
 	private BaseAirEnemy _stuck_enemy;
+	private float _initial_vel;
 	
 	private PlayerArrowAirProjectile i_cons(Vector2 pos, Vector2 dir, float vel) {
 		_root.set_u_pos(pos);
+		_initial_vel = vel;
 		_vel = SPUtil.vec_scale(dir.normalized,vel);
 		_ct = 500;
 		_trail_tar_alpha = 0;
@@ -82,6 +84,8 @@ public class PlayerArrowAirProjectile : AirProjectileBase, GenericPooledObject {
 			}
 			
 			_vel.y += -0.35f * SPUtil.dt_scale_get();
+			float vel_mag_cur = _vel.magnitude;
+			_vel = SPUtil.vec_scale(_vel.normalized,Mathf.Min(vel_mag_cur,_initial_vel));
 			_root.set_rotation(SPUtil.dir_ang_deg(_vel.x,_vel.y));
 			_root.set_u_pos(SPUtil.vec_add(_root.get_u_pos(),SPUtil.vec_scale(_vel,SPUtil.dt_scale_get())));
 			_ct -= SPUtil.dt_scale_get();

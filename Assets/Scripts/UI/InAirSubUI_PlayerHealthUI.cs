@@ -31,7 +31,7 @@ public class InAirSubUI_PlayerHealthUI : InAirGameStateUpdateable, SPNodeHierarc
 		return this;
 	}
 	
-	private int __current_setup_ui_max_health = -1;
+	private float __current_setup_ui_max_health = -1;
 	private List<UIHealthHeartSprite> _ui_hearts = new List<UIHealthHeartSprite>();
 	private void setup_ui_for_player_params(PlayerCharacter.Params player_params) {
 		for (int i = 0; i < _ui_hearts.Count; i++) _ui_hearts[i].repool();

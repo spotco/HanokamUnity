@@ -8,15 +8,15 @@ public interface SPMainUpdateable {
 public class GameMain : SPBaseBehavior {
 	/**
 	TODO--
-	inair
-		-byron charge arrow ui
-		-enemy bullets
-		-death transition
-	
 	text rendering
 		-inair arrow count text display
 		
+	_c_pos center should not be tied to camera
+		
 	kelsey underwater art
+	byron new fx
+		fancy bar
+		bubble fx
 	underwater->abovewater splash
 	full loop with cleanup
 	letterbox
@@ -138,6 +138,7 @@ public class GameMain : SPBaseBehavior {
 		_controls = ControlManager.cons();
 		_camerac = GameCameraController.cons();
 		_camera_active = true;
+		//_draw_hitboxes = true;
 		_draw_hitboxes = false;
 		_game_ui = UIRoot.cons();
 	

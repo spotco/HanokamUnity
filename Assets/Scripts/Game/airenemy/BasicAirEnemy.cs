@@ -173,7 +173,16 @@ public class CurveMoveBasicAirEnemyModeComponent : BasicAirEnemyModeComponent {
 			enemy.get_root()._u_y <= g.get_viewbox()._y1 - 500;
 							
 		if (_bez_t <= 1) {
+			float bez_pre = _bez_t;
 			_bez_t += 0.005f * SPUtil.dt_scale_get();
+			
+			if (bez_pre < 0.35f && _bez_t > 0.35f) {
+				for (float i = 0; i < 3.14f*2; i += (3.14f*2)/6.0f) {
+					state._projectiles.add_enemy_projectile(
+						EnemyBulletProjectile.cons(enemy.get_root().get_u_pos(), new Vector2(Mathf.Cos(i),Mathf.Sin(i)), 5));
+				} 
+			}
+			
 			Vector2 bez_ctrl1 = new Vector2(_bez_start.x, _bez_end.y + 100);
 			Vector2 bez_ctrl2 = SPUtil.vec_mid(bez_ctrl1,_bez_end);
 			Vector2 enemy_pos_pre = enemy.get_root().get_u_pos();
@@ -312,7 +321,9 @@ public class BasicAirEnemyModeComponentUtility {
 			state._params._hurt_ct = 25;
 			state._params._invuln_ct = 25;
 		}
-		state._params._player_c_vel = SPUtil.vec_scale(SPUtil.vec_sub(g._player.get_u_pos(),enemy.get_root().get_u_pos()).normalized,15);
+		Vector2 hit_reverse_dir = SPUtil.vec_sub(g._player.get_u_pos(),enemy.get_root().get_u_pos()).normalized;
+		Vector2 up_dir = new Vector2(0,1);
+		state._params._player_c_vel = SPUtil.vec_scale(SPUtil.vec_add(hit_reverse_dir,up_dir).normalized,15);
 		
 		enemy.transition_to_mode(g, BasicAirEnemy.Mode.Stunned);
 	}

@@ -68,6 +68,7 @@ public class UIRoot : SPGameUpdateable {
 	public SPNode _root;
 	public SPSprite _blur_cover;
 	private SPSprite _red_flash_overlay;
+	private SPSprite _fadeout_overlay;
 	
 	private List<GameUISubUI> _game_sub_uis = new List<GameUISubUI>();
 	private List<ShopUISubUI> _shop_sub_uis = new List<ShopUISubUI>();
@@ -96,11 +97,32 @@ public class UIRoot : SPGameUpdateable {
 		_red_flash_overlay.set_opacity(0f);
 		_root.add_child(_red_flash_overlay);
 		
+		_fadeout_overlay = SPSprite.cons_sprite_texkey_texrect(RTex.BLANK, SPUtil.texture_default_rect(RTex.BLANK));
+		_fadeout_overlay.set_layer(RLayer.UI);
+		_fadeout_overlay.set_scale_x((this.get_ui_bounds()._x2 - this.get_ui_bounds()._x1)/_fadeout_overlay.texrect().size.x);
+		_fadeout_overlay.set_scale_y((this.get_ui_bounds()._y2 - this.get_ui_bounds()._y1)/_fadeout_overlay.texrect().size.y);
+		_fadeout_overlay.set_color(new Vector4(0,0,0,1));
+		_fadeout_overlay.set_opacity(0f);
+		_root.add_child(_fadeout_overlay);
+		
 		return this;
 	}
 	
 	public void do_red_flash() {
 		_red_flash_overlay.set_opacity(0.7f);
+	}
+	
+	private bool _fadeout_overlay_target;
+	public void set_fadeout_overlay(bool val) {
+		_fadeout_overlay_target = val;
+	}
+	public void set_fadeout_overlay_imm(bool val) {
+		this.set_fadeout_overlay(val);
+		_fadeout_overlay.set_opacity(_fadeout_overlay_target?1:0);
+		_fadeout_overlay.set_enabled(!SPUtil.flt_cmp_delta(_fadeout_overlay.get_opacity(),0,0.01f));
+	}
+	public bool get_fadeout_overlay_anim_finished_for_target(bool val) {
+		return SPUtil.flt_cmp_delta(_fadeout_overlay.get_opacity(),val?1:0,0.01f);
 	}
 	
 	public void on_scene_transition() {
@@ -147,6 +169,10 @@ public class UIRoot : SPGameUpdateable {
 			_game_sub_uis[i].i_update(g);
 		}
 		_red_flash_overlay.set_opacity(SPUtil.drpt(_red_flash_overlay.get_opacity(),0,1/25.0f));
+		_red_flash_overlay.set_enabled(!SPUtil.flt_cmp_delta(_red_flash_overlay.get_opacity(),0,0.01f));
+	
+		_fadeout_overlay.set_opacity(SPUtil.drpt(_fadeout_overlay.get_opacity(),_fadeout_overlay_target?1:0,1/15.0f));
+		_fadeout_overlay.set_enabled(!SPUtil.flt_cmp_delta(_fadeout_overlay.get_opacity(),0,0.01f));
 	}
 	
 	public void i_update(ShopScene shop) {

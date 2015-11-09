@@ -82,11 +82,15 @@ public class DiveReturnGameState : GameStateBase {
 				g._camerac.camera_shake(new Vector2(-1.7f,2.1f),80,200, 1/50.0f);
 				g._camerac.camera_motion_blur(new Vector3(0,500,500), 60.0f);
 				g._camerac.camera_blur(45.0f);
-				ObjectPool.inst().generic_repool(_enemy_manager);
+				return;
 			}
 
 		} break;
 		}
+	}
+	
+	public override void on_state_end(GameEngineScene g) {
+		ObjectPool.inst().generic_repool(_enemy_manager);
 	}
 
 	public override GameStateIdentifier get_state() { 

@@ -18,6 +18,7 @@ public class OnGroundGameState : GameStateBase {
 	}
 
 	public enum Mode {
+		FadeIn,
 		Gameplay,
 		JumpCharge,
 		JumpInAir
@@ -33,9 +34,19 @@ public class OnGroundGameState : GameStateBase {
 	
 	public OnGroundGameState i_cons(GameEngineScene g) {
 		_params = Params.cons();
-		_current_state = Mode.Gameplay;
+		
+		_current_state = Mode.FadeIn;
+		g._game_ui.set_fadeout_overlay_imm(true);
+		
 		g._camerac.set_zoom_speed(1/10.0f);
 		g._camerac.set_camera_follow_speed(1/30.0f);
+		
+		g._player.set_u_pos(0,0);
+		g._player.play_anim(PlayerCharacterAnims.IDLE);
+		g._bg_village.set_u_pos(0, 0);
+		g._bg_water.set_u_pos(0, 0);
+		g._bg_sky.set_y_offset(0);
+		
 		_villager_manager = VillagerManager.cons(g);
 		return this;
 	}
@@ -44,6 +55,13 @@ public class OnGroundGameState : GameStateBase {
 		g._player.i_update(g);
 		
 		switch (_current_state) {
+		case Mode.FadeIn: {
+			g._player.i_update(g);
+			g._game_ui.set_fadeout_overlay(false);
+			if (g._game_ui.get_fadeout_overlay_anim_finished_for_target(false)) {
+				_current_state = Mode.Gameplay;
+			}
+		} break;
 		case Mode.Gameplay:{
 			_villager_manager.i_update(g,this);
 			g._player.set_manual_sort_z_order(GameAnchorZ.Player_Ground);
