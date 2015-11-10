@@ -50,7 +50,9 @@ public class RTex {
 	public static string ENEMY_EFFECTS = "effects/effects_enemy_ss";
 
 	public static string BLANK = "misc/blank";
-
+	
+	public static string DIALOGUE_FONT = "fonts/1hoonwhayang";
+	
 	public static string SPRITER_TEST_CHAR = "test/spriter_test";
 }
 

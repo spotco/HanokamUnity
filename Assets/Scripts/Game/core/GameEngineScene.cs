@@ -69,6 +69,8 @@ public class GameEngineScene : SPScene {
 		_particles = SPParticleSystem<SPGameEngineParticle>.cons();
 		
 		
+		//SPTODO
+		SPText.cons_text(RTex.DIALOGUE_FONT, RFnt.DIALOGUE_FONT);
 		//this.push_game_state(OnGroundGameState.cons(this));
 		this.push_game_state(InAirGameState.cons(this));
 		

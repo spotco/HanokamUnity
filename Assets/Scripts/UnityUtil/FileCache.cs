@@ -54,7 +54,8 @@ public class FileCache {
 		Debug.LogWarning("plist from streaming:"+texkey);
 		_texkey_to_rectkey_to_rect[texkey] = new Dictionary<string,Rect>();
 
-		Dictionary<string,object> frames = (Dictionary<string,object>)((Dictionary<string,object>) PlistCS.Plist.readPlistSource(this.load_plist_from_path(texkey)))["frames"];
+		Dictionary<string,object> frames = (Dictionary<string,object>)((Dictionary<string,object>) PlistCS.Plist.readPlistSource(
+			this.load_text_file_from_path(texkey,".plist")))["frames"];
 		foreach (string key in frames.Keys) {
 			Dictionary<string,object> frame = (Dictionary<string,object>)frames[key];
 			string texture_rect_string = (string)frame["textureRect"];
@@ -71,8 +72,8 @@ public class FileCache {
 		}
 	}
 
-	private string load_plist_from_path(string key) {
-		string path = System.IO.Path.Combine(Application.streamingAssetsPath, key+".plist");
+	private string load_text_file_from_path(string key, string suffix = ".plist") {
+		string path = System.IO.Path.Combine(Application.streamingAssetsPath, key+suffix);
 		return System.Text.Encoding.UTF8.GetString(SPUtil.streaming_asset_load(path));
 	}
 
@@ -94,6 +95,14 @@ public class FileCache {
 		}
 		return _key_to_spriter_data[cachekey];
 	}
-
+	
+	[ProtoMember(4)] private Dictionary<string,FntFile> _key_to_fntfile = new Dictionary<string, FntFile>();
+	public FntFile get_fntfile(string key) {
+		if (!_key_to_fntfile.ContainsKey(key)) {
+			_key_to_fntfile[key] = FntFile.cons_from_string(this.load_text_file_from_path(key,".fnt"));
+		}
+		return _key_to_fntfile[key];
+	}
 
 }
+
