@@ -1,28 +1,84 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System.Text;
 
 public class SPText : SPNode, SPMainUpdateable {
 
-	public class SPTextCharacter : SPNodeHierarchyElement, GenericPooledObject, SPMainUpdateable {
-		public static SPTextCharacter cons_texkey_rect(string texkey, Rect rect) {
-			return ObjectPool.inst().generic_depool<SPTextCharacter>().i_cons_texkey_rect(texkey,rect);
+	public class SPTextCharacter : SPNodeHierarchyElement, GenericPooledObject {
+		public static SPTextCharacter cons_texkey_rect(string texkey, Rect rect, SPText.SPTextStyle style) {
+			return ObjectPool.inst().generic_depool<SPTextCharacter>().i_cons_texkey_rect(texkey,rect, style);
 		}
 		public SPSprite _img;
+		private MeshRenderer _mesh_renderer;
+		private float _opacity;
+		private SPText.SPTextStyle _style;
+		private Vector2 _start_pos;
+		
 		public void add_to_parent(SPNode parent) { parent.add_child(_img); }
 		public void depool() {
 			_img = SPSprite.cons_sprite_texkey_texrect(RTex.BLANK,new Rect(0,0,0,0));
+			_mesh_renderer = _img.gameObject.GetComponent<MeshRenderer>();
 		}
 		public void repool() {
+			_mesh_renderer = null;
 			_img.repool();
 			_img = null;
 		}
-		private SPTextCharacter i_cons_texkey_rect(string texkey, Rect rect) {
+		private SPTextCharacter i_cons_texkey_rect(string texkey, Rect rect, SPText.SPTextStyle style) {
 			_img.set_texkey(texkey);
 			_img.set_tex_rect(rect);
+			_img.set_shader(RShader.SPTEXTCHARACTER);
+			_opacity = 1;
+			_start_pos = Vector2.zero;
+			this.set_style(style);
 			return this;
 		}
-		public void i_update() {}
-		public void set_u_pos(float x, float y) { _img.set_u_pos(x,y); }
+		public void i_update(float time) {
+			this.set_opacity(1);
+			_img.set_scale(1);
+			_img.set_u_pos(
+				_start_pos.x,
+				_start_pos.y + _style._amplitude * Mathf.Sin(time)
+			);
+		}
+		public void i_update_animate_text_in(float anim_t) {
+			this.set_opacity(anim_t);
+			_img.set_u_pos(
+				_start_pos.x,
+				_start_pos.y + 10 * anim_t
+			);
+			_img.set_scale(anim_t);
+		}
+		
+		private MaterialPropertyBlock _material_block;
+		public void set_style(SPText.SPTextStyle style) {
+			_style = style;
+			if (_material_block == null) {
+				_material_block = new MaterialPropertyBlock();
+				_mesh_renderer.GetPropertyBlock(_material_block);
+			}
+			_material_block.Clear();
+			_material_block.AddColor("_fill_color",style._fill);
+			_material_block.AddColor("_stroke_color",style._stroke);
+			_material_block.AddColor("_shadow_color",style._shadow);
+			_material_block.AddFloat("_opacity",_opacity);
+			_mesh_renderer.SetPropertyBlock(_material_block);
+		}
+		
+		public void set_opacity(float val) {
+			if (_opacity == val) return;
+			_opacity = val;
+			this.set_style(_style);
+		}
+		
+		public float get_time_incr() {
+			return _style._time_incr;
+		}
+		
+		public void set_u_pos(float x, float y) { 
+			_start_pos = new Vector2(x,y);
+			_img.set_u_pos(_start_pos.x,_start_pos.y); 
+		}
 		public void set_char_name(char c) { _img.set_name(SPUtil.sprintf("SPTextCharacter(%c)",c)); }
 		public void set_manual_sort_z_order(int zord) { _img.set_manual_sort_z_order(zord); }
 		public void cleanup() {
@@ -68,9 +124,11 @@ public class SPText : SPNode, SPMainUpdateable {
 	private Vector2 _rendered_size;
 	
 	private string _cached_string;
+	private SPTextStyle _default_style;
 	private Dictionary<string,SPTextStyle> _name_to_styles;
 	
 	private float _time;
+	private float _animate_text_in_ct;
 	
 	private SPText i_cons_text(string texkey, string fntkey, SPTextStyle default_style) {
 		this.set_u_pos(0,0);
@@ -85,12 +143,14 @@ public class SPText : SPNode, SPMainUpdateable {
 		_texkey = texkey;
 		_bmfont_cfg = FileCache.inst().get_fntfile(fntkey);
 		_characters = new List<SPTextCharacter>();
+		_rendered_size = Vector2.zero;
 		_cached_string = "";
 		_name_to_styles = new Dictionary<string, SPTextStyle>();
 		_time = 0;
+		_animate_text_in_ct = 0;
 		
+		_default_style = default_style;
 		_text_anchor = Vector2.zero;
-		
 		return this;
 	}
 	
@@ -99,6 +159,58 @@ public class SPText : SPNode, SPMainUpdateable {
 	}
 	
 	public void i_update() {
+		float itr_anim_time = _time;
+		for (int i = 0; i < _characters.Count; i++) {
+			SPTextCharacter itr = _characters[i];
+			float animate_in_t = Mathf.Clamp(_animate_text_in_ct-i,0,1);
+			if (animate_in_t < 1) {
+				itr.i_update_animate_text_in(animate_in_t);
+			} else {
+				itr.i_update(itr_anim_time);
+				itr_anim_time += itr.get_time_incr();
+			}
+		}
+		_time += SPUtil.dt_scale_get() * 0.05f;
+		_animate_text_in_ct += SPUtil.dt_scale_get() * 0.33f;
+	}
+	
+	private void markup_string_out_display_string_and_map(string markup_string, out string display_string, out Dictionary<int,SPTextStyle> style_map) {
+		StringBuilder rtv_display_string = new StringBuilder();
+		Dictionary<int,SPTextStyle> rtv_style_map = new Dictionary<int, SPTextStyle>();
+		StringBuilder current_style = new StringBuilder();
+		bool in_tag_mode = false;
+		
+		for (int i = 0; i < markup_string.Length; i++) {
+			char itr = markup_string[i];
+			switch (itr) {
+			case '[':{
+				in_tag_mode = true;
+				current_style.Remove(0,current_style.Length);
+			} break;
+			case ']':{
+				in_tag_mode = false;
+			} break;
+			case '@':{
+				current_style.Remove(0,current_style.Length);
+			} break;
+			default:{
+				if (in_tag_mode) {
+					current_style.Append(itr);
+				} else {
+					rtv_display_string.Append(itr);
+					SPTextStyle style_obj;
+					_name_to_styles.TryGetValue(current_style.ToString(), out style_obj);
+					if (style_obj == null) {
+						style_obj = _default_style;
+					}
+					rtv_style_map[rtv_display_string.Length-1] = style_obj;
+				}
+			} break;
+			}
+		}
+		
+		display_string = rtv_display_string.ToString();
+		style_map = rtv_style_map;
 	}
 	
 	private void cleanup_existing_characters() {
@@ -108,13 +220,22 @@ public class SPText : SPNode, SPMainUpdateable {
 		_characters.Clear();
 	}
 	
-	public SPText set_markup_text(string text) {
-		if (_cached_string == text) return this;
-		_cached_string = text;
+	public SPText set_markup_text(string markup_string) {
+		if (_cached_string == markup_string) return this;
+		_cached_string = markup_string;
 		this.cleanup_existing_characters();
 		
-		//todo -- style map
-		string display_string = _cached_string;
+		string display_string;
+		Dictionary<int,SPTextStyle> style_map;
+		if (markup_string.Contains("[")) {
+			this.markup_string_out_display_string_and_map(markup_string, out display_string, out style_map);
+		} else {
+			display_string = markup_string;
+			style_map = new Dictionary<int, SPTextStyle>();
+			for (int i = 0; i < display_string.Length; i++) {
+				style_map[i] = _default_style;
+			}
+		}
 		
 		if (display_string.Length == 0) return this;
 		
@@ -144,13 +265,13 @@ public class SPText : SPNode, SPMainUpdateable {
 			fontDef = _bmfont_cfg.charinfo_for_char(c);
 			
 			Rect rect = new Rect(fontDef.x,fontDef.y,fontDef.width,fontDef.height);
-			SPTextCharacter neu_char = SPTextCharacter.cons_texkey_rect(_texkey, rect);
+			
+			SPTextStyle itr_style = style_map[i];
+			SPTextCharacter neu_char = SPTextCharacter.cons_texkey_rect(_texkey, rect, itr_style);
 			neu_char.set_char_name(c);
 			neu_char.set_manual_sort_z_order(GameAnchorZ.HUD_BASE);
 			neu_char.add_to_parent(_pivot_node);
 			_characters.Add(neu_char);
-			
-			//todo -- apply style
 			
 			float yoffset = _bmfont_cfg.common.lineHeight - fontDef.yoffset;
 			Vector2 fontPos = new Vector2(

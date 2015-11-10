@@ -6,7 +6,7 @@ public class RShader {
 	public static string SURFACE_REFLECTION = "Custom/SurfaceReflection";
 	public static string ALPHA_GRADIENT = "Custom/SPAlphaGradientSprite";
     public static string NOALPHA = "Custom/SPNoAlphaShader";
-
+	public static string SPTEXTCHARACTER = "Custom/SPTextCharacter";
 }
 
 public class ShaderResource : Object {

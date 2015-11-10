@@ -55,9 +55,8 @@ public class SPSprite : SPNode {
 		if (_texkey != null) {
 			_meshrenderer.material = GameMain._context._tex_resc.get_material(_texkey,shader_key);
 		} else {
-			_meshrenderer.material.shader = ShaderResource.get_shader(RShader.SURFACE_REFLECTION);
+			_meshrenderer.material.shader = ShaderResource.get_shader(shader_key);
 		}
-		
 		return this;
 	}
 
