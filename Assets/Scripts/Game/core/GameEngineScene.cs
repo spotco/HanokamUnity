@@ -70,9 +70,9 @@ public class GameEngineScene : SPScene {
 		
 		
 		//SPTODO
-		SPText.cons_text(RTex.DIALOGUE_FONT, RFnt.DIALOGUE_FONT);
-		//this.push_game_state(OnGroundGameState.cons(this));
-		this.push_game_state(InAirGameState.cons(this));
+		SPText.cons_text(RTex.DIALOGUE_FONT, RFnt.DIALOGUE_FONT, SPText.SPTextStyle.cons(new Vector4(),new Vector4(),new Vector4(),0,0));
+		this.push_game_state(OnGroundGameState.cons(this));
+		//this.push_game_state(InAirGameState.cons(this));
 		
 		return this;
 	}
