@@ -269,7 +269,8 @@ public class SPText : SPNode, SPMainUpdateable {
 			SPTextStyle itr_style = style_map[i];
 			SPTextCharacter neu_char = SPTextCharacter.cons_texkey_rect(_texkey, rect, itr_style);
 			neu_char.set_char_name(c);
-			neu_char.set_manual_sort_z_order(GameAnchorZ.HUD_BASE);
+			neu_char.set_manual_sort_z_order(_zord);
+			neu_char._img.set_layer(_layer);
 			neu_char.add_to_parent(_pivot_node);
 			_characters.Add(neu_char);
 			
@@ -303,6 +304,22 @@ public class SPText : SPNode, SPMainUpdateable {
 	
 	private void update_pivot_text_anchor() {
 		_pivot_node.set_u_pos(-_text_anchor.x * _rendered_size.x, -_text_anchor.y * _rendered_size.y);
+	}
+	
+	private int _zord = GameAnchorZ.HUD_BASE;
+	public void set_manual_sort_z_order(int zord) {
+		_zord = zord;
+		for (int i = 0; i < this._characters.Count; i++) {
+			this._characters[i]._img.set_manual_sort_z_order(_zord);
+		}
+	}
+	
+	private string _layer = RLayer.DEFAULT;
+	public void set_layer(string layer) {
+		_layer = layer;
+		for (int i = 0; i < this._characters.Count; i++) {
+			this._characters[i]._img.set_layer(_layer);
+		}
 	}
 
 }

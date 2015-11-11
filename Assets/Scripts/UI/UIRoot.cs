@@ -118,8 +118,8 @@ public class UIRoot : SPGameUpdateable {
 	}
 	public void set_fadeout_overlay_imm(bool val) {
 		this.set_fadeout_overlay(val);
-		_fadeout_overlay.set_opacity(_fadeout_overlay_target?1:0);
-		_fadeout_overlay.set_enabled(!SPUtil.flt_cmp_delta(_fadeout_overlay.get_opacity(),0,0.01f));
+		_fadeout_overlay.set_opacity(val?1:0);
+		_fadeout_overlay.set_enabled(true);
 	}
 	public bool get_fadeout_overlay_anim_finished_for_target(bool val) {
 		return SPUtil.flt_cmp_delta(_fadeout_overlay.get_opacity(),val?1:0,0.01f);

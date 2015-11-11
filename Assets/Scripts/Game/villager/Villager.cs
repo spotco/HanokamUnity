@@ -106,6 +106,9 @@ public class VillagerOverheadIcon : SPNodeHierarchyElement {
 			_current = 0.75f, _target = 0.75f, _drptval = 1/10.0f
 		};
 		
+		_icon.set_opacity(0);
+		_back.set_opacity(0);
+		
 		return this;
 	}
 	

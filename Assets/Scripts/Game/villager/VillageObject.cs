@@ -23,6 +23,8 @@ public class VillageObject : OnGroundStateUpdateable, SPNodeHierarchyElement {
 		
 		_anim_t = 0;
 		
+		_icon.set_opacity(0);
+		
 		return this;
 	}
 	

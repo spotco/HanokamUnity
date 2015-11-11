@@ -8,23 +8,21 @@ public interface SPMainUpdateable {
 public class GameMain : SPBaseBehavior {
 	/**
 	TODO--
-	text rendering
-		-inair arrow count text display
-		
-	_c_pos center should not be tied to camera
-		
+	inair arrow count text display
 	kelsey underwater art
+	kelsey air art
 	byron new fx
 		fancy bar
 		bubble fx
 	underwater->abovewater splash
-	full loop with cleanup
 	letterbox
 	
-	underwater gameplay
+	underwater gameplay work
 		-center at zero like airstate 
 		-make some patterns
 	
+	ICEBOX--
+	_c_pos center should not be tied to camera
 	**/
 
 	public static GameMain _context;

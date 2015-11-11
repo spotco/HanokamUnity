@@ -51,6 +51,7 @@ public class RTex {
 
 	public static string BLANK = "misc/blank";
 	
+	public static string DIALOGUE_HEADICONS = "dialog/headicons_ss";
 	public static string DIALOGUE_FONT = "fonts/1hoonwhayang";
 	
 	public static string SPRITER_TEST_CHAR = "test/spriter_test";

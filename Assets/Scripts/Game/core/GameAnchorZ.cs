@@ -2,7 +2,8 @@
 using System.Collections;
 
 public class GameAnchorZ {
-
+	
+	public const int HUD_TEXT = 1010;
 	public const int HUD_BASE = 1000;
 	public const int HUD_BLUR_COVER = 999;
 

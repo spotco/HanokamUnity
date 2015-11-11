@@ -68,18 +68,11 @@ public class GameEngineScene : SPScene {
 		_root.add_child(_particle_root);
 		_particles = SPParticleSystem<SPGameEngineParticle>.cons();
 		
-		
-		//SPTODO
-		__tmp = SPText.cons_text(RTex.DIALOGUE_FONT, RFnt.DIALOGUE_FONT, SPText.SPTextStyle.cons(new Vector4(0,1,0,1),new Vector4(1,0,0,1),new Vector4(0,0,1,1),0.5f,0.05f));
-		__tmp.add_style("test",SPText.SPTextStyle.cons(new Vector4(1,1,0,1),new Vector4(1,0,0,1),new Vector4(0,0,1,0),10,0.5f));
-		__tmp.set_markup_text("test [test]1 test@ 2es what\nu [test] test m8@ test lel\n tep woe eeee ww ");
-		
 		this.push_game_state(OnGroundGameState.cons(this));
 		//this.push_game_state(InAirGameState.cons(this));
 		
 		return this;
 	}
-	SPText __tmp;
 	
 	public GameStateBase get_top_game_state() { 
 		return _game_state_stack[_game_state_stack.Count-1]; 
@@ -94,8 +87,6 @@ public class GameEngineScene : SPScene {
 	}
 	
 	public override void i_update() {
-		__tmp.i_update();
-	
 		__cached_viewbox_dirty = true;
 		_delayed_actions.i_update(this);
 		_particles.i_update(this);
