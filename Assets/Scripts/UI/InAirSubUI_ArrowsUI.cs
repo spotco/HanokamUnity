@@ -48,7 +48,7 @@ public class InAirSubUI_ArrowsUI : InAirGameStateUpdateable, SPNodeHierarchyElem
 		_arrow_count_text.set_layer(RLayer.UI);
 		_arrow_count_text.set_text_anchor(0.5f,0.5f);
 		_arrow_count_text.set_scale(0.75f);
-		_arrow_count_text.set_u_pos(30,5);
+		_arrow_count_text.set_u_pos(43,5);
 		_arrow_count_text.set_markup_text("0");
 		_bar_back.add_child(_arrow_count_text);
 		

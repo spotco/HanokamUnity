@@ -68,7 +68,6 @@ public class SPConfigAnimParticle : SPGameEngineParticle, GenericPooledObject {
 		if (_anim_lambda != null) {
 			_anim_lambda(_img, anim_t);
 		}
-
 	}
 	public override bool should_remove(GameEngineScene g) {
 		return _ct >= _ctmax;

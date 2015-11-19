@@ -36,7 +36,7 @@ public class PufferBasicAirEnemy : BasicAirEnemy {
 	}
 	
 	public override float get_max_health() { return 10; }
-	public override Vector2 get_health_bar_offset() { return new Vector2(-25,35); }
+	public override Vector2 get_health_bar_offset() { return new Vector2(-32.5f,50); }
 	
 	public override void i_update(GameEngineScene g, InAirGameState state) {
 		base.i_update(g,state);

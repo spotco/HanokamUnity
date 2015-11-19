@@ -66,6 +66,11 @@ public class DiveGameState : GameStateBase {
 				.add_frame_at_time(FileCache.inst().get_texrect(RTex.FX_SPLASH,"uw_splash_7.png"),0.84f)
 			));
 		
+		g._delayed_actions.enqueue_action(new DelayedAction() {
+			_time_left = 20,
+			_callback = (__g) => { MiscEffects.do_player_bubble(g); }
+		});
+		
 		g._player.set_manual_sort_z_order(GameAnchorZ.Player_UnderWater);
 		
 		_bubble_every = FlashEvery.cons(30);
@@ -159,6 +164,9 @@ public class DiveGameState : GameStateBase {
 			
 			if (g._controls.get_control_just_released(ControlManager.Control.Dash)) {
 				Vector2 dir = SPUtil.ang_deg_dir(g._player.rotation() + 90);
+				if (dir.y < -0.65f && SPUtil.float_random(0,3) < 1) {
+					MiscEffects.do_player_bubble(g);
+				}
 				dir = SPUtil.vec_scale(dir,DASH_SPEED);
 				_params._vel = dir;
 				_params._dashing = true;

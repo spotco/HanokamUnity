@@ -8,20 +8,13 @@ public interface SPMainUpdateable {
 public class GameMain : SPBaseBehavior {
 	/**
 	TODO--
-	letterbox
-	byron new fx
-		fancy bar
-		bubble fx
-	underwater->abovewater splash
-	
-	fish underwater implementation
-	kelsey underwater art
 	underwater gameplay work
+		-new swimspin anim
 		-center at zero like airstate 
 		-make some patterns
-	
-	
-	
+		
+	fish underwater implementation
+	kelsey underwater art
 	
 	ICEBOX--
 	_c_pos center should not be tied to camera
@@ -120,6 +113,59 @@ public class GameMain : SPBaseBehavior {
 		_overlay_camera.transform.localPosition = new Vector3(0,0,-2);
 		game_camera_out.set_scale(((float)Screen.height)/Mathf.Abs(vtx_0_0.y - vtx_0_1.y));
 		ui_camera_out.set_scale(((float)Screen.height)/Mathf.Abs(vtx_0_0.y - vtx_0_1.y));
+		
+		{
+			Rect letterbox_tex_rect = SPUtil.texture_default_rect(RTex.HUD_LETTERBOX_BORDER);
+			SPSprite letterbox_left = SPSprite.cons_sprite_texkey_texrect(RTex.HUD_LETTERBOX_BORDER,letterbox_tex_rect);
+			letterbox_left.set_name("letterbox_left");
+			letterbox_left.set_layer(RLayer.OUTPUT);
+			letterbox_left.transform.parent = _overlay_camera.transform.parent;
+			letterbox_left.set_u_pos(0,0);
+			letterbox_left.set_anchor_point(0,0);
+			
+			float base_scale = 0.1f;
+			float game_camera_out_bottom_edge = -(Screen.height * game_cam_rect.height)/2.0f * game_camera_out.scale_y();
+			float game_camera_out_top_edge = -game_camera_out_bottom_edge;
+			float screen_left_edge = -Screen.width/2 * game_camera_out.scale_x();
+			float game_camera_out_left_edge = -(Screen.width * game_cam_rect.width)/2.0f * game_camera_out.scale_x();
+			
+			float set_scale = (game_camera_out_left_edge - screen_left_edge) / (letterbox_left.texrect().size.x * letterbox_left.scale_x());
+			
+			set_scale = Mathf.Clamp(set_scale,0.1f,0.5f);
+			
+			letterbox_left.set_scale_x(-set_scale);
+			letterbox_left.set_scale_y(set_scale);
+			letterbox_left._u_x = game_camera_out_left_edge;
+			letterbox_left._u_y = game_camera_out_bottom_edge;
+			
+			float uv_height_mult = (game_camera_out_top_edge - game_camera_out_bottom_edge) / (letterbox_left.texrect().size.y * letterbox_left.scale_y());
+			letterbox_left.set_tex_rect(new Rect(
+				letterbox_tex_rect.position.x,
+				letterbox_tex_rect.position.y,
+				letterbox_tex_rect.size.x,
+				letterbox_tex_rect.size.y * uv_height_mult
+			));
+			
+			SPSprite letterbox_right = SPSprite.cons_sprite_texkey_texrect(RTex.HUD_LETTERBOX_BORDER,letterbox_tex_rect);
+			letterbox_right.set_name("letterbox_right");
+			letterbox_right.set_layer(RLayer.OUTPUT);
+			letterbox_right.transform.parent = _overlay_camera.transform.parent;
+			letterbox_right.set_u_pos(0,0);
+			letterbox_right.set_anchor_point(0,0);
+			
+			letterbox_right.set_scale_x(set_scale);
+			letterbox_right.set_scale_y(set_scale);
+			letterbox_right._u_x = -game_camera_out_left_edge;
+			letterbox_right._u_y = game_camera_out_bottom_edge;
+			
+			letterbox_right.set_tex_rect(new Rect(
+				letterbox_tex_rect.position.x,
+				letterbox_tex_rect.position.y,
+				letterbox_tex_rect.size.x,
+				letterbox_tex_rect.size.y * uv_height_mult
+			));
+			
+		}
 
 		_game_camera.rect = game_cam_rect;
 		_ui_camera.rect = game_cam_rect;

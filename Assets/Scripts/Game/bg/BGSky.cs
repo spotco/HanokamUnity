@@ -185,5 +185,8 @@ public class BGSky : SPGameUpdateable, SPNodeHierarchyElement {
 			itr.set_y_offset(val);	
 		}
 	}
+	public float get_y_offset() {
+		return _y_offset_in;
+	}
 
 }

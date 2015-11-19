@@ -16,6 +16,7 @@ public class RTex {
 	public static string BG_UNDERWATER_SURFACE_GRADIENT = "background/bg_underwater_surface_gradient";
 	
 	public static string HUD_SPRITESHEET = "hud/hud_spritesheet";
+	public static string HUD_LETTERBOX_BORDER = "hud/hud_letterbox_border_tex";
 	
 	public static string BG_WATER_TOP_BELOWLINE = "background/waterline_tex/bg_water_top_belowline";
 	public static string BG_WATER_TOP_WATERLINE = "background/waterline_tex/bg_water_top_waterline";
