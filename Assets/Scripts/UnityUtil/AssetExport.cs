@@ -56,7 +56,6 @@ public class AssetExport {
 					CachedStreamingAssets.path_to_loadpath(CachedStreamingAssets.FILECACHE_PATH)
 				).bytes
 		);
-		Debug.Log(tmp_filecache.get_texrect(RTex.BG_SKY_SPRITESHEET,"bg_sky_arcs.png"));
 	}
 
 }

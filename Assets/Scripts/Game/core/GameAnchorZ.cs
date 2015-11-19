@@ -26,6 +26,7 @@ public class GameAnchorZ {
 	public const int BGVillage_Docks_Front = 150;
 	public const int Player_InAir = 149;
 	public const int Player_FX = 148;
+	public const int Enemy_FX = 147;
 	
 	public const int Enemy_InAir = 145;
 	public const int Player_Arrow = 144;
@@ -61,9 +62,10 @@ public class GameAnchorZ {
 	public const int BGWater_BG_ELE3 = -1000;
 	public const int BGWater_BG_ELE4 = -1001;
 
-
+	public const int BGSky_BG_ELE0 = -4996;
 	public const int BGSky_BG_ELE1 = -4997;
 	public const int BGSky_BG_ELE2 = -4998;
+	public const int BGSky_BG_ELE3 = -4999;
 
 	public const int BGSky_RepeatBG = -5000;
 	

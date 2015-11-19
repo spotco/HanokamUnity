@@ -5,7 +5,11 @@ using System.Reflection;
 public class RTex {
 	public static string BG_SPRITESHEET_1 = "background/bg_spritesheet_1";
 	public static string BG_UNDERWATER_SPRITESHEET = "background/underwater_spritesheet";
-	public static string BG_SKY_SPRITESHEET = "background/sky_spritesheet";
+	
+	public static string BG_NSKY1_BG_OBJS = "background/nsky/nsky1_bg_objs_ss";
+	public static string BG_NSKY1_BGISLANDS = "background/nsky/nsky1_bgislands_ss";
+	public static string BG_NSKY1_BGCLOUDS = "background/nsky/nsky1_bgclouds_tex";
+	
 	public static string BG_TILE_SKY = "background/bg_test_tile_sky";
 	public static string BG_TILE_WATER = "background/bg_test_tile_water";
 	public static string BG_WATER_ELEMENT_FADE = "background/bg_water_element_fade";
@@ -21,6 +25,8 @@ public class RTex {
 	public static string BG_NUNDERWATER_BG = "background/nunderwater/nunderwater_bg";
 	public static string BG_NUNDERWATER_TEMPLE = "background/nunderwater/nunderwater_temple";
 	public static string BG_NUNDERWATER_FADE = "background/nunderwater/nunderwater_fade";
+	
+	public static string BG_NUNBERWATER_FISH_ANIM = "background/nunderwater/nunderwater_fish_anim";
 	public static string BG_NUNDERWATER_FISH_TEST = "background/nunderwater/fish_test_1";
 
 	public static string SPRITER_OLDMAN = "character/oldman/Oldman";

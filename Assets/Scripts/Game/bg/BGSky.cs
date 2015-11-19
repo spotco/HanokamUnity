@@ -5,12 +5,24 @@ public class BGSky : SPGameUpdateable, SPNodeHierarchyElement {
 
 	private SPNode _root;
 	private SPSprite _sky_bg;
-
+	
+	/*
 	private SPParallaxScrollSprite _bg_arcs, _bg_islands;
-
 	private SPParallaxScrollSprite _bg_cliff_left, _bg_cliff_right;
+	
 	private ELMVal _bg_cliff_left_x = ELMVal.cons();
 	private ELMVal _bg_cliff_right_x = ELMVal.cons();
+	*/
+	
+	private SPParallaxScrollSprite _bg_clouds;
+	private SPParallaxScrollSprite _bg_islands_far_back;
+	private SPParallaxScrollSprite _bg_islands_far_near;
+	private SPParallaxScrollSprite _bg_islands;
+	
+	private SPParallaxScrollSprite _bg_cliff_left, _bg_cliff_right;
+	private DrptVal _bg_cliff_left_x, _bg_cliff_right_x;
+
+	private float _y_offset_in;
 
 	private List<SPParallaxScrollSprite> _scroll_elements;
 
@@ -33,87 +45,128 @@ public class BGSky : SPGameUpdateable, SPNodeHierarchyElement {
 		_sky_bg.set_anchor_point(0,0);
 		_sky_bg.set_u_pos(g.get_viewbox()._x1,g.get_viewbox()._y1);
 		_sky_bg.set_name("_sky_bg");
-		_sky_bg.set_u_z(3000);
+		_sky_bg.set_u_z(5000);
 		_sky_bg.set_manual_sort_z_order(GameAnchorZ.BGSky_RepeatBG);
 		_sky_bg.gameObject.layer = RLayer.get_layer(RLayer.UNDERWATER_ELEMENTS);
 		_root.add_child(_sky_bg);
-
-		_bg_arcs = SPParallaxScrollSprite.cons(
-			RTex.BG_SKY_SPRITESHEET,
-			FileCache.inst().get_texrect(RTex.BG_SKY_SPRITESHEET,"bg_sky_arcs.png"),
+		
+		_bg_clouds = SPParallaxScrollSprite.cons(
+			RTex.BG_NSKY1_BGCLOUDS,
+			SPUtil.texture_default_rect(RTex.BG_NSKY1_BGCLOUDS),
 			new Vector3(4.5f,4.5f),
-			new Vector3(0,0,2800)
+			new Vector3(0,0,4200)
 		);
-		_bg_arcs._img.set_manual_sort_z_order(GameAnchorZ.BGSky_BG_ELE2);
-		_bg_arcs._img.set_name("_bg_arcs");
-		_root.add_child(_bg_arcs._img);
-
-		_bg_islands = SPParallaxScrollSprite.cons(
-			RTex.BG_SKY_SPRITESHEET,
-			FileCache.inst().get_texrect(RTex.BG_SKY_SPRITESHEET,"bg_sky_island.png"),
-			new Vector3(3.49f,3.49f),
-			new Vector3(0,0,2085)
+		_bg_clouds._img.set_manual_sort_z_order(GameAnchorZ.BGSky_BG_ELE3);
+		_bg_clouds._img.set_name("_bg_clouds");
+		_root.add_child(_bg_clouds._img);
+		
+		_bg_islands_far_back = SPParallaxScrollSprite.cons(
+			RTex.BG_NSKY1_BGISLANDS,
+			FileCache.inst().get_texrect(RTex.BG_NSKY1_BGISLANDS,"sky_new_bg_islands_far_2.png"),
+			new Vector3(3.75f,3.75f),
+			new Vector3(0,0,3600)
 			);
-		_bg_islands._img.set_manual_sort_z_order(GameAnchorZ.BGSky_BG_ELE1);
+		_bg_islands_far_back._img.set_manual_sort_z_order(GameAnchorZ.BGSky_BG_ELE2);
+		_bg_islands_far_back._img.set_name("_bg_islands_far_back");
+		_root.add_child(_bg_islands_far_back._img);
+		
+		_bg_islands_far_near = SPParallaxScrollSprite.cons(
+			RTex.BG_NSKY1_BGISLANDS,
+			FileCache.inst().get_texrect(RTex.BG_NSKY1_BGISLANDS,"sky_new_bg_islands_far_1.png"),
+			new Vector3(3.5f,3.5f),
+			new Vector3(0,0,2900)
+			);
+		_bg_islands_far_near._img.set_manual_sort_z_order(GameAnchorZ.BGSky_BG_ELE1);
+		_bg_islands_far_near._img.set_name("_bg_islands_near");
+		_root.add_child(_bg_islands_far_near._img);
+		
+		_bg_islands = SPParallaxScrollSprite.cons(
+			RTex.BG_NSKY1_BG_OBJS,
+			FileCache.inst().get_texrect(RTex.BG_NSKY1_BG_OBJS,"sky_new_bg_islands.png"),
+			new Vector3(3.1f,3.1f),
+			new Vector3(0,0,2100)
+			);
+		_bg_islands._img.set_manual_sort_z_order(GameAnchorZ.BGSky_BG_ELE0);
 		_bg_islands._img.set_name("_bg_islands");
 		_root.add_child(_bg_islands._img);
-
+		
 		_bg_cliff_left = SPParallaxScrollSprite.cons(
-			RTex.BG_SKY_SPRITESHEET,
-			FileCache.inst().get_texrect(RTex.BG_SKY_SPRITESHEET,"bg_sky_cliffs_left.png"),
+			RTex.BG_NSKY1_BG_OBJS,
+			FileCache.inst().get_texrect(RTex.BG_NSKY1_BG_OBJS,"sky_new_left.png"),
 			new Vector3(1.5f,1.5f),
-			new Vector3(-750,0,0)
-		);
+			new Vector3(-550,0,500)
+			);
 		_bg_cliff_left._img.set_manual_sort_z_order(GameAnchorZ.BGSky_BG_SideCliffs);
 		_bg_cliff_left._img.set_name("_bg_cliff_left");
-		_bg_cliff_left_x.set_current(_bg_cliff_left._img._u_x);
-		_bg_cliff_left_x.set_target_vel(25.0f);
 		_root.add_child(_bg_cliff_left._img);
-
+		
 		_bg_cliff_right = SPParallaxScrollSprite.cons(
-			RTex.BG_SKY_SPRITESHEET,
-			FileCache.inst().get_texrect(RTex.BG_SKY_SPRITESHEET,"bg_sky_cliffs_right.png"),
+			RTex.BG_NSKY1_BG_OBJS,
+			FileCache.inst().get_texrect(RTex.BG_NSKY1_BG_OBJS,"sky_new_right.png"),
 			new Vector3(1.5f,1.5f),
-			new Vector3(750,0,0)
-		);
+			new Vector3(550,0,500)
+			);
 		_bg_cliff_right._img.set_manual_sort_z_order(GameAnchorZ.BGSky_BG_SideCliffs);
 		_bg_cliff_right._img.set_name("_bg_cliff_right");
-		_bg_cliff_right_x.set_current(_bg_cliff_right._img._u_x);
-		_bg_cliff_right_x.set_target_vel(25.0f);
 		_root.add_child(_bg_cliff_right._img);
-
-		_scroll_elements = new List<SPParallaxScrollSprite>() { _bg_islands, _bg_arcs, _bg_cliff_left, _bg_cliff_right };
-
+		
+		_bg_cliff_left_x = new DrptVal() {
+			_current = _bg_cliff_left._img._u_x,
+			_target = _bg_cliff_left._img._u_x,
+			_drptval = 1/10.0f
+		};
+		_bg_cliff_right_x = new DrptVal() {
+			_current = _bg_cliff_right._img._u_x,
+			_target = _bg_cliff_right._img._u_x,
+			_drptval = 1/10.0f
+		};
+		
+		_scroll_elements = new List<SPParallaxScrollSprite>() {
+			_bg_clouds,
+			_bg_islands_far_back,
+			_bg_islands_far_near,
+			_bg_islands,
+			_bg_cliff_left,
+			_bg_cliff_right
+		};
+		
+		_y_offset_in = 0;
+		
 		return this;
 	}
 
 	public void i_update(GameEngineScene g) {
 		this.update_sky_bg(g);
 	}
-
+	
+	private float _test = 0;
 	private void update_sky_bg(GameEngineScene g) {
 		if (!g.is_camera_underwater()) {
 			_sky_bg.set_enabled(true);
 			SPHitRect sky_bg_viewbox = g.get_viewbox_dist(_sky_bg.transform.position.z);
 			_sky_bg.set_tex_rect(new Rect(0,0,sky_bg_viewbox._x2-sky_bg_viewbox._x1,sky_bg_viewbox._y2-sky_bg_viewbox._y1+2000));
 			_sky_bg.set_u_pos(sky_bg_viewbox._x1,sky_bg_viewbox._y1-1000);
-
+			
 		} else {
 			_sky_bg.set_enabled(false);
 		}
-
-		if (GameMain._context._game_camera.transform.localPosition.y > 1500) {
-			_bg_cliff_left_x.set_target(-370);
-			_bg_cliff_right_x.set_target(280);
+		
+		_test += 0.4f * SPUtil.dt_scale_get();
+		_bg_clouds.set_x_offset(_test);
+		
+		
+		if (_y_offset_in > 1750) {
+			_bg_cliff_left_x._target = -550;
+			_bg_cliff_right_x._target = 550;
 		} else {
-			_bg_cliff_left_x.set_target(-800);
-			_bg_cliff_right_x.set_target(700);
+			_bg_cliff_left_x._target = -1500;
+			_bg_cliff_right_x._target = 1500;
 		}
-		_bg_cliff_left_x.i_update(SPUtil.dt_scale_get());
-		_bg_cliff_right_x.i_update(SPUtil.dt_scale_get());
-		_bg_cliff_left._img._u_x = _bg_cliff_left_x.get_current();
-		_bg_cliff_right._img._u_x = _bg_cliff_right_x.get_current();
-
+		_bg_cliff_left_x.i_update();
+		_bg_cliff_right_x.i_update();
+		_bg_cliff_left._img._u_x = _bg_cliff_left_x._current;
+		_bg_cliff_right._img._u_x = _bg_cliff_right_x._current;
+		
 		for (int i = 0; i < _scroll_elements.Count; i++) {
 			SPParallaxScrollSprite itr = _scroll_elements[i];
 			if (!g.is_camera_underwater()) {
@@ -123,15 +176,10 @@ public class BGSky : SPGameUpdateable, SPNodeHierarchyElement {
 				itr.set_enabled(false);
 			}
 		}
-		
-		//SPTODO -- fix
-		_bg_cliff_left.set_enabled(false);
-		_bg_cliff_right.set_enabled(false);
-		//
-
 	}
 	
 	public void set_y_offset(float val) {
+		_y_offset_in = val;
 		for (int i = 0; i < _scroll_elements.Count; i++) {
 			SPParallaxScrollSprite itr = _scroll_elements[i];
 			itr.set_y_offset(val);	

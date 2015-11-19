@@ -148,6 +148,7 @@ public class SPText : SPNode, SPMainUpdateable {
 		_name_to_styles = new Dictionary<string, SPTextStyle>();
 		_time = 0;
 		_animate_text_in_ct = 0;
+		this.set_opacity(1);
 		
 		_default_style = default_style;
 		_text_anchor = Vector2.zero;
@@ -271,6 +272,7 @@ public class SPText : SPNode, SPMainUpdateable {
 			neu_char.set_char_name(c);
 			neu_char.set_manual_sort_z_order(_zord);
 			neu_char._img.set_layer(_layer);
+			neu_char.set_opacity(_opacity);
 			neu_char.add_to_parent(_pivot_node);
 			_characters.Add(neu_char);
 			
@@ -295,6 +297,14 @@ public class SPText : SPNode, SPMainUpdateable {
 		_rendered_size = tmpSize;
 		this.update_pivot_text_anchor();
 		return this;
+	}
+	
+	private float _opacity;
+	public void set_opacity(float val) {
+		_opacity = val;
+		for (int i = 0; i < _characters.Count; i++) {
+			_characters[i].set_opacity(val);
+		}	
 	}
 	
 	public void set_text_anchor(float x, float y) {

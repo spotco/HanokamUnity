@@ -12,6 +12,7 @@ public class InAirSubUI_ArrowsUI : InAirGameStateUpdateable, SPNodeHierarchyElem
 	private SPSprite _bar_back, _bar_fill;
 	private Rect _bar_fill_rect;
 	private UIRoot _ui_root;
+	private SPText _arrow_count_text;
 	
 	private InAirSubUI_ArrowsUI i_cons(UIRoot ui) {
 		_ui_root = ui;
@@ -35,6 +36,22 @@ public class InAirSubUI_ArrowsUI : InAirGameStateUpdateable, SPNodeHierarchyElem
 		_bar_fill.set_layer(RLayer.UI);
 		_root.add_child(_bar_fill);
 		
+		_arrow_count_text = SPText.cons_text(
+			RTex.DIALOGUE_FONT,
+			RFnt.DIALOGUE_FONT,
+			SPText.SPTextStyle.cons(
+				new Vector4(0.15f,0.15f,0.15f,1),
+				new Vector4(0.75f,0.75f,0.75f,1),
+				new Vector4(0,0,0,1),0,0
+			));
+		_arrow_count_text.set_manual_sort_z_order(GameAnchorZ.HUD_BASE+2);
+		_arrow_count_text.set_layer(RLayer.UI);
+		_arrow_count_text.set_text_anchor(0.5f,0.5f);
+		_arrow_count_text.set_scale(0.75f);
+		_arrow_count_text.set_u_pos(30,5);
+		_arrow_count_text.set_markup_text("0");
+		_bar_back.add_child(_arrow_count_text);
+		
 		this.set_bar_fill_pct(0.5f);
 		this.set_ui_opacity(1.0f);
 		
@@ -50,6 +67,7 @@ public class InAirSubUI_ArrowsUI : InAirGameStateUpdateable, SPNodeHierarchyElem
 	private void set_ui_opacity(float val) {
 		_bar_back.set_opacity(0.85f * val);
 		_bar_fill.set_opacity(_bar_back.get_opacity());
+		_arrow_count_text.set_opacity(val);
 	}
 	
 	private int _last_frame_arrow_count;
@@ -59,7 +77,7 @@ public class InAirSubUI_ArrowsUI : InAirGameStateUpdateable, SPNodeHierarchyElem
 	public void i_update(GameEngineScene g, InAirGameState state) {
 		_root.set_u_pos(SPUtil.vec_add(UIRoot.u_pos_to_ui_pos(g._player.get_u_pos()), new Vector2(-50, 145)));
 		this.set_bar_fill_pct(state._params._arrow_count / ((float)state._params.get_arrow_count_max()));
-		
+		_arrow_count_text.set_markup_text(string.Format("{0}", state._params._arrow_count));
 		if (_last_frame_arrow_count != state._params._arrow_count) {
 			_time_since_last_arrow_count_change = 0;
 		} else {

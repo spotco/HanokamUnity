@@ -16,6 +16,7 @@ public class EnemyBulletProjectile : AirProjectileBase, GenericPooledObject {
 		_root = SPNode.cons_node();
 		_root.set_name("EnemyBulletProjectile");
 		_sprite = SPSprite.cons_sprite_texkey_texrect(RTex.ENEMY_EFFECTS, FileCache.inst().get_texrect(RTex.ENEMY_EFFECTS,"enemy_bullet_normal_000.png"));
+		_sprite.set_manual_sort_z_order(GameAnchorZ.Enemy_FX);
 		_root.add_child(_sprite);
 		_animator = SPSpriteAnimator.cons(_sprite)
 			.add_anim("play", 
