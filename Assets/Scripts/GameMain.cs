@@ -15,6 +15,7 @@ public class GameMain : SPBaseBehavior {
 		
 	fish underwater implementation
 	kelsey underwater art
+	blur make manual
 	
 	ICEBOX--
 	_c_pos center should not be tied to camera

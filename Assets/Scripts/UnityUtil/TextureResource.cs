@@ -23,7 +23,8 @@ public class RTex {
 	public static string BG_WATER_TOP_WATERLINEGRAD = "background/waterline_tex/bg_water_top_waterlinegrad";
 	public static string BG_WATER_BOTTOM_SURFACEGRAD = "background/waterline_tex/bg_water_bottom_surfacegrad";
 
-	public static string BG_NUNDERWATER_BG = "background/nunderwater/nunderwater_bg";
+	public static string BG_NUNDERWATER_BG_1 = "background/nunderwater/nunderwater_bg";
+	public static string BG_NUNDERWATER_BG_2 = "background/nunderwater/nunderwater_bg_2";
 	public static string BG_NUNDERWATER_TEMPLE = "background/nunderwater/nunderwater_temple";
 	public static string BG_NUNDERWATER_FADE = "background/nunderwater/nunderwater_fade";
 	

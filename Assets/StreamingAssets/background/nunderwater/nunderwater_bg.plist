@@ -5,134 +5,46 @@
 	<key>frames</key>
 	<dict>
 		
-		<key>underwater_bg.png</key>
+		<key>underwater_bg_far_1.png</key>
 		<dict>
 			<key>aliases</key>
 			<array>
 			
 			</array>
 			<key>spriteColorRect</key>
-			<string>{{0, 0}, {1024, 1024}}</string>
+			<string>{{0, 0}, {1024, 2048}}</string>
 			<key>spriteOffset</key>
 			<string>{0, -0}</string>
 			<key>spriteSize</key>
-			<string>{1024, 1024}</string>
+			<string>{1024, 2048}</string>
 			<key>spriteSourceSize</key>
-			<string>{1024, 1024}</string>
+			<string>{1024, 2048}</string>
 			<key>spriteTrimmed</key>
 			<true/>
 			<key>textureRect</key>
-			<string>{{0, 0}, {1024, 1024}}</string>
+			<string>{{0, 0}, {1024, 2048}}</string>
 			<key>textureRotated</key>
 			<false/>
 		</dict>
 		
-		<key>underwater_bg_back_cliff_left.png</key>
+		<key>underwater_bg_far_2.png</key>
 		<dict>
 			<key>aliases</key>
 			<array>
 			
 			</array>
 			<key>spriteColorRect</key>
-			<string>{{0, 0}, {500, 1024}}</string>
+			<string>{{0, 0}, {1024, 2048}}</string>
 			<key>spriteOffset</key>
 			<string>{0, -0}</string>
 			<key>spriteSize</key>
-			<string>{500, 1024}</string>
+			<string>{1024, 2048}</string>
 			<key>spriteSourceSize</key>
-			<string>{500, 1024}</string>
+			<string>{1024, 2048}</string>
 			<key>spriteTrimmed</key>
 			<true/>
 			<key>textureRect</key>
-			<string>{{2052, 0}, {500, 1024}}</string>
-			<key>textureRotated</key>
-			<false/>
-		</dict>
-		
-		<key>underwater_bg_back_cliff_right.png</key>
-		<dict>
-			<key>aliases</key>
-			<array>
-			
-			</array>
-			<key>spriteColorRect</key>
-			<string>{{0, 0}, {459, 1024}}</string>
-			<key>spriteOffset</key>
-			<string>{0, -0}</string>
-			<key>spriteSize</key>
-			<string>{459, 1024}</string>
-			<key>spriteSourceSize</key>
-			<string>{459, 1024}</string>
-			<key>spriteTrimmed</key>
-			<true/>
-			<key>textureRect</key>
-			<string>{{3041, 0}, {459, 1024}}</string>
-			<key>textureRotated</key>
-			<false/>
-		</dict>
-		
-		<key>underwater_bg_front_cliff_left.png</key>
-		<dict>
-			<key>aliases</key>
-			<array>
-			
-			</array>
-			<key>spriteColorRect</key>
-			<string>{{0, 0}, {485, 1024}}</string>
-			<key>spriteOffset</key>
-			<string>{0, -0}</string>
-			<key>spriteSize</key>
-			<string>{485, 1024}</string>
-			<key>spriteSourceSize</key>
-			<string>{485, 1024}</string>
-			<key>spriteTrimmed</key>
-			<true/>
-			<key>textureRect</key>
-			<string>{{2554, 0}, {485, 1024}}</string>
-			<key>textureRotated</key>
-			<false/>
-		</dict>
-		
-		<key>underwater_bg_front_cliff_right.png</key>
-		<dict>
-			<key>aliases</key>
-			<array>
-			
-			</array>
-			<key>spriteColorRect</key>
-			<string>{{0, 0}, {431, 1024}}</string>
-			<key>spriteOffset</key>
-			<string>{0, -0}</string>
-			<key>spriteSize</key>
-			<string>{431, 1024}</string>
-			<key>spriteSourceSize</key>
-			<string>{431, 1024}</string>
-			<key>spriteTrimmed</key>
-			<true/>
-			<key>textureRect</key>
-			<string>{{3502, 0}, {431, 1024}}</string>
-			<key>textureRotated</key>
-			<false/>
-		</dict>
-		
-		<key>underwater_far_bg.png</key>
-		<dict>
-			<key>aliases</key>
-			<array>
-			
-			</array>
-			<key>spriteColorRect</key>
-			<string>{{0, 0}, {1024, 1024}}</string>
-			<key>spriteOffset</key>
-			<string>{0, -0}</string>
-			<key>spriteSize</key>
-			<string>{1024, 1024}</string>
-			<key>spriteSourceSize</key>
-			<string>{1024, 1024}</string>
-			<key>spriteTrimmed</key>
-			<true/>
-			<key>textureRect</key>
-			<string>{{1026, 0}, {1024, 1024}}</string>
+			<string>{{1024, 0}, {1024, 2048}}</string>
 			<key>textureRotated</key>
 			<false/>
 		</dict>
@@ -145,7 +57,7 @@
 		<key>format</key>
 		<integer>3</integer>
 		<key>size</key>
-		<string>{4096, 1024}</string>
+		<string>{2048, 2048}</string>
 		<key>name</key>
 		<string>nunderwater_bg</string>
 		<key>target</key>

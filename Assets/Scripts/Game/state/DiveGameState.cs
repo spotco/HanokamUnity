@@ -36,7 +36,7 @@ public class DiveGameState : GameStateBase {
 		_params._vel = new Vector2(0,-22);
 		_params._mode = Mode.TransitionIn;
 		_params._dashing = false;
-		_params._ground_depth = -5500;
+		_params._ground_depth = -10000;
 
 		g._bg_water.set_ground_depth(_params._ground_depth);
 
