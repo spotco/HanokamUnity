@@ -8,17 +8,26 @@ public interface SPMainUpdateable {
 public class GameMain : SPBaseBehavior {
 	/**
 	TODO--
-	underwater gameplay work
-		-new swimspin anim
-		-center at zero like airstate 
-		-make some patterns
-		
-	fish underwater implementation
-	kelsey underwater art
-	blur make manual
+	---Underwater gameplay
+	-Center at zero, relative move
+	-Pattern spawn system
+	-puffer moving 2point
+	-breath health system
+	-bubble stationary
+	-bubble moving 2point
+	-jelly movepoints
+	-eel side to side bezier
+	-enemy pass notice mode
+	-follow wall
+	-orb spawn spirit shark swim back art transition
 	
-	ICEBOX--
+	---Pattern spawn editor	
+	---Inair gameplay
+	
+	LATER--
+	fish underwater implementation
 	_c_pos center should not be tied to camera
+	blur make manual
 	**/
 
 	public static GameMain _context;
