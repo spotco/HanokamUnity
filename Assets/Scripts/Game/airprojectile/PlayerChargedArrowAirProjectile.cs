@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections.Generic;
 
 public class PlayerChargedArrowAirProjectile : AirProjectileBase, GenericPooledObject {
@@ -71,7 +71,7 @@ public class PlayerChargedArrowAirProjectile : AirProjectileBase, GenericPooledO
 		}
 		
 		for (int i_enemy = 0; i_enemy < state._enemy_manager._active_enemies.Count; i_enemy++) {
-			BaseAirEnemy itr_enemy = state._enemy_manager._active_enemies[i_enemy];
+			IAirEnemy itr_enemy = state._enemy_manager._active_enemies[i_enemy];
 			if (!_hit_ids.Contains(itr_enemy.get_id()) && SPHitPoly.polyowners_intersect(this,itr_enemy)) {
 				itr_enemy.apply_hit(g,BaseAirEnemyHitType.PersistentProjectile,200,SPUtil.vec_sub(itr_enemy.get_u_pos(),_root.get_u_pos()));
 				_hit_ids.Add(itr_enemy.get_id());

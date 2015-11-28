@@ -48,7 +48,7 @@ public class PlayerArrowAirProjectile : AirProjectileBase, GenericPooledObject {
 	private Mode _current_mode;
 	private Vector2 _stuck_offset;
 	private Vector2 _fall_vel;
-	private BaseAirEnemy _stuck_enemy;
+	private IAirEnemy _stuck_enemy;
 	private float _initial_vel;
 	
 	private PlayerArrowAirProjectile i_cons(Vector2 pos, Vector2 dir, float vel) {
@@ -68,9 +68,9 @@ public class PlayerArrowAirProjectile : AirProjectileBase, GenericPooledObject {
 		case Mode.Flying: {
 			_sprite_outline.set_opacity(SPUtil.drpt(_sprite_outline.get_opacity(),1,1/20.0f));
 			
-			List<BaseAirEnemy> air_enemies = state._enemy_manager._active_enemies;
+			List<IAirEnemy> air_enemies = state._enemy_manager._active_enemies;
 			for (int i = 0; i < air_enemies.Count; i++) {
-				BaseAirEnemy itr = air_enemies[i];
+				IAirEnemy itr = air_enemies[i];
 				if (SPHitPoly.polyowners_intersect(this,itr)) {
 					_stuck_offset = SPUtil.vec_sub(_root.get_u_pos(),itr.get_u_pos());
 					_current_mode = Mode.Stuck;

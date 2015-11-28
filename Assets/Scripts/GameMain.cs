@@ -9,8 +9,7 @@ public class GameMain : SPBaseBehavior {
 	/**
 	TODO--
 	---Underwater gameplay
-	-Pattern spawn system
-	-puffer moving 2point
+	-puffer reimplement mechanics
 	-breath health system
 	-bubble stationary
 	-bubble moving 2point

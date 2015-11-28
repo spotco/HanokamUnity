@@ -8,7 +8,7 @@ public enum BaseAirEnemyHitType {
 	SwordDash
 }
 
-public abstract class BaseAirEnemy : InAirGameStateUpdateable, SPNodeHierarchyElement, SPHitPolyOwner {
+public abstract class IAirEnemy : InAirGameStateUpdateable, SPNodeHierarchyElement, SPHitPolyOwner {
 	public virtual void spawn_at_c_position(GameEngineScene g, Vector2 pos) {}
 	public virtual void i_update(GameEngineScene g, InAirGameState state) {}
 	public virtual void add_to_parent(SPNode parent) {}
@@ -25,7 +25,7 @@ public abstract class BaseAirEnemy : InAirGameStateUpdateable, SPNodeHierarchyEl
 }
 
 public class QueuedSpawnAirEnemy {
-	public BaseAirEnemy _enemy;
+	public IAirEnemy _enemy;
 	public Vector3 _pos;
 	public float _ct;
 	public float _ct_max;
@@ -60,7 +60,7 @@ public class AirEnemyManager : InAirGameStateUpdateable, GenericPooledObject {
 	}
 	
 	public List<QueuedSpawnAirEnemy> _queued_spawn_enemies = new List<QueuedSpawnAirEnemy>();
-	public List<BaseAirEnemy> _active_enemies = new List<BaseAirEnemy>();
+	public List<IAirEnemy> _active_enemies = new List<IAirEnemy>();
 	public AirEnemyManager i_cons(GameEngineScene g) {
 		return this;
 	}
@@ -77,7 +77,7 @@ public class AirEnemyManager : InAirGameStateUpdateable, GenericPooledObject {
 			}
 		}
 		for (int i = _active_enemies.Count-1; i >= 0; i--) {
-			BaseAirEnemy itr = _active_enemies[i];
+			IAirEnemy itr = _active_enemies[i];
 			itr.i_update(g,state);
 			if (itr.should_remove()) {
 				itr.do_remove();
@@ -88,12 +88,12 @@ public class AirEnemyManager : InAirGameStateUpdateable, GenericPooledObject {
 	
 	public void debug_draw_hitboxes(SPDebugRender draw) {
 		for (int i = _active_enemies.Count-1; i >= 0; i--) {
-			BaseAirEnemy itr = _active_enemies[i];
+			IAirEnemy itr = _active_enemies[i];
 			draw.draw_hitpoly_owner(itr,new Color(0.8f, 0.2f, 0.2f, 0.5f), new Color(0.8f, 0.2f, 0.2f, 0.8f));
 		}
 	}
 	
-	public void add_enemy(BaseAirEnemy enemy, Vector2 spawn_position, float delay) {
+	public void add_enemy(IAirEnemy enemy, Vector2 spawn_position, float delay) {
 		_queued_spawn_enemies.Add(new QueuedSpawnAirEnemy() {
 			_ct = 0,
 			_ct_max = delay,

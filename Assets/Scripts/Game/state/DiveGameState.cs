@@ -174,6 +174,7 @@ public class DiveGameState : GameStateBase {
 		g._bg_water.set_y_offset(_params._player_pos.y);
 		g._bg_village.set_u_pos(0, -_params._player_pos.y);
 		g._player.set_u_pos(_params._player_pos.x, 0);
+		_enemy_manager.set_offset_y(_params._player_pos.y);
 		
 		/*
 		switch (_params._mode) {

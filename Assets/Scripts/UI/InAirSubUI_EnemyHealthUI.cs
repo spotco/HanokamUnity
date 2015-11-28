@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections.Generic;
 
 public class InAirSubUI_EnemyHealthUI : InAirGameStateUpdateable, SPNodeHierarchyElement {
@@ -31,7 +31,7 @@ public class InAirSubUI_EnemyHealthUI : InAirGameStateUpdateable, SPNodeHierarch
 			__active_enemy_ids.Add(itr._enemy_id);
 		}
 		for (int i = 0; i < state._enemy_manager._active_enemies.Count; i++) {
-			BaseAirEnemy itr = state._enemy_manager._active_enemies[i];
+			IAirEnemy itr = state._enemy_manager._active_enemies[i];
 			int itr_id = itr.get_id();
 			if (!__active_enemy_ids.Contains(itr_id)) {
 				this.add_particle(EnemyHealthBarUIParticle.cons(itr_id));
@@ -109,9 +109,9 @@ public class EnemyHealthBarUIParticle : SPParticle, GenericPooledObject, SPNodeH
 		InAirGameState state;
 		if (!SPUtil.cond_cast<InAirGameState>(context, out state)) return;
 		
-		BaseAirEnemy tar = null;
+		IAirEnemy tar = null;
 		for (int i = 0; i < state._enemy_manager._active_enemies.Count; i++) {
-			BaseAirEnemy itr = state._enemy_manager._active_enemies[i];
+			IAirEnemy itr = state._enemy_manager._active_enemies[i];
 			if (itr.get_id() == _enemy_id) {
 				tar = itr;
 				break;

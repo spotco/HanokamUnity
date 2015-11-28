@@ -8,7 +8,7 @@ public abstract class BasicAirEnemyModeComponent {
 	public virtual void i_update(GameEngineScene g, InAirGameState state, BasicAirEnemy enemy) {}
 }
 
-public abstract class BasicAirEnemy : BaseAirEnemy, GenericPooledObject {
+public abstract class BasicAirEnemy : IAirEnemy, GenericPooledObject {
 	private SPNode _root;
 	public SPNode get_root() { return _root; }
 	public override Vector2 get_u_pos() { return _root.get_u_pos(); }

@@ -6,6 +6,7 @@ public class PufferBasicAirEnemy : BasicAirEnemy {
 	public static PufferBasicAirEnemy cons(GameEngineScene g, Vector3 end_pt) {
 		return (ObjectPool.inst().generic_depool<PufferBasicAirEnemy>()).i_cons(g,end_pt);
 	}
+	//SPTODO -- I don't think this class is pooling properly
 	
 	private PufferEnemySprite _img;
 	public override void depool() {
