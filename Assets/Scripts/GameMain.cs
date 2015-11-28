@@ -9,7 +9,6 @@ public class GameMain : SPBaseBehavior {
 	/**
 	TODO--
 	---Underwater gameplay
-	-Center at zero, relative move
 	-Pattern spawn system
 	-puffer moving 2point
 	-breath health system

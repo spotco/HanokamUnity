@@ -211,6 +211,12 @@ public class PlayerCharacterAnims {
 }
 
 public class PlayerCharacterUtil {
+
+	public static Vector2 pos_in_bounds(float x, float y) {
+		SPRange bounds_ext = SPUtil.get_horiz_world_bounds().extend(-50);
+		return new Vector2(Mathf.Clamp(x,bounds_ext._min,bounds_ext._max),y);
+	}
+
 	public static void move_in_bounds(PlayerCharacter player, float x, float y) {
 		SPRange bounds_ext = SPUtil.get_horiz_world_bounds().extend(-50);
 		player.set_u_pos(Mathf.Clamp(x,bounds_ext._min,bounds_ext._max),y);

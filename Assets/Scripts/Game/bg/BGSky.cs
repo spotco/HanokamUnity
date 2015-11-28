@@ -6,14 +6,6 @@ public class BGSky : SPGameUpdateable, SPNodeHierarchyElement {
 	private SPNode _root;
 	private SPSprite _sky_bg;
 	
-	/*
-	private SPParallaxScrollSprite _bg_arcs, _bg_islands;
-	private SPParallaxScrollSprite _bg_cliff_left, _bg_cliff_right;
-	
-	private ELMVal _bg_cliff_left_x = ELMVal.cons();
-	private ELMVal _bg_cliff_right_x = ELMVal.cons();
-	*/
-	
 	private SPParallaxScrollSprite _bg_clouds;
 	private SPParallaxScrollSprite _bg_islands_far_back;
 	private SPParallaxScrollSprite _bg_islands_far_near;
@@ -141,19 +133,19 @@ public class BGSky : SPGameUpdateable, SPNodeHierarchyElement {
 	
 	private float _test = 0;
 	private void update_sky_bg(GameEngineScene g) {
-		if (!g.is_camera_underwater()) {
-			_sky_bg.set_enabled(true);
+		if (this.is_sky_visible(g)) {
+			_root.set_enabled(true);
 			SPHitRect sky_bg_viewbox = g.get_viewbox_dist(_sky_bg.transform.position.z);
 			_sky_bg.set_tex_rect(new Rect(0,0,sky_bg_viewbox._x2-sky_bg_viewbox._x1,sky_bg_viewbox._y2-sky_bg_viewbox._y1+2000));
 			_sky_bg.set_u_pos(sky_bg_viewbox._x1,sky_bg_viewbox._y1-1000);
 			
 		} else {
-			_sky_bg.set_enabled(false);
+			_root.set_enabled(false);
+			return;
 		}
 		
 		_test += 0.4f * SPUtil.dt_scale_get();
 		_bg_clouds.set_x_offset(_test);
-		
 		
 		if (_y_offset_in > 1750) {
 			_bg_cliff_left_x._target = -550;
@@ -169,13 +161,13 @@ public class BGSky : SPGameUpdateable, SPNodeHierarchyElement {
 		
 		for (int i = 0; i < _scroll_elements.Count; i++) {
 			SPParallaxScrollSprite itr = _scroll_elements[i];
-			if (!g.is_camera_underwater()) {
-				itr.i_update(g);
-				itr.set_enabled(true);
-			} else {
-				itr.set_enabled(false);
-			}
+			itr.i_update(g);
 		}
+	}
+	
+	private bool is_sky_visible(GameEngineScene g) {
+		GameStateIdentifier cur_state = g.get_top_game_state().get_state();
+		return cur_state == GameStateIdentifier.InAir;
 	}
 	
 	public void set_y_offset(float val) {

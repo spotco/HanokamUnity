@@ -7,17 +7,20 @@ public class BGWater : SPGameUpdateable, CameraRenderHookDelegate, SPNodeHierarc
 	public void set_u_pos(float x, float y) { _root.set_u_pos(x,y); }
 	public Vector2 get_u_pos() { return _root.get_u_pos(); }
 	public void set_enabled(bool val) { _root.set_enabled(val); }
-
+	
+	private SPSprite _water_bg;
+	
+	private SPNode _offset_root;
 	private SPSprite _surf_ele_1, _surf_ele_2, _surf_ele_3;
+	private SPSprite _top_fade;
+	private BGWaterGround _lake_bottom_ground;
+	private BGWaterLineBelow _waterlinebelow;
+	
+	private float _y_offset_in;
 
 	private List<SPParallaxScrollSprite> _underwater_scroll_elements;
 	
-	private SPSprite _top_fade;
-	private SPSprite _water_bg;
 
-	private BGWaterGround _lake_bottom_ground;
-
-	private BGWaterLineBelow _waterlinebelow;
 	
 	public static BGWater cons(GameEngineScene g) {
 		return (new BGWater()).i_cons(g);
@@ -27,19 +30,13 @@ public class BGWater : SPGameUpdateable, CameraRenderHookDelegate, SPNodeHierarc
 		parent.add_child(_root);
 	}
 
-	private SPSprite _fish_test;
-
 	public BGWater i_cons(GameEngineScene g) {
 		_root = SPNode.cons_node();
 		_root.set_name("BGWater");
-
-		_fish_test = SPSprite.cons_sprite_texkey_texrect(RTex.BG_NUNDERWATER_FISH_TEST,SPUtil.texture_default_rect(RTex.BG_NUNDERWATER_FISH_TEST));
-		_fish_test.set_name("fish_test");
-		_fish_test.set_manual_sort_z_order(GameAnchorZ.BGWater_BG_ELE3);
-		_fish_test.set_u_pos(0,-1831);
-		_fish_test.set_u_z(215);
-		_fish_test.set_rotation(45);
-		_root.add_child(_fish_test);
+		
+		_offset_root = SPNode.cons_node();
+		_offset_root.set_name("_offset_root");
+		_root.add_child(_offset_root);
 
 		_water_bg = SPSprite.cons_sprite_texkey_texrect(
 			RTex.BG_TILE_WATER,
@@ -66,7 +63,7 @@ public class BGWater : SPGameUpdateable, CameraRenderHookDelegate, SPNodeHierarc
 		_surf_ele_3.set_u_pos(0,123);
 		_surf_ele_3.set_name("_surf_ele_3");
 		_surf_ele_3.gameObject.layer = RLayer.get_layer(RLayer.UNDERWATER_ELEMENTS);
-		_root.add_child(_surf_ele_3);
+		_offset_root.add_child(_surf_ele_3);
 
 		_surf_ele_2 = SPSprite.cons_sprite_texkey_texrect(
 			RTex.BG_SPRITESHEET_1,
@@ -79,7 +76,7 @@ public class BGWater : SPGameUpdateable, CameraRenderHookDelegate, SPNodeHierarc
 		_surf_ele_2.set_u_pos(0,74);
 		_surf_ele_2.set_name("_surf_ele_2");
 		_surf_ele_2.gameObject.layer = RLayer.get_layer(RLayer.UNDERWATER_ELEMENTS);
-		_root.add_child(_surf_ele_2);
+		_offset_root.add_child(_surf_ele_2);
 
 		_surf_ele_1 = SPSprite.cons_sprite_texkey_texrect(
 			RTex.BG_SPRITESHEET_1,
@@ -91,7 +88,7 @@ public class BGWater : SPGameUpdateable, CameraRenderHookDelegate, SPNodeHierarc
 		_surf_ele_1.set_u_pos(0,-69);
 		_surf_ele_1.set_name("_surf_ele_1");
 		_surf_ele_1.gameObject.layer = RLayer.get_layer(RLayer.UNDERWATER_ELEMENTS);
-		_root.add_child(_surf_ele_1);
+		_offset_root.add_child(_surf_ele_1);
 
 		// ----
 		
@@ -145,9 +142,6 @@ public class BGWater : SPGameUpdateable, CameraRenderHookDelegate, SPNodeHierarc
 		
 
 		_underwater_scroll_elements = new List<SPParallaxScrollSprite>() { back_cliff_left, underwater_bg_mid_cliff, underwater_bg_far_1, underwater_bg_far_2 };
-			/*near_cliff_left, near_cliff_right, back_cliff_left, back_cliff_right, far_bg, back_bg };*/
-
-
 		// -------
 
 		_top_fade = SPSprite.cons_sprite_texkey_texrect(
@@ -160,7 +154,7 @@ public class BGWater : SPGameUpdateable, CameraRenderHookDelegate, SPNodeHierarc
 		_top_fade.set_scale_y(-2.5f);
 		_top_fade.set_u_pos(0,-1350);
 		_top_fade.gameObject.layer = RLayer.get_layer(RLayer.UNDERWATER_ELEMENTS);
-		_root.add_child(_top_fade);
+		_offset_root.add_child(_top_fade);
 
 		_surface_gradient = SPSprite.cons_sprite_texkey_texrect(
 			RTex.BG_UNDERWATER_SURFACE_GRADIENT,
@@ -171,10 +165,9 @@ public class BGWater : SPGameUpdateable, CameraRenderHookDelegate, SPNodeHierarc
 		_surface_gradient.set_scale_y(4f);
 		_surface_gradient.set_u_pos(0,-116);
 		_surface_gradient.gameObject.layer = RLayer.get_layer(RLayer.UNDERWATER_ELEMENTS);
-		
-		_root.add_child(_surface_gradient);
+		_offset_root.add_child(_surface_gradient);
 
-		_surface_reflection = BGReflection.cons(_root,"Default")
+		_surface_reflection = BGReflection.cons(_offset_root,"Default")
 			.set_name("_surface_reflection")
 			.set_scale(4.75f,4.75f)
 			.set_camera_pos(0,526,-1040)
@@ -184,17 +177,17 @@ public class BGWater : SPGameUpdateable, CameraRenderHookDelegate, SPNodeHierarc
 			.set_alpha_sub(0.25f)
 			.set_opacity(0.65f)
 			.manual_set_camera_cullingmask(
-					int.MaxValue
-						& ~(1 << RLayer.get_layer(RLayer.REFLECTIONS))
-						& ~(1 << RLayer.get_layer(RLayer.UNDERWATER_ELEMENTS))
-						& ~(1 << RLayer.get_layer(RLayer.SPRITER_NODE))
+				int.MaxValue
+					& ~(1 << RLayer.get_layer(RLayer.REFLECTIONS))
+					& ~(1 << RLayer.get_layer(RLayer.UNDERWATER_ELEMENTS))
+					& ~(1 << RLayer.get_layer(RLayer.SPRITER_NODE))
 			);
 
-		_waterlinebelow = BGWaterLineBelow.cons(_root);
+		_waterlinebelow = BGWaterLineBelow.cons(_offset_root);
 		_waterlinebelow.set_u_pos(0,-168);
 		_waterlinebelow.set_u_z(0);
 
-		_lake_bottom_ground = BGWaterGround.cons(g,_root);
+		_lake_bottom_ground = BGWaterGround.cons(g,_offset_root);
 		_lake_bottom_ground.set_u_pos(0,-5000);
 
 		return this;
@@ -250,25 +243,25 @@ public class BGWater : SPGameUpdateable, CameraRenderHookDelegate, SPNodeHierarc
 	public void i_update(GameEngineScene g) {
 		_surface_reflection_bgvillage_hook_target = g._bg_village;
 		this.update_water_bg(g);
-		_surf_ele_3.set_enabled(g.get_viewbox_dist(_surf_ele_3.transform.position.z).get_center().y > -90);
 
 		for (int i = 0; i < this._underwater_scroll_elements.Count; i++) {
 			SPParallaxScrollSprite itr = this._underwater_scroll_elements[i];
-			if (g.is_camera_underwater()) {
+			if (this.is_underwater(g)) {
 				itr.set_enabled(true);
 				itr.i_update(g);
 			} else {
 				itr.set_enabled(false);
 			}
 		}
-
-		Rect fish_test_rect = _fish_test.texrect();
-		fish_test_rect.position = new Vector2((fish_test_rect.position.x + 1.25f * SPUtil.dt_scale_get())%fish_test_rect.size.x,fish_test_rect.position.y);
-		_fish_test.set_tex_rect(fish_test_rect);
+	}
+	
+	private bool is_underwater(GameEngineScene g) {
+		GameStateIdentifier cur_state = g.get_top_game_state().get_state();
+		return cur_state == GameStateIdentifier.Dive || cur_state == GameStateIdentifier.DiveReturn;
 	}
 
 	private void update_water_bg(GameEngineScene g) {
-		if (g.is_camera_underwater()) {
+		if (this.is_underwater(g)) {
 			_water_bg.set_enabled(true);
 			SPHitRect water_bg_viewbox = g.get_viewbox_dist(_water_bg.transform.position.z);
 			_water_bg.set_tex_rect(new Rect(0,0,water_bg_viewbox._x2-water_bg_viewbox._x1,water_bg_viewbox._y2-water_bg_viewbox._y1+2000));
@@ -280,12 +273,44 @@ public class BGWater : SPGameUpdateable, CameraRenderHookDelegate, SPNodeHierarc
 			_waterlinebelow.i_update(g);
 
 			_lake_bottom_ground.i_update(g);
+			
+			_surf_ele_2.set_enabled(false);
+			_surf_ele_3.set_enabled(false);
 
 		} else {
 			_surface_gradient.set_enabled(false);
 			_surface_reflection.set_enabled(false);
 			_water_bg.set_enabled(false);
 			_waterlinebelow.set_enabled(false);
+			
+			_surf_ele_2.set_enabled(true);
+			_surf_ele_3.set_enabled(true);
+			
 		}
 	}
+	
+	public void set_y_offset(float val) {
+		_y_offset_in = val;
+		for (int i = 0; i < _underwater_scroll_elements.Count; i++) {
+			SPParallaxScrollSprite itr = _underwater_scroll_elements[i];
+			itr.set_y_offset(val);	
+		}
+		_offset_root.set_u_pos(0, -_y_offset_in);
+	}
+	public float get_y_offset() {
+		return _y_offset_in;
+	}
 }
+
+/*
+_fish_test = SPSprite.cons_sprite_texkey_texrect(RTex.BG_NUNDERWATER_FISH_TEST,SPUtil.texture_default_rect(RTex.BG_NUNDERWATER_FISH_TEST));
+_fish_test.set_name("fish_test");
+_fish_test.set_manual_sort_z_order(GameAnchorZ.BGWater_BG_ELE3);
+_fish_test.set_u_pos(0,-1831);
+_fish_test.set_u_z(215);
+_fish_test.set_rotation(45);
+_root.add_child(_fish_test);
+Rect fish_test_rect = _fish_test.texrect();
+fish_test_rect.position = new Vector2((fish_test_rect.position.x + 1.25f * SPUtil.dt_scale_get())%fish_test_rect.size.x,fish_test_rect.position.y);
+_fish_test.set_tex_rect(fish_test_rect);
+*/

@@ -233,20 +233,23 @@ public class BGVillage : SPGameUpdateable, SPNodeHierarchyElement {
 
 	public void i_update(GameEngineScene g) {
 		for (int i = 0; i < _reflections.Count; i++) {
-			_reflections[i].set_enabled(!g.is_camera_underwater());
+			_reflections[i].set_enabled(this.is_above_water(g));
 		}
-		if (g.is_camera_underwater()) {
+		if (this.is_above_water(g)) {
+			_waterlineabove.set_enabled(true);
+			_waterlineabove.i_update(g);
+			_bldg_1.gameObject.layer = RLayer.get_layer(RLayer.REFLECTION_OBJECTS_1);
+			_bldg_2.gameObject.layer = RLayer.get_layer(RLayer.REFLECTION_OBJECTS_2);
+		} else {
 			_waterlineabove.set_enabled(false);
 			_bldg_1.gameObject.layer = RLayer.get_layer(RLayer.SURFACEREFLECTION_ONLY);
 			_bldg_2.gameObject.layer = RLayer.get_layer(RLayer.SURFACEREFLECTION_ONLY);
-		} else {
-			_waterlineabove.set_enabled(true);
-			_waterlineabove.i_update(g);
-
-			_bldg_1.gameObject.layer = RLayer.get_layer(RLayer.REFLECTION_OBJECTS_1);
-			_bldg_2.gameObject.layer = RLayer.get_layer(RLayer.REFLECTION_OBJECTS_2);
 		}
-
+	}
+	
+	private bool is_above_water(GameEngineScene g) {
+		GameStateIdentifier cur_state = g.get_top_game_state().get_state();
+		return cur_state == GameStateIdentifier.OnGround || cur_state == GameStateIdentifier.InAir;
 	}
 
 }

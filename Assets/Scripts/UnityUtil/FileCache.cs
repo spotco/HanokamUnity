@@ -104,6 +104,15 @@ public class FileCache {
 		}
 		return _key_to_fntfile[key];
 	}
+	
+	[ProtoMember(5)] private Dictionary<string,PatternFile> _key_to_patternfile = new Dictionary<string, PatternFile>();
+	public PatternFile get_patternfile(string key) {
+		if (!_key_to_patternfile.ContainsKey(key)) {
+			_key_to_patternfile[key] = PatternFile.cons_from_string(this.load_text_file_from_path(key,".pattern"));
+			Debug.LogWarning("patternfile from streaming:"+key);
+		}
+		return _key_to_patternfile[key];
+	}
 
 }
 

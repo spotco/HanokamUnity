@@ -23,9 +23,7 @@ public abstract class BasicWaterEnemy : BaseWaterEnemy, GenericPooledObject {
 		_root.repool();
 	}
 
-	public override void do_remove() {
-		throw new System.Exception("MUST OVERRIDE DO_REMOVE BASICWATERENEMY");
-	}
+	public override void do_remove() { throw new System.Exception("MUST OVERRIDE DO_REMOVE BASICWATERENEMY"); }
 	
 	protected Mode _current_mode;
 	protected DiveReturnMode _current_divereturn_mode; 
@@ -208,8 +206,4 @@ public abstract class BasicWaterEnemy : BaseWaterEnemy, GenericPooledObject {
 	private bool is_active() {
 		return _current_mode == Mode.IdleMove || _current_mode == Mode.IdleNoticed || _current_mode == Mode.InPack;
 	}
-	
-	
-	
-
 }

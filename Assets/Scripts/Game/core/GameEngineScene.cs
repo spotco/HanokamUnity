@@ -138,10 +138,6 @@ public class GameEngineScene : SPScene {
 		tr = GameMain._context.transform.InverseTransformPoint(tr);
 		return new SPHitRect(){ _x1 = bl.x, _y1 = bl.y, _x2 = tr.x, _y2 = tr.y };
 	}
-	
-	public bool is_camera_underwater() {
-		return GameMain._context._game_camera.transform.localPosition.y < -100;
-	}
 
 	public Vector2 convert_u_pos_to_screen_pos(float x, float y) {
 		Vector3 world_pos = GameMain._context.transform.TransformPoint(new Vector3(x,y));
