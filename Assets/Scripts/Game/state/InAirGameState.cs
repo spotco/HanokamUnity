@@ -453,7 +453,7 @@ public class InAirGameState : GameStateBase {
 	private void i_update_refill_arrow(GameEngineScene g, float refill_every = 40) {
 		_params._arrow_refill_count = SPUtil.lmovto(_params._arrow_refill_count,_params.get_arrow_refill_count_limit(),SPUtil.dt_scale_get());
 		if (_params._arrow_count < _params.get_arrow_count_max() && SPUtil.flt_cmp_delta(_params._arrow_refill_count, _params.get_arrow_refill_count_limit(), 0.1f)) {
-			_params._arrow_refill_tick.i_update(g);
+			_params._arrow_refill_tick.i_update();
 			_params._arrow_refill_tick._max_time = refill_every;
 			if (_params._arrow_refill_tick.do_flash()) {
 				_params._arrow_count++;

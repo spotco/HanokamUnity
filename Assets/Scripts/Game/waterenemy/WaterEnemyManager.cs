@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 
 public abstract class IWaterEnemy : DiveGameStateUpdateable, DiveReturnGameStateUpdateable, SPNodeHierarchyElement, SPHitPolyOwner {
+	public virtual void on_added_to_manager(GameEngineScene g) {}
 	public virtual void i_update(GameEngineScene g, DiveGameState state) {}
 	public virtual void i_update(GameEngineScene g, DiveReturnGameState state) {}
 	public virtual void apply_offset(float offset) {}
@@ -40,7 +41,7 @@ public class WaterEnemyManager : DiveGameStateUpdateable, GenericPooledObject {
 		for (int i = 0; i < tmp._2pt_entries.Count; i++) {
 			PatternEntry2Pt itr_2pt = tmp._2pt_entries[i];
 			if (itr_2pt._val == "puffer") {
-				this.add_enemy(PufferBasicWaterEnemy.cons(g, itr_2pt, group_offset));
+				this.add_enemy(g, PufferBasicWaterEnemy.cons(g, itr_2pt, group_offset));
 			} else {
 				Debug.LogError(SPUtil.sprintf("Unknown 2pt({0})",itr_2pt._val));
 			}
@@ -52,7 +53,7 @@ public class WaterEnemyManager : DiveGameStateUpdateable, GenericPooledObject {
 			for (int i = 0; i < tmp._2pt_entries.Count; i++) {
 				PatternEntry2Pt itr_2pt = tmp._2pt_entries[i];
 				if (itr_2pt._val == "puffer") {
-					this.add_enemy(PufferBasicWaterEnemy.cons(g, itr_2pt, group_offset));
+					this.add_enemy(g, PufferBasicWaterEnemy.cons(g, itr_2pt, group_offset));
 				} else {
 					Debug.LogError(SPUtil.sprintf("Unknown 2pt({0})",itr_2pt._val));
 				}
@@ -90,9 +91,10 @@ public class WaterEnemyManager : DiveGameStateUpdateable, GenericPooledObject {
 		}
 	}
 	
-	public void add_enemy(IWaterEnemy enemy) {
+	public void add_enemy(GameEngineScene g, IWaterEnemy enemy) {
 		_enemies.Add(enemy);
 		enemy.add_to_parent(_root);
+		enemy.on_added_to_manager(g);
 	}
 
 }

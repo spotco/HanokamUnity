@@ -20,6 +20,9 @@ public struct SPHitRect {
 		         r1._y1 > r2._y2 ||
 		         r2._y1 > r1._y2);
 	}
+	public override string ToString() {
+		return string.Format("SPHitRect(({0},{1}),({2},{3}))",_x1,_y1,_x2,_y2);
+	}
 }
 
 public interface CameraRenderHookDelegate {

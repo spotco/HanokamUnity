@@ -24,7 +24,6 @@ public class PufferBasicWaterEnemy : BasicWaterEnemy {
 	}
 	
 	private FlashEvery _flashcount;
-	
 	private PufferBasicWaterEnemy i_cons(GameEngineScene g, PatternEntry2Pt entry, Vector2 offset) {
 		base.i_cons();
 		_flashcount = FlashEvery.cons(15);
@@ -35,6 +34,7 @@ public class PufferBasicWaterEnemy : BasicWaterEnemy {
 			SPUtil.vec_add(entry._pt1,offset), 
 			SPUtil.vec_add(entry._pt2,offset), 3.0f
 		));
+		this.add_component_for_mode(Mode.Stunned, KnockbackStunBasicWaterEnemyComponent.cons());
 		
 		return this;
 	}
@@ -43,6 +43,21 @@ public class PufferBasicWaterEnemy : BasicWaterEnemy {
 		base.i_update(g,state);
 		_img.play_anim(PufferEnemySprite.ANIM_IDLE);
 		_img.i_update(g);
+		
+		Vector4 img_color = _img.color();
+		img_color.y = SPUtil.drpt(img_color.y,1,1/8.0f);
+		img_color.z = SPUtil.drpt(img_color.z,1,1/8.0f);
+		switch(this.get_current_mode()) {
+		case(Mode.Stunned):{
+			_flashcount.i_update();
+			if (_flashcount.do_flash()) 	{
+				img_color.y = 0;
+				img_color.z = 0;
+			}
+		} break;
+		default: {} break;
+		}
+		_img.set_color(img_color);
 	}
 	
 	public override SPHitRect get_hit_rect() {

@@ -1,13 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-public class FlashEvery : SPGameUpdateable {
+public class FlashEvery {
 	public float _max_time;
 	private float _time;
 	public static FlashEvery cons(float time) {
 		return new FlashEvery() { _max_time = time };
 	}
-	public void i_update(GameEngineScene g) {
+	public void i_update() {
 		_time -= SPUtil.dt_scale_get();
 	}
 	public bool do_flash() {

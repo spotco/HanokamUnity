@@ -157,7 +157,7 @@ public class DiveGameState : GameStateBase {
 			
 			PlayerCharacterUtil.rotate_to_rotation_for_vel(g._player,_params._vel.x,_params._vel.y,1/10.0f);
 			
-			_bubble_every.i_update(g);
+			_bubble_every.i_update();
 			if (_bubble_every.do_flash()) {
 				_bubble_every._max_time = SPUtil.int_random(0,4) == 0 ? SPUtil.float_random(1,3) : SPUtil.float_random(20,40);
 				UnderwaterBubbleParticle.proc_bubble(g);

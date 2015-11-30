@@ -49,7 +49,7 @@ public class PlayerChargedArrowAirProjectile : AirProjectileBase, GenericPooledO
 			_ct = 0;
 		}
 		
-		_trail_spawn_ct.i_update(g);
+		_trail_spawn_ct.i_update();
 		if (_trail_spawn_ct.do_flash()) {
 			g.add_particle(SPConfigAnimParticle.cons()
 			    .set_texture(TextureResource.inst().get_tex(RTex.HANOKA_EFFECTS))

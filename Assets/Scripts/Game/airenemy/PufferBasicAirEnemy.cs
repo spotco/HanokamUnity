@@ -52,7 +52,7 @@ public class PufferBasicAirEnemy : BasicAirEnemy {
 		} break;
 		case Mode.Stunned: {
 			_img.play_anim(PufferEnemySprite.ANIM_HURT);
-			_flashcount.i_update(g);
+			_flashcount.i_update();
 			if (_flashcount.do_flash()) {
 				img_color.y = 0;
 				img_color.z = 0;
