@@ -152,6 +152,13 @@ public class SPUtil {
 		float delta = (to - start) * y;
 		return start + delta;
 	}
+	public static float drpty(float fric) {
+		// y = e ^ (-a * timescale)
+		fric = 1 - fric;
+		float a = -Mathf.Log(fric);
+		float y = 1 - Mathf.Exp(-a * SPUtil.dt_scale_get());
+		return y;
+	}
 	public static float lerp(float a, float b, float t) {
 		return a + (b - a) * t;
 	}

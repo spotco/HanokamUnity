@@ -18,6 +18,8 @@ public class GameMain : SPBaseBehavior {
 	-follow wall
 	-orb spawn spirit shark swim back art transition
 	
+	-dash too many times lose air
+	
 	---Pattern spawn editor	
 	---Inair gameplay
 	

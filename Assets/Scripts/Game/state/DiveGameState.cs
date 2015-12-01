@@ -15,6 +15,7 @@ public class DiveGameState : GameStateBase {
 		public bool _dashing;
 		public float _dash_ct;
 		public bool _dash_has_hit;
+		public float _turn_mode_delay_ct;
 
 		public float _invuln_ct;
 		public bool is_invuln() {
@@ -111,17 +112,52 @@ public class DiveGameState : GameStateBase {
 		} break;
 		case (Mode.Gameplay): {
 			float UPPER_CAMERA_MAX_OFFSET = -200;
-			float Lower_CAMERA_MAX_OFFSET = 400;
+			float LOWER_CAMERA_MAX_OFFSET = 400;
 			float tar_camera_offset_y = SPUtil.eclamp(
 				SPUtil.y_for_point_of_2pt_line(
 					new Vector2(-_params.MAX_MOVE_SPEED(),UPPER_CAMERA_MAX_OFFSET),
-					new Vector2(_params.MAX_MOVE_SPEED(),Lower_CAMERA_MAX_OFFSET),
+					new Vector2(_params.MAX_MOVE_SPEED(),LOWER_CAMERA_MAX_OFFSET),
 					_params._vel.y
 				), 
-				UPPER_CAMERA_MAX_OFFSET, Lower_CAMERA_MAX_OFFSET, 
+				UPPER_CAMERA_MAX_OFFSET, LOWER_CAMERA_MAX_OFFSET, 
 				new Vector2(0.5f,0), new Vector2(0.5f,1));
 			_params._camera_offset_y = SPUtil.drpt(_params._camera_offset_y,tar_camera_offset_y,1/10.0f);
 			g._camerac.set_target_camera_focus_on_character(g,0,_params._camera_offset_y);
+			
+			bool turn_mode = false;
+			if (!(_params._dashing && _params._dash_has_hit) && !(_params.is_invuln())) {
+				if (g._controls.get_control_down(ControlManager.Control.ShootArrow) && !_params._dashing && _params._turn_mode_delay_ct <= 0) {
+					if (g._controls.is_move_x() || g._controls.is_move_y()) {
+						Vector2 dir = g._controls.get_move();
+						float rotation_pre = g._player.rotation();
+						PlayerCharacterUtil.rotate_to_rotation_for_vel(g._player,dir.x,dir.y,1/10.0f);
+						float rotation_post = g._player.rotation();
+						if (Mathf.Abs(rotation_post-rotation_pre) > 1.0f) {
+							turn_mode = true;
+						}
+					}
+					_params._vel.x = SPUtil.drpt(_params._vel.x,0,1/7.0f);
+					_params._vel.y = SPUtil.drpt(_params._vel.y,0,1/7.0f);
+					
+					
+				} else {
+					float move_speed = _params._dashing ? _params.DASH_SPEED() : _params.MAX_MOVE_SPEED();					
+					Vector2 move = g._controls.get_move().normalized;
+					if (g._controls.is_move_x() || g._controls.is_move_y()) {
+						Vector2 cur_vel = _params._vel;
+						Vector2 tar_vel = SPUtil.vec_scale(move,move_speed);
+						Vector2 delta = SPUtil.vec_sub(tar_vel,cur_vel);
+						float delta_mag = delta.magnitude;
+						_params._vel = SPUtil.vec_add(_params._vel, SPUtil.vec_scale(delta.normalized, SPUtil.drpty(0.975f)));
+						
+					} else if (!_params._dashing) {
+						_params._vel.x = SPUtil.drpt(_params._vel.x,0,1/30.0f);
+						_params._vel.y = SPUtil.drpt(_params._vel.y,0,1/30.0f);
+					}
+					
+					PlayerCharacterUtil.rotate_to_rotation_for_vel(g._player,_params._vel.x,_params._vel.y,1/10.0f);
+				}
+			}
 			
 			if (_params.is_invuln()) {
 				g._player.play_anim(PlayerCharacterAnims.SWIMHURT);
@@ -129,42 +165,29 @@ public class DiveGameState : GameStateBase {
 				_params._dashing = false;
 			
 			} else if (_params._dashing) {
-				g._player.play_anim(PlayerCharacterAnims.SPIN);
+				if (_params._dash_has_hit) {
+					g._player.play_anim(PlayerCharacterAnims.SPIN);
+				} else {
+					g._player.show_waterdash_for(1.0f);
+					g._player.play_anim(PlayerCharacterAnims.SWIM_SPIN);
+				}
 				_params._dash_ct -= SPUtil.dt_scale_get();
 				if (_params._dash_ct <= 0) {
 					_params._dashing = false;
+					_params._turn_mode_delay_ct = 10;
 				}
 			} else {
-				if (_params._vel.magnitude > 2) {
+				if (turn_mode) {
+					g._player.play_anim(PlayerCharacterAnims.SWIM);
+				} else if (_params._vel.magnitude > 2) {
 					g._player.play_anim(PlayerCharacterAnims.SWIM);
 				} else {
 					g._player.play_anim(PlayerCharacterAnims.SWIM_SLOW);
 				}
 			}
 			
-			float move_speed = _params._dashing ? _params.DASH_SPEED() : _params.MAX_MOVE_SPEED();
-								
-			Vector2 move = g._controls.get_move();
-			if (move.magnitude > 1) move.Normalize();
-			if (!(_params._dashing && _params._dash_has_hit) && !(_params.is_invuln())) { 
-				if (g._controls.is_move_x()) {
-					float cur_vel_x = _params._vel.x;
-					float tar_vel_x = Mathf.Clamp(_params._vel.x + move.x * _params.TURN_SPEED(), -move_speed, move_speed);
-					float drpt_spd = Mathf.Abs(cur_vel_x) < _params.MAX_MOVE_SPEED() ? 1.0f : 1/2.0f;
-					_params._vel.x = SPUtil.drpt(cur_vel_x,tar_vel_x,drpt_spd);
-				} else {
-					_params._vel.x = SPUtil.drpt(_params._vel.x,0,1/30.0f);
-				}
-				if (g._controls.is_move_y()) {
-					float cur_vel_y = _params._vel.y;
-					float tar_vel_y = Mathf.Clamp(_params._vel.y + move.y * _params.TURN_SPEED(), -move_speed, move_speed);
-					float drpt_spd = Mathf.Abs(cur_vel_y) < move_speed ? 1.0f : 1/2.0f;
-					_params._vel.y = SPUtil.drpt(cur_vel_y,tar_vel_y,drpt_spd);
-				} else {
-					_params._vel.y = SPUtil.drpt(_params._vel.y,0,1/30.0f);
-				}
-			}
 			_params._invuln_ct = Mathf.Max(_params._invuln_ct-SPUtil.dt_scale_get(),0);
+			_params._turn_mode_delay_ct = Mathf.Max(_params._turn_mode_delay_ct-SPUtil.dt_scale_get(),0);
 			
 			if (g._controls.get_control_just_pressed(ControlManager.Control.Dash) && !_params._dashing && !_params.is_invuln()) {
 				Vector2 dir = SPUtil.ang_deg_dir(g._player.rotation() + 90);
@@ -178,8 +201,6 @@ public class DiveGameState : GameStateBase {
 				_params._dash_ct = 20;
 				UnderwaterBubbleParticle.proc_multiple_bubbles(g);
 			}
-			
-
 			
 			_bubble_every.i_update();
 			if (_bubble_every.do_flash()) {
@@ -204,9 +225,6 @@ public class DiveGameState : GameStateBase {
 				_params._player_pos.y
 				);
 			_params._player_pos.y += _params._vel.y * SPUtil.dt_scale_get();
-			if (!_params.is_invuln()) {
-				PlayerCharacterUtil.rotate_to_rotation_for_vel(g._player,_params._vel.x,_params._vel.y,1/10.0f);
-			}
 			
 			this.apply_environment_offset_pos(g);
 			this.apply_player_offset_position(g);

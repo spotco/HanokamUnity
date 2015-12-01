@@ -222,6 +222,25 @@ public class BasicWaterEnemyComponentUtility {
 				g._camerac.freeze_frame(2);
 				g._camerac.camera_shake(new Vector2(-1.5f,1.7f),15,30);
 				enemy.transition_to_mode(g, BasicWaterEnemy.Mode.Stunned);
+				
+				g.add_particle(SPConfigAnimParticle.cons()
+					.set_texture(TextureResource.inst().get_tex(RTex.HANOKA_EFFECTS_WATER))
+					.set_texrect(FileCache.inst().get_texrect(RTex.HANOKA_EFFECTS_WATER,"water_hit_0.png"))
+					.set_pos(enemy.get_u_pos().x, enemy.get_u_pos().y)
+					.set_ctmax(40)
+					.set_alpha(0.5f, 0.1f)
+					.set_scale(0.9f, 1.3f)
+					.set_manual_sort_z_order(GameAnchorZ.BGWater_FX)
+					.set_normalized_timed_sprite_animator(SPTimedSpriteAnimator.cons(null)
+						.add_frame_at_time(FileCache.inst().get_texrect(RTex.HANOKA_EFFECTS_WATER,"water_hit_0.png"),0)
+						.add_frame_at_time(FileCache.inst().get_texrect(RTex.HANOKA_EFFECTS_WATER,"water_hit_1.png"),0.2f)
+						.add_frame_at_time(FileCache.inst().get_texrect(RTex.HANOKA_EFFECTS_WATER,"water_hit_2.png"),0.4f)
+						.add_frame_at_time(FileCache.inst().get_texrect(RTex.HANOKA_EFFECTS_WATER,"water_hit_3.png"),0.6f)
+						.add_frame_at_time(FileCache.inst().get_texrect(RTex.HANOKA_EFFECTS_WATER,"water_hit_4.png"),0.8f)
+					)
+					.set_do_track_bg_water()
+				);
+				
 			}
 			
 			if (state._params._dashing) {
@@ -233,6 +252,7 @@ public class BasicWaterEnemyComponentUtility {
 				
 			} else if (!state._params.is_invuln()) {
 				g._game_ui.do_red_flash();
+				state._params._current_breath -= 200;
 				state._params._invuln_ct = 25;
 				state._params._vel = SPUtil.vec_scale(state._params._vel.normalized,-state._params.MAX_MOVE_SPEED()*0.5f);
 				

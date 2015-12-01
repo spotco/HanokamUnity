@@ -10,9 +10,10 @@ public class PlayerCharacter : SPGameUpdateable, SPHitPolyOwner, SPNodeHierarchy
 	private SPNode _root;
 	private SpriterNode _img;
 
-	private SPSprite _streak_left, _streak_right;
+	private SPSprite _streak_left, _streak_right, _water_dash;
 	private float _streak_tar_alpha;
-	private SPSpriteAnimator _streak_left_anim, _streak_right_anim;
+	private float _waterdash_active_ct;
+	private SPSpriteAnimator _streak_left_anim, _streak_right_anim, _water_dash_anim;
 	
 	private float _trail_tar_alpha;
 	private SPSprite _trail;
@@ -80,6 +81,16 @@ public class PlayerCharacter : SPGameUpdateable, SPHitPolyOwner, SPNodeHierarchy
 		_trail.set_anchor_point(0.5f,0);
 		_trail.set_manual_sort_z_order(GameAnchorZ.Player_FX);
 		_root.add_child(_trail);
+		
+		_water_dash = SPSprite.cons_sprite_texkey_texrect(RTex.HANOKA_EFFECTS_WATER, FileCache.inst().get_texrect(RTex.HANOKA_EFFECTS_WATER, "water_dash_0.png"));
+		_water_dash.set_u_pos(0,120);
+		_water_dash.set_anchor_point(0.5f,0.75f);
+		_water_dash.set_manual_sort_z_order(GameAnchorZ.BGWater_FX);
+		_root.add_child(_water_dash);
+		
+		_water_dash_anim = SPSpriteAnimator.cons(_water_dash).add_anim("play",
+			FileCache.inst().get_rects_list(
+				RTex.HANOKA_EFFECTS_WATER,"water_dash_%d.png",0,4),4).play_anim("play");
 
 		this.set_streak_enabled(false);
 		this.set_trail_enabled_and_rotation(false);
@@ -94,6 +105,9 @@ public class PlayerCharacter : SPGameUpdateable, SPHitPolyOwner, SPNodeHierarchy
 
 	public void set_streak_enabled(bool val) {
 		_streak_tar_alpha = val?1:0;
+	}
+	public void show_waterdash_for(float val) {
+		_waterdash_active_ct = val;
 	}
 	public void set_trail_enabled_and_rotation(bool val, float angle=0) {
 		_trail_tar_alpha = val?1:0;
@@ -137,6 +151,14 @@ public class PlayerCharacter : SPGameUpdateable, SPHitPolyOwner, SPNodeHierarchy
 	
 	public void i_update(GameEngineScene g) {
 		_img.i_update();
+		
+		_water_dash.set_rotation(this.rotation());
+		_water_dash.set_opacity(SPUtil.drpt(_water_dash.get_opacity(),_waterdash_active_ct>0?0.7f:0,1/4.0f));
+		_water_dash.set_scale(SPUtil.y_for_point_of_2pt_line(new Vector2(0,1.35f),new Vector2(1,1),_water_dash.get_opacity()));
+		_waterdash_active_ct = Mathf.Clamp(_waterdash_active_ct-SPUtil.dt_scale_get(),0,1);
+		if (!SPUtil.flt_cmp_delta(_water_dash.get_opacity(),0,0.1f)) {
+			_water_dash_anim.i_update();
+		}
 		
 		_streak_left.set_opacity(SPUtil.lmovto(_streak_left.get_opacity(),_streak_tar_alpha,0.2f*SPUtil.dt_scale_get()));
 		_streak_right.set_opacity(_streak_left.get_opacity());
@@ -197,6 +219,7 @@ public class PlayerCharacterAnims {
 	
 	public static string SWIM = "Swim";
 	public static string SWIM_SLOW = "SwimSlow";
+	public static string SWIM_SPIN = "Swim_Spin";
 	
 	public static string SWIMHURT = "Swim Hurt";
 	public static string INAIRIDLE = "In Air Idle";

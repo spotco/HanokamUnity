@@ -31,6 +31,10 @@ public class SPConfigAnimParticle : SPGameEngineParticle, GenericPooledObject {
 	private SPRange _alpha;
 	private Vector2 _velocity;
 	private Vector2 _acceleration;
+	
+	private bool _do_track_bg_water;
+	private bool _has_first_track_y;
+	private float _last_track_y;
 
 	private SPSpriteAnimator _animator;
 	private SPTimedSpriteAnimator _timed_animator;
@@ -47,6 +51,9 @@ public class SPConfigAnimParticle : SPGameEngineParticle, GenericPooledObject {
 		_animator = null;
 		_timed_animator = null;
 		_anim_lambda = null;
+		_do_track_bg_water = false;
+		_last_track_y = 0;
+		_has_first_track_y = false;
 		return this;
 	}
 	public override void i_update(GameEngineScene g) {
@@ -67,6 +74,17 @@ public class SPConfigAnimParticle : SPGameEngineParticle, GenericPooledObject {
 		}
 		if (_anim_lambda != null) {
 			_anim_lambda(_img, anim_t);
+		}
+		
+		if (!_has_first_track_y) {
+			_has_first_track_y = true;
+			if (_do_track_bg_water) {
+				_last_track_y = g._bg_water.get_y_offset();
+			}
+		}
+		if (_do_track_bg_water) {
+			_img._u_y = _img._u_y - (g._bg_water.get_y_offset()-_last_track_y);
+			_last_track_y = g._bg_water.get_y_offset();
 		}
 	}
 	public override bool should_remove(GameEngineScene g) {
@@ -146,6 +164,10 @@ public class SPConfigAnimParticle : SPGameEngineParticle, GenericPooledObject {
 	public SPConfigAnimParticle set_anim_lambda(System.Action<SPSprite,float> anim_lambda) {
 		_anim_lambda = anim_lambda;
 		_anim_lambda(_img,_ct/_ctmax);
+		return this;
+	}
+	public SPConfigAnimParticle set_do_track_bg_water() {
+		_do_track_bg_water = true;
 		return this;
 	}
 }
