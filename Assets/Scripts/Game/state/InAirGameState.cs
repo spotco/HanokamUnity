@@ -102,6 +102,8 @@ public class InAirGameState : GameStateBase {
 		
 		MiscEffects.do_abovewater_splash(g);
 		
+		g._bg_water.set_y_offset(0);
+		
 		return this;
 	}
 

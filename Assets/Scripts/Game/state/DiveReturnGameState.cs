@@ -28,10 +28,15 @@ public class DiveReturnGameState : GameStateBase {
 		g._camerac.set_camera_follow_speed(1/15.0f);
 		g._camerac.set_target_zoom(1000);
 		g._camerac.set_target_camera_y(g._camerac.get_target_camera_y() + 900);
+		
+		g._bg_water.set_y_offset(0);
+		g._bg_village.set_u_pos(0, 0);
+		
 		return this;
 	}
 
 	public override void i_update(GameEngineScene g) {
+		// SPTODO -- this is going to be all changed
 		_enemy_manager.i_update(g, this);
 		switch (_current_state) {
 		case Mode.CameraPanUp: {

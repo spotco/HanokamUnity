@@ -84,6 +84,7 @@ public class UIRoot : SPGameUpdateable {
 		this.add_game_ui(OnGroundSubUI.cons(this));
 		this.add_game_ui(InDialogueSubUI.cons(this));
 		this.add_game_ui(InAirSubUI.cons(this));
+		this.add_game_ui(DiveSubUI.cons(this));
 		
 		this.add_shop_ui(ShopMainUISubUI.cons(this));
 		

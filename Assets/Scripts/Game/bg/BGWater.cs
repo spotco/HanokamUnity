@@ -181,6 +181,7 @@ public class BGWater : SPGameUpdateable, CameraRenderHookDelegate, SPNodeHierarc
 					& ~(1 << RLayer.get_layer(RLayer.REFLECTIONS))
 					& ~(1 << RLayer.get_layer(RLayer.UNDERWATER_ELEMENTS))
 					& ~(1 << RLayer.get_layer(RLayer.SPRITER_NODE))
+					& ~(1 << RLayer.get_layer(RLayer.UI))
 			);
 
 		_waterlinebelow = BGWaterLineBelow.cons(_offset_root);
@@ -257,7 +258,7 @@ public class BGWater : SPGameUpdateable, CameraRenderHookDelegate, SPNodeHierarc
 	
 	private bool is_underwater(GameEngineScene g) {
 		GameStateIdentifier cur_state = g.get_top_game_state().get_state();
-		return cur_state == GameStateIdentifier.Dive || cur_state == GameStateIdentifier.DiveReturn;
+		return cur_state == GameStateIdentifier.Dive /*|| cur_state == GameStateIdentifier.DiveReturn*/;
 	}
 
 	private void update_water_bg(GameEngineScene g) {

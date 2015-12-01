@@ -194,7 +194,12 @@ public class BasicWaterEnemyComponentUtility {
 			}
 			enemy._params._stun_vel = SPUtil.vec_scale(pos_delta,20);
 			enemy._params._stun_ct = enemy._params._stun_ct_max = 50;
-			enemy.transition_to_mode(g, BasicWaterEnemy.Mode.Stunned);
+			
+			if (enemy.get_current_mode() != BasicWaterEnemy.Mode.Stunned) {
+				g._camerac.freeze_frame(2);
+				g._camerac.camera_shake(new Vector2(-1.5f,1.7f),15,30);
+				enemy.transition_to_mode(g, BasicWaterEnemy.Mode.Stunned);
+			}
 		}
 		return rtv;
 	}

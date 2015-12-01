@@ -249,7 +249,7 @@ public class BGVillage : SPGameUpdateable, SPNodeHierarchyElement {
 	
 	private bool is_above_water(GameEngineScene g) {
 		GameStateIdentifier cur_state = g.get_top_game_state().get_state();
-		return cur_state == GameStateIdentifier.OnGround || cur_state == GameStateIdentifier.InAir;
+		return cur_state != GameStateIdentifier.Dive;
 	}
 
 }
