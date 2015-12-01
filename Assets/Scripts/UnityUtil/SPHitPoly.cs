@@ -1,11 +1,22 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections;
-
 //stackoverflow.com/questions/10962379/how-to-check-intersection-between-2-rotated-rectangles
 
 public interface SPHitPolyOwner {
 	SPHitRect get_hit_rect();
 	SPHitPoly get_hit_poly();
+}
+
+public class DelegatedSPHitPolyOwner {
+	public Func<SPHitRect> _hit_rect_delegate;
+	public Func<SPHitPoly> _hit_poly_delegate;
+	public SPHitRect get_hit_rect() {
+		return _hit_rect_delegate();
+	}
+	public SPHitPoly get_hit_poly() {
+		return _hit_poly_delegate();
+	}
 }
 
 public struct SPHitPoly {

@@ -43,6 +43,8 @@ public abstract class BasicWaterEnemy : IWaterEnemy, GenericPooledObject {
 		public float _offset;
 		public Vector2 _stun_vel;
 		public float _stun_ct, _stun_ct_max;
+		
+		public float _invuln_ct;
 	}
 	public Params _params;
 	
@@ -73,6 +75,7 @@ public abstract class BasicWaterEnemy : IWaterEnemy, GenericPooledObject {
 			_mode_to_state[_current_mode].i_update(g,state,this);
 		}
 		this.apply_offset_to_position();
+		_params._invuln_ct = Mathf.Max(_params._invuln_ct - SPUtil.dt_scale_get(), 0);
 	}
 	
 	public override void apply_offset(float offset) {
@@ -106,7 +109,7 @@ public class KnockbackStunBasicWaterEnemyComponent : BasicWaterEnemyComponent {
 		);
 		
 		enemy._params._pos = SPUtil.vec_add(enemy._params._pos, SPUtil.vec_scale(enemy._params._stun_vel,SPUtil.dt_scale_get()));
-		enemy._params._pos.x = Mathf.Clamp(enemy._params._pos.x, SPUtil.get_horiz_world_bounds()._min, SPUtil.get_horiz_world_bounds()._max);
+		//enemy._params._pos.x = Mathf.Clamp(enemy._params._pos.x, SPUtil.get_horiz_world_bounds()._min, SPUtil.get_horiz_world_bounds()._max);
 		
 		enemy._params._stun_vel.x = SPUtil.drpt(enemy._params._stun_vel.x,0,1/20.0f);
 		enemy._params._stun_vel.y = SPUtil.drpt(enemy._params._stun_vel.y,0,1/20.0f);
@@ -186,20 +189,55 @@ public class TwoPointSwimBasicWaterEnemyComponent : BasicWaterEnemyComponent {
 
 public class BasicWaterEnemyComponentUtility {
 	public static bool test_and_apply_player_hit_stun(GameEngineScene g, DiveGameState state, BasicWaterEnemy enemy) {
+		if (enemy._params._invuln_ct > 0) {
+			return false;
+		}
 		bool rtv = SPHitPoly.polyowners_intersect(enemy, g._player);
 		if (rtv) {
-			Vector2 pos_delta = (new Vector2(enemy.get_u_pos().x-g._player.get_center().x, enemy.get_u_pos().y-g._player.get_center().y)).normalized;
-			if (SPUtil.flt_cmp_delta(pos_delta.magnitude,0,0.01f)) {
-				pos_delta = new Vector2(1,0);
+			Vector2 enemy_hit_dir;
+			Vector2 pos_delta = (new Vector2(enemy.get_u_pos().x-g._player.get_center().x, enemy.get_u_pos().y-g._player.get_center().y));
+			float enemy_knockback_vel;
+			if (!SPUtil.flt_cmp_delta(state._params._vel.magnitude,0,0.1f)) {
+				enemy_hit_dir = SPUtil.vec_add(
+					SPUtil.vec_scale(state._params._vel.normalized,0.75f),
+					SPUtil.vec_scale(pos_delta.normalized,0.25f)).normalized;
+				enemy_knockback_vel = SPUtil.y_for_point_of_2pt_line(new Vector2(0,5),new Vector2(10,25),Mathf.Clamp(state._params._vel.magnitude,0,10));
+			} else {
+				enemy_hit_dir = pos_delta.normalized;
+				if (SPUtil.flt_cmp_delta(enemy_hit_dir.magnitude,0,0.01f)) {
+					enemy_hit_dir = new Vector2(0,1);
+				}
+				enemy_knockback_vel = 5;
 			}
-			enemy._params._stun_vel = SPUtil.vec_scale(pos_delta,20);
+			
+			if (!state._params._dashing) {
+				enemy_knockback_vel *= 0.5f;
+			}
+			
+			enemy._params._stun_vel = SPUtil.vec_scale(enemy_hit_dir,enemy_knockback_vel);
 			enemy._params._stun_ct = enemy._params._stun_ct_max = 50;
+			enemy._params._invuln_ct = 15;
 			
 			if (enemy.get_current_mode() != BasicWaterEnemy.Mode.Stunned) {
 				g._camerac.freeze_frame(2);
 				g._camerac.camera_shake(new Vector2(-1.5f,1.7f),15,30);
 				enemy.transition_to_mode(g, BasicWaterEnemy.Mode.Stunned);
 			}
+			
+			if (state._params._dashing) {
+				if (!state._params._dash_has_hit) {
+					state._params._vel = SPUtil.vec_scale(state._params._vel.normalized,-state._params.DASH_SPEED()*0.5f);
+					state._params._dash_has_hit = true;
+				}
+				state._params._dash_ct = Mathf.Max(state._params._dash_ct, 15);
+				
+			} else if (!state._params.is_invuln()) {
+				g._game_ui.do_red_flash();
+				state._params._invuln_ct = 25;
+				state._params._vel = SPUtil.vec_scale(state._params._vel.normalized,-state._params.MAX_MOVE_SPEED()*0.5f);
+				
+			}
+			
 		}
 		return rtv;
 	}

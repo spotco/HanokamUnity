@@ -10,7 +10,6 @@ public class GameMain : SPBaseBehavior {
 	TODO--
 	---Underwater gameplay
 	-puffer reimplement mechanics
-	-breath health system
 	-bubble stationary
 	-bubble moving 2point
 	-jelly movepoints
