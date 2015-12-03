@@ -36,19 +36,7 @@ public class WaterEnemyManager : DiveGameStateUpdateable, GenericPooledObject {
 	
 		PatternFile tmp = FileCache.inst().get_patternfile(RPattern.TEST_1);
 		{
-		Vector2 group_offset = new Vector2(0,-1500);
-		
-		for (int i = 0; i < tmp._2pt_entries.Count; i++) {
-			PatternEntry2Pt itr_2pt = tmp._2pt_entries[i];
-			if (itr_2pt._val == "puffer") {
-				this.add_enemy(g, PufferBasicWaterEnemy.cons(g, itr_2pt, group_offset));
-			} else {
-				Debug.LogError(SPUtil.sprintf("Unknown 2pt({0})",itr_2pt._val));
-			}
-		}
-		}
-		{
-			Vector2 group_offset = new Vector2(0,-3000);
+			Vector2 group_offset = new Vector2(0,-1500);
 			
 			for (int i = 0; i < tmp._2pt_entries.Count; i++) {
 				PatternEntry2Pt itr_2pt = tmp._2pt_entries[i];
@@ -58,6 +46,15 @@ public class WaterEnemyManager : DiveGameStateUpdateable, GenericPooledObject {
 					Debug.LogError(SPUtil.sprintf("Unknown 2pt({0})",itr_2pt._val));
 				}
 			}
+			for (int i = 0; i < tmp._1pt_entries.Count; i++) {
+				PatternEntry1Pt itr_1pt = tmp._1pt_entries[i];
+				if (itr_1pt._val == "bubble") {
+					this.add_enemy(g, BubbleBasicWaterEnemy.cons(g,itr_1pt,group_offset));
+				} else {
+					Debug.LogError(SPUtil.sprintf("Unknown 1pt({0})",itr_1pt._val));
+				}
+			}
+			
 		}
 		
 		return this;

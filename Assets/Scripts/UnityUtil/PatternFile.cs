@@ -12,6 +12,7 @@ public class RPattern {
 public class PatternFile {	
 	
 	[ProtoMember(1)] public List<PatternEntry2Pt> _2pt_entries = new List<PatternEntry2Pt>();
+	[ProtoMember(2)] public List<PatternEntry1Pt> _1pt_entries = new List<PatternEntry1Pt>();
 	
 	public static PatternFile cons_from_string(string file_text) {
 		PatternFile rtv = new PatternFile();
@@ -23,19 +24,32 @@ public class PatternFile {
 			JSONObject itr = entries[i].Obj;
 			string type = itr.GetString("type");
 			string val = itr.GetString("val");
-			JSONObject pt1_obj = itr.GetObject("pt1");
-			Vector2 pt1 = new Vector2((float)pt1_obj.GetNumber("x"),(float)pt1_obj.GetNumber("y"));
-			JSONObject pt2_obj = itr.GetObject("pt2");
-			Vector2 pt2 = new Vector2((float)pt2_obj.GetNumber("x"),(float)pt2_obj.GetNumber("y"));
-			JSONObject start_obj = itr.GetObject("start");
-			Vector2 start = new Vector2((float)start_obj.GetNumber("x"),(float)start_obj.GetNumber("y"));
 			
-			rtv._2pt_entries.Add(new PatternEntry2Pt() {
-				_val = val,
-				_pt1 = pt1,
-				_pt2 = pt2,
-				_start = start
-			});
+			if (type == "1pt") {
+				
+				JSONObject start_obj = itr.GetObject("start");
+				Vector2 start = new Vector2((float)start_obj.GetNumber("x"),(float)start_obj.GetNumber("y"));
+				
+				rtv._1pt_entries.Add(new PatternEntry1Pt() {
+					_val = val,
+					_start = start
+				});
+				
+			} else if (type == "2pt") {
+				JSONObject pt1_obj = itr.GetObject("pt1");
+				Vector2 pt1 = new Vector2((float)pt1_obj.GetNumber("x"),(float)pt1_obj.GetNumber("y"));
+				JSONObject pt2_obj = itr.GetObject("pt2");
+				Vector2 pt2 = new Vector2((float)pt2_obj.GetNumber("x"),(float)pt2_obj.GetNumber("y"));
+				JSONObject start_obj = itr.GetObject("start");
+				Vector2 start = new Vector2((float)start_obj.GetNumber("x"),(float)start_obj.GetNumber("y"));
+				
+				rtv._2pt_entries.Add(new PatternEntry2Pt() {
+					_val = val,
+					_pt1 = pt1,
+					_pt2 = pt2,
+					_start = start
+				});
+			}
 		}		
 		return rtv;
 	}
@@ -47,4 +61,10 @@ public class PatternEntry2Pt {
 	[ProtoMember(2)] public Vector2 _pt1;
 	[ProtoMember(3)] public Vector2 _pt2;
 	[ProtoMember(4)] public Vector2 _start;
+}
+
+[ProtoContract]
+public class PatternEntry1Pt {
+	[ProtoMember(1)] public string _val;
+	[ProtoMember(2)] public Vector2 _start;
 }

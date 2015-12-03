@@ -1,6 +1,7 @@
 {
 	"entries": [
 		{"type":"2pt","val":"puffer","pt1":{"x":-400,"y":100},"pt2":{"x":400,"y":-100},"start":{"x":0,"y":0}},
-		{"type":"2pt","val":"puffer","pt1":{"x":-400,"y":-100},"pt2":{"x":400,"y":100},"start":{"x":0,"y":0}}
+		{"type":"2pt","val":"puffer","pt1":{"x":-400,"y":-100},"pt2":{"x":400,"y":100},"start":{"x":0,"y":0}},
+		{"type":"1pt","val":"bubble","start":{"x":0,"y":0}}
 	]
 }
