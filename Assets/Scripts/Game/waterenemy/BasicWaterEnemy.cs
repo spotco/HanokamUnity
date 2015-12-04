@@ -78,6 +78,10 @@ public abstract class BasicWaterEnemy : IWaterEnemy, GenericPooledObject {
 		_params._invuln_ct = Mathf.Max(_params._invuln_ct - SPUtil.dt_scale_get(), 0);
 	}
 	
+	public override bool should_remove() {
+		return _current_mode == Mode.DoRemove;
+	}
+	
 	public override void apply_offset(float offset) {
 		_params._offset = offset;
 		this.apply_offset_to_position();
@@ -109,7 +113,6 @@ public class KnockbackStunBasicWaterEnemyComponent : BasicWaterEnemyComponent {
 		);
 		
 		enemy._params._pos = SPUtil.vec_add(enemy._params._pos, SPUtil.vec_scale(enemy._params._stun_vel,SPUtil.dt_scale_get()));
-		//enemy._params._pos.x = Mathf.Clamp(enemy._params._pos.x, SPUtil.get_horiz_world_bounds()._min, SPUtil.get_horiz_world_bounds()._max);
 		
 		enemy._params._stun_vel.x = SPUtil.drpt(enemy._params._stun_vel.x,0,1/20.0f);
 		enemy._params._stun_vel.y = SPUtil.drpt(enemy._params._stun_vel.y,0,1/20.0f);

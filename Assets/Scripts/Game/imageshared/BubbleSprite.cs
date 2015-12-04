@@ -10,7 +10,7 @@ public class BubbleSprite : GenericPooledObject, SPNodeHierarchyElement, SPGameU
 	}
 	private SPSprite _img;
 	public void add_to_parent(SPNode parent) { parent.add_child(_img); }
-	private SPSpriteAnimator _animator;
+	public SPSpriteAnimator _animator;
 	public void depool() {
 		_img = SPSprite.cons_sprite_texkey_texrect(RTex.BUBBLE_EFFECTS,new Rect());
 		_img.set_name("PufferEnemySprite");
@@ -58,6 +58,7 @@ public class BubbleSprite : GenericPooledObject, SPNodeHierarchyElement, SPGameU
 				string rectname = SPUtil.sprintf("bubble_pop_%d.png",i);
 				__cached_anim_rects.add(ANIM_POP,FileCache.inst().get_texrect(RTex.BUBBLE_EFFECTS,rectname));
 			}
+			__cached_anim_rects.add(ANIM_POP,new Rect());
 		}
 		_animator = SPSpriteAnimator.cons(_img);
 		_animator.add_anim(ANIM_IDLE, __cached_anim_rects.list(ANIM_IDLE), 7.0f, true);

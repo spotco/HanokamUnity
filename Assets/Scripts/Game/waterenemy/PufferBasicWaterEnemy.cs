@@ -13,6 +13,7 @@ public class PufferBasicWaterEnemy : BasicWaterEnemy {
 	private PufferEnemySprite _img;
 	public override void depool() {
 		base.depool();
+		this.get_root().set_name("PufferBasicWaterEnemy");
 		_img = PufferEnemySprite.cons();
 		_img.add_to_parent(this.get_root());
 		_img.set_manual_sort_z_order(GameAnchorZ.Enemy_InAir);

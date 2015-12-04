@@ -54,7 +54,7 @@ public class DiveGameState : GameStateBase {
 
 	public Params _params;
 	private FlashEvery _bubble_every;
-	private WaterEnemyManager _enemy_manager;
+	public WaterEnemyManager _enemy_manager;
 
 	public DiveGameState i_cons(GameEngineScene g) {
 		_params._vel = new Vector2(0,-22);

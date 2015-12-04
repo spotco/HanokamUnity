@@ -6,6 +6,7 @@ public abstract class IWaterEnemy : DiveGameStateUpdateable, DiveReturnGameState
 	public virtual void i_update(GameEngineScene g, DiveGameState state) {}
 	public virtual void i_update(GameEngineScene g, DiveReturnGameState state) {}
 	public virtual void apply_offset(float offset) {}
+	public virtual bool should_remove() { return false; }
 	public virtual void do_remove() {}
 	public virtual void add_to_parent(SPNode parent) {}
 	public virtual Vector2 get_u_pos() { return Vector2.zero; }
@@ -71,6 +72,9 @@ public class WaterEnemyManager : DiveGameStateUpdateable, GenericPooledObject {
 		for (int i = _enemies.Count-1; i >= 0; i--) {
 			IWaterEnemy itr = _enemies[i];
 			itr.i_update(g, state);
+			if (itr.should_remove()) {
+				this.remove_enemy(g,itr);
+			}
 		}
 	}
 
@@ -92,6 +96,16 @@ public class WaterEnemyManager : DiveGameStateUpdateable, GenericPooledObject {
 		_enemies.Add(enemy);
 		enemy.add_to_parent(_root);
 		enemy.on_added_to_manager(g);
+	}
+	
+	public void remove_enemy(GameEngineScene g, IWaterEnemy enemy) {
+		for (int i = 0; i < _enemies.Count; i++) {
+			if (_enemies[i] == enemy) {
+				_enemies.RemoveAt(i);
+				enemy.do_remove();
+				return;
+			}
+		}
 	}
 
 }
