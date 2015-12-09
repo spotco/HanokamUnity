@@ -5,10 +5,15 @@ public class BubbleBasicWaterEnemy : BasicWaterEnemy {
 	public static BubbleBasicWaterEnemy cons(GameEngineScene g, PatternEntry1Pt entry, Vector2 offset) {
 		return (ObjectPool.inst().generic_depool<BubbleBasicWaterEnemy>()).i_cons(g, entry, offset);
 	}
+	public static BubbleBasicWaterEnemy cons(GameEngineScene g, PatternEntry2Pt entry, Vector2 offset) {
+		return (ObjectPool.inst().generic_depool<BubbleBasicWaterEnemy>()).i_cons(g, entry, offset);
+	}
 	
 	public override void do_remove() {
 		ObjectPool.inst().generic_repool<BubbleBasicWaterEnemy>(this);
 	}
+	
+	public override BasicWaterEnemy set_rotation(float deg) { return this; }
 	
 	public BubbleSprite _img;
 	public override void depool() {
@@ -25,13 +30,37 @@ public class BubbleBasicWaterEnemy : BasicWaterEnemy {
 	}
 	
 	private BubbleBasicWaterEnemy i_cons(GameEngineScene g, PatternEntry1Pt entry, Vector2 offset) {
-		base.i_cons();
-		_params._pos = new Vector2(entry._start.x + offset.x, entry._start.y + offset.y);
+		this.shared_i_cons_pre(g,entry._start,offset);
 		
-		this.add_component_for_mode(Mode.Moving, BubbleUpwardsBasicWaterEnemyComponent.cons(_params._pos));
-		this.transition_to_mode(g, Mode.Moving);
+		this.add_component_for_mode(Mode.Moving, BubbleNoMoveBasicWaterEnemyComponent.cons(_params._pos));		
 		
+		this.shared_i_cons_post(g);
 		return this;
+	}
+	
+	private BubbleBasicWaterEnemy i_cons(GameEngineScene g, PatternEntry2Pt entry, Vector2 offset) {
+		this.shared_i_cons_pre(g,entry._start,offset);
+		
+		this.add_component_for_mode(Mode.Moving,TwoPointSwimBasicWaterEnemyComponent.cons(
+			SPUtil.vec_add(entry._start,offset),
+			SPUtil.vec_add(entry._pt1,offset),
+			SPUtil.vec_add(entry._pt2,offset),
+			3.0f
+		));
+		
+		this.shared_i_cons_post(g);
+		return this;
+	}
+	
+	private void shared_i_cons_pre(GameEngineScene g, Vector2 entry_start, Vector2 offset) {
+		base.i_cons();
+		_params._pos = SPUtil.vec_add(entry_start,offset);
+	}
+	
+	private void shared_i_cons_post(GameEngineScene g) {
+		this.add_component_for_mode(Mode.Activated, BubblePoppedBasicWaterEnemyComponent.cons());
+		this.add_hiteffect(BubbleBasicWaterEnemyHitEffect.cons());
+		this.transition_to_mode(g, Mode.Moving);
 	}
 	
 	public override void i_update(GameEngineScene g, DiveGameState state) {
@@ -59,21 +88,24 @@ public class BubbleBasicWaterEnemy : BasicWaterEnemy {
 	}
 }
 
-public class BubbleUpwardsBasicWaterEnemyComponent : BasicWaterEnemyComponent {
-	public static BubbleUpwardsBasicWaterEnemyComponent cons(Vector2 start) {
-		return (new BubbleUpwardsBasicWaterEnemyComponent()).i_cons(start);
+public class BubbleBasicWaterEnemyHitEffect : BasicWaterEnemyHitEffect {
+	public static BubbleBasicWaterEnemyHitEffect cons() { return new BubbleBasicWaterEnemyHitEffect(); }
+	public override void apply_hit(GameEngineScene g, DiveGameState state, BasicWaterEnemy enemy, BasicWaterEnemyComponent current_component) {
+		state._params._current_breath = Mathf.Min(state._params._current_breath+500,state._params.MAX_BREATH());
+		g._camerac.freeze_frame(1);
+		g._camerac.camera_shake(new Vector2(-1.5f,1.7f),10,15);
+		enemy.transition_to_mode(g,BasicWaterEnemy.Mode.Activated);
+	}
+}
+
+public class BubbleNoMoveBasicWaterEnemyComponent : BasicWaterEnemyComponent {
+	public static BubbleNoMoveBasicWaterEnemyComponent cons(Vector2 start) {
+		return (new BubbleNoMoveBasicWaterEnemyComponent()).i_cons(start);
 	}
 	private Vector2 _pos;
-	private enum Mode {
-		Active,
-		Collected,
-		DoRemove
-	}
-	private Mode _current_mode;
 	
-	private BubbleUpwardsBasicWaterEnemyComponent i_cons(Vector2 start) {
+	private BubbleNoMoveBasicWaterEnemyComponent i_cons(Vector2 start) {
 		_pos = start;
-		_current_mode = Mode.Active;
 		return this;
 	}
 	public override void notify_start_on_state(GameEngineScene g, BasicWaterEnemy enemy) {}
@@ -85,30 +117,25 @@ public class BubbleUpwardsBasicWaterEnemyComponent : BasicWaterEnemyComponent {
 		if (!SPUtil.cond_cast<BubbleBasicWaterEnemy>(enemy, out bubble_enemy)) {
 			return;
 		}
-		switch (_current_mode) {
-		case Mode.Active: {
-			bubble_enemy._img.play_anim(BubbleSprite.ANIM_IDLE);
-			if (SPHitPoly.polyowners_intersect(bubble_enemy,g._player)) {
-				_current_mode = Mode.Collected;
-				
-				g._camerac.freeze_frame(1);
-				g._camerac.camera_shake(new Vector2(-1.5f,1.7f),10,15);
-			}
-		
-		} break;
-		case Mode.Collected: {
-			bubble_enemy._img.play_anim(BubbleSprite.ANIM_POP);
-			if (bubble_enemy._img._animator.is_finished()) {
-				_current_mode = Mode.DoRemove;
-			}
-		
-		} break;
-		case Mode.DoRemove: {
-			bubble_enemy.transition_to_mode(g, BasicWaterEnemy.Mode.DoRemove);
-			
-		} break;
+		bubble_enemy._img.play_anim(BubbleSprite.ANIM_IDLE);
+		if (BasicWaterEnemyComponentUtility.enemy_test_hit(g,state,enemy)) {
+			enemy.get_hit_effect().apply_hit(g,state,enemy,this);
 		}
 		
 		bubble_enemy._params._pos = _pos;
+	}
+}
+
+public class BubblePoppedBasicWaterEnemyComponent : BasicWaterEnemyComponent {
+	public static BubblePoppedBasicWaterEnemyComponent cons() { return (new BubblePoppedBasicWaterEnemyComponent()); }
+	public override void i_update(GameEngineScene g, DiveGameState state, BasicWaterEnemy enemy) {
+		BubbleBasicWaterEnemy bubble_enemy;
+		if (!SPUtil.cond_cast<BubbleBasicWaterEnemy>(enemy, out bubble_enemy)) {
+			return;
+		}
+		bubble_enemy._img.play_anim(BubbleSprite.ANIM_POP);
+		if (bubble_enemy._img._animator.is_finished()) {
+			enemy.transition_to_mode(g,BasicWaterEnemy.Mode.DoRemove);
+		}
 	}
 }

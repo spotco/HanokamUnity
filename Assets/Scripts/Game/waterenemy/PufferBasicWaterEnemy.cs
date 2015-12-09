@@ -1,6 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+public class SmallEnemyBasicWaterEnemyHitEffect : BasicWaterEnemyHitEffect {
+	public static SmallEnemyBasicWaterEnemyHitEffect cons() { return new SmallEnemyBasicWaterEnemyHitEffect(); }
+	public override void apply_hit(GameEngineScene g, DiveGameState state, BasicWaterEnemy enemy, BasicWaterEnemyComponent current_component) {
+		BasicWaterEnemyComponentUtility.small_enemy_apply_hit(g,state,enemy);
+	}
+}
+
 public class PufferBasicWaterEnemy : BasicWaterEnemy {
 	public static PufferBasicWaterEnemy cons(GameEngineScene g, PatternEntry2Pt entry, Vector2 offset) {
 		return (ObjectPool.inst().generic_depool<PufferBasicWaterEnemy>()).i_cons(g, entry, offset);
@@ -36,6 +43,7 @@ public class PufferBasicWaterEnemy : BasicWaterEnemy {
 			SPUtil.vec_add(entry._pt2,offset), 3.0f
 		));
 		this.add_component_for_mode(Mode.Stunned, KnockbackStunBasicWaterEnemyComponent.cons());
+		this.add_hiteffect(SmallEnemyBasicWaterEnemyHitEffect.cons());
 		
 		return this;
 	}

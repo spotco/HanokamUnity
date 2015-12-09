@@ -126,7 +126,7 @@ public class DiveGameState : GameStateBase {
 			
 			bool turn_mode = false;
 			if (!(_params._dashing && _params._dash_has_hit) && !(_params.is_invuln())) {
-				if (g._controls.get_control_down(ControlManager.Control.ShootArrow) && !_params._dashing && _params._turn_mode_delay_ct <= 0) {
+				if (g._controls.get_control_down(ControlManager.Control.ShootArrow) && _params._turn_mode_delay_ct <= 0) {
 					if (g._controls.is_move_x() || g._controls.is_move_y()) {
 						Vector2 dir = g._controls.get_move();
 						float rotation_pre = g._player.rotation();

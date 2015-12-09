@@ -8,10 +8,15 @@ public abstract class BasicWaterEnemyComponent {
 	public virtual void i_update(GameEngineScene g, DiveGameState state, BasicWaterEnemy enemy) {}
 }
 
+public abstract class BasicWaterEnemyHitEffect {
+	public virtual void apply_hit(GameEngineScene g, DiveGameState state, BasicWaterEnemy enemy, BasicWaterEnemyComponent current_component) {}
+}
+
 public abstract class BasicWaterEnemy : IWaterEnemy, GenericPooledObject {
 	private SPNode _root;
 	public SPNode get_root() { return _root; }
 	public override Vector2 get_u_pos() { return _root.get_u_pos(); }
+	public virtual BasicWaterEnemy set_rotation(float deg) { _root.set_rotation(deg); return this; }
 	public override void add_to_parent(SPNode parent) { parent.add_child(_root); }
 	
 	private static int __allocid = 0;
@@ -28,13 +33,16 @@ public abstract class BasicWaterEnemy : IWaterEnemy, GenericPooledObject {
 	public enum Mode {
 		Moving,
 		Stunned,
-		Noticed,
-		AfterNotice,
+		
+		Activated,
+		
 		DoRemove
 	}
 	private Mode _current_mode;
 	public Mode get_current_mode() { return _current_mode; }
 	private SPDict<Mode,BasicWaterEnemyComponent> _mode_to_state;
+	private BasicWaterEnemyHitEffect _hit_effect;
+	public BasicWaterEnemyHitEffect get_hit_effect() { return _hit_effect; }
 	
 	public struct Params {
 		public int _id;
@@ -64,6 +72,11 @@ public abstract class BasicWaterEnemy : IWaterEnemy, GenericPooledObject {
 		return this;
 	}
 	
+	public BasicWaterEnemy add_hiteffect(BasicWaterEnemyHitEffect hit_effect) {
+		_hit_effect = hit_effect;
+		return this;
+	}
+	
 	public void transition_to_mode(GameEngineScene g, Mode mode) {
 		if (_mode_to_state.ContainsKey(_current_mode)) _mode_to_state[_current_mode].notify_transition_from_state(g, this);
 		_current_mode = mode;
@@ -89,179 +102,5 @@ public abstract class BasicWaterEnemy : IWaterEnemy, GenericPooledObject {
 	
 	private void apply_offset_to_position() {
 		_root.set_u_pos(_params._pos.x, _params._pos.y - _params._offset);
-	}
-}
-
-public class KnockbackStunBasicWaterEnemyComponent : BasicWaterEnemyComponent {
-	public static KnockbackStunBasicWaterEnemyComponent cons() {
-		return (new KnockbackStunBasicWaterEnemyComponent()).i_cons();
-	}
-	public KnockbackStunBasicWaterEnemyComponent i_cons() { return this; }
-	public override void notify_transition_to_state(GameEngineScene g, BasicWaterEnemy enemy) {
-		_last_move_rotation = enemy.get_root().rotation();
-	}
-	public override void notify_transition_from_state(GameEngineScene g, BasicWaterEnemy enemy) {}
-	
-	private float _anim_theta;
-	private float _last_move_rotation;
-	public override void i_update(GameEngineScene g, DiveGameState state, BasicWaterEnemy enemy) {
-		_anim_theta = (_anim_theta + SPUtil.dt_scale_get() / (6.28f)) % 6.28f;
-		enemy.get_root().set_rotation(
-			_last_move_rotation
-			+ SPUtil.lerp(30, 5, 1-enemy._params._stun_ct/enemy._params._stun_ct_max)
-			* Mathf.Sin(_anim_theta * SPUtil.lerp(1,7,1-enemy._params._stun_ct/enemy._params._stun_ct_max))
-		);
-		
-		enemy._params._pos = SPUtil.vec_add(enemy._params._pos, SPUtil.vec_scale(enemy._params._stun_vel,SPUtil.dt_scale_get()));
-		
-		enemy._params._stun_vel.x = SPUtil.drpt(enemy._params._stun_vel.x,0,1/20.0f);
-		enemy._params._stun_vel.y = SPUtil.drpt(enemy._params._stun_vel.y,0,1/20.0f);
-		
-		enemy._params._stun_ct -= SPUtil.dt_scale_get();
-		if (enemy._params._stun_ct <= 0) {
-			enemy.transition_to_mode(g, BasicWaterEnemy.Mode.Moving);
-		} else {
-			BasicWaterEnemyComponentUtility.test_and_apply_player_hit_stun(g,state,enemy);
-		}
-	}
-}
-
-public class TwoPointSwimBasicWaterEnemyComponent : BasicWaterEnemyComponent {
-	public static TwoPointSwimBasicWaterEnemyComponent cons(Vector2 start, Vector2 pt1, Vector2 pt2, float speed) {
-		return (new TwoPointSwimBasicWaterEnemyComponent()).i_cons(start,pt1,pt2,speed);
-	}
-	private Vector2 _start, _pt1, _pt2;
-	private float _target_speed;
-	
-	private ELMVec _cur_pos;
-	
-	private enum Mode {
-		Pt1,
-		Pt2
-	}
-	private Mode _current_mode;
-	
-	private TwoPointSwimBasicWaterEnemyComponent i_cons(Vector2 start, Vector2 pt1, Vector2 pt2, float speed) {
-		_start = start;
-		_pt1 = pt1;
-		_pt2 = pt2;
-		_target_speed = speed;
-		
-		_cur_pos = new ELMVec();
-		_cur_pos.set_current(_start);
-		_cur_pos.set_target_vel(_target_speed);
-		_cur_pos.set_target(_pt1);
-		_last_position = _start;
-		return this;
-	}
-	public override void notify_start_on_state(GameEngineScene g, BasicWaterEnemy enemy) {
-		enemy._params._pos = _start;
-		_cur_pos.set_current(_start);
-		_cur_pos.set_target_vel(_target_speed);
-		_cur_pos.set_target(_pt1);
-		_current_mode = Mode.Pt1;
-		_last_position = _start;
-	}
-	public override void notify_transition_to_state(GameEngineScene g, BasicWaterEnemy enemy) {
-		_cur_pos.set_current(enemy._params._pos);
-		_last_position = enemy._params._pos;
-	}
-	public override void notify_transition_from_state(GameEngineScene g, BasicWaterEnemy enemy) {}
-	
-	private Vector2 _last_position;
-	public override void i_update(GameEngineScene g, DiveGameState state, BasicWaterEnemy enemy) {
-		enemy._params._pos = _cur_pos.i_update(SPUtil.dt_scale_get());
-		if (_cur_pos.get_finished()) {
-			if (_current_mode == Mode.Pt1) {
-				_cur_pos.set_target(_pt2);
-				_current_mode = Mode.Pt2;
-			} else if (_current_mode == Mode.Pt2) {
-				_cur_pos.set_target(_pt1);
-				_current_mode = Mode.Pt1;
-			}
-		}
-		
-		Vector2 delta = SPUtil.vec_sub(enemy._params._pos,_last_position);
-		float tar_rotation = SPUtil.dir_ang_deg(delta.x,delta.y) - 90;
-		enemy.get_root().set_rotation(SPUtil.drpt(enemy.get_root().rotation(), enemy.get_root().rotation() + SPUtil.shortest_angle(enemy.get_root().rotation(),tar_rotation), 1/10.0f)); 
-		_last_position = enemy._params._pos;
-		
-		BasicWaterEnemyComponentUtility.test_and_apply_player_hit_stun(g,state,enemy);
-	}
-}
-
-public class BasicWaterEnemyComponentUtility {
-	public static bool test_and_apply_player_hit_stun(GameEngineScene g, DiveGameState state, BasicWaterEnemy enemy) {
-		if (enemy._params._invuln_ct > 0) {
-			return false;
-		}
-		bool rtv = SPHitPoly.polyowners_intersect(enemy, g._player);
-		if (rtv) {
-			Vector2 enemy_hit_dir;
-			Vector2 pos_delta = (new Vector2(enemy.get_u_pos().x-g._player.get_center().x, enemy.get_u_pos().y-g._player.get_center().y));
-			float enemy_knockback_vel;
-			if (!SPUtil.flt_cmp_delta(state._params._vel.magnitude,0,0.1f)) {
-				enemy_hit_dir = SPUtil.vec_add(
-					SPUtil.vec_scale(state._params._vel.normalized,0.75f),
-					SPUtil.vec_scale(pos_delta.normalized,0.25f)).normalized;
-				enemy_knockback_vel = SPUtil.y_for_point_of_2pt_line(new Vector2(0,5),new Vector2(10,25),Mathf.Clamp(state._params._vel.magnitude,0,10));
-			} else {
-				enemy_hit_dir = pos_delta.normalized;
-				if (SPUtil.flt_cmp_delta(enemy_hit_dir.magnitude,0,0.01f)) {
-					enemy_hit_dir = new Vector2(0,1);
-				}
-				enemy_knockback_vel = 5;
-			}
-			
-			if (!state._params._dashing) {
-				enemy_knockback_vel *= 0.5f;
-			}
-			
-			enemy._params._stun_vel = SPUtil.vec_scale(enemy_hit_dir,enemy_knockback_vel);
-			enemy._params._stun_ct = enemy._params._stun_ct_max = 50;
-			enemy._params._invuln_ct = 15;
-			
-			if (enemy.get_current_mode() != BasicWaterEnemy.Mode.Stunned) {
-				g._camerac.freeze_frame(2);
-				g._camerac.camera_shake(new Vector2(-1.5f,1.7f),15,30);
-				enemy.transition_to_mode(g, BasicWaterEnemy.Mode.Stunned);
-				
-				g.add_particle(SPConfigAnimParticle.cons()
-					.set_texture(TextureResource.inst().get_tex(RTex.HANOKA_EFFECTS_WATER))
-					.set_texrect(FileCache.inst().get_texrect(RTex.HANOKA_EFFECTS_WATER,"water_hit_0.png"))
-					.set_pos(enemy.get_u_pos().x, enemy.get_u_pos().y)
-					.set_ctmax(40)
-					.set_alpha(0.5f, 0.1f)
-					.set_scale(0.9f, 1.3f)
-					.set_manual_sort_z_order(GameAnchorZ.BGWater_FX)
-					.set_normalized_timed_sprite_animator(SPTimedSpriteAnimator.cons(null)
-						.add_frame_at_time(FileCache.inst().get_texrect(RTex.HANOKA_EFFECTS_WATER,"water_hit_0.png"),0)
-						.add_frame_at_time(FileCache.inst().get_texrect(RTex.HANOKA_EFFECTS_WATER,"water_hit_1.png"),0.2f)
-						.add_frame_at_time(FileCache.inst().get_texrect(RTex.HANOKA_EFFECTS_WATER,"water_hit_2.png"),0.4f)
-						.add_frame_at_time(FileCache.inst().get_texrect(RTex.HANOKA_EFFECTS_WATER,"water_hit_3.png"),0.6f)
-						.add_frame_at_time(FileCache.inst().get_texrect(RTex.HANOKA_EFFECTS_WATER,"water_hit_4.png"),0.8f)
-					)
-					.set_do_track_bg_water()
-				);
-				
-			}
-			
-			if (state._params._dashing) {
-				if (!state._params._dash_has_hit) {
-					state._params._vel = SPUtil.vec_scale(state._params._vel.normalized,-state._params.DASH_SPEED()*0.5f);
-					state._params._dash_has_hit = true;
-				}
-				state._params._dash_ct = Mathf.Max(state._params._dash_ct, 15);
-				
-			} else if (!state._params.is_invuln()) {
-				g._game_ui.do_red_flash();
-				state._params._current_breath -= 200;
-				state._params._invuln_ct = 25;
-				state._params._vel = SPUtil.vec_scale(state._params._vel.normalized,-state._params.MAX_MOVE_SPEED()*0.5f);
-				
-			}
-			
-		}
-		return rtv;
 	}
 }

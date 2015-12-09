@@ -58,6 +58,7 @@ public class RTex {
 	public static string FX_SPLASH = "effects/ss_splash_fx";
 	
 	public static string ENEMY_PUFFER = "monster/enemy_puffer/puffer_enemy_ss";
+	public static string ENEMY_SPIKE = "monster/enemy_spike/spike_enemy_ss";
 	public static string ENEMY_EFFECTS = "effects/effects_enemy_ss";
 
 	public static string BLANK = "misc/blank";
