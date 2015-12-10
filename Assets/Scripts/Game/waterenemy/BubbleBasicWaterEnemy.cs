@@ -13,7 +13,7 @@ public class BubbleBasicWaterEnemy : BasicWaterEnemy {
 		ObjectPool.inst().generic_repool<BubbleBasicWaterEnemy>(this);
 	}
 	
-	public override BasicWaterEnemy set_rotation(float deg) { return this; }
+	public override BasicWaterEnemy behaviour_set_rotation(float deg) { return this; }
 	
 	public BubbleSprite _img;
 	public override void depool() {
@@ -21,7 +21,7 @@ public class BubbleBasicWaterEnemy : BasicWaterEnemy {
 		this.get_root().set_name("BubbleBasicWaterEnemy");
 		_img = BubbleSprite.cons();
 		_img.add_to_parent(this.get_root());
-		_img.set_manual_sort_z_order(GameAnchorZ.Enemy_InAir);
+		_img.set_manual_sort_z_order(GameAnchorZ.BGWater_FX);
 	}
 	
 	public override void repool() {
@@ -32,7 +32,7 @@ public class BubbleBasicWaterEnemy : BasicWaterEnemy {
 	private BubbleBasicWaterEnemy i_cons(GameEngineScene g, PatternEntry1Pt entry, Vector2 offset) {
 		this.shared_i_cons_pre(g,entry._start,offset);
 		
-		this.add_component_for_mode(Mode.Moving, BubbleNoMoveBasicWaterEnemyComponent.cons(_params._pos));		
+		this.add_component_for_mode(Mode.Moving, OnePointBasicWaterEnemyComponent.cons(SPUtil.vec_add(entry._start,offset)));		
 		
 		this.shared_i_cons_post(g);
 		return this;
@@ -65,7 +65,11 @@ public class BubbleBasicWaterEnemy : BasicWaterEnemy {
 	
 	public override void i_update(GameEngineScene g, DiveGameState state) {
 		base.i_update(g,state);
+		if (this.get_current_mode() == Mode.Moving) {
+			_img.play_anim(BubbleSprite.ANIM_IDLE);
+		}
 		_img.i_update(g);
+		_img.set_enabled(SPHitRect.hitrect_touch(g.get_viewbox(),this.get_hit_rect()));
 	}
 	
 	public override SPHitRect get_hit_rect() {
@@ -95,34 +99,6 @@ public class BubbleBasicWaterEnemyHitEffect : BasicWaterEnemyHitEffect {
 		g._camerac.freeze_frame(1);
 		g._camerac.camera_shake(new Vector2(-1.5f,1.7f),10,15);
 		enemy.transition_to_mode(g,BasicWaterEnemy.Mode.Activated);
-	}
-}
-
-public class BubbleNoMoveBasicWaterEnemyComponent : BasicWaterEnemyComponent {
-	public static BubbleNoMoveBasicWaterEnemyComponent cons(Vector2 start) {
-		return (new BubbleNoMoveBasicWaterEnemyComponent()).i_cons(start);
-	}
-	private Vector2 _pos;
-	
-	private BubbleNoMoveBasicWaterEnemyComponent i_cons(Vector2 start) {
-		_pos = start;
-		return this;
-	}
-	public override void notify_start_on_state(GameEngineScene g, BasicWaterEnemy enemy) {}
-	public override void notify_transition_to_state(GameEngineScene g, BasicWaterEnemy enemy) {}
-	public override void notify_transition_from_state(GameEngineScene g, BasicWaterEnemy enemy) {}
-	
-	public override void i_update(GameEngineScene g, DiveGameState state, BasicWaterEnemy enemy) {
-		BubbleBasicWaterEnemy bubble_enemy;
-		if (!SPUtil.cond_cast<BubbleBasicWaterEnemy>(enemy, out bubble_enemy)) {
-			return;
-		}
-		bubble_enemy._img.play_anim(BubbleSprite.ANIM_IDLE);
-		if (BasicWaterEnemyComponentUtility.enemy_test_hit(g,state,enemy)) {
-			enemy.get_hit_effect().apply_hit(g,state,enemy,this);
-		}
-		
-		bubble_enemy._params._pos = _pos;
 	}
 }
 

@@ -56,7 +56,7 @@ public class GameMain : SPBaseBehavior {
 	public override void Start () {
 		Application.targetFrameRate = 30;
 		this.transform.localScale = new Vector3(ROOT_SCF,ROOT_SCF,ROOT_SCF);
-
+		
 		_context = this;
 		
 		_objpool = ObjectPool.cons();

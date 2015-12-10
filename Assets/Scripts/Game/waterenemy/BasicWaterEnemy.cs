@@ -16,7 +16,7 @@ public abstract class BasicWaterEnemy : IWaterEnemy, GenericPooledObject {
 	private SPNode _root;
 	public SPNode get_root() { return _root; }
 	public override Vector2 get_u_pos() { return _root.get_u_pos(); }
-	public virtual BasicWaterEnemy set_rotation(float deg) { _root.set_rotation(deg); return this; }
+	public virtual BasicWaterEnemy behaviour_set_rotation(float deg) { _root.set_rotation(deg); return this; }
 	public override void add_to_parent(SPNode parent) { parent.add_child(_root); }
 	
 	private static int __allocid = 0;

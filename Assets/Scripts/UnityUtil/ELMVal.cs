@@ -36,9 +36,12 @@ public struct ELMVec {
 	
 	public Vector3 i_update(float dt) {
 		_t = Mathf.Clamp(_t+dt,0,_t_max);
-		float lerp_t = SPUtil.bezier_val_for_t(
-			new Vector2(0,0), new Vector2(0.5f,0), new Vector2(0.5f,1), new Vector2(1,1), _t / _t_max
-		).y;
+		float lerp_t = 1;
+		if (_t < _t_max) {
+			lerp_t = SPUtil.bezier_val_for_t(
+				new Vector2(0,0), new Vector2(0.5f,0), new Vector2(0.5f,1), new Vector2(1,1), _t / _t_max
+			).y;
+		}
 		_current = Vector3.Lerp(_start,_end,lerp_t);
 		return _current;
 	}

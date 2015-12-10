@@ -126,7 +126,7 @@ public class DiveGameState : GameStateBase {
 			
 			bool turn_mode = false;
 			if (!(_params._dashing && _params._dash_has_hit) && !(_params.is_invuln())) {
-				if (g._controls.get_control_down(ControlManager.Control.ShootArrow) && _params._turn_mode_delay_ct <= 0) {
+				if (g._controls.get_control_down(ControlManager.Control.ShootArrow) && !_params._dashing && _params._turn_mode_delay_ct <= 0) {
 					if (g._controls.is_move_x() || g._controls.is_move_y()) {
 						Vector2 dir = g._controls.get_move();
 						float rotation_pre = g._player.rotation();
@@ -141,14 +141,31 @@ public class DiveGameState : GameStateBase {
 					
 					
 				} else {
-					float move_speed = _params._dashing ? _params.DASH_SPEED() : _params.MAX_MOVE_SPEED();					
+					bool is_move = (g._controls.is_move_x() || g._controls.is_move_y());
 					Vector2 move = g._controls.get_move().normalized;
-					if (g._controls.is_move_x() || g._controls.is_move_y()) {
+				
+					if (_params._dashing && is_move) {
+						float cancel_angle = SPUtil.rad_to_deg(Mathf.Acos(SPUtil.vec_dot(move,_params._vel.normalized)));
+						if (cancel_angle > 120) {
+							_params._dash_ct = 0;
+							_params._dashing = false;
+						}
+					}
+				
+					float move_speed = _params._dashing ? _params.DASH_SPEED() : _params.MAX_MOVE_SPEED();					
+					
+					if (is_move) {
 						Vector2 cur_vel = _params._vel;
 						Vector2 tar_vel = SPUtil.vec_scale(move,move_speed);
 						Vector2 delta = SPUtil.vec_sub(tar_vel,cur_vel);
 						float delta_mag = delta.magnitude;
-						_params._vel = SPUtil.vec_add(_params._vel, SPUtil.vec_scale(delta.normalized, SPUtil.drpty(0.975f)));
+						
+						float movto_drpt_val = _params._dashing ? 0.1f : 0.15f;
+						
+						_params._vel = SPUtil.vec_add(
+							_params._vel, 
+							SPUtil.vec_scale(delta, SPUtil.drpty(movto_drpt_val))
+						);
 						
 					} else if (!_params._dashing) {
 						_params._vel.x = SPUtil.drpt(_params._vel.x,0,1/30.0f);

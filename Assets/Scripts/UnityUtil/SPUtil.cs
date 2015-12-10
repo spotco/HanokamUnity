@@ -355,6 +355,9 @@ public class SPUtil {
 		z1 = (v1.x*a.y) - (a.x*v1.y);
 		return new Vector3(x1, y1, z1);
 	}
+	public static float vec_dot(Vector3 a, Vector3 b) {
+		return a.x*b.x+a.y*b.y+a.z*b.z;
+	}
 	public static bool vec_eq(Vector4 a, Vector4 b) {
 		return a.x == b.x && a.y == b.y && a.z == b.z && a.w == b.w;
 	}

@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections.Generic;
 
 public class TwoPointSwimBasicWaterEnemyComponent : BasicWaterEnemyComponent {
@@ -57,9 +57,11 @@ public class TwoPointSwimBasicWaterEnemyComponent : BasicWaterEnemyComponent {
 		enemy._params._pos = _cur_pos.i_update(SPUtil.dt_scale_get());
 		
 		Vector2 delta = SPUtil.vec_sub(enemy._params._pos,_last_position);
-		float tar_rotation = SPUtil.dir_ang_deg(delta.x,delta.y) - 90;
-		enemy.set_rotation(
-			SPUtil.drpt(enemy.get_root().rotation(), enemy.get_root().rotation() + SPUtil.shortest_angle(enemy.get_root().rotation(),tar_rotation), 1/10.0f));
+		if (delta.magnitude > 0) {
+			float tar_rotation = SPUtil.dir_ang_deg(delta.x,delta.y) - 90;
+			enemy.behaviour_set_rotation(
+				SPUtil.drpt(enemy.get_root().rotation(), enemy.get_root().rotation() + SPUtil.shortest_angle(enemy.get_root().rotation(),tar_rotation), 1/10.0f));
+		}
 		_last_position = enemy._params._pos;
 		
 		if (BasicWaterEnemyComponentUtility.enemy_test_hit(g,state,enemy)) {

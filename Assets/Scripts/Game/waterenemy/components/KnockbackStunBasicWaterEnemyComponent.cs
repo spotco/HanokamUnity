@@ -15,7 +15,7 @@ public class KnockbackStunBasicWaterEnemyComponent : BasicWaterEnemyComponent {
 	private float _last_move_rotation;
 	public override void i_update(GameEngineScene g, DiveGameState state, BasicWaterEnemy enemy) {
 		_anim_theta = (_anim_theta + SPUtil.dt_scale_get() / (6.28f)) % 6.28f;
-		enemy.get_root().set_rotation(
+		enemy.behaviour_set_rotation(
 			_last_move_rotation
 			+ SPUtil.lerp(30, 5, 1-enemy._params._stun_ct/enemy._params._stun_ct_max)
 			* Mathf.Sin(_anim_theta * SPUtil.lerp(1,7,1-enemy._params._stun_ct/enemy._params._stun_ct_max))

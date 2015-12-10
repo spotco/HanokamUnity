@@ -49,6 +49,8 @@ public class PufferEnemySprite : GenericPooledObject, SPNodeHierarchyElement, SP
 
 	public Vector4 color() { return _img.color(); }
 	public void set_color(Vector4 color) { _img.set_color(color); }
+	
+	public void set_enabled(bool val) { _img.set_enabled(val); }
 
 	private static MultiMap<string,Rect> __cached_anim_rects;
 	private void cons_anims() {

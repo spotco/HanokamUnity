@@ -42,9 +42,11 @@ public class WaterEnemyManager : DiveGameStateUpdateable, GenericPooledObject {
 			for (int i = 0; i < tmp._2pt_entries.Count; i++) {
 				PatternEntry2Pt itr_2pt = tmp._2pt_entries[i];
 				if (itr_2pt._val == "puffer") {
-					this.add_enemy(g, PufferBasicWaterEnemy.cons(g,itr_2pt,group_offset));
+					this.add_enemy(g,PufferBasicWaterEnemy.cons(g,itr_2pt,group_offset));
 				} else if (itr_2pt._val == "bubble") {
-					this.add_enemy(g, BubbleBasicWaterEnemy.cons(g,itr_2pt,group_offset));
+					this.add_enemy(g,BubbleBasicWaterEnemy.cons(g,itr_2pt,group_offset));
+				} else if (itr_2pt._val == "spike") {
+					this.add_enemy(g,SpikeBasicWaterEnemy.cons(g,itr_2pt,group_offset));
 				} else {
 					Debug.LogError(SPUtil.sprintf("Unknown 2pt({0})",itr_2pt._val));
 				}
@@ -52,7 +54,9 @@ public class WaterEnemyManager : DiveGameStateUpdateable, GenericPooledObject {
 			for (int i = 0; i < tmp._1pt_entries.Count; i++) {
 				PatternEntry1Pt itr_1pt = tmp._1pt_entries[i];
 				if (itr_1pt._val == "bubble") {
-					this.add_enemy(g, BubbleBasicWaterEnemy.cons(g,itr_1pt,group_offset));
+					this.add_enemy(g,BubbleBasicWaterEnemy.cons(g,itr_1pt,group_offset));
+				} else if (itr_1pt._val == "spike") {
+					this.add_enemy(g,SpikeBasicWaterEnemy.cons(g,itr_1pt,group_offset));
 				} else {
 					Debug.LogError(SPUtil.sprintf("Unknown 1pt({0})",itr_1pt._val));
 				}

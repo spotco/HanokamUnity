@@ -67,6 +67,8 @@ public class PufferBasicWaterEnemy : BasicWaterEnemy {
 		default: {} break;
 		}
 		_img.set_color(img_color);
+		
+		_img.set_enabled(SPHitRect.hitrect_touch(g.get_viewbox(),this.get_hit_rect()));
 	}
 	
 	public override SPHitRect get_hit_rect() {
