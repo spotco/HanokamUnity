@@ -49,6 +49,8 @@ public class BasicWaterEnemyComponentUtility {
 		float player_knockback_speed = (enemy_mass / player_mass) * hit_params._enemy_vel.magnitude * hit_params._enemy_to_player_elasticity_coef;
 		float enemy_knockback_speed = (player_mass / enemy_mass) * hit_params._player_vel.magnitude * hit_params._player_to_enemy_elasticity_coef;
 		
+		player_knockback_speed = Mathf.Max(player_knockback_speed,1.5f);
+		
 		Vector2 player_knockback_dir = SPUtil.vec_add(SPUtil.vec_scale(pos_delta_dir,-1),hit_params._enemy_vel.normalized).normalized;
 		Vector2 enemy_knockback_dir = SPUtil.vec_add(pos_delta_dir,hit_params._player_vel.normalized).normalized;
 		

@@ -8,12 +8,10 @@ public interface SPMainUpdateable {
 public class GameMain : SPBaseBehavior {
 	/**
 	TODO--
-	
-	-puffer hit effect with coefs
+	-multiple enemy sections hookup
 	-hanoka dive work
 	-crab enemy
-	-multiple enemy sections hookup
-	
+	-new puffer follow
 	
 	---Underwater gameplay
 	-jelly movepoints
@@ -26,6 +24,7 @@ public class GameMain : SPBaseBehavior {
 	---Inair gameplay
 	
 	LATER--
+	bubble trails behind moving enemies
 	fish underwater implementation
 	_c_pos center should not be tied to camera (inair)
 	blur make manual, disable blur when not used
