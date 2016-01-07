@@ -8,6 +8,13 @@ public interface SPMainUpdateable {
 public class GameMain : SPBaseBehavior {
 	/**
 	TODO--
+	
+	-spike anim character
+	-puffer hit effect with coefs
+	-hanoka dive work
+	-crab enemy
+	
+	
 	---Underwater gameplay
 	-jelly movepoints
 	-eel side to side bezier
@@ -22,6 +29,7 @@ public class GameMain : SPBaseBehavior {
 	fish underwater implementation
 	_c_pos center should not be tied to camera (inair)
 	blur make manual, disable blur when not used
+	cut overdraw in background elements
 	**/
 
 	public static GameMain _context;

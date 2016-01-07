@@ -1,11 +1,12 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 
 public abstract class BasicWaterEnemyComponent {
 	public virtual void notify_start_on_state(GameEngineScene g, BasicWaterEnemy enemy) {}
 	public virtual void notify_transition_to_state(GameEngineScene g, BasicWaterEnemy enemy) {}
 	public virtual void notify_transition_from_state(GameEngineScene g, BasicWaterEnemy enemy) {}
-	public virtual void i_update(GameEngineScene g, DiveGameState state, BasicWaterEnemy enemy) {}
+	public virtual void i_update(GameEngineScene g, DiveGameState state, BasicWaterEnemy enemy) {} //if active
+	public virtual void i_always_update_pre(GameEngineScene g, DiveGameState state, BasicWaterEnemy enemy) {} //always
 }
 
 public abstract class BasicWaterEnemyHitEffect {
@@ -85,6 +86,14 @@ public abstract class BasicWaterEnemy : IWaterEnemy, GenericPooledObject {
 	}
 	
 	public override void i_update(GameEngineScene g, DiveGameState state) {
+		List<Mode> modes = _mode_to_state.key_itr();
+		for (int i = 0; i < modes.Count; i++) {
+			Mode itr_mode = modes[i];
+			if (_mode_to_state.ContainsKey(itr_mode)) {
+				_mode_to_state[itr_mode].i_always_update_pre(g,state,this);
+			}
+		}
+	
 		if (_mode_to_state.ContainsKey(_current_mode)) {
 			_mode_to_state[_current_mode].i_update(g,state,this);
 		}

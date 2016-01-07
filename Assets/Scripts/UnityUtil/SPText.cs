@@ -300,7 +300,7 @@ public class SPText : SPNode, SPMainUpdateable {
 	}
 	
 	private float _opacity;
-	public void set_opacity(float val) {
+	public new void set_opacity(float val) {
 		_opacity = val;
 		for (int i = 0; i < _characters.Count; i++) {
 			_characters[i].set_opacity(val);
@@ -317,7 +317,7 @@ public class SPText : SPNode, SPMainUpdateable {
 	}
 	
 	private int _zord = GameAnchorZ.HUD_BASE;
-	public void set_manual_sort_z_order(int zord) {
+	public new void set_manual_sort_z_order(int zord) {
 		_zord = zord;
 		for (int i = 0; i < this._characters.Count; i++) {
 			this._characters[i]._img.set_manual_sort_z_order(_zord);

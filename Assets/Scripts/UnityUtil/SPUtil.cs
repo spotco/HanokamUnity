@@ -295,11 +295,12 @@ public class SPUtil {
 	}
 
 	public static Vector3 vec_lmovto(Vector3 a, Vector3 b, float vmax) {
+		vmax = vmax * SPUtil.dt_scale_get();
 		Vector3 delta = SPUtil.vec_sub(b,a);
 		if (delta.magnitude <= vmax) {
 			return b;
 		} else {
-			return SPUtil.vec_add(a,SPUtil.vec_scale(delta.normalized,vmax * SPUtil.dt_scale_get()));
+			return SPUtil.vec_add(a,SPUtil.vec_scale(delta.normalized,vmax));
 		}
 	}
 	

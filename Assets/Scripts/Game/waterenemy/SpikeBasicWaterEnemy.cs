@@ -15,13 +15,15 @@ public class SpikeBasicWaterEnemy : BasicWaterEnemy {
 	
 	public override BasicWaterEnemy behaviour_set_rotation(float deg) { return this; }
 	
-	private SPSprite _img;
+	private SpikeEnemySprite _img;
 	public override void depool() {
 		base.depool();
 		this.get_root().set_name("SpikeBasicWaterEnemy");
-		_img = SPSprite.cons_sprite_texkey_texrect(RTex.ENEMY_SPIKE,FileCache.inst().get_texrect(RTex.ENEMY_SPIKE,"spike_test.png"));
+		_img = SpikeEnemySprite.cons();
 		_img.set_manual_sort_z_order(GameAnchorZ.Enemy_InAir);
-		this.get_root().add_child(_img);
+		_img.play_anim(SpikeEnemySprite.ANIM_IDLE);
+		
+		_img.add_to_parent(this.get_root());
 	}
 	
 	public override void repool() {
@@ -75,12 +77,17 @@ public class SpikeBasicWaterEnemy : BasicWaterEnemy {
 		base.i_update(g,state);
 		
 		if (this.get_current_mode() == Mode.Stunned && _last_mode == Mode.Moving) {
-			_img.set_scale(1.5f);
+			_img.set_scale(2);
 		} else {
 			_img.set_scale(SPUtil.drpt(_img.scale_x(),1,1/10.0f));
 		}
 		_last_mode = this.get_current_mode();
-		_img.set_enabled(SPHitRect.hitrect_touch(g.get_viewbox(),this.get_hit_rect()));
+		
+		bool enabled = SPHitRect.hitrect_touch(g.get_viewbox(),this.get_hit_rect());
+		_img.set_enabled(enabled);
+		if (enabled) {
+			_img.i_update(g);	
+		}
 	}
 	
 	public override SPHitRect get_hit_rect() {
@@ -107,14 +114,11 @@ public class SpikeReturnToPositionHitEffect : BasicWaterEnemyHitEffect {
 	public static SpikeReturnToPositionHitEffect cons() { return new SpikeReturnToPositionHitEffect(); }
 	
 	public override void apply_hit(GameEngineScene g, DiveGameState state, BasicWaterEnemy enemy, BasicWaterEnemyComponent current_component) {
-	
 		BasicWaterEnemyComponentUtility.HitParams hit_params = BasicWaterEnemyComponentUtility.HitParams.cons_default();
 		hit_params._enemy_mass = 2.0f;
 		hit_params._ignore_dash = true;
-		
 		hit_params._player_vel = state._params._vel;
 		hit_params._enemy_vel = enemy.get_calculated_velocity();
-		
 		hit_params._enemy_to_player_elasticity_coef = 0.4f;
 		
 		BasicWaterEnemyComponentUtility.small_enemy_apply_hit(g,state,enemy,hit_params);

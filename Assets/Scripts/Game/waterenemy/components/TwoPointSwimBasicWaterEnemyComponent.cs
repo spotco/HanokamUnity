@@ -8,7 +8,8 @@ public class TwoPointSwimBasicWaterEnemyComponent : BasicWaterEnemyComponent {
 	private Vector2 _start, _pt1, _pt2;
 	private float _target_speed;
 	
-	private ELMVec _cur_pos;
+	private Vector2 _current_pos;
+	private ELMVec _expected_pos;
 	
 	private enum Mode {
 		Pt1,
@@ -22,39 +23,51 @@ public class TwoPointSwimBasicWaterEnemyComponent : BasicWaterEnemyComponent {
 		_pt2 = pt2;
 		_target_speed = speed;
 		
-		_cur_pos = new ELMVec();
-		_cur_pos.set_current(_start);
-		_cur_pos.set_target_vel(_target_speed);
-		_cur_pos.set_target(_pt1);
+		_current_pos = _start;
+		
+		_expected_pos = new ELMVec();
+		_expected_pos.set_current(_start);
+		_expected_pos.set_target_vel(_target_speed);
+		_expected_pos.set_target(_pt1);
+		
 		_last_position = _start;
 		return this;
 	}
 	public override void notify_start_on_state(GameEngineScene g, BasicWaterEnemy enemy) {
 		enemy._params._pos = _start;
-		_cur_pos.set_current(_start);
-		_cur_pos.set_target_vel(_target_speed);
-		_cur_pos.set_target(_pt1);
+		
+		_current_pos = _start;
+		_expected_pos.set_current(_start);
+		_expected_pos.set_target_vel(_target_speed);
+		_expected_pos.set_target(_pt1);
+		
 		_current_mode = Mode.Pt1;
 		_last_position = _start;
 	}
 	public override void notify_transition_to_state(GameEngineScene g, BasicWaterEnemy enemy) {
-		_cur_pos.set_current(enemy._params._pos);
+		_current_pos = enemy._params._pos;
 		_last_position = enemy._params._pos;
 	}
 	public override void notify_transition_from_state(GameEngineScene g, BasicWaterEnemy enemy) {}
 	
-	private Vector2 _last_position;
-	public override void i_update(GameEngineScene g, DiveGameState state, BasicWaterEnemy enemy) {
-		if (_cur_pos.get_finished()) {
+	public override void i_always_update_pre(GameEngineScene g, DiveGameState state, BasicWaterEnemy enemy) {
+		if (_expected_pos.get_finished()) {
 			if (_current_mode == Mode.Pt1) {
-				_cur_pos.set_target(_pt2);
+				_expected_pos.set_target(_pt2);
 				_current_mode = Mode.Pt2;
 			} else if (_current_mode == Mode.Pt2) {
-				_cur_pos.set_target(_pt1);
+				_expected_pos.set_target(_pt1);
 				_current_mode = Mode.Pt1;
 			}
 		}
-		enemy._params._pos = _cur_pos.i_update(SPUtil.dt_scale_get());
+		_expected_pos.i_update(SPUtil.dt_scale_get());
+	}
+	
+	private Vector2 _last_position;
+	public override void i_update(GameEngineScene g, DiveGameState state, BasicWaterEnemy enemy) {
+	
+		_current_pos = SPUtil.vec_lmovto(_current_pos,_expected_pos.get_current(),_target_speed * 1.5f);
+		enemy._params._pos = _current_pos;
 		
 		Vector2 delta = SPUtil.vec_sub(enemy._params._pos,_last_position);
 		if (delta.magnitude > 0) {
