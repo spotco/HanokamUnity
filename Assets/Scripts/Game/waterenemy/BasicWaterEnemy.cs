@@ -10,6 +10,7 @@ public abstract class BasicWaterEnemyComponent {
 
 public abstract class BasicWaterEnemyHitEffect {
 	public virtual void apply_hit(GameEngineScene g, DiveGameState state, BasicWaterEnemy enemy, BasicWaterEnemyComponent current_component) {}
+	public virtual void i_update(GameEngineScene g, DiveGameState state, BasicWaterEnemy enemy, BasicWaterEnemyComponent current_component) {}
 }
 
 public abstract class BasicWaterEnemy : IWaterEnemy, GenericPooledObject {
@@ -89,6 +90,12 @@ public abstract class BasicWaterEnemy : IWaterEnemy, GenericPooledObject {
 		}
 		this.apply_offset_to_position();
 		_params._invuln_ct = Mathf.Max(_params._invuln_ct - SPUtil.dt_scale_get(), 0);
+		
+		if (_hit_effect != null) {
+			_hit_effect.i_update(g,state,this,_mode_to_state.ContainsKey(_current_mode)?_mode_to_state[_current_mode]:null);
+		}
+		
+		this.calculate_velocity(g,state);
 	}
 	
 	public override bool should_remove() {
@@ -102,5 +109,17 @@ public abstract class BasicWaterEnemy : IWaterEnemy, GenericPooledObject {
 	
 	private void apply_offset_to_position() {
 		_root.set_u_pos(_params._pos.x, _params._pos.y - _params._offset);
+	}
+	
+	private Vector2 _last_frame_position;
+	private Vector2 _last_frame_vel;
+	private void calculate_velocity(GameEngineScene g, DiveGameState state) {
+		_last_frame_vel.x = (_params._pos.x - _last_frame_position.x)/SPUtil.dt_scale_get();
+		_last_frame_vel.y = (_params._pos.y - _last_frame_position.y)/SPUtil.dt_scale_get();
+		_last_frame_position = _params._pos;
+	}
+	
+	public Vector2 get_calculated_velocity() {
+		return _last_frame_vel;
 	}
 }

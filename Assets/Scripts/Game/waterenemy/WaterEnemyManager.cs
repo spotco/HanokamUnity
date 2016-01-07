@@ -35,7 +35,7 @@ public class WaterEnemyManager : DiveGameStateUpdateable, GenericPooledObject {
 	private List<IWaterEnemy> _enemies = new List<IWaterEnemy>();
 	public WaterEnemyManager i_cons(GameEngineScene g) {
 	
-		PatternFile tmp = FileCache.inst().get_patternfile(RPattern.TEST_1);
+		PatternFile tmp = FileCache.inst().get_patternfile(RPattern.GENPATTERN_1);
 		{
 			Vector2 group_offset = new Vector2(0,-2000);
 			

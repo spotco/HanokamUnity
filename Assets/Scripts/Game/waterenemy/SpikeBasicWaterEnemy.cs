@@ -37,7 +37,7 @@ public class SpikeBasicWaterEnemy : BasicWaterEnemy {
 			SPUtil.vec_add(entry._start,offset),
 			SPUtil.vec_add(entry._start,offset),
 			SPUtil.vec_add(entry._start,offset),
-			1.5f
+			1.5f //default "move back to location" speed
 		));
 		
 		
@@ -52,7 +52,7 @@ public class SpikeBasicWaterEnemy : BasicWaterEnemy {
 			SPUtil.vec_add(entry._start,offset),
 			SPUtil.vec_add(entry._pt1,offset),
 			SPUtil.vec_add(entry._pt2,offset),
-			1.5f
+			entry._speed
 		));
 		
 		this.shared_i_cons_post(g);
@@ -105,12 +105,18 @@ public class SpikeBasicWaterEnemy : BasicWaterEnemy {
 
 public class SpikeReturnToPositionHitEffect : BasicWaterEnemyHitEffect {
 	public static SpikeReturnToPositionHitEffect cons() { return new SpikeReturnToPositionHitEffect(); }
+	
 	public override void apply_hit(GameEngineScene g, DiveGameState state, BasicWaterEnemy enemy, BasicWaterEnemyComponent current_component) {
+	
 		BasicWaterEnemyComponentUtility.HitParams hit_params = BasicWaterEnemyComponentUtility.HitParams.cons_default();
+		hit_params._enemy_mass = 2.0f;
 		hit_params._ignore_dash = true;
-		hit_params._knockback_vel_pt1 = new Vector2(0,1.5f);
-		hit_params._knockback_vel_pt2 = new Vector2(10,7.5f);
-		hit_params._knockback_vel_min = 1.5f;
+		
+		hit_params._player_vel = state._params._vel;
+		hit_params._enemy_vel = enemy.get_calculated_velocity();
+		
+		hit_params._enemy_to_player_elasticity_coef = 0.4f;
+		
 		BasicWaterEnemyComponentUtility.small_enemy_apply_hit(g,state,enemy,hit_params);
 	}
 }

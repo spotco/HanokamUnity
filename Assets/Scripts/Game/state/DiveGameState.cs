@@ -27,6 +27,7 @@ public class DiveGameState : GameStateBase {
 		public float DASH_SPEED() { return 23; }
 		public float MAX_MOVE_SPEED() { return 10; }
 		public float TURN_SPEED() { return 3; }
+		public float DASH_CT_MAX() { return 20; }
 		
 		public float _current_breath;
 		public float MAX_BREATH() { return 10000; }
@@ -215,7 +216,7 @@ public class DiveGameState : GameStateBase {
 				_params._vel = dir;
 				_params._dashing = true;
 				_params._dash_has_hit = false;
-				_params._dash_ct = 20;
+				_params._dash_ct = _params.DASH_CT_MAX();
 				UnderwaterBubbleParticle.proc_multiple_bubbles(g);
 			}
 			

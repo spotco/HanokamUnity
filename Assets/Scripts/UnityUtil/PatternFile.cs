@@ -6,6 +6,7 @@ using System;
 
 public class RPattern {
 	public static string TEST_1 = "patterns/water/testpattern_1";
+	public static string GENPATTERN_1 = "patterns/water/genpattern_1";
 }
 
 [ProtoContract]
@@ -43,11 +44,14 @@ public class PatternFile {
 				JSONObject start_obj = itr.GetObject("start");
 				Vector2 start = new Vector2((float)start_obj.GetNumber("x"),(float)start_obj.GetNumber("y"));
 				
+				float speed = (float)itr.GetNumber("speed");
+				
 				rtv._2pt_entries.Add(new PatternEntry2Pt() {
 					_val = val,
 					_pt1 = pt1,
 					_pt2 = pt2,
-					_start = start
+					_start = start,
+					_speed = speed
 				});
 			}
 		}		
@@ -61,6 +65,7 @@ public class PatternEntry2Pt {
 	[ProtoMember(2)] public Vector2 _pt1;
 	[ProtoMember(3)] public Vector2 _pt2;
 	[ProtoMember(4)] public Vector2 _start;
+	[ProtoMember(5)] public float _speed;
 }
 
 [ProtoContract]

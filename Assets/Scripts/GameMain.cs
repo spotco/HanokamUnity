@@ -9,23 +9,19 @@ public class GameMain : SPBaseBehavior {
 	/**
 	TODO--
 	---Underwater gameplay
-	-bubble stationary
-	-bubble moving 2point
 	-jelly movepoints
 	-eel side to side bezier
 	-enemy pass notice mode
 	-follow wall
 	-orb spawn spirit shark swim back art transition
 	
-	-dash too many times lose air
-	
 	---Pattern spawn editor	
 	---Inair gameplay
 	
 	LATER--
 	fish underwater implementation
-	_c_pos center should not be tied to camera
-	blur make manual
+	_c_pos center should not be tied to camera (inair)
+	blur make manual, disable blur when not used
 	**/
 
 	public static GameMain _context;

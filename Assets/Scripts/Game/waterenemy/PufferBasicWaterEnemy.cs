@@ -4,7 +4,8 @@ using System.Collections;
 public class SmallEnemyBasicWaterEnemyHitEffect : BasicWaterEnemyHitEffect {
 	public static SmallEnemyBasicWaterEnemyHitEffect cons() { return new SmallEnemyBasicWaterEnemyHitEffect(); }
 	public override void apply_hit(GameEngineScene g, DiveGameState state, BasicWaterEnemy enemy, BasicWaterEnemyComponent current_component) {
-		BasicWaterEnemyComponentUtility.small_enemy_apply_hit(g,state,enemy);
+		//IMMTODO
+		//BasicWaterEnemyComponentUtility.small_enemy_apply_hit(g,state,enemy);
 	}
 }
 
@@ -40,7 +41,8 @@ public class PufferBasicWaterEnemy : BasicWaterEnemy {
 		this.add_component_for_mode(Mode.Moving, TwoPointSwimBasicWaterEnemyComponent.cons(
 			SPUtil.vec_add(entry._start,offset), 
 			SPUtil.vec_add(entry._pt1,offset), 
-			SPUtil.vec_add(entry._pt2,offset), 3.0f
+			SPUtil.vec_add(entry._pt2,offset),
+			entry._speed
 		));
 		this.add_component_for_mode(Mode.Stunned, KnockbackStunBasicWaterEnemyComponent.cons());
 		this.add_hiteffect(SmallEnemyBasicWaterEnemyHitEffect.cons());
