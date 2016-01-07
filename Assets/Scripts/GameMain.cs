@@ -9,10 +9,10 @@ public class GameMain : SPBaseBehavior {
 	/**
 	TODO--
 	
-	-spike anim character
 	-puffer hit effect with coefs
 	-hanoka dive work
 	-crab enemy
+	-multiple enemy sections hookup
 	
 	
 	---Underwater gameplay

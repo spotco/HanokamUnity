@@ -101,6 +101,70 @@
                     "y": -1000
                },
                "speed": 7
+          },
+          {
+               "type": "1pt",
+               "val": "spike",
+               "start": {
+                    "x": -450,
+                    "y": -100
+               }
+          },
+          {
+               "type": "1pt",
+               "val": "spike",
+               "start": {
+                    "x": 450,
+                    "y": -100
+               }
+          },
+          {
+               "type": "1pt",
+               "val": "spike",
+               "start": {
+                    "x": 450,
+                    "y": -900
+               }
+          },
+          {
+               "type": "1pt",
+               "val": "spike",
+               "start": {
+                    "x": -450,
+                    "y": -900
+               }
+          },
+          {
+               "type": "1pt",
+               "val": "spike",
+               "start": {
+                    "x": 450,
+                    "y": -1700
+               }
+          },
+          {
+               "type": "1pt",
+               "val": "spike",
+               "start": {
+                    "x": -450,
+                    "y": -1700
+               }
+          },
+          {
+               "type": "1pt",
+               "val": "bubble",
+               "start": {
+                    "x": 0,
+                    "y": -1300
+               }
+          },
+          {
+               "type": "1pt",
+               "val": "bubble",
+               "start": {
+                    "x": 0,
+                    "y": -500
+               }
           }
      ]
 }
