@@ -4,8 +4,11 @@ using System.Collections;
 public class SmallEnemyBasicWaterEnemyHitEffect : BasicWaterEnemyHitEffect {
 	public static SmallEnemyBasicWaterEnemyHitEffect cons() { return new SmallEnemyBasicWaterEnemyHitEffect(); }
 	public override void apply_hit(GameEngineScene g, DiveGameState state, BasicWaterEnemy enemy, BasicWaterEnemyComponent current_component) {
-		//IMMTODO
-		//BasicWaterEnemyComponentUtility.small_enemy_apply_hit(g,state,enemy);
+		BasicWaterEnemyComponentUtility.HitParams hit_params = BasicWaterEnemyComponentUtility.HitParams.cons_default();
+		hit_params._player_vel = state._params._vel;
+		hit_params._enemy_vel = enemy.get_calculated_velocity();
+		hit_params._enemy_to_player_elasticity_coef = 0.7f;
+		BasicWaterEnemyComponentUtility.small_enemy_apply_hit(g,state,enemy,hit_params);
 	}
 }
 
