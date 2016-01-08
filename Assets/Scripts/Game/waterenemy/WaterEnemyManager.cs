@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-public abstract class IWaterEnemy : DiveGameStateUpdateable, DiveReturnGameStateUpdateable, SPNodeHierarchyElement, SPHitPolyOwner {
+public abstract class IWaterEnemy : DiveGameStateUpdateable, DiveReturnGameStateUpdateable, SPNodeHierarchyElement {
 	public virtual void on_added_to_manager(GameEngineScene g) {}
 	public virtual void i_update(GameEngineScene g, DiveGameState state) {}
 	public virtual void i_update(GameEngineScene g, DiveReturnGameState state) {}
@@ -10,8 +10,8 @@ public abstract class IWaterEnemy : DiveGameStateUpdateable, DiveReturnGameState
 	public virtual void do_remove() {}
 	public virtual void add_to_parent(SPNode parent) {}
 	public virtual Vector2 get_u_pos() { return Vector2.zero; }
-	public virtual SPHitRect get_hit_rect() { return new SPHitRect(); }
-	public virtual SPHitPoly get_hit_poly() { return new SPHitPoly(); }
+	
+	public virtual void debug_draw_hitboxes(SPDebugRender draw) {}
 }
 
 public class WaterEnemyManager : DiveGameStateUpdateable, GenericPooledObject {	
@@ -37,8 +37,13 @@ public class WaterEnemyManager : DiveGameStateUpdateable, GenericPooledObject {
 	
 		List<PatternFile> levels_to_load = new List<PatternFile>() {
 			FileCache.inst().get_patternfile(RPattern.GENPATTERN_1),
-			FileCache.inst().get_patternfile(RPattern.TEST_1),
-			FileCache.inst().get_patternfile(RPattern.GENPATTERN_1)
+			FileCache.inst().get_patternfile(RPattern.GENPATTERN_1),
+			FileCache.inst().get_patternfile(RPattern.GENPATTERN_2),
+			FileCache.inst().get_patternfile(RPattern.GENPATTERN_1),
+			FileCache.inst().get_patternfile(RPattern.GENPATTERN_1),
+			
+			
+			//FileCache.inst().get_patternfile(RPattern.TEST_1)
 			
 		};
 		Vector2 cur_offset = new Vector2(0,-2000);
@@ -107,7 +112,7 @@ public class WaterEnemyManager : DiveGameStateUpdateable, GenericPooledObject {
 	public void debug_draw_hitboxes(SPDebugRender draw) {
 		for (int i = _enemies.Count-1; i >= 0; i--) {
 			IWaterEnemy itr = _enemies[i];
-			draw.draw_hitpoly_owner(itr,new Color(0.8f, 0.2f, 0.2f, 0.5f), new Color(0.8f, 0.2f, 0.2f, 0.8f));
+			itr.debug_draw_hitboxes(draw);
 		}
 	}
 	

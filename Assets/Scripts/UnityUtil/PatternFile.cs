@@ -6,7 +6,9 @@ using System;
 
 public class RPattern {
 	public static string TEST_1 = "patterns/water/testpattern_1";
+	
 	public static string GENPATTERN_1 = "patterns/water/genpattern_1";
+	public static string GENPATTERN_2 = "patterns/water/genpattern_2";
 }
 
 [ProtoContract]

@@ -151,22 +151,6 @@
                }
           },
           {
-               "type": "1pt",
-               "val": "bubble",
-               "start": {
-                    "x": 0,
-                    "y": -1300
-               }
-          },
-          {
-               "type": "1pt",
-               "val": "bubble",
-               "start": {
-                    "x": 0,
-                    "y": -500
-               }
-          },
-          {
                "type": "2pt",
                "val": "puffer",
                "pt1": {
@@ -201,5 +185,5 @@
                "speed": 5
           }
      ],
-     "spacing_bottom": 200
+     "spacing_bottom": 400
 }

@@ -8,7 +8,6 @@ public interface SPMainUpdateable {
 public class GameMain : SPBaseBehavior {
 	/**
 	TODO--
-	
 	-new puffer follow
 	-mock divereturn
 	-new underwater ui

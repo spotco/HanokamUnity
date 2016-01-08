@@ -29,11 +29,18 @@ public class EnemyNoticeParticle : SPGameEngineParticle, GenericPooledObject {
 	}
 
 	private float _anim_t;
+	
+	private bool _has_first_track_y;
+	private float _last_track_y;
+	
 	public EnemyNoticeParticle i_cons(Vector2 pos, float rotation) {
 		_root.set_u_pos(pos);
 		_img.set_rotation(rotation);
 		_anim_t = 0;
 		this.update_img();
+		
+		_has_first_track_y = false;
+		
 		return this;
 	}
 	private void update_img() {
@@ -53,6 +60,13 @@ public class EnemyNoticeParticle : SPGameEngineParticle, GenericPooledObject {
 	public override void i_update(GameEngineScene g) {
 		_anim_t += 0.025f * SPUtil.dt_scale_get();
 		this.update_img();
+		
+		if (!_has_first_track_y) {
+			_has_first_track_y = true;
+			_last_track_y = g._bg_water.get_y_offset();
+		}
+		_root._u_y = _root._u_y - (g._bg_water.get_y_offset()-_last_track_y);
+		_last_track_y = g._bg_water.get_y_offset();
 	}
 	public override bool should_remove(GameEngineScene g) {
 		return _anim_t >= 1;

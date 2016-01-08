@@ -78,7 +78,7 @@ public class TwoPointSwimBasicWaterEnemyComponent : BasicWaterEnemyComponent {
 		_last_position = enemy._params._pos;
 		
 		if (BasicWaterEnemyComponentUtility.enemy_test_hit(g,state,enemy)) {
-			enemy.get_hit_effect().apply_hit(g,state,enemy,this);
+			enemy.get_hit_effect().apply_hit(g,state,enemy);
 		}
 	}
 }

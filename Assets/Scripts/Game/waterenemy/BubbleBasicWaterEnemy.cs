@@ -94,7 +94,7 @@ public class BubbleBasicWaterEnemy : BasicWaterEnemy {
 
 public class BubbleBasicWaterEnemyHitEffect : BasicWaterEnemyHitEffect {
 	public static BubbleBasicWaterEnemyHitEffect cons() { return new BubbleBasicWaterEnemyHitEffect(); }
-	public override void apply_hit(GameEngineScene g, DiveGameState state, BasicWaterEnemy enemy, BasicWaterEnemyComponent current_component) {
+	public override void apply_hit(GameEngineScene g, DiveGameState state, BasicWaterEnemy enemy) {
 		state._params._current_breath = Mathf.Min(state._params._current_breath+500,state._params.MAX_BREATH());
 		g._camerac.freeze_frame(1);
 		enemy.transition_to_mode(g,BasicWaterEnemy.Mode.Activated);

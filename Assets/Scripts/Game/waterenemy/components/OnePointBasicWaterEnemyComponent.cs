@@ -17,7 +17,7 @@ public class OnePointBasicWaterEnemyComponent : BasicWaterEnemyComponent {
 	
 	public override void i_update(GameEngineScene g, DiveGameState state, BasicWaterEnemy enemy) {
 		if (BasicWaterEnemyComponentUtility.enemy_test_hit(g,state,enemy)) {
-			enemy.get_hit_effect().apply_hit(g,state,enemy,this);
+			enemy.get_hit_effect().apply_hit(g,state,enemy);
 		}
 	}
 }

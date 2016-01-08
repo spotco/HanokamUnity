@@ -27,7 +27,7 @@ public class KnockbackStunBasicWaterEnemyComponent : BasicWaterEnemyComponent {
 		enemy._params._stun_vel.y = SPUtil.drpt(enemy._params._stun_vel.y,0,1/20.0f);
 		
 		if (BasicWaterEnemyComponentUtility.enemy_test_hit(g,state,enemy)) {
-			enemy.get_hit_effect().apply_hit(g,state,enemy,this);
+			enemy.get_hit_effect().apply_hit(g,state,enemy);
 		}
 		
 		enemy._params._stun_ct -= SPUtil.dt_scale_get();

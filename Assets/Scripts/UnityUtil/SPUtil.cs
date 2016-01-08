@@ -379,6 +379,7 @@ public class SPUtil {
 	public static float vec_dist(Vector3 a, Vector3 b) {
 		return Mathf.Sqrt(Mathf.Pow(a.x-b.x,2)+Mathf.Pow(a.y-b.y,2)+Mathf.Pow(a.z-b.z,2));
 	}
+	public static Vector3 vec_z = new Vector3(0,0,1);
 
 }
 

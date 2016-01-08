@@ -118,7 +118,7 @@ public class SpikeBasicWaterEnemy : BasicWaterEnemy {
 public class SpikeReturnToPositionHitEffect : BasicWaterEnemyHitEffect {
 	public static SpikeReturnToPositionHitEffect cons() { return new SpikeReturnToPositionHitEffect(); }
 	
-	public override void apply_hit(GameEngineScene g, DiveGameState state, BasicWaterEnemy enemy, BasicWaterEnemyComponent current_component) {
+	public override void apply_hit(GameEngineScene g, DiveGameState state, BasicWaterEnemy enemy) {
 		BasicWaterEnemyComponentUtility.HitParams hit_params = BasicWaterEnemyComponentUtility.HitParams.cons_default();
 		hit_params._enemy_mass = 2.0f;
 		hit_params._ignore_dash = true;

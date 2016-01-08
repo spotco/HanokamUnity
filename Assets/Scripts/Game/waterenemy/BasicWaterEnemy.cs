@@ -7,14 +7,15 @@ public abstract class BasicWaterEnemyComponent {
 	public virtual void notify_transition_from_state(GameEngineScene g, BasicWaterEnemy enemy) {}
 	public virtual void i_update(GameEngineScene g, DiveGameState state, BasicWaterEnemy enemy) {} //if active
 	public virtual void i_always_update_pre(GameEngineScene g, DiveGameState state, BasicWaterEnemy enemy) {} //always
+	
+	public virtual void debug_draw_hitboxes(SPDebugRender draw) {}
 }
 
 public abstract class BasicWaterEnemyHitEffect {
-	public virtual void apply_hit(GameEngineScene g, DiveGameState state, BasicWaterEnemy enemy, BasicWaterEnemyComponent current_component) {}
-	public virtual void i_update(GameEngineScene g, DiveGameState state, BasicWaterEnemy enemy, BasicWaterEnemyComponent current_component) {}
+	public virtual void apply_hit(GameEngineScene g, DiveGameState state, BasicWaterEnemy enemy) {}
 }
 
-public abstract class BasicWaterEnemy : IWaterEnemy, GenericPooledObject {
+public abstract class BasicWaterEnemy : IWaterEnemy, GenericPooledObject, SPHitPolyOwner {
 	private SPNode _root;
 	public SPNode get_root() { return _root; }
 	public override Vector2 get_u_pos() { return _root.get_u_pos(); }
@@ -43,8 +44,7 @@ public abstract class BasicWaterEnemy : IWaterEnemy, GenericPooledObject {
 	private Mode _current_mode;
 	public Mode get_current_mode() { return _current_mode; }
 	
-	
-	private SPDict<Mode,BasicWaterEnemyComponent> _mode_to_state;
+	private MultiMap<Mode,BasicWaterEnemyComponent> _mode_to_state;
 	private BasicWaterEnemyHitEffect _hit_effect;
 	public BasicWaterEnemyHitEffect get_hit_effect() { return _hit_effect; }
 	
@@ -62,49 +62,62 @@ public abstract class BasicWaterEnemy : IWaterEnemy, GenericPooledObject {
 	
 	protected BasicWaterEnemy i_cons() {
 		_current_mode = Mode.Moving;
-		_mode_to_state = new SPDict<Mode, BasicWaterEnemyComponent>();
+		_mode_to_state = new MultiMap<Mode, BasicWaterEnemyComponent>();
 		return this;
 	}
 	
 	public override void on_added_to_manager(GameEngineScene g) {
-		if (_mode_to_state.ContainsKey(_current_mode)) _mode_to_state[_current_mode].notify_start_on_state(g, this);
+		{
+			List<BasicWaterEnemyComponent> components = _mode_to_state.list(_current_mode);
+			for (int i = 0; i < components.Count; i++) {
+				components[i].notify_start_on_state(g,this);
+			}
+		}
 		this.apply_offset_to_position();	
 	}
 	
-	public BasicWaterEnemy add_component_for_mode(Mode mode, BasicWaterEnemyComponent state) {
-		_mode_to_state[mode] = state;
-		return this;
-	}
-	
-	public BasicWaterEnemy add_hiteffect(BasicWaterEnemyHitEffect hit_effect) {
-		_hit_effect = hit_effect;
-		return this;
-	}
+	public BasicWaterEnemy add_component_for_mode(Mode mode, BasicWaterEnemyComponent component) { _mode_to_state.add(mode,component); return this; }
+	public BasicWaterEnemy remove_all_components_for_mode(Mode mode) { _mode_to_state.clear(mode); return this; }
+	public BasicWaterEnemy add_hiteffect(BasicWaterEnemyHitEffect hit_effect) { _hit_effect = hit_effect; return this; }
 	
 	public void transition_to_mode(GameEngineScene g, Mode mode) {
-		if (_mode_to_state.ContainsKey(_current_mode)) _mode_to_state[_current_mode].notify_transition_from_state(g, this);
+		{
+			List<BasicWaterEnemyComponent> components = _mode_to_state.list(_current_mode);
+			for (int i = 0; i < components.Count; i++) {
+				components[i].notify_transition_from_state(g,this);
+			}
+		}
 		_current_mode = mode;
-		if (_mode_to_state.ContainsKey(_current_mode)) _mode_to_state[_current_mode].notify_transition_to_state(g, this);
+		
+		{
+			List<BasicWaterEnemyComponent> components = _mode_to_state.list(_current_mode);
+			for (int i = 0; i < components.Count; i++) {
+				components[i].notify_transition_to_state(g,this);
+			}
+		}
 	}
 	
 	public override void i_update(GameEngineScene g, DiveGameState state) {
-		List<Mode> modes = _mode_to_state.key_itr();
+		List<Mode> modes = _mode_to_state.keys();
 		for (int i = 0; i < modes.Count; i++) {
 			Mode itr_mode = modes[i];
-			if (_mode_to_state.ContainsKey(itr_mode)) {
-				_mode_to_state[itr_mode].i_always_update_pre(g,state,this);
+			{
+				List<BasicWaterEnemyComponent> components = _mode_to_state.list(itr_mode);
+				for (int j = 0; j < components.Count; j++) {
+					components[j].i_always_update_pre(g,state,this);
+				}
 			}
 		}
-	
-		if (_mode_to_state.ContainsKey(_current_mode)) {
-			_mode_to_state[_current_mode].i_update(g,state,this);
+		
+		{
+			List<BasicWaterEnemyComponent> components = _mode_to_state.list(_current_mode);
+			for (int i = 0; i < components.Count; i++) {
+				components[i].i_update(g,state,this);
+			}
 		}
+		
 		this.apply_offset_to_position();
 		_params._invuln_ct = Mathf.Max(_params._invuln_ct - SPUtil.dt_scale_get(), 0);
-		
-		if (_hit_effect != null) {
-			_hit_effect.i_update(g,state,this,_mode_to_state.ContainsKey(_current_mode)?_mode_to_state[_current_mode]:null);
-		}
 		
 		this.calculate_velocity(g,state);
 	}
@@ -133,4 +146,16 @@ public abstract class BasicWaterEnemy : IWaterEnemy, GenericPooledObject {
 	public Vector2 get_calculated_velocity() {
 		return _last_frame_vel;
 	}
+	
+	public override void debug_draw_hitboxes(SPDebugRender draw) {
+		draw.draw_hitpoly_owner(this,new Color(0.8f, 0.2f, 0.2f, 0.5f), new Color(0.8f, 0.2f, 0.2f, 0.8f));
+		{
+			List<BasicWaterEnemyComponent> components = _mode_to_state.list(_current_mode);
+			for (int i = 0; i < components.Count; i++) {
+				components[i].debug_draw_hitboxes(draw);
+			}
+		}
+	}
+	public virtual SPHitRect get_hit_rect() { return new SPHitRect(); }
+	public virtual SPHitPoly get_hit_poly() { return new SPHitPoly(); }
 }

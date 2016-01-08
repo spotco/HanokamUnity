@@ -127,7 +127,7 @@ public class PlayerCharacter : SPGameUpdateable, SPHitPolyOwner, SPNodeHierarchy
 	public float scale_x() { return _img.img_scale_x(); }
 	public float rotation() { return _img._rendered_img.rotation(); }
 	public PlayerCharacter set_rotation(float deg) { _img._rendered_img.set_rotation(deg); return this; }
-	private Vector2 get_center_offset() { return new Vector2(0,128); }
+	public Vector2 get_center_offset() { return new Vector2(0,128); }
 	public Vector2 get_center() {
 		return SPUtil.vec_add(_root.get_u_pos(), this.get_center_offset());
 	}

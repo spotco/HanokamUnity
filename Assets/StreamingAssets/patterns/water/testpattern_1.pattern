@@ -2,53 +2,21 @@
      "entries": [
           {
                "type": "2pt",
-               "val": "spike",
+               "val": "puffer",
                "pt1": {
-                    "x": 450,
+                    "x": 400,
                     "y": 0
                },
                "pt2": {
-                    "x": -451.42857142857133,
-                    "y": -1.4285714285714448
+                    "x": -400,
+                    "y": 0
                },
                "start": {
                     "x": 0,
-                    "y": -2
+                    "y": 0
                },
                "speed": 5
-          },
-          {
-               "type": "1pt",
-               "val": "spike",
-               "start": {
-                    "x": -250,
-                    "y": -250
-               }
-          },
-          {
-               "type": "1pt",
-               "val": "spike",
-               "start": {
-                    "x": 250,
-                    "y": -250
-               }
-          },
-          {
-               "type": "1pt",
-               "val": "spike",
-               "start": {
-                    "x": 250,
-                    "y": -500
-               }
-          },
-          {
-               "type": "1pt",
-               "val": "spike",
-               "start": {
-                    "x": -250,
-                    "y": -500
-               }
           }
      ],
-     "spacing_bottom": 200
+     "spacing_bottom": 2500
 }

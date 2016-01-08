@@ -16,6 +16,9 @@ public class MultiMap<TKey, TValue> {
 		if (!_key_to_list.ContainsKey(key)) _key_to_list[key] = new List<TValue>();
 		_key_to_list[key].Clear();
 	}
+	public bool contains_key(TKey key) {
+		return _key_to_list.ContainsKey(key);
+	}
 	public List<TValue> list(TKey key) {
 		if (!_key_to_list.ContainsKey(key)) _key_to_list[key] = new List<TValue>();
 		return _key_to_list[key];

@@ -79,7 +79,7 @@ public class PufferEnemySprite : GenericPooledObject, SPNodeHierarchyElement, SP
 		}
 		_animator = SPSpriteAnimator.cons(_img);
 		_animator.add_anim(ANIM_IDLE, __cached_anim_rects.list(ANIM_IDLE), 5.0f, true);
-		_animator.add_anim(ANIM_ATTACK, __cached_anim_rects.list(ANIM_ATTACK), 2.5f, true);
+		_animator.add_anim(ANIM_ATTACK, __cached_anim_rects.list(ANIM_ATTACK), 7.0f, true);
 		_animator.add_anim(ANIM_DIE, __cached_anim_rects.list(ANIM_DIE), 2.5f, false);
 		_animator.add_anim(ANIM_FOLLOW, __cached_anim_rects.list(ANIM_FOLLOW), 2.5f, true);
 		_animator.add_anim(ANIM_HURT, __cached_anim_rects.list(ANIM_HURT), 2.5f * 1.25f, true);
