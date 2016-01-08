@@ -56,11 +56,11 @@ public class SpikeEnemySprite : GenericPooledObject, SPNodeHierarchyElement, SPG
 	private void cons_anims() {
 		if (__cached_anim_rects == null) {
 			__cached_anim_rects = new MultiMap<string, Rect>();
-			for (int i = 0; i < 16; i++) {
+			for (int i = 0; i < 25; i++) {
 				string rectname = SPUtil.sprintf("Idle_%03d.png",i);
 				__cached_anim_rects.add(ANIM_IDLE, FileCache.inst().get_texrect(RTex.ENEMY_SPIKE,rectname));
 			}
-			for (int i = 0; i < 7; i++) {
+			for (int i = 0; i < 9; i++) {
 				string rectname = SPUtil.sprintf("Hit_%03d.png",i);
 				__cached_anim_rects.add(ANIM_HIT, FileCache.inst().get_texrect(RTex.ENEMY_SPIKE,rectname));
 			}
