@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 
 public class MultiMap<TKey, TValue> {
-	public Dictionary<TKey,List<TValue>> _key_to_list = new Dictionary<TKey, List<TValue>>();
+	public SPDict<TKey,List<TValue>> _key_to_list = new SPDict<TKey, List<TValue>>();
 	public int count_of(TKey key) {
 		if (!_key_to_list.ContainsKey(key)) _key_to_list[key] = new List<TValue>();
 		return _key_to_list[key].Count;
@@ -21,7 +21,7 @@ public class MultiMap<TKey, TValue> {
 		return _key_to_list[key];
 	}
 	public List<TKey> keys() {
-		return new List<TKey>(_key_to_list.Keys);
+		return _key_to_list.key_itr();
 	}
 }
 

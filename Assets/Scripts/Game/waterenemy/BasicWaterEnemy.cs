@@ -42,6 +42,8 @@ public abstract class BasicWaterEnemy : IWaterEnemy, GenericPooledObject {
 	}
 	private Mode _current_mode;
 	public Mode get_current_mode() { return _current_mode; }
+	
+	
 	private SPDict<Mode,BasicWaterEnemyComponent> _mode_to_state;
 	private BasicWaterEnemyHitEffect _hit_effect;
 	public BasicWaterEnemyHitEffect get_hit_effect() { return _hit_effect; }
