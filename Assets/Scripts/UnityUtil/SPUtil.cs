@@ -9,6 +9,9 @@ public struct SPRange {
 	public SPRange extend(float val) {
 		return new SPRange() { _min = this._min - val, _max = this._max + val };
 	}
+	public override string ToString() {
+		return string.Format("SPRange({0},{1})",_min,_max);
+	}
 }
 
 public struct SPHitRect {

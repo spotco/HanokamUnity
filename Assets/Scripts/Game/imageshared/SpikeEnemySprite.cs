@@ -9,7 +9,7 @@ public class SpikeEnemySprite : GenericPooledObject, SPNodeHierarchyElement, SPG
 		return ObjectPool.inst().generic_depool<SpikeEnemySprite>().i_cons();
 	}
 	private SPSprite _img;
-	private SPSpriteAnimator _animator;
+	public SPSpriteAnimator _animator;
 	public void depool() {
 		_img = SPSprite.cons_sprite_texkey_texrect(RTex.ENEMY_SPIKE,new Rect());
 		_img.set_name("SpikeEnemySprite");

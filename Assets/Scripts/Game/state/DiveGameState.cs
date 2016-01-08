@@ -23,6 +23,10 @@ public class DiveGameState : GameStateBase {
 		}
 
 		public float _ground_depth;
+		public void set_ground_depth(GameEngineScene g, float val) {
+			_ground_depth = val;
+			g._bg_water.set_ground_depth(_ground_depth);
+		}
 		
 		public float DASH_SPEED() { return 23; }
 		public float MAX_MOVE_SPEED() { return 10; }
@@ -61,11 +65,11 @@ public class DiveGameState : GameStateBase {
 		_params._vel = new Vector2(0,-22);
 		_params._mode = Mode.TransitionIn;
 		_params._dashing = false;
-		_params._ground_depth = -10000;
+		_params.set_ground_depth(g,-10000);
 		_params._player_pos = g._player.get_u_pos();
 		_params._current_breath = _params.MAX_BREATH();
 
-		g._bg_water.set_ground_depth(_params._ground_depth);
+		
 		g._player.play_anim(PlayerCharacterAnims.SWIM);
 		MiscEffects.do_underwater_splash(g);
 		g._delayed_actions.enqueue_action(new DelayedAction() {
@@ -75,7 +79,7 @@ public class DiveGameState : GameStateBase {
 		
 		g._player.set_manual_sort_z_order(GameAnchorZ.Player_UnderWater);
 		_bubble_every = FlashEvery.cons(30);
-		_enemy_manager = WaterEnemyManager.cons(g);
+		_enemy_manager = WaterEnemyManager.cons(g,this);
 		UnderwaterBubbleParticle.proc_multiple_bubbles(g);
 		return this;
 	}

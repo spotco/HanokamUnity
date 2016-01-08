@@ -8,10 +8,16 @@ public interface SPMainUpdateable {
 public class GameMain : SPBaseBehavior {
 	/**
 	TODO--
-	-multiple enemy sections hookup
-	-hanoka dive work
-	-crab enemy
+	
 	-new puffer follow
+	-mock divereturn
+	-new underwater ui
+	
+	-new village
+	-hanoka dive work
+	-misc underwater stuff
+	-crab enemy
+	
 	
 	---Underwater gameplay
 	-jelly movepoints

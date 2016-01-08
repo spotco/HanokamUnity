@@ -21,9 +21,34 @@
                "type": "1pt",
                "val": "spike",
                "start": {
-                    "x": 2,
-                    "y": 248
+                    "x": -250,
+                    "y": -250
+               }
+          },
+          {
+               "type": "1pt",
+               "val": "spike",
+               "start": {
+                    "x": 250,
+                    "y": -250
+               }
+          },
+          {
+               "type": "1pt",
+               "val": "spike",
+               "start": {
+                    "x": 250,
+                    "y": -500
+               }
+          },
+          {
+               "type": "1pt",
+               "val": "spike",
+               "start": {
+                    "x": -250,
+                    "y": -500
                }
           }
-     ]
+     ],
+     "spacing_bottom": 200
 }

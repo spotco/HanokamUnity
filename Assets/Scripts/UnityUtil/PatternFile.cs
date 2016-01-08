@@ -14,11 +14,14 @@ public class PatternFile {
 	
 	[ProtoMember(1)] public List<PatternEntry2Pt> _2pt_entries = new List<PatternEntry2Pt>();
 	[ProtoMember(2)] public List<PatternEntry1Pt> _1pt_entries = new List<PatternEntry1Pt>();
+	[ProtoMember(3)] public float _section_height;
+	[ProtoMember(4)] public float _spacing_bottom;
 	
 	public static PatternFile cons_from_string(string file_text) {
 		PatternFile rtv = new PatternFile();
 		
 		JSONObject root = JSONObject.Parse(file_text);
+		rtv._spacing_bottom = (float)root.GetNumber("spacing_bottom");
 		JSONArray entries = root.GetArray("entries");
 		
 		for (int i = 0; i < entries.Length; i++) {
@@ -54,9 +57,33 @@ public class PatternFile {
 					_speed = speed
 				});
 			}
-		}		
+		}
+		
+		rtv.postprocess();
+		
 		return rtv;
 	}
+	
+	private void postprocess() {
+		SPRange y_range = new SPRange() {
+			_min = float.MaxValue,
+			_max = float.MinValue
+		};
+		for (int i = 0; i < this._1pt_entries.Count; i++) {
+			this.cmp_yrange_point(ref y_range,this._1pt_entries[i]._start);
+		}
+		for (int i = 0; i < this._2pt_entries.Count; i++) {
+			this.cmp_yrange_point(ref y_range,this._2pt_entries[i]._start);
+			this.cmp_yrange_point(ref y_range,this._2pt_entries[i]._pt1);
+			this.cmp_yrange_point(ref y_range,this._2pt_entries[i]._pt2);
+		}
+		_section_height = y_range._max - y_range._min;
+	}
+	private void cmp_yrange_point(ref SPRange y_range, Vector2 point) {
+		y_range._min = Mathf.Min(y_range._min,point.y);
+		y_range._max = Mathf.Max(y_range._max,point.y);
+	}
+	
 }
 
 [ProtoContract]

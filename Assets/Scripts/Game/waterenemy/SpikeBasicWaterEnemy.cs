@@ -77,9 +77,14 @@ public class SpikeBasicWaterEnemy : BasicWaterEnemy {
 		base.i_update(g,state);
 		
 		if (this.get_current_mode() == Mode.Stunned && _last_mode == Mode.Moving) {
-			_img.set_scale(2);
+			_img.set_scale(1.5f);
+			_img.play_anim(SpikeEnemySprite.ANIM_HIT);
 		} else {
+			if (_img._animator.is_finished()) {
+				_img.play_anim(SpikeEnemySprite.ANIM_IDLE);
+			}
 			_img.set_scale(SPUtil.drpt(_img.scale_x(),1,1/10.0f));
+			
 		}
 		_last_mode = this.get_current_mode();
 		

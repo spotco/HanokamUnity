@@ -97,7 +97,6 @@ public class BubbleBasicWaterEnemyHitEffect : BasicWaterEnemyHitEffect {
 	public override void apply_hit(GameEngineScene g, DiveGameState state, BasicWaterEnemy enemy, BasicWaterEnemyComponent current_component) {
 		state._params._current_breath = Mathf.Min(state._params._current_breath+500,state._params.MAX_BREATH());
 		g._camerac.freeze_frame(1);
-		g._camerac.camera_shake(new Vector2(-1.5f,1.7f),10,15);
 		enemy.transition_to_mode(g,BasicWaterEnemy.Mode.Activated);
 	}
 }
