@@ -1,6 +1,5 @@
 using UnityEngine;
-using System.Collections;
-
+using System.Collections.Generic;
 using UnityStandardAssets.ImageEffects;
 
 public class GameCameraController : SPMainUpdateable {
@@ -12,9 +11,7 @@ public class GameCameraController : SPMainUpdateable {
 	public static float MIN_ZOOM = 10;
 	public static float MAX_ZOOM = 1500;
 
-	private DrptVal _camera_zoom;
-	private DrptVal _camera_x;
-	private DrptVal _camera_y;
+	private DrptVec _camera_pos;
 
 	private CameraMotionBlur _motion_blur;
 	private BloomOptimized _bloom;
@@ -29,6 +26,8 @@ public class GameCameraController : SPMainUpdateable {
 		_vignette = GameMain._context._game_camera.GetComponent<VignetteAndChromaticAberration>();
 		_motion_blur.enabled = true;
 		_motion_blur.excludeLayers.value = 1 << RLayer.get_layer(RLayer.UI);
+		_motion_blur.preview = true;
+		
 		_bloom.enabled = true;
 		_vignette.enabled = true;
 		_has_camera_motion_blur = false;		
@@ -43,37 +42,17 @@ public class GameCameraController : SPMainUpdateable {
 	}
 	
 	public void SetGameEngineSceneDefaults() {
-		_camera_zoom = new DrptVal() {
-			_current = 1500,
-			_target = 1500,
-			_drptval = 1/10.0f
-		};
-		_camera_x = new DrptVal() {
-			_current = 0,
-			_target = 0,
-			_drptval = 1/10.0f
-		};
-		_camera_y = new DrptVal() {
-			_current = 250,
-			_target = 250,
+		_camera_pos = new DrptVec() {
+			_current = new Vector3(0,250,1500),
+			_target = new Vector3(0,250,1500),
 			_drptval = 1/10.0f
 		};
 		this.apply_camera_values();
 	}
 	public void SetShopSceneDefaults() {
-		_camera_zoom = new DrptVal() {
-			_current = 1500,
-			_target = 1500,
-			_drptval = 1/10.0f
-		};
-		_camera_x = new DrptVal() {
-			_current = 0,
-			_target = 0,
-			_drptval = 1/10.0f
-		};
-		_camera_y = new DrptVal() {
-			_current = -680,
-			_target = -680,
+		_camera_pos = new DrptVec() {
+			_current = new Vector3(0,-680,1500),
+			_target = new Vector3(0,-680,1500),
 			_drptval = 1/10.0f
 		};
 		this.apply_camera_values();
@@ -99,9 +78,9 @@ public class GameCameraController : SPMainUpdateable {
 		}
 
 		GameMain._context._game_camera.transform.localPosition = new Vector3(
-			_camera_x._current + camera_shake.x,
-			_camera_y._current + camera_shake.y,
-			-_camera_zoom._current
+			_camera_pos._current.x + camera_shake.x,
+			_camera_pos._current.y + camera_shake.y,
+			-_camera_pos._current.z
 		);
 	}
 	
@@ -121,13 +100,18 @@ public class GameCameraController : SPMainUpdateable {
 			_min = GameMain._context._game_camera.transform.localPosition.x + screen_left_anchor.x / camera_to_screen_delta_scf,
 			_max = GameMain._context._game_camera.transform.localPosition.x + (screen_right_anchor.x - (Screen.width * GameMain._context._game_camera.rect.width)) / camera_to_screen_delta_scf
 		};
+		rtv._min = Mathf.Min(rtv._min,0);
+		rtv._max = Mathf.Max(rtv._max,0);
 		return rtv;
 	}
-
-	//quick jolt
-	//g._camerac.camera_shake(new Vector2(-2,3.3f),20,60);
-	//large jolt
-	//g._camerac.camera_shake(new Vector2(-6,7.8f),40,150)
+	private SPRange get_camera_horiz_bounds_at_zoom(float zoom) {
+		Vector3 camera_pos_pre = GameMain._context._game_camera.transform.localPosition;
+		GameMain._context._game_camera.transform.localPosition = new Vector3(0,0,-zoom);
+		SPRange rtv = this.get_camera_horiz_bounds();
+		GameMain._context._game_camera.transform.localPosition = camera_pos_pre;
+		return rtv;
+	}
+	
 	private float _camera_shake_intensity, _camera_shake_ct, _camera_shake_theta, _camera_shake_friction = 1/30.0f;
 	private Vector2 _camera_shake_speed;
 	public void camera_shake(Vector2 speed, float intensity, float duration, float friction = 1/30.0f) {
@@ -160,24 +144,19 @@ public class GameCameraController : SPMainUpdateable {
 	public void freeze_frame(float duration) {
 		_freeze_frame = duration;
 	}
-
+	
+	private Vector3 _last_frame_camera_position;
 	public void i_update() {
 		if (GameMain._context._camera_active) {
 			_camera_shake_ct = Mathf.Max(0,_camera_shake_ct - SPUtil.dt_scale_get());
 			_camera_shake_theta = (_camera_shake_theta + SPUtil.dt_scale_get() * 0.1f) % (2 * Mathf.PI);
-			_camera_zoom.i_update();
-			this.apply_camera_values();
-			SPRange camera_horiz_range = this.get_camera_horiz_bounds();
-			_camera_x.i_update();
-			_camera_x._current = Mathf.Clamp(_camera_x._current,camera_horiz_range._min,camera_horiz_range._max);
-
-			_camera_y.i_update();
-			_camera_y.clamp_lt(0.1f);
+			_camera_pos.i_update();
 			this.apply_camera_values();
 			
-			
+			float frame_camera_move_dist = Vector3.Distance(_last_frame_camera_position,_camera_pos._current);
+			float MIN_BLUR_DIST = 5;
 			if (_has_camera_motion_blur) {
-				_motion_blur.preview = true;
+				_motion_blur.enabled = true;
 				float pct = Mathf.Clamp(SPUtil.bezier_val_for_t(
 					new Vector2(0,1), new Vector2(0,1.5f), new Vector2(1,1.5f), new Vector2(1,0), _camera_motion_blur_ct / _camera_motion_blur_ct_max
 					).y,0,1);
@@ -187,9 +166,18 @@ public class GameCameraController : SPMainUpdateable {
 					_has_camera_motion_blur = false;
 				}
 				
+			} else if (frame_camera_move_dist > MIN_BLUR_DIST) {
+				_motion_blur.enabled = true;
+				Vector3 blur = SPUtil.vec_sub(_camera_pos._current,_last_frame_camera_position) * 
+					SPUtil.bezier_val_for_t(new Vector2(0,0),new Vector2(1,0),new Vector2(1,0),new Vector2(1,1),
+						Mathf.Clamp(SPUtil.y_for_point_of_2pt_line(new Vector2(MIN_BLUR_DIST,0),new Vector2(15,1),frame_camera_move_dist),0,1)).y;
+				blur.z *= -1;
+				_motion_blur.previewScale = blur;
+				
 			} else {
-				_motion_blur.preview = false;
+				_motion_blur.enabled = false;
 			}
+			_last_frame_camera_position = _camera_pos._current;
 			
 			if (_has_blur) {
 				_ui_blur_cover.set_enabled(true);
@@ -208,46 +196,39 @@ public class GameCameraController : SPMainUpdateable {
 	}
 
 	public void set_target_camera_y(float tar) {
-		_camera_y._target = tar;
+		_camera_pos._target.y = tar;
 	}
 	public float get_current_camera_y() {
-		return _camera_y._current;
+		return _camera_pos._current.y;
 	}
 	public float get_target_camera_y() {
-		return _camera_y._target;
+		return _camera_pos._target.y;
 	}
 	
-	public void set_target_camera_focus_on_character(GameEngineScene g, float offset_x = 0, float offset_y = 0) {
-		SPRange camera_bounds = this.get_camera_horiz_bounds();
-		_camera_x._target = (Mathf.Clamp(Mathf.Clamp(g._player._u_x,camera_bounds._min,camera_bounds._max) + offset_x,camera_bounds._min,camera_bounds._max));
-		_camera_y._target = (g._player._u_y + offset_y);
-	}
-	
+	// set target zoom first before setting focus on character
 	public void set_target_zoom(float val) {
-		_camera_zoom._target = (Mathf.Clamp(val,MIN_ZOOM,MAX_ZOOM));
+		_camera_pos._target.z = (Mathf.Clamp(val,MIN_ZOOM,MAX_ZOOM));
 	}
-	public void set_zoom_speed(float val) {
-		_camera_zoom._drptval = val;
-	}
-	public void set_camera_follow_speed(float val) {
-		_camera_x._drptval = val;
-		_camera_y._drptval = val;
+	public void set_target_camera_focus_on_character(GameEngineScene g, float offset_x = 0, float offset_y = 0) {
+		SPRange camera_bounds = this.get_camera_horiz_bounds_at_zoom(_camera_pos._target.z);
+		_camera_pos._target.x = (Mathf.Clamp(Mathf.Clamp(g._player._u_x,camera_bounds._min,camera_bounds._max) + offset_x,camera_bounds._min,camera_bounds._max));
+		_camera_pos._target.y = (g._player._u_y + offset_y);
 	}
 	
 	public float get_zoom() {
-		return _camera_zoom._current;
+		return _camera_pos._current.z;
 	}
 
 	public static Vector2 u_pos_to_c_pos(Vector2 vec) { return GameCameraController.u_pos_to_c_pos(vec.x,vec.y); }
 	public static Vector2 u_pos_to_c_pos(float x, float y) {
 		Vector2 u_pos = new Vector2(x,y);
-		Vector2 camera = new Vector2(GameMain._context._camerac._camera_x._current, GameMain._context._camerac._camera_y._current);
+		Vector2 camera = GameMain._context._camerac._camera_pos._current;
 		return SPUtil.vec_sub(u_pos, new Vector2(camera.x,camera.y));
 	}
 	public static Vector2 c_pos_to_u_pos(Vector2 vec) { return GameCameraController.c_pos_to_u_pos(vec.x,vec.y); }
 	public static Vector2 c_pos_to_u_pos(float x, float y) {
 		Vector2 c_pos = new Vector2(x,y);
-		Vector2 camera = new Vector2(GameMain._context._camerac._camera_x._current, GameMain._context._camerac._camera_y._current);
+		Vector2 camera = GameMain._context._camerac._camera_pos._current;
 		return SPUtil.vec_add(c_pos,new Vector2(camera.x,camera.y));
 	}
 

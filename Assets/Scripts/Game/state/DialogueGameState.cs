@@ -17,8 +17,8 @@ public class DialogueGameState : GameStateBase {
 	}
 	
 	public override void i_update(GameEngineScene g) {
-		g._camerac.set_target_camera_focus_on_character(g,0,70);
 		g._camerac.set_target_zoom(500);
+		g._camerac.set_target_camera_focus_on_character(g,0,70);
 		if (g._controls.get_control_just_released(ControlManager.Control.Chat)) {
 			g.pop_top_game_state();
 		}

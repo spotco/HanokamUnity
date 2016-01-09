@@ -131,7 +131,7 @@ public class SPUtil {
 	}
 
 	public static SPRange get_horiz_world_bounds() {
-		return new SPRange(){ _min = -500, _max = 500 };
+		return new SPRange(){ _min = -875, _max = 875 };
 	}
 
 	public static float dt_scale_get() {
@@ -396,3 +396,50 @@ public struct DrptVal {
 		}
 	}
 }
+
+public struct DrptVec {
+	public Vector3 _current, _target;
+	public float _drptval;
+	
+	public void i_update() {
+		float dist = Vector3.Distance(_target,_current);
+		if (dist > 0) {
+			Vector3 dir = SPUtil.vec_sub(_target,_current).normalized;
+			float neu_dist = SPUtil.drpt(dist,0,_drptval);
+			_current = SPUtil.vec_add(_current,SPUtil.vec_scale(dir,dist-neu_dist));
+		}
+	}
+	public void clamp_lt(float ltv) {
+		float dist = Vector3.Distance(_target,_current);
+		if (dist < ltv) {
+			_current = _target;
+		}
+	}
+}
+
+public class MultiMap<TKey, TValue> {
+	public SPDict<TKey,List<TValue>> _key_to_list = new SPDict<TKey, List<TValue>>();
+	public int count_of(TKey key) {
+		if (!_key_to_list.ContainsKey(key)) _key_to_list[key] = new List<TValue>();
+		return _key_to_list[key].Count;
+	}
+	public void add(TKey key, TValue val) {
+		if (!_key_to_list.ContainsKey(key)) _key_to_list[key] = new List<TValue>();
+		_key_to_list[key].Add(val);
+	}
+	public void clear(TKey key) {
+		if (!_key_to_list.ContainsKey(key)) _key_to_list[key] = new List<TValue>();
+		_key_to_list[key].Clear();
+	}
+	public bool contains_key(TKey key) {
+		return _key_to_list.ContainsKey(key);
+	}
+	public List<TValue> list(TKey key) {
+		if (!_key_to_list.ContainsKey(key)) _key_to_list[key] = new List<TValue>();
+		return _key_to_list[key];
+	}
+	public List<TKey> keys() {
+		return _key_to_list.key_itr();
+	}
+}
+

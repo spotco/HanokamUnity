@@ -8,15 +8,12 @@ public interface SPMainUpdateable {
 public class GameMain : SPBaseBehavior {
 	/**
 	TODO--
-	-new puffer follow
 	-mock divereturn
 	-new underwater ui
 	
-	-new village
 	-hanoka dive work
 	-misc underwater stuff
 	-crab enemy
-	
 	
 	---Underwater gameplay
 	-jelly movepoints
@@ -30,10 +27,8 @@ public class GameMain : SPBaseBehavior {
 	
 	LATER--
 	bubble trails behind moving enemies
-	fish underwater implementation
+	bg/village fish underwater implementation
 	_c_pos center should not be tied to camera (inair)
-	blur make manual, disable blur when not used
-	cut overdraw in background elements
 	**/
 
 	public static GameMain _context;
@@ -70,8 +65,8 @@ public class GameMain : SPBaseBehavior {
 		_objpool = ObjectPool.cons();
 		_tex_resc = TextureResource.cons();
 		_file_cache = FileCache.cons();
-
-		float tar_x_div_y = 414.0f / 736.0f;
+		
+		float tar_x_div_y = 1;
 		float actual_x_div_y = SPUtil.game_screen().x / SPUtil.game_screen().y;
 		float norm_game_width = tar_x_div_y / actual_x_div_y;
 		Rect game_cam_rect = new Rect((1-norm_game_width)/2.0f,0,norm_game_width,1.0f);

@@ -76,11 +76,8 @@ public class InAirGameState : GameStateBase {
 		_enemy_manager = AirEnemyManager.cons(g);
 		_projectiles = AirProjectileManager.cons(g);
 		g._player.set_manual_sort_z_order(GameAnchorZ.Player_InAir);
-		g._camerac.set_camera_follow_speed(1);
-		g._camerac.set_zoom_speed(1/20.0f);
 		g._camerac.set_target_zoom(GameCameraController.MAX_ZOOM);
 		_params._target_y = 0;
-		g._camerac.set_camera_follow_speed(1);
 		_params._upwards_vel = 30;
 
 		g._player.set_trail_enabled_and_rotation(false);

@@ -38,9 +38,6 @@ public class OnGroundGameState : GameStateBase {
 		_current_state = Mode.FadeIn;
 		g._game_ui.set_fadeout_overlay_imm(true);
 		
-		g._camerac.set_zoom_speed(1/10.0f);
-		g._camerac.set_camera_follow_speed(1/30.0f);
-		
 		g._player.set_u_pos(0,0);
 		g._player.play_anim(PlayerCharacterAnims.IDLE);
 		g._bg_village.set_u_pos(0, 0);
@@ -89,7 +86,7 @@ public class OnGroundGameState : GameStateBase {
 				g._player._u_x = SPUtil.get_horiz_world_bounds()._max;
 			}
 			
-			g._camerac.set_target_zoom(1300);
+			g._camerac.set_target_zoom(1000);
 			g._camerac.set_target_camera_focus_on_character(g,0,200);
 			
 			if (g._controls.get_control_just_pressed(ControlManager.Control.OnGround_Jump)) {
@@ -100,8 +97,8 @@ public class OnGroundGameState : GameStateBase {
 			
 		} break;
 		case Mode.JumpCharge:{
-			g._camerac.set_target_camera_focus_on_character(g,0,120);
 			g._camerac.set_target_zoom(500);
+			g._camerac.set_target_camera_focus_on_character(g,0,120);
 			
 			_params._jump_charge_t = Mathf.Clamp(_params._jump_charge_t + SPUtil.dt_scale_get() * SPUtil.sec_to_tick(1.0f),0,1);
 			
@@ -111,14 +108,15 @@ public class OnGroundGameState : GameStateBase {
 				
 			} else if (!g._controls.get_control_down(ControlManager.Control.OnGround_Jump)) {
 				_current_state = Mode.Gameplay;
-				g._camerac.set_zoom_speed(1/10.0f);
 			}
 			
 		} break;
 		case Mode.JumpInAir:{
 			g._player.set_manual_sort_z_order(GameAnchorZ.Player_InAir);
-			g._camerac.set_target_camera_focus_on_character(g,0,-60);
+			
 			g._camerac.set_target_zoom(1000);
+			g._camerac.set_target_camera_focus_on_character(g,0,-60);
+			
 			if (g._controls.is_move_x()) {
 				_params._vel.x = g._controls.get_move().x * 3.0f;
 			} else {

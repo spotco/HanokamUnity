@@ -25,7 +25,6 @@ public class DiveReturnGameState : GameStateBase {
 	public DiveReturnGameState i_cons(GameEngineScene g, DiveGameState.Params param, WaterEnemyManager enemy_manager) {
 		_current_state = Mode.CameraPanUp;
 		_enemy_manager = enemy_manager;
-		g._camerac.set_camera_follow_speed(1/15.0f);
 		g._camerac.set_target_zoom(1000);
 		g._camerac.set_target_camera_y(g._camerac.get_target_camera_y() + 900);
 		
@@ -79,7 +78,6 @@ public class DiveReturnGameState : GameStateBase {
 				g._player._u_y + 35 * SPUtil.dt_scale_get()
 			);
 			_anim_t = Mathf.Clamp(_anim_t+0.05f*SPUtil.dt_scale_get(),0,1);
-			g._camerac.set_camera_follow_speed(SPUtil.y_for_point_of_2pt_line(new Vector2(0,1/10.0f),new Vector2(1,1),_anim_t));
 			g._camerac.set_target_camera_focus_on_character(g,0,200);
 			if (g._player._u_y >= -250) {
 				g.pop_top_game_state();

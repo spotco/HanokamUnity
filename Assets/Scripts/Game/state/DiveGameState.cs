@@ -107,7 +107,6 @@ public class DiveGameState : GameStateBase {
 			_params._player_pos.y += _params._vel.y * SPUtil.dt_scale_get();
 			if (_params._player_pos.y < -1000) {
 				_params._mode = Mode.Gameplay;
-				g._camerac.set_camera_follow_speed(1/15.0f);
 				g._camerac.set_target_zoom(1500);
 			}
 			
