@@ -36,9 +36,11 @@ public class GameAnchorZ {
 	public const int Player_Ground = 75;
 
 	public const int BGVillage_Docks = 50;
-
-	public const int BGVillage_BG1 = -89;
-	public const int BGVillage_BG2 = -90;
+	
+	public const int BGVillage_BUILDINGS_NEAR = -88;
+	public const int BGVillage_BUILDINGS_MID = -89;
+	public const int BGVillage_BUILDINGS_BACK = -90;
+	
 	public const int BGVillage_Reflection_DOCKS = -91;
 	public const int BGVillage_Reflection_1 = -92;
 	public const int BGVillage_Reflection_2 = -93;
@@ -46,8 +48,8 @@ public class GameAnchorZ {
 	public const int BGWater_SURF_ELE1 = -95;
 	public const int BGWater_SURF_ELE2 = -96;
 	public const int BGWater_SURF_ELE3 = -98;
-	public const int BGVillage_BG3 = -99;
-	public const int BGVillage_BG4 = -100;
+	public const int BGVillage_HILLS_NEAR = -99;
+	public const int BGVillage_HILLS_FAR = -100;
 
 	public const int BGWater_Ground_Treasure = -898;
 	public const int BGWater_Ground_Treasure_Light = -899;

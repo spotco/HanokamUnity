@@ -6,6 +6,8 @@ public class RTex {
 	public static string BG_SPRITESHEET_1 = "background/bg_spritesheet_1";
 	public static string BG_UNDERWATER_SPRITESHEET = "background/underwater_spritesheet";
 	
+	public static string BG_NVILLAGE_SPRITESHEET = "background/nvillage/nvillage_spritesheet";
+	
 	public static string BG_NSKY1_BG_OBJS = "background/nsky/nsky1_bg_objs_ss";
 	public static string BG_NSKY1_BGISLANDS = "background/nsky/nsky1_bgislands_ss";
 	public static string BG_NSKY1_BGCLOUDS = "background/nsky/nsky1_bgclouds_tex";
@@ -28,7 +30,7 @@ public class RTex {
 	public static string BG_NUNDERWATER_TEMPLE = "background/nunderwater/nunderwater_temple";
 	public static string BG_NUNDERWATER_FADE = "background/nunderwater/nunderwater_fade";
 	
-	public static string BG_NUNBERWATER_FISH_ANIM = "background/nunderwater/nunderwater_fish_anim";
+	public static string BG_NUNDERWATER_FISH_ANIM = "background/nunderwater/nunderwater_fish_anim";
 	public static string BG_NUNDERWATER_FISH_TEST = "background/nunderwater/fish_test_1";
 
 	public static string SPRITER_OLDMAN = "character/oldman/Oldman";

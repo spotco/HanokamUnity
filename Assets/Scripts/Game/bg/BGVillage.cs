@@ -8,7 +8,9 @@ public class BGVillage : SPGameUpdateable, SPNodeHierarchyElement {
 	public Vector2 get_u_pos() { return _root.get_u_pos(); }
 	public void set_enabled(bool val) { _root.set_enabled(val); }
 	
-	public SPSprite _docks, _docks_front, _bldg_1, _bldg_2, _bldg_3, _bldg_4;
+	public SPSprite _docks, _docks_front/*, _bldg_1, _bldg_2, _bldg_3, _bldg_4*/;
+	
+	private List<SPSprite> _reflection_sprites;
 	private List<BGReflection> _reflections;
 	private BGWaterLineAbove _waterlineabove;
 
@@ -25,86 +27,176 @@ public class BGVillage : SPGameUpdateable, SPNodeHierarchyElement {
 	public BGVillage i_cons(GameEngineScene g) {
 		_root = SPNode.cons_node();
 		_root.set_name("BGVillage");
-
-		_bldg_4 = SPSprite.cons_sprite_texkey_texrect(
-			RTex.BG_SPRITESHEET_1,
-			FileCache.inst().get_texrect(RTex.BG_SPRITESHEET_1,"bg_4.png")
-		);
-		_bldg_4.set_manual_sort_z_order(GameAnchorZ.BGVillage_BG4);
-		_bldg_4.set_u_z(2000f);
-		_bldg_4.set_scale(4.0f);
-		_bldg_4.set_anchor_point(0.5f,0);
-		_bldg_4.set_u_pos(0,500);
-		_bldg_4.gameObject.layer = RLayer.get_layer(RLayer.REFLECTION_OBJECTS_3);
-		_bldg_4.set_name("_bldg_4");
-		_root.add_child(_bldg_4);
-
-		_bldg_3 = SPSprite.cons_sprite_texkey_texrect(
-			RTex.BG_SPRITESHEET_1,
-			FileCache.inst().get_texrect(RTex.BG_SPRITESHEET_1,"bg_3.png")
-		);
-		_bldg_3.set_manual_sort_z_order(GameAnchorZ.BGVillage_BG3);
-		_bldg_3.set_u_z(1200f);
-		_bldg_3.set_scale(2.75f);
-		_bldg_3.set_anchor_point(0.5f,0);
-		_bldg_3.set_name("_bldg_3");
-		_bldg_3.gameObject.layer = RLayer.get_layer(RLayer.REFLECTION_OBJECTS_3);
-		_root.add_child(_bldg_3);
-
-		_bldg_2 = SPSprite.cons_sprite_texkey_texrect(
-			RTex.BG_SPRITESHEET_1,
-			FileCache.inst().get_texrect(RTex.BG_SPRITESHEET_1,"bg_2.png")
-		);
-		_bldg_2.set_manual_sort_z_order(GameAnchorZ.BGVillage_BG2);
-		_bldg_2.set_u_z(520f);
-		_bldg_2.set_scale(2.1f);
-		_bldg_2.set_anchor_point(0.5f,0);
-		_bldg_2.set_name("_bldg_2");
-		_bldg_2.gameObject.layer = RLayer.get_layer(RLayer.REFLECTION_OBJECTS_2);
-		_root.add_child(_bldg_2);
-
-		_bldg_1 = SPSprite.cons_sprite_texkey_texrect(
-			RTex.BG_SPRITESHEET_1,
-			FileCache.inst().get_texrect(RTex.BG_SPRITESHEET_1,"bg_1.png")
-		);
-		_bldg_1.set_manual_sort_z_order(GameAnchorZ.BGVillage_BG1);
-		_bldg_1.set_u_z(215f);
-		_bldg_1.set_u_pos(-329,-71);
-		_bldg_1.set_scale(1.9f);
-		_bldg_1.set_anchor_point(0.5f,0);
-		_bldg_1.gameObject.layer = RLayer.get_layer(RLayer.REFLECTION_OBJECTS_1);
-		_bldg_1.set_name("_bldg_1");
-		_root.add_child(_bldg_1);
-
-		_docks = SPSprite.cons_sprite_texkey_texrect(
-			RTex.BG_SPRITESHEET_1,
-			FileCache.inst().get_texrect(RTex.BG_SPRITESHEET_1,"pier_top.png")
-		);
-		_docks.set_manual_sort_z_order(GameAnchorZ.BGVillage_Docks);
-		_docks.set_anchor_point(0.5f,0);
-		_docks.set_u_pos(0,-104);
-		_docks.set_scale(1.75f);
-		_docks.set_name("_docks");
-		_docks.gameObject.layer = RLayer.get_layer(RLayer.REFLECTION_OBJECTS_DOCKS);
-		_root.add_child(_docks);
-
-		_docks_front = SPSprite.cons_sprite_texkey_texrect(
-			RTex.BG_SPRITESHEET_1,
-			FileCache.inst().get_texrect(RTex.BG_SPRITESHEET_1,"pier_top_front_pillars.png")
-		);
-		_docks_front.set_manual_sort_z_order(GameAnchorZ.BGVillage_Docks_Front);
-		_docks_front.set_anchor_point(0.5f,0);
-		_docks_front.set_u_pos(0,-104);
-		_docks_front.set_scale(1.75f);
-		_docks_front.set_name("_docks_front");
-		_root.add_child(_docks_front);
+		
+		{
+			SPSprite hills_far = SPSprite.cons_sprite_texkey_texrect(
+				RTex.BG_NVILLAGE_SPRITESHEET,
+				FileCache.inst().get_texrect(RTex.BG_NVILLAGE_SPRITESHEET,"neu_village_hills_far.png")
+			);
+			hills_far.set_manual_sort_z_order(GameAnchorZ.BGVillage_HILLS_FAR);
+			hills_far.set_u_z(2000f);
+			hills_far.set_scale(4.0f);
+			hills_far.set_anchor_point(0.5f,0);
+			hills_far.set_u_pos(0,500);
+			hills_far.gameObject.layer = RLayer.get_layer(RLayer.REFLECTION_OBJECTS_3);
+			hills_far.set_name("hills_far");
+			_root.add_child(hills_far);
+		}
+		{
+			SPSprite hills_near = SPSprite.cons_sprite_texkey_texrect(
+				RTex.BG_NVILLAGE_SPRITESHEET,
+				FileCache.inst().get_texrect(RTex.BG_NVILLAGE_SPRITESHEET,"neu_village_hills_near.png")
+			);
+			hills_near.set_manual_sort_z_order(GameAnchorZ.BGVillage_HILLS_NEAR);
+			hills_near.set_u_z(1200f);
+			hills_near.set_scale(2.75f);
+			hills_near.set_anchor_point(0.5f,0);
+			hills_near.set_name("hills_near");
+			hills_near.gameObject.layer = RLayer.get_layer(RLayer.REFLECTION_OBJECTS_3);
+			_root.add_child(hills_near);
+		}
+		
+		{
+			SPSprite building_back_left = SPSprite.cons_sprite_texkey_texrect(
+				RTex.BG_NVILLAGE_SPRITESHEET,
+				FileCache.inst().get_texrect(RTex.BG_NVILLAGE_SPRITESHEET,"neu_village_building_back_left.png")
+			);
+			building_back_left.set_manual_sort_z_order(GameAnchorZ.BGVillage_BUILDINGS_BACK);
+			building_back_left.set_u_pos(-700,383);
+			building_back_left.set_u_z(520f);
+			building_back_left.set_scale(2.1f);
+			building_back_left.set_anchor_point(0.5f,0);
+			building_back_left.set_name("building_back_left");
+			building_back_left.gameObject.layer = RLayer.get_layer(RLayer.REFLECTION_OBJECTS_2);
+			_root.add_child(building_back_left);
+		}
+		{
+			SPSprite building_back_right_top = SPSprite.cons_sprite_texkey_texrect(
+				RTex.BG_NVILLAGE_SPRITESHEET,
+				FileCache.inst().get_texrect(RTex.BG_NVILLAGE_SPRITESHEET,"neu_village_building_back_right_top.png")
+			);
+			building_back_right_top.set_manual_sort_z_order(GameAnchorZ.BGVillage_BUILDINGS_BACK);
+			building_back_right_top.set_u_pos(557,326);
+			building_back_right_top.set_u_z(520f);
+			building_back_right_top.set_scale(2.1f);
+			building_back_right_top.set_anchor_point(0.5f,0);
+			building_back_right_top.set_name("neu_village_building_back_right_top");
+			building_back_right_top.gameObject.layer = RLayer.get_layer(RLayer.REFLECTION_OBJECTS_2);
+			_root.add_child(building_back_right_top);
+		}
+		
+		
+		{
+			SPSprite mid_flag = SPSprite.cons_sprite_texkey_texrect(
+				RTex.BG_NVILLAGE_SPRITESHEET,
+				FileCache.inst().get_texrect(RTex.BG_NVILLAGE_SPRITESHEET,"neu_village_flag_line.png")
+				);
+			mid_flag.set_manual_sort_z_order(GameAnchorZ.BGVillage_BUILDINGS_MID-1);
+			mid_flag.set_u_pos(134,580);
+			mid_flag.set_u_z(402);
+			mid_flag.set_scale(2.1f);
+			mid_flag.set_anchor_point(1,0.5f);
+			mid_flag.set_name("mid_flag");
+			mid_flag.set_rotation(340);
+			mid_flag.gameObject.layer = RLayer.get_layer(RLayer.REFLECTION_OBJECTS_2);
+			_root.add_child(mid_flag);
+		}
+		{
+			SPSprite building_mid_right = SPSprite.cons_sprite_texkey_texrect(
+				RTex.BG_NVILLAGE_SPRITESHEET,
+				FileCache.inst().get_texrect(RTex.BG_NVILLAGE_SPRITESHEET,"neu_village_building_mid_right.png")
+			);
+			building_mid_right.set_manual_sort_z_order(GameAnchorZ.BGVillage_BUILDINGS_MID);
+			building_mid_right.set_u_pos(471,22);
+			building_mid_right.set_u_z(402f);
+			building_mid_right.set_scale(2.1f);
+			building_mid_right.set_anchor_point(0.5f,0);
+			building_mid_right.set_name("building_mid_right");
+			building_mid_right.gameObject.layer = RLayer.get_layer(RLayer.REFLECTION_OBJECTS_2);
+			_root.add_child(building_mid_right);
+		}
+		{
+			SPSprite building_mid_left = SPSprite.cons_sprite_texkey_texrect(
+				RTex.BG_NVILLAGE_SPRITESHEET,
+				FileCache.inst().get_texrect(RTex.BG_NVILLAGE_SPRITESHEET,"neu_village_building_mid_left.png")
+			);
+			building_mid_left.set_manual_sort_z_order(GameAnchorZ.BGVillage_BUILDINGS_MID);
+			building_mid_left.set_u_z(402);
+			building_mid_left.set_u_pos(-419,75);
+			building_mid_left.set_scale(1.9f);
+			building_mid_left.set_anchor_point(0.5f,0);
+			building_mid_left.gameObject.layer = RLayer.get_layer(RLayer.REFLECTION_OBJECTS_1);
+			building_mid_left.set_name("building_mid_left");
+			_root.add_child(building_mid_left);
+		}
+		
+		
+		
+		{
+			SPSprite building_front_left_front = SPSprite.cons_sprite_texkey_texrect(
+				RTex.BG_NVILLAGE_SPRITESHEET,
+				FileCache.inst().get_texrect(RTex.BG_NVILLAGE_SPRITESHEET,"neu_village_building_front_left_front.png")
+				);
+			building_front_left_front.set_manual_sort_z_order(GameAnchorZ.BGVillage_BUILDINGS_NEAR);
+			building_front_left_front.set_u_z(215f);
+			building_front_left_front.set_u_pos(-581,-71);
+			building_front_left_front.set_scale(1.9f);
+			building_front_left_front.set_anchor_point(0.5f,0);
+			building_front_left_front.gameObject.layer = RLayer.get_layer(RLayer.REFLECTION_OBJECTS_1);
+			building_front_left_front.set_name("neu_village_building_front_left_front");
+			_root.add_child(building_front_left_front);
+		}
+		{
+			SPSprite building_front_right = SPSprite.cons_sprite_texkey_texrect(
+				RTex.BG_NVILLAGE_SPRITESHEET,
+				FileCache.inst().get_texrect(RTex.BG_NVILLAGE_SPRITESHEET,"neu_village_building_front_right.png")
+				);
+			building_front_right.set_manual_sort_z_order(GameAnchorZ.BGVillage_BUILDINGS_NEAR);
+			building_front_right.set_u_z(215f);
+			building_front_right.set_u_pos(540,-71);
+			building_front_right.set_scale(1.9f);
+			building_front_right.set_anchor_point(0.5f,0);
+			building_front_right.gameObject.layer = RLayer.get_layer(RLayer.REFLECTION_OBJECTS_1);
+			building_front_right.set_name("neu_village_building_front_right");
+			_root.add_child(building_front_right);
+		}
+		
+		
+		{
+			_docks = SPSprite.cons_sprite_texkey_texrect(
+				RTex.BG_NVILLAGE_SPRITESHEET,
+				FileCache.inst().get_texrect(RTex.BG_NVILLAGE_SPRITESHEET,"neu_village_docks.png")
+			);
+			_docks.set_manual_sort_z_order(GameAnchorZ.BGVillage_Docks);
+			_docks.set_anchor_point(0.5f,0);
+			_docks.set_u_pos(0,-182);
+			_docks.set_scale(1.75f);
+			_docks.set_name("_docks");
+			_docks.gameObject.layer = RLayer.get_layer(RLayer.REFLECTION_OBJECTS_DOCKS);
+			_root.add_child(_docks);
+	
+			_docks_front = SPSprite.cons_sprite_texkey_texrect(
+				RTex.BG_NVILLAGE_SPRITESHEET,
+				FileCache.inst().get_texrect(RTex.BG_NVILLAGE_SPRITESHEET,"neu_village_docks_pillars.png")
+			);
+			_docks_front.set_manual_sort_z_order(GameAnchorZ.BGVillage_Docks_Front);
+			_docks_front.set_anchor_point(_docks.anchorpoint().x,_docks.anchorpoint().y);
+			_docks_front.set_u_pos(_docks.get_u_pos());
+			_docks_front.set_scale(_docks.scale_x());
+			_docks_front.set_name("_docks_front");
+			_root.add_child(_docks_front);
+		}
+		
+		// SPTODO -- add all buildings
+		_reflection_sprites = new List<SPSprite>();
 
 		_reflections = new List<BGReflection>();
+		
 		_reflections.Add(BGReflection.cons(_root,RLayer.REFLECTION_OBJECTS_3)
 			.set_name("_bg_3_reflection")
 			.set_alpha_sub(0.3f)
 			.set_manual_z_order(GameAnchorZ.BGVillage_Reflection_3));
-
+		
 		_reflections.Add(BGReflection.cons(_root,RLayer.REFLECTION_OBJECTS_2)
 			.set_name("_bg_2_reflection")
 			.set_reflection_pos(0,-483,458)
@@ -112,6 +204,8 @@ public class BGVillage : SPGameUpdateable, SPNodeHierarchyElement {
 			.set_manual_z_order(GameAnchorZ.BGVillage_Reflection_2)
 			.set_scale(6.5f,-4)
 			.set_alpha_sub(0.65f));
+			
+		/*
 		_reflections.Add(BGReflection.cons(_root,RLayer.REFLECTION_OBJECTS_1)
 			.set_name("_bg_1_reflection")
 			.set_reflection_pos(0,-458,212)
@@ -126,6 +220,8 @@ public class BGVillage : SPGameUpdateable, SPNodeHierarchyElement {
 			.set_manual_z_order(GameAnchorZ.BGVillage_Reflection_DOCKS)
 			.set_scale(4.0f)
 			.set_alpha_sub(0.55f));
+		*/
+		
 
 		_waterlineabove = BGWaterLineAbove.cons(_root);
 		_waterlineabove.set_u_pos(0,-200);
@@ -238,12 +334,14 @@ public class BGVillage : SPGameUpdateable, SPNodeHierarchyElement {
 		if (this.is_above_water(g)) {
 			_waterlineabove.set_enabled(true);
 			_waterlineabove.i_update(g);
-			_bldg_1.gameObject.layer = RLayer.get_layer(RLayer.REFLECTION_OBJECTS_1);
-			_bldg_2.gameObject.layer = RLayer.get_layer(RLayer.REFLECTION_OBJECTS_2);
+			for (int i = 0; i < _reflection_sprites.Count; i++) {
+				_reflection_sprites[i].set_layer(RLayer.REFLECTION_OBJECTS_1);
+			}
 		} else {
 			_waterlineabove.set_enabled(false);
-			_bldg_1.gameObject.layer = RLayer.get_layer(RLayer.SURFACEREFLECTION_ONLY);
-			_bldg_2.gameObject.layer = RLayer.get_layer(RLayer.SURFACEREFLECTION_ONLY);
+			for (int i = 0; i < _reflection_sprites.Count; i++) {
+				_reflection_sprites[i].set_layer(RLayer.SURFACEREFLECTION_ONLY);
+			}
 		}
 	}
 	

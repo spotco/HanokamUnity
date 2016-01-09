@@ -216,6 +216,8 @@ public class BGWater : SPGameUpdateable, CameraRenderHookDelegate, SPNodeHierarc
 
 	public void on_pre_render() {
 		if (_surface_reflection_bgvillage_hook_target == null) return;
+		// SPTODO -- underwater reflection system fix
+		/*
 		__bgvillage_hook_prev_record(_surface_reflection_bgvillage_hook_target._bldg_3);
 		__bgvillage_hook_prev_record(_surface_reflection_bgvillage_hook_target._bldg_2);
 		__bgvillage_hook_prev_record(_surface_reflection_bgvillage_hook_target._bldg_1);
@@ -229,13 +231,16 @@ public class BGWater : SPGameUpdateable, CameraRenderHookDelegate, SPNodeHierarc
 		_surface_reflection_bgvillage_hook_target._bldg_1.transform.localScale = SPUtil.valv(1.5f);
 		_surface_reflection_bgvillage_hook_target._docks.transform.localPosition = new Vector3(0,-107,0);
 		_surface_reflection_bgvillage_hook_target._docks.transform.localScale = SPUtil.valv(1.5f);
+		*/
 	}
 	public void on_post_render() {
 		if (_surface_reflection_bgvillage_hook_target == null) return;
+		/*
 		__bgvillage_hook_prev_set(_surface_reflection_bgvillage_hook_target._bldg_3);
 		__bgvillage_hook_prev_set(_surface_reflection_bgvillage_hook_target._bldg_2);
 		__bgvillage_hook_prev_set(_surface_reflection_bgvillage_hook_target._bldg_1);
 		__bgvillage_hook_prev_set(_surface_reflection_bgvillage_hook_target._docks);
+		*/
 	}
 
 	private SPSprite _surface_gradient;
