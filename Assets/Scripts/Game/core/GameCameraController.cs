@@ -146,6 +146,7 @@ public class GameCameraController : SPMainUpdateable {
 	}
 	
 	private Vector3 _last_frame_camera_position;
+	private Vector3 _avg_frame_camera_delta;
 	public void i_update() {
 		if (GameMain._context._camera_active) {
 			_camera_shake_ct = Mathf.Max(0,_camera_shake_ct - SPUtil.dt_scale_get());
@@ -153,8 +154,11 @@ public class GameCameraController : SPMainUpdateable {
 			_camera_pos.i_update();
 			this.apply_camera_values();
 			
-			float frame_camera_move_dist = Vector3.Distance(_last_frame_camera_position,_camera_pos._current);
+			_avg_frame_camera_delta = SPUtil.running_avg_vec(_avg_frame_camera_delta,SPUtil.vec_sub(_camera_pos._current,_last_frame_camera_position),3.0f);
+			_last_frame_camera_position = _camera_pos._current;
+			float frame_camera_move_dist = _avg_frame_camera_delta.magnitude;
 			float MIN_BLUR_DIST = 5;
+			
 			if (_has_camera_motion_blur) {
 				_motion_blur.enabled = true;
 				float pct = Mathf.Clamp(SPUtil.bezier_val_for_t(
@@ -168,16 +172,17 @@ public class GameCameraController : SPMainUpdateable {
 				
 			} else if (frame_camera_move_dist > MIN_BLUR_DIST) {
 				_motion_blur.enabled = true;
-				Vector3 blur = SPUtil.vec_sub(_camera_pos._current,_last_frame_camera_position) * 
-					SPUtil.bezier_val_for_t(new Vector2(0,0),new Vector2(1,0),new Vector2(1,0),new Vector2(1,1),
-						Mathf.Clamp(SPUtil.y_for_point_of_2pt_line(new Vector2(MIN_BLUR_DIST,0),new Vector2(15,1),frame_camera_move_dist),0,1)).y;
+				
+				Vector3 blur = _avg_frame_camera_delta * 
+					SPUtil.bezier_val_for_t(new Vector2(0,0),new Vector2(0f,0.5f),new Vector2(0.5f,1.0f),new Vector2(1,1),
+						Mathf.Clamp(SPUtil.y_for_point_of_2pt_line(new Vector2(MIN_BLUR_DIST,0),new Vector2(150,1),frame_camera_move_dist),0,1)).y;
 				blur.z *= -1;
 				_motion_blur.previewScale = blur;
 				
 			} else {
 				_motion_blur.enabled = false;
 			}
-			_last_frame_camera_position = _camera_pos._current;
+			
 			
 			if (_has_blur) {
 				_ui_blur_cover.set_enabled(true);

@@ -22,7 +22,8 @@ public class BGWaterLineAbove : SPGameUpdateable {
 			SPUtil.texture_default_rect(RTex.BG_WATER_TOP_WATERLINE)
 		);
 		_waterline.set_anchor_point(0.5f,0.0f);
-		_waterline.set_scale(1.5f);
+		_waterline.set_scale_x(2.5f);
+		_waterline.set_scale_y(1.5f);
 		_waterline.set_name("_waterline");
 		_waterline.set_opacity(0.65f);
 		_waterline.set_manual_sort_z_order(GameAnchorZ.BGVillage_WaterLineAbove_Line);
@@ -34,7 +35,8 @@ public class BGWaterLineAbove : SPGameUpdateable {
 		);
 		_watergrad.set_anchor_point(0.5f,0.0f);
 		_watergrad.set_u_pos(0,18);
-		_watergrad.set_scale(1.5f);
+		_watergrad.set_scale_x(2.5f);
+		_watergrad.set_scale_y(1.5f);
 		_watergrad.set_opacity(0.45f);
 		_watergrad.set_name("_watergrad");
 		_watergrad.set_manual_sort_z_order(GameAnchorZ.BGVillage_WaterLineAbove_Grad);
@@ -46,7 +48,7 @@ public class BGWaterLineAbove : SPGameUpdateable {
 		);
 		_waterbelowline.set_anchor_point(0.5f,1.0f);
 		_waterbelowline.set_u_pos(0,27);
-		_waterbelowline.set_scale_x(1.5f);
+		_waterbelowline.set_scale_x(2.5f);
 		_waterbelowline.set_scale_y(15.0f);
 		_waterbelowline.set_opacity(0.75f);
 		_waterbelowline.set_name("_waterbelowline");
@@ -60,7 +62,7 @@ public class BGWaterLineAbove : SPGameUpdateable {
 		_belowline_lightrays.set_name("_belowline_lightrays");
 		_belowline_lightrays.set_manual_sort_z_order(GameAnchorZ.BGVillage_WaterLineAbove_BelowLine_LightRays);
 		_belowline_lightrays.set_opacity(0.15f);
-		_belowline_lightrays.set_scale(1.5f);
+		_belowline_lightrays.set_scale(2.5f);
 		_belowline_lightrays.set_anchor_point(0.5f,1.0f);
 		_belowline_lightrays.set_u_pos(0,44);
 		_root.add_child(_belowline_lightrays);

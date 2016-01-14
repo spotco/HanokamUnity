@@ -261,6 +261,12 @@ public class SPUtil {
 		avg += (val / ct) * SPUtil.dt_scale_get();
 		return avg;
 	}
+	public static Vector3 running_avg_vec(Vector3 avg, Vector3 val, float ct) {
+		avg.x = SPUtil.running_avg(avg.x,val.x,ct);
+		avg.y = SPUtil.running_avg(avg.y,val.y,ct);
+		avg.z = SPUtil.running_avg(avg.z,val.z,ct);
+		return avg;
+	}
 	
 	public static float y_for_point_of_2pt_line(Vector2 pt1, Vector2 pt2, float x) {
 		//(y - y1)/(x - x1) = m

@@ -49,7 +49,7 @@ public class BGVillage : SPGameUpdateable, SPNodeHierarchyElement {
 			);
 			hills_near.set_manual_sort_z_order(GameAnchorZ.BGVillage_HILLS_NEAR);
 			hills_near.set_u_z(1200f);
-			hills_near.set_scale(2.75f);
+			hills_near.set_scale(3.15f);
 			hills_near.set_anchor_point(0.5f,0);
 			hills_near.set_name("hills_near");
 			hills_near.gameObject.layer = RLayer.get_layer(RLayer.REFLECTION_OBJECTS_3);
@@ -62,7 +62,7 @@ public class BGVillage : SPGameUpdateable, SPNodeHierarchyElement {
 				FileCache.inst().get_texrect(RTex.BG_NVILLAGE_SPRITESHEET,"neu_village_building_back_left.png")
 			);
 			building_back_left.set_manual_sort_z_order(GameAnchorZ.BGVillage_BUILDINGS_BACK);
-			building_back_left.set_u_pos(-700,383);
+			building_back_left.set_u_pos(-700,549);
 			building_back_left.set_u_z(520f);
 			building_back_left.set_scale(2.1f);
 			building_back_left.set_anchor_point(0.5f,0);
@@ -76,13 +76,27 @@ public class BGVillage : SPGameUpdateable, SPNodeHierarchyElement {
 				FileCache.inst().get_texrect(RTex.BG_NVILLAGE_SPRITESHEET,"neu_village_building_back_right_top.png")
 			);
 			building_back_right_top.set_manual_sort_z_order(GameAnchorZ.BGVillage_BUILDINGS_BACK);
-			building_back_right_top.set_u_pos(557,326);
+			building_back_right_top.set_u_pos(762,557);
 			building_back_right_top.set_u_z(520f);
 			building_back_right_top.set_scale(2.1f);
 			building_back_right_top.set_anchor_point(0.5f,0);
 			building_back_right_top.set_name("neu_village_building_back_right_top");
 			building_back_right_top.gameObject.layer = RLayer.get_layer(RLayer.REFLECTION_OBJECTS_2);
 			_root.add_child(building_back_right_top);
+		}
+		{
+			SPSprite back_flag = SPSprite.cons_sprite_texkey_texrect(
+				RTex.BG_NVILLAGE_SPRITESHEET,
+				FileCache.inst().get_texrect(RTex.BG_NVILLAGE_SPRITESHEET,"neu_village_flag_line_2.png")
+				);
+			back_flag.set_manual_sort_z_order(GameAnchorZ.BGVillage_BUILDINGS_BACK-1);
+			back_flag.set_u_pos(413,869);
+			back_flag.set_u_z(520);
+			back_flag.set_scale(1.5f);
+			back_flag.set_anchor_point(1,0.5f);
+			back_flag.set_name("back_flag");
+			back_flag.gameObject.layer = RLayer.get_layer(RLayer.REFLECTION_OBJECTS_2);
+			_root.add_child(back_flag);
 		}
 		
 		
@@ -92,12 +106,11 @@ public class BGVillage : SPGameUpdateable, SPNodeHierarchyElement {
 				FileCache.inst().get_texrect(RTex.BG_NVILLAGE_SPRITESHEET,"neu_village_flag_line.png")
 				);
 			mid_flag.set_manual_sort_z_order(GameAnchorZ.BGVillage_BUILDINGS_MID-1);
-			mid_flag.set_u_pos(134,580);
+			mid_flag.set_u_pos(152,595);
 			mid_flag.set_u_z(402);
-			mid_flag.set_scale(2.1f);
+			mid_flag.set_scale(2.2f);
 			mid_flag.set_anchor_point(1,0.5f);
 			mid_flag.set_name("mid_flag");
-			mid_flag.set_rotation(340);
 			mid_flag.gameObject.layer = RLayer.get_layer(RLayer.REFLECTION_OBJECTS_2);
 			_root.add_child(mid_flag);
 		}
@@ -107,7 +120,7 @@ public class BGVillage : SPGameUpdateable, SPNodeHierarchyElement {
 				FileCache.inst().get_texrect(RTex.BG_NVILLAGE_SPRITESHEET,"neu_village_building_mid_right.png")
 			);
 			building_mid_right.set_manual_sort_z_order(GameAnchorZ.BGVillage_BUILDINGS_MID);
-			building_mid_right.set_u_pos(471,22);
+			building_mid_right.set_u_pos(464,26);
 			building_mid_right.set_u_z(402f);
 			building_mid_right.set_scale(2.1f);
 			building_mid_right.set_anchor_point(0.5f,0);
@@ -122,12 +135,27 @@ public class BGVillage : SPGameUpdateable, SPNodeHierarchyElement {
 			);
 			building_mid_left.set_manual_sort_z_order(GameAnchorZ.BGVillage_BUILDINGS_MID);
 			building_mid_left.set_u_z(402);
-			building_mid_left.set_u_pos(-419,75);
+			building_mid_left.set_u_pos(-470,8);
 			building_mid_left.set_scale(1.9f);
 			building_mid_left.set_anchor_point(0.5f,0);
 			building_mid_left.gameObject.layer = RLayer.get_layer(RLayer.REFLECTION_OBJECTS_1);
 			building_mid_left.set_name("building_mid_left");
 			_root.add_child(building_mid_left);
+		}
+		
+		{
+			SPSprite building_mid_leftmost_left = SPSprite.cons_sprite_texkey_texrect(
+				RTex.BG_NVILLAGE_SPRITESHEET,
+				FileCache.inst().get_texrect(RTex.BG_NVILLAGE_SPRITESHEET,"neu_village_building_mid_leftmost_left.png")
+				);
+			building_mid_leftmost_left.set_manual_sort_z_order(GameAnchorZ.BGVillage_BUILDINGS_MID);
+			building_mid_leftmost_left.set_u_z(402);
+			building_mid_leftmost_left.set_u_pos(-1043,461);
+			building_mid_leftmost_left.set_scale(1.9f);
+			building_mid_leftmost_left.set_anchor_point(0.5f,0);
+			building_mid_leftmost_left.gameObject.layer = RLayer.get_layer(RLayer.REFLECTION_OBJECTS_1);
+			building_mid_leftmost_left.set_name("building_mid_leftmost_left");
+			_root.add_child(building_mid_leftmost_left);
 		}
 		
 		
@@ -139,7 +167,7 @@ public class BGVillage : SPGameUpdateable, SPNodeHierarchyElement {
 				);
 			building_front_left_front.set_manual_sort_z_order(GameAnchorZ.BGVillage_BUILDINGS_NEAR);
 			building_front_left_front.set_u_z(215f);
-			building_front_left_front.set_u_pos(-581,-71);
+			building_front_left_front.set_u_pos(-674,-42);
 			building_front_left_front.set_scale(1.9f);
 			building_front_left_front.set_anchor_point(0.5f,0);
 			building_front_left_front.gameObject.layer = RLayer.get_layer(RLayer.REFLECTION_OBJECTS_1);
@@ -153,7 +181,7 @@ public class BGVillage : SPGameUpdateable, SPNodeHierarchyElement {
 				);
 			building_front_right.set_manual_sort_z_order(GameAnchorZ.BGVillage_BUILDINGS_NEAR);
 			building_front_right.set_u_z(215f);
-			building_front_right.set_u_pos(540,-71);
+			building_front_right.set_u_pos(580,-108);
 			building_front_right.set_scale(1.9f);
 			building_front_right.set_anchor_point(0.5f,0);
 			building_front_right.gameObject.layer = RLayer.get_layer(RLayer.REFLECTION_OBJECTS_1);
@@ -197,6 +225,7 @@ public class BGVillage : SPGameUpdateable, SPNodeHierarchyElement {
 			.set_alpha_sub(0.3f)
 			.set_manual_z_order(GameAnchorZ.BGVillage_Reflection_3));
 		
+		/*
 		_reflections.Add(BGReflection.cons(_root,RLayer.REFLECTION_OBJECTS_2)
 			.set_name("_bg_2_reflection")
 			.set_reflection_pos(0,-483,458)
@@ -204,8 +233,6 @@ public class BGVillage : SPGameUpdateable, SPNodeHierarchyElement {
 			.set_manual_z_order(GameAnchorZ.BGVillage_Reflection_2)
 			.set_scale(6.5f,-4)
 			.set_alpha_sub(0.65f));
-			
-		/*
 		_reflections.Add(BGReflection.cons(_root,RLayer.REFLECTION_OBJECTS_1)
 			.set_name("_bg_1_reflection")
 			.set_reflection_pos(0,-458,212)

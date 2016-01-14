@@ -32,9 +32,9 @@ public class BGReflection {
 		_reflection_image.manual_set_texture(_reflection_tex);
 		_reflection_image.manual_set_mesh_size(256,256);
 		_reflection_image.set_name("_reflection_image");
-		_reflection_image.set_scale_x(9.75f);
-		_reflection_image.set_scale_y(-9.75f);
-		_reflection_image.set_u_pos(0,-1059);
+		_reflection_image.set_scale_x(12f);
+		_reflection_image.set_scale_y(-12);
+		_reflection_image.set_u_pos(0,-1350);
 		_reflection_image.set_u_z(1046.0f);
 		_reflection_image.gameObject.layer = RLayer.get_layer(RLayer.REFLECTIONS);
 		_reflection_image.set_manual_sort_z_order(GameAnchorZ.BGVillage_Reflection_3);

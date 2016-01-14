@@ -86,6 +86,7 @@ public class OnGroundGameState : GameStateBase {
 				g._player._u_x = SPUtil.get_horiz_world_bounds()._max;
 			}
 			
+			//g._camerac.set_target_zoom(1500);
 			g._camerac.set_target_zoom(1000);
 			g._camerac.set_target_camera_focus_on_character(g,0,200);
 			
