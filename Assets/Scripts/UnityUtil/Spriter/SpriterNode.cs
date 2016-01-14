@@ -120,6 +120,10 @@ public class SpriterNode : SPNode, CameraRenderHookDelegate {
 
 		return this;
 	}
+	
+	public void set_layer(string layer_str) {
+		_rendered_img.set_layer(layer_str);
+	}
 
 	Vector3 _pre_pos;
 	public void on_pre_render() {

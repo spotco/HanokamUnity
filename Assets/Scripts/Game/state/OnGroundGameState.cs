@@ -38,7 +38,7 @@ public class OnGroundGameState : GameStateBase {
 		_current_state = Mode.FadeIn;
 		g._game_ui.set_fadeout_overlay_imm(true);
 		
-		g._player.set_u_pos(0,0);
+		g._player.set_u_pos(0,-16);
 		g._player.play_anim(PlayerCharacterAnims.IDLE);
 		g._bg_village.set_u_pos(0, 0);
 		g._bg_water.set_u_pos(0, 0);

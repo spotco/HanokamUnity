@@ -20,7 +20,7 @@ public class VillagerManager : OnGroundStateUpdateable, SPNodeHierarchyElement {
 		_villagers = g._bg_village.get_villagers();		
 		
 		VillageObject tmp = VillageObject.cons(g);
-		tmp.set_u_pos(-200,308);
+		tmp.set_u_pos(-485,308);
 		tmp.set_u_z(150);
 		_objects = new List<VillageObject>() {
 			tmp

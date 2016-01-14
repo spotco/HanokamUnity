@@ -38,7 +38,7 @@ public class BGVillage : SPGameUpdateable, SPNodeHierarchyElement {
 			hills_far.set_scale(4.0f);
 			hills_far.set_anchor_point(0.5f,0);
 			hills_far.set_u_pos(0,500);
-			hills_far.gameObject.layer = RLayer.get_layer(RLayer.REFLECTION_OBJECTS_3);
+			hills_far.gameObject.layer = RLayer.get_layer(RLayer.REFLECTION_VILLAGE_BACK_HILLS);
 			hills_far.set_name("hills_far");
 			_root.add_child(hills_far);
 		}
@@ -52,7 +52,7 @@ public class BGVillage : SPGameUpdateable, SPNodeHierarchyElement {
 			hills_near.set_scale(3.15f);
 			hills_near.set_anchor_point(0.5f,0);
 			hills_near.set_name("hills_near");
-			hills_near.gameObject.layer = RLayer.get_layer(RLayer.REFLECTION_OBJECTS_3);
+			hills_near.gameObject.layer = RLayer.get_layer(RLayer.REFLECTION_VILLAGE_BACK_HILLS);
 			_root.add_child(hills_near);
 		}
 		
@@ -67,7 +67,6 @@ public class BGVillage : SPGameUpdateable, SPNodeHierarchyElement {
 			building_back_left.set_scale(2.1f);
 			building_back_left.set_anchor_point(0.5f,0);
 			building_back_left.set_name("building_back_left");
-			building_back_left.gameObject.layer = RLayer.get_layer(RLayer.REFLECTION_OBJECTS_2);
 			_root.add_child(building_back_left);
 		}
 		{
@@ -81,7 +80,6 @@ public class BGVillage : SPGameUpdateable, SPNodeHierarchyElement {
 			building_back_right_top.set_scale(2.1f);
 			building_back_right_top.set_anchor_point(0.5f,0);
 			building_back_right_top.set_name("neu_village_building_back_right_top");
-			building_back_right_top.gameObject.layer = RLayer.get_layer(RLayer.REFLECTION_OBJECTS_2);
 			_root.add_child(building_back_right_top);
 		}
 		{
@@ -95,7 +93,6 @@ public class BGVillage : SPGameUpdateable, SPNodeHierarchyElement {
 			back_flag.set_scale(1.5f);
 			back_flag.set_anchor_point(1,0.5f);
 			back_flag.set_name("back_flag");
-			back_flag.gameObject.layer = RLayer.get_layer(RLayer.REFLECTION_OBJECTS_2);
 			_root.add_child(back_flag);
 		}
 		
@@ -111,7 +108,6 @@ public class BGVillage : SPGameUpdateable, SPNodeHierarchyElement {
 			mid_flag.set_scale(2.2f);
 			mid_flag.set_anchor_point(1,0.5f);
 			mid_flag.set_name("mid_flag");
-			mid_flag.gameObject.layer = RLayer.get_layer(RLayer.REFLECTION_OBJECTS_2);
 			_root.add_child(mid_flag);
 		}
 		{
@@ -125,7 +121,6 @@ public class BGVillage : SPGameUpdateable, SPNodeHierarchyElement {
 			building_mid_right.set_scale(2.1f);
 			building_mid_right.set_anchor_point(0.5f,0);
 			building_mid_right.set_name("building_mid_right");
-			building_mid_right.gameObject.layer = RLayer.get_layer(RLayer.REFLECTION_OBJECTS_2);
 			_root.add_child(building_mid_right);
 		}
 		{
@@ -138,7 +133,6 @@ public class BGVillage : SPGameUpdateable, SPNodeHierarchyElement {
 			building_mid_left.set_u_pos(-470,8);
 			building_mid_left.set_scale(1.9f);
 			building_mid_left.set_anchor_point(0.5f,0);
-			building_mid_left.gameObject.layer = RLayer.get_layer(RLayer.REFLECTION_OBJECTS_1);
 			building_mid_left.set_name("building_mid_left");
 			_root.add_child(building_mid_left);
 		}
@@ -153,7 +147,6 @@ public class BGVillage : SPGameUpdateable, SPNodeHierarchyElement {
 			building_mid_leftmost_left.set_u_pos(-1043,461);
 			building_mid_leftmost_left.set_scale(1.9f);
 			building_mid_leftmost_left.set_anchor_point(0.5f,0);
-			building_mid_leftmost_left.gameObject.layer = RLayer.get_layer(RLayer.REFLECTION_OBJECTS_1);
 			building_mid_leftmost_left.set_name("building_mid_leftmost_left");
 			_root.add_child(building_mid_leftmost_left);
 		}
@@ -170,7 +163,6 @@ public class BGVillage : SPGameUpdateable, SPNodeHierarchyElement {
 			building_front_left_front.set_u_pos(-674,-42);
 			building_front_left_front.set_scale(1.9f);
 			building_front_left_front.set_anchor_point(0.5f,0);
-			building_front_left_front.gameObject.layer = RLayer.get_layer(RLayer.REFLECTION_OBJECTS_1);
 			building_front_left_front.set_name("neu_village_building_front_left_front");
 			_root.add_child(building_front_left_front);
 		}
@@ -184,7 +176,6 @@ public class BGVillage : SPGameUpdateable, SPNodeHierarchyElement {
 			building_front_right.set_u_pos(580,-108);
 			building_front_right.set_scale(1.9f);
 			building_front_right.set_anchor_point(0.5f,0);
-			building_front_right.gameObject.layer = RLayer.get_layer(RLayer.REFLECTION_OBJECTS_1);
 			building_front_right.set_name("neu_village_building_front_right");
 			_root.add_child(building_front_right);
 		}
@@ -200,7 +191,7 @@ public class BGVillage : SPGameUpdateable, SPNodeHierarchyElement {
 			_docks.set_u_pos(0,-182);
 			_docks.set_scale(1.75f);
 			_docks.set_name("_docks");
-			_docks.gameObject.layer = RLayer.get_layer(RLayer.REFLECTION_OBJECTS_DOCKS);
+			_docks.set_layer(RLayer.REFLECTION_SURFACE_DOCK);
 			_root.add_child(_docks);
 	
 			_docks_front = SPSprite.cons_sprite_texkey_texrect(
@@ -215,39 +206,38 @@ public class BGVillage : SPGameUpdateable, SPNodeHierarchyElement {
 			_root.add_child(_docks_front);
 		}
 		
-		// SPTODO -- add all buildings
 		_reflection_sprites = new List<SPSprite>();
 
 		_reflections = new List<BGReflection>();
 		
-		_reflections.Add(BGReflection.cons(_root,RLayer.REFLECTION_OBJECTS_3)
+		_reflections.Add(BGReflection.cons(_root,RLayer.REFLECTION_VILLAGE_BACK_HILLS)
 			.set_name("_bg_3_reflection")
 			.set_alpha_sub(0.3f)
+			.set_scale(12.55f)
+			.set_camera_pos(0,1597,-1523)
+			.set_reflection_pos(0,-1450,1046)
 			.set_manual_z_order(GameAnchorZ.BGVillage_Reflection_3));
-		
-		/*
-		_reflections.Add(BGReflection.cons(_root,RLayer.REFLECTION_OBJECTS_2)
-			.set_name("_bg_2_reflection")
-			.set_reflection_pos(0,-483,458)
-			.set_camera_pos(0,822,-929)
-			.set_manual_z_order(GameAnchorZ.BGVillage_Reflection_2)
-			.set_scale(6.5f,-4)
-			.set_alpha_sub(0.65f));
-		_reflections.Add(BGReflection.cons(_root,RLayer.REFLECTION_OBJECTS_1)
-			.set_name("_bg_1_reflection")
-			.set_reflection_pos(0,-458,212)
-			.set_camera_pos(0,586,-929)
-			.set_manual_z_order(GameAnchorZ.BGVillage_Reflection_1)
-			.set_scale(5.0f,-3)
-			.set_alpha_sub(0.55f));
-		_reflections.Add(BGReflection.cons(_root,RLayer.REFLECTION_OBJECTS_DOCKS)
+			
+		_reflections.Add(BGReflection.cons(_root,RLayer.REFLECTION_SURFACE_DOCK,512,128)
 			.set_name("_docks_reflections")
-			.set_reflection_pos(0,-499,-17)
-			.set_camera_pos(0,363,-929)
+			.set_reflection_pos(0,-378,0)
+			.set_camera_pos(0,135,-447)
 			.set_manual_z_order(GameAnchorZ.BGVillage_Reflection_DOCKS)
 			.set_scale(4.0f)
-			.set_alpha_sub(0.55f));
-		*/
+			.set_alpha_sub(0.7f)
+			.set_y_mult(25,75)
+			.set_wave_ampl(0.01f,0.0025f)
+		);
+		_reflections.Add(BGReflection.cons(_root,RLayer.REFLECTION_SURFACE_CHARACTER,512,128)
+			.set_name("_character_reflections")
+			.set_reflection_pos(0,-378,0)
+			.set_camera_pos(0,135,-447)
+			.set_manual_z_order(GameAnchorZ.BGVillage_Reflection_DOCKS)
+			.set_scale(4.0f)
+			.set_alpha_sub(0.45f)
+			.set_y_mult(25,75)
+			.set_wave_ampl(0.01f,0.0025f)
+		);
 		
 
 		_waterlineabove = BGWaterLineAbove.cons(_root);
@@ -274,10 +264,11 @@ public class BGVillage : SPGameUpdateable, SPNodeHierarchyElement {
 			test.p_play_anim("Idle",true);
 			test.set_manual_sort_z_order(GameAnchorZ.Player_Ground);
 			test.set_name("OldMan_TEST");
+			test.set_layer(RLayer.REFLECTION_SURFACE_CHARACTER);
 			
 			Villager tmp = Villager.cons(test);
 			tmp._can_chat = false;
-			tmp.set_u_pos(-130,225);
+			tmp.set_u_pos(-393,225);
 			tmp.set_u_z(219);
 			_villagers.Add(tmp);
 			tmp.add_to_parent(_root);
@@ -291,9 +282,10 @@ public class BGVillage : SPGameUpdateable, SPNodeHierarchyElement {
 			test.p_play_anim("Idle",true);
 			test.set_manual_sort_z_order(GameAnchorZ.Player_Ground);
 			test.set_name("FishGirl_TEST");
+			test.set_layer(RLayer.REFLECTION_SURFACE_CHARACTER);
 			
 			Villager tmp = Villager.cons(test);
-			tmp.set_u_pos(350,-7);
+			tmp.set_u_pos(700,-12);
 			tmp.set_u_z(0);
 			
 			_villagers.Add(tmp);
@@ -310,9 +302,10 @@ public class BGVillage : SPGameUpdateable, SPNodeHierarchyElement {
 			test.set_name("Dog_TEST");
 			test.set_u_z(0);
 			test.set_img_scale_x(-1);
+			test.set_layer(RLayer.REFLECTION_SURFACE_CHARACTER);
 			
 			Villager tmp = Villager.cons(test);
-			tmp.set_u_pos(-395,-5);
+			tmp.set_u_pos(-775,-12);
 			tmp.set_u_z(0);
 			_villagers.Add(tmp);
 			tmp.add_to_parent(_root);
@@ -327,6 +320,7 @@ public class BGVillage : SPGameUpdateable, SPNodeHierarchyElement {
 			test.p_play_anim("Idle",true);
 			test.set_manual_sort_z_order(GameAnchorZ.Player_Ground);
 			test.set_name("FishMom_TEST");
+			test.set_layer(RLayer.REFLECTION_SURFACE_CHARACTER);
 			
 			Villager tmp = Villager.cons(test);
 			tmp._can_chat = false;
@@ -344,10 +338,11 @@ public class BGVillage : SPGameUpdateable, SPNodeHierarchyElement {
 			test.p_play_anim("Idle",true);
 			test.set_manual_sort_z_order(GameAnchorZ.Player_Ground);
 			test.set_name("Boy_TEST");
+			test.set_layer(RLayer.REFLECTION_SURFACE_CHARACTER);
 
 			Villager tmp = Villager.cons(test);
 			tmp._can_chat = false;
-			tmp.set_u_pos(-100,10);
+			tmp.set_u_pos(-100,-14);
 			tmp.set_u_z(0);
 			_villagers.Add(tmp);
 			tmp.add_to_parent(_root);
@@ -362,7 +357,7 @@ public class BGVillage : SPGameUpdateable, SPNodeHierarchyElement {
 			_waterlineabove.set_enabled(true);
 			_waterlineabove.i_update(g);
 			for (int i = 0; i < _reflection_sprites.Count; i++) {
-				_reflection_sprites[i].set_layer(RLayer.REFLECTION_OBJECTS_1);
+				_reflection_sprites[i].set_layer(RLayer.REFLECTION_VILLAGE_BACK_HILLS);
 			}
 		} else {
 			_waterlineabove.set_enabled(false);

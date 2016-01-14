@@ -13,6 +13,11 @@
 
 		_ColorMask ("Color Mask", Float) = 15
 		_alpha_sub ("_alpha_sub", Float) = 0
+		
+		_y_mult_1 ("_y_mult_1", Float) = 100
+		_y_mult_2 ("_y_mult_2", Float) = 300
+		_wave_ampl_1 ("_wave_ampl_1", Float) = 0.05
+		_wave_ampl_2 ("_wave_ampl_2", Float) = 0.0075
 	}
 
 	SubShader
@@ -66,6 +71,10 @@
 			
 			fixed4 _Color;
 			fixed _alpha_sub;
+			fixed _y_mult_1;
+			fixed _y_mult_2;
+			fixed _wave_ampl_1;
+			fixed _wave_ampl_2;
 
 			v2f vert(appdata_t IN)
 			{
@@ -87,7 +96,7 @@
 			{
 				float2 wave_texcoord = IN.texcoord;
 				float yval = 1-IN.fade_alpha;
-				wave_texcoord.x = wave_texcoord.x + (0.05 * sin(_Time[1] * 1.0 + wave_texcoord.y * 100 * yval) * yval) + (0.0075 * cos(_Time[1] * 5.0 + wave_texcoord.y * 300 * yval) * yval);
+				wave_texcoord.x = wave_texcoord.x + (_wave_ampl_1 * sin(_Time[1] * 1.0 + wave_texcoord.y * _y_mult_1 * yval) * yval) + (_wave_ampl_2 * cos(_Time[1] * 5.0 + wave_texcoord.y * _y_mult_2 * yval) * yval);
 				half4 color = tex2D(_MainTex, wave_texcoord) * IN.color *float4(0.9,1.2,1.4,clamp(IN.fade_alpha-_alpha_sub,0,1.0)) + float4(0.02,0.02,0.02,0.0);
 				clip (color.a - 0.01);
 				return color;

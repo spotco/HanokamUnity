@@ -43,6 +43,7 @@ public class PlayerCharacter : SPGameUpdateable, SPHitPolyOwner, SPNodeHierarchy
 		_img.p_play_anim("Idle",true);
 		_img.set_manual_sort_z_order(GameAnchorZ.Player_Ground);
 		_img.set_name("_img");
+		_img.set_layer(RLayer.REFLECTION_SURFACE_CHARACTER);
 		_root.add_child(_img);
 
 		_streak_left = SPAlphaGradientSprite.cons_alphagradient_sprite(
