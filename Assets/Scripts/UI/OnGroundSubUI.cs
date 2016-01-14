@@ -9,14 +9,15 @@ public class OnGroundSubUI : GameUISubUI {
 	private SPNode _root;
 	
 	private SPNode _gameplay_ui_root;
-	private OnGroundSubUI_JumpChargeUI _jump_charge_ui_root;
+	//SPTODO -- remove class
+	//private OnGroundSubUI_JumpChargeUI _jump_charge_ui_root;
 				
 	private OnGroundSubUI i_cons(UIRoot ui) {
 		_root = SPNode.cons_node();
 		_root.set_name("OnGroundSubUI");
 		_root.set_enabled(false);
 		
-		_jump_charge_ui_root = OnGroundSubUI_JumpChargeUI.cons(ui,_root);
+		//_jump_charge_ui_root = OnGroundSubUI_JumpChargeUI.cons(ui,_root);
 		
 		return this;
 	}
@@ -32,6 +33,7 @@ public class OnGroundSubUI : GameUISubUI {
 	}
 	
 	public override void i_update(GameEngineScene g) {
+		/*
 		OnGroundGameState ground_state;
 		if (SPUtil.cond_cast<OnGroundGameState>(g.get_top_game_state(),out ground_state)) {
 			if (ground_state._current_state == OnGroundGameState.Mode.JumpCharge) {
@@ -43,6 +45,7 @@ public class OnGroundSubUI : GameUISubUI {
 				
 			}
 		}
+		*/
 	}
 	
 	public override bool should_show() {
@@ -54,6 +57,7 @@ public class OnGroundSubUI : GameUISubUI {
 	}
 }
 
+/*
 public class OnGroundSubUI_JumpChargeUI : SPGameUpdateable {
 	public static OnGroundSubUI_JumpChargeUI cons(UIRoot ui, SPNode parent) {
 		return (new OnGroundSubUI_JumpChargeUI()).i_cons(ui,parent);
@@ -125,3 +129,4 @@ public class OnGroundSubUI_JumpChargeUI : SPGameUpdateable {
 		}
 	}
 }
+*/

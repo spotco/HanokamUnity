@@ -8,11 +8,13 @@ public interface OnGroundStateUpdateable {
 public class OnGroundGameState : GameStateBase {
 
 	public struct Params {
-		public float _jump_charge_t;
 		public Vector2 _vel;
+		public Mode _current_state;
+		public OnGroundDiveAnimController _dive_anim_controller;
 		
 		public static Params cons() {
 			Params rtv = new Params();
+			rtv._dive_anim_controller = OnGroundDiveAnimController.cons();
 			return rtv;
 		}
 	}
@@ -20,8 +22,7 @@ public class OnGroundGameState : GameStateBase {
 	public enum Mode {
 		FadeIn,
 		Gameplay,
-		JumpCharge,
-		JumpInAir
+		DiveAnim
 	}
 
 	public static OnGroundGameState cons(GameEngineScene g) {
@@ -29,13 +30,12 @@ public class OnGroundGameState : GameStateBase {
 	}
 	
 	public Params _params;
-	public Mode _current_state;
 	public VillagerManager _villager_manager;
 	
 	public OnGroundGameState i_cons(GameEngineScene g) {
 		_params = Params.cons();
 		
-		_current_state = Mode.FadeIn;
+		_params._current_state = Mode.FadeIn;
 		g._game_ui.set_fadeout_overlay_imm(true);
 		
 		g._player.set_u_pos(0,-16);
@@ -51,12 +51,12 @@ public class OnGroundGameState : GameStateBase {
 	public override void i_update(GameEngineScene g) {
 		g._player.i_update(g);
 		
-		switch (_current_state) {
+		switch (_params._current_state) {
 		case Mode.FadeIn: {
 			g._player.i_update(g);
 			g._game_ui.set_fadeout_overlay(false);
 			if (g._game_ui.get_fadeout_overlay_anim_finished_for_target(false)) {
-				_current_state = Mode.Gameplay;
+				_params._current_state = Mode.Gameplay;
 			}
 		} break;
 		case Mode.Gameplay:{
@@ -90,60 +90,22 @@ public class OnGroundGameState : GameStateBase {
 			g._camerac.set_target_zoom(1000);
 			g._camerac.set_target_camera_focus_on_character(g,0,200);
 			
-			if (g._controls.get_control_just_pressed(ControlManager.Control.OnGround_Jump)) {
-				_current_state = Mode.JumpCharge;
-				g._player.play_anim(PlayerCharacterAnims.PREPDIVE,false);
-				_params._jump_charge_t = 0;
+			if (g._controls.get_control_just_released(ControlManager.Control.OnGround_Jump)) {
+				_params._current_state = Mode.DiveAnim;
+				_params._dive_anim_controller.setup_dive_anim(g,this);
 			}
 			
 		} break;
-		case Mode.JumpCharge:{
-			g._camerac.set_target_zoom(500);
-			g._camerac.set_target_camera_focus_on_character(g,0,120);
-			
-			_params._jump_charge_t = Mathf.Clamp(_params._jump_charge_t + SPUtil.dt_scale_get() * SPUtil.sec_to_tick(1.0f),0,1);
-			
-			if (_params._jump_charge_t >= 1) {
-				_current_state = Mode.JumpInAir;
-				_params._vel = new Vector2(0,15);
-				
-			} else if (!g._controls.get_control_down(ControlManager.Control.OnGround_Jump)) {
-				_current_state = Mode.Gameplay;
-			}
-			
-		} break;
-		case Mode.JumpInAir:{
-			g._player.set_manual_sort_z_order(GameAnchorZ.Player_InAir);
-			
-			g._camerac.set_target_zoom(1000);
-			g._camerac.set_target_camera_focus_on_character(g,0,-60);
-			
-			if (g._controls.is_move_x()) {
-				_params._vel.x = g._controls.get_move().x * 3.0f;
-			} else {
-				_params._vel.x = SPUtil.drpt(_params._vel.x,0,1/10.0f);
-			}
-			g._player.set_u_pos(
-				g._player._u_x + _params._vel.x * SPUtil.dt_scale_get(),
-				g._player._u_y + _params._vel.y * SPUtil.dt_scale_get()
-			);
-			_params._vel.y -= 0.4f * SPUtil.dt_scale_get();
-
-			if (g._player._u_y > 250) {
-				g._player.play_anim(PlayerCharacterAnims.SPIN);
-			} else {
-				g._player.play_anim(PlayerCharacterAnims.DIVE);
-				PlayerCharacterUtil.rotate_to_rotation_for_vel(g._player,_params._vel.x,_params._vel.y,1/10.0f);
-			}
-			
-			if (g._player._u_y < -250) {
+		case Mode.DiveAnim:{
+			_params._dive_anim_controller.i_update(g,this);
+			if (_params._dive_anim_controller.is_finished_and_should_transition_to_divestate()) {
 				g.pop_top_game_state();
 				g.push_game_state(DiveGameState.cons(g));
 				g._camerac.camera_shake(new Vector2(-1.7f,2.1f),80,400, 1/100.0f);
 				g._camerac.camera_motion_blur(new Vector3(0,500,500), 60.0f);
 				g._camerac.camera_blur(45.0f);
 			}
-
+			
 		} break;
 		}
 	}

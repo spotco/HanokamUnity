@@ -214,8 +214,20 @@ public class PlayerCharacterAnims {
 	public static string IDLE = "Idle";
 	public static string RUN = "Run";
 	public static string WALK = "Walk";
-	public static string PREPDIVE = "Prep Dive";
-	public static string DIVE = "Dive";
+	
+	public static string DIVE_RUN_FORWARD_PREPARE = "Run Forward Prepare";
+	public static string DIVE_RUN_FORWARD = "Run Forward";
+	public static string DIVE_FLIP_AND_JUMP = "Flip and Jump";
+	public static string DIVE_FORWARD_SPIN = "Forward Spin";
+	public static string DIVE_TRANSITION = "Dive Transition";
+	public static string DIVE_FALL = "Dive";
+	
+	
+	// old
+	public static string PREPDIVE = "Prep Dive (old)";
+	public static string DIVE = "Dive (old)";
+	//
+	
 	public static string SPIN = "Spin";
 	
 	public static string SWIM = "Swim";

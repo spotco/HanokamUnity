@@ -206,39 +206,41 @@ public class BGVillage : SPGameUpdateable, SPNodeHierarchyElement {
 			_root.add_child(_docks_front);
 		}
 		
+		this.setup_jumping_logs();
+		
 		_reflection_sprites = new List<SPSprite>();
-
-		_reflections = new List<BGReflection>();
 		
-		_reflections.Add(BGReflection.cons(_root,RLayer.REFLECTION_VILLAGE_BACK_HILLS)
-			.set_name("_bg_3_reflection")
-			.set_alpha_sub(0.3f)
-			.set_scale(12.55f)
-			.set_camera_pos(0,1597,-1523)
-			.set_reflection_pos(0,-1450,1046)
-			.set_manual_z_order(GameAnchorZ.BGVillage_Reflection_3));
-			
-		_reflections.Add(BGReflection.cons(_root,RLayer.REFLECTION_SURFACE_DOCK,512,128)
-			.set_name("_docks_reflections")
-			.set_reflection_pos(0,-378,0)
-			.set_camera_pos(0,135,-447)
-			.set_manual_z_order(GameAnchorZ.BGVillage_Reflection_DOCKS)
-			.set_scale(4.0f)
-			.set_alpha_sub(0.7f)
-			.set_y_mult(25,75)
-			.set_wave_ampl(0.01f,0.0025f)
-		);
-		_reflections.Add(BGReflection.cons(_root,RLayer.REFLECTION_SURFACE_CHARACTER,512,128)
-			.set_name("_character_reflections")
-			.set_reflection_pos(0,-378,0)
-			.set_camera_pos(0,135,-447)
-			.set_manual_z_order(GameAnchorZ.BGVillage_Reflection_DOCKS)
-			.set_scale(4.0f)
-			.set_alpha_sub(0.45f)
-			.set_y_mult(25,75)
-			.set_wave_ampl(0.01f,0.0025f)
-		);
-		
+		{
+			_reflections = new List<BGReflection>();
+			_reflections.Add(BGReflection.cons(_root,RLayer.REFLECTION_VILLAGE_BACK_HILLS)
+				.set_name("_bg_3_reflection")
+				.set_alpha_sub(0.3f)
+				.set_scale(12.55f)
+				.set_camera_pos(0,1597,-1523)
+				.set_reflection_pos(0,-1450,1046)
+				.set_manual_z_order(GameAnchorZ.BGVillage_Reflection_3));
+				
+			_reflections.Add(BGReflection.cons(_root,RLayer.REFLECTION_SURFACE_DOCK,512,128)
+				.set_name("_docks_reflections")
+				.set_reflection_pos(0,-378,0)
+				.set_camera_pos(0,135,-447)
+				.set_manual_z_order(GameAnchorZ.BGVillage_Reflection_DOCKS)
+				.set_scale(4.0f)
+				.set_alpha_sub(0.7f)
+				.set_y_mult(25,75)
+				.set_wave_ampl(0.01f,0.0025f)
+			);
+			_reflections.Add(BGReflection.cons(_root,RLayer.REFLECTION_SURFACE_CHARACTER,512,128)
+				.set_name("_character_reflections")
+				.set_reflection_pos(0,-378,0)
+				.set_camera_pos(0,135,-447)
+				.set_manual_z_order(GameAnchorZ.BGVillage_Reflection_DOCKS)
+				.set_scale(4.0f)
+				.set_alpha_sub(0.45f)
+				.set_y_mult(25,75)
+				.set_wave_ampl(0.01f,0.0025f)
+			);
+		}
 
 		_waterlineabove = BGWaterLineAbove.cons(_root);
 		_waterlineabove.set_u_pos(0,-200);
@@ -249,6 +251,34 @@ public class BGVillage : SPGameUpdateable, SPNodeHierarchyElement {
 		return this;
 	}
 	
+	private void setup_jumping_logs() {
+		{
+			SPSprite log = SPSprite.cons_sprite_texkey_texrect(
+				RTex.BG_NVILLAGE_SPRITESHEET,
+				FileCache.inst().get_texrect(RTex.BG_NVILLAGE_SPRITESHEET,"step_log.png")
+			);
+			log.set_manual_sort_z_order(GameAnchorZ.BGVillage_Docks_Front);
+			log.set_anchor_point(0.5f,0);
+			log.set_u_pos(0,-196);
+			log.set_u_z(-40);
+			log.set_scale(1.5f);
+			log.set_name("jumping_log_0");
+			_root.add_child(log);
+		}
+		{
+			SPSprite log = SPSprite.cons_sprite_texkey_texrect(
+				RTex.BG_NVILLAGE_SPRITESHEET,
+				FileCache.inst().get_texrect(RTex.BG_NVILLAGE_SPRITESHEET,"step_log.png")
+				);
+			log.set_manual_sort_z_order(GameAnchorZ.BGVillage_Docks_Front);
+			log.set_anchor_point(0.5f,0);
+			log.set_u_pos(0,-194);
+			log.set_u_z(-256);
+			log.set_scale(1.5f);
+			log.set_name("jumping_log_1");
+			_root.add_child(log);
+		}
+	}
 	
 	public List<Villager> get_villagers() {
 		return _villagers;
