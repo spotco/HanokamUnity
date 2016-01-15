@@ -103,10 +103,10 @@ public class PlayerCharacter : SPGameUpdateable, SPHitPolyOwner, SPNodeHierarchy
 		
 		return this;
 	}
+	
+	public PlayerCharacter set_layer(string layer) { _img.set_layer(layer); return this; }
 
-	public void set_streak_enabled(bool val) {
-		_streak_tar_alpha = val?1:0;
-	}
+	public void set_streak_enabled(bool val) { _streak_tar_alpha = val?1:0; }
 	public void show_waterdash_for(float val) {
 		_waterdash_active_ct = val;
 	}
@@ -115,15 +115,14 @@ public class PlayerCharacter : SPGameUpdateable, SPHitPolyOwner, SPNodeHierarchy
 		_trail.set_rotation(angle);
 	}
 	
-	public void add_to_parent(SPNode parent) {
-		parent.add_child(_root);
-	}
+	public void add_to_parent(SPNode parent) { parent.add_child(_root); }
 
 	public PlayerCharacter set_manual_sort_z_order(int val) { _img.set_manual_sort_z_order(val); return this; }
 	public float _u_x { get { return _root._u_x; } set { this.set_u_pos(value,this._u_y); } }
 	public float _u_y { get { return _root._u_y; } set { this.set_u_pos(this._u_x,value); } }
 	public Vector2 get_u_pos() { return _root.get_u_pos(); }
 	public PlayerCharacter set_u_pos(float x, float y) { _root.set_u_pos(x,y); return this; }
+	public PlayerCharacter set_u_z(float z) { _root.set_u_z(z); return this; }
 	public PlayerCharacter set_scale_x(float val) { _img.set_img_scale_x(val); return this; }
 	public float scale_x() { return _img.img_scale_x(); }
 	public float rotation() { return _img._rendered_img.rotation(); }

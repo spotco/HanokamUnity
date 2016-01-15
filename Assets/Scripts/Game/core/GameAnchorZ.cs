@@ -23,6 +23,7 @@ public class GameAnchorZ {
 
 	public const int Player_UnderWater = 155;
 	
+	public const int Player_Ground_InFrontOf_Docks_Front = 151;
 	public const int BGVillage_Docks_Front = 150;
 	public const int Player_InAir = 149;
 	public const int Player_FX = 148;

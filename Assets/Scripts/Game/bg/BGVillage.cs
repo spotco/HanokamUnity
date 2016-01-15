@@ -251,32 +251,27 @@ public class BGVillage : SPGameUpdateable, SPNodeHierarchyElement {
 		return this;
 	}
 	
+	public Vector3 jump_log0_position() { return new Vector3(0,-196,-40); }
+	public Vector3 jump_log1_position() { return new Vector3(0,-194,-248); }
+	
+	public List<BGVillageJumpLog> _jump_logs = new List<BGVillageJumpLog>();
+	
 	private void setup_jumping_logs() {
 		{
-			SPSprite log = SPSprite.cons_sprite_texkey_texrect(
-				RTex.BG_NVILLAGE_SPRITESHEET,
-				FileCache.inst().get_texrect(RTex.BG_NVILLAGE_SPRITESHEET,"step_log.png")
-			);
-			log.set_manual_sort_z_order(GameAnchorZ.BGVillage_Docks_Front);
-			log.set_anchor_point(0.5f,0);
-			log.set_u_pos(0,-196);
-			log.set_u_z(-40);
-			log.set_scale(1.5f);
+			BGVillageJumpLog log = BGVillageJumpLog.cons();
+			log.set_position(this.jump_log0_position());
+			log.set_scale(1.0f);
 			log.set_name("jumping_log_0");
-			_root.add_child(log);
+			log.add_to_parent(_root);
+			_jump_logs.Add(log);
 		}
 		{
-			SPSprite log = SPSprite.cons_sprite_texkey_texrect(
-				RTex.BG_NVILLAGE_SPRITESHEET,
-				FileCache.inst().get_texrect(RTex.BG_NVILLAGE_SPRITESHEET,"step_log.png")
-				);
-			log.set_manual_sort_z_order(GameAnchorZ.BGVillage_Docks_Front);
-			log.set_anchor_point(0.5f,0);
-			log.set_u_pos(0,-194);
-			log.set_u_z(-256);
+			BGVillageJumpLog log = BGVillageJumpLog.cons();
+			log.set_position(this.jump_log1_position());
 			log.set_scale(1.5f);
 			log.set_name("jumping_log_1");
-			_root.add_child(log);
+			log.add_to_parent(_root);
+			_jump_logs.Add(log);
 		}
 	}
 	
@@ -395,6 +390,11 @@ public class BGVillage : SPGameUpdateable, SPNodeHierarchyElement {
 				_reflection_sprites[i].set_layer(RLayer.SURFACEREFLECTION_ONLY);
 			}
 		}
+		
+		for (int i = 0; i < _jump_logs.Count; i++) {
+			_jump_logs[i].i_update();
+		}
+		
 	}
 	
 	private bool is_above_water(GameEngineScene g) {

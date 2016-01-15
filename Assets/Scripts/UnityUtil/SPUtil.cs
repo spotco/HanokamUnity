@@ -155,6 +155,17 @@ public class SPUtil {
 		float delta = (to - start) * y;
 		return start + delta;
 	}
+	public static Vector3 drpt_vec(Vector3 start, Vector3 to, float fric) {
+		float dist = Vector3.Distance(start,to);
+		if (dist > 0) {
+			Vector3 dir = SPUtil.vec_sub(to,start).normalized;
+			float neu_dist = SPUtil.drpt(dist,0,fric);
+			return SPUtil.vec_add(start,SPUtil.vec_scale(dir,dist-neu_dist));
+		} else {
+			return to;
+		}
+	}
+	
 	public static float drpty(float fric) {
 		// y = e ^ (-a * timescale)
 		fric = 1 - fric;

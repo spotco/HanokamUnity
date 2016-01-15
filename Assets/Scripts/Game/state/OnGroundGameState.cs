@@ -44,6 +44,9 @@ public class OnGroundGameState : GameStateBase {
 		g._bg_water.set_u_pos(0, 0);
 		g._bg_sky.set_y_offset(0);
 		
+		g._player.set_layer(RLayer.REFLECTION_SURFACE_CHARACTER);
+		g._player.set_manual_sort_z_order(GameAnchorZ.Player_Ground);
+		
 		_villager_manager = VillagerManager.cons(g);
 		return this;
 	}
@@ -99,6 +102,7 @@ public class OnGroundGameState : GameStateBase {
 		case Mode.DiveAnim:{
 			_params._dive_anim_controller.i_update(g,this);
 			if (_params._dive_anim_controller.is_finished_and_should_transition_to_divestate()) {
+				_params._dive_anim_controller.finish_dive_anim(g,this);
 				g.pop_top_game_state();
 				g.push_game_state(DiveGameState.cons(g));
 				g._camerac.camera_shake(new Vector2(-1.7f,2.1f),80,400, 1/100.0f);
