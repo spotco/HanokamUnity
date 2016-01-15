@@ -149,6 +149,9 @@ public class PlayerCharacter : SPGameUpdateable, SPHitPolyOwner, SPNodeHierarchy
 		_img.p_play_anim(anim, repeat); 
 		return this; 
 	}
+	public bool is_anim_finished() {
+		return _img.current_anim_finished();
+	}
 	
 	public void i_update(GameEngineScene g) {
 		_img.i_update();

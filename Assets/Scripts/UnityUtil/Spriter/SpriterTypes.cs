@@ -29,11 +29,18 @@ public class TGSpriterObjectRef {
 
 [ProtoContract]
 public class TGSpriterMainlineKey {
+
+	public enum CurveType {
+		QUINTIC = 0,
+		INSTANT = 1
+	}
+
 	[ProtoMember(1)] public int _start_time;
 	[ProtoMember(2)] public long _hash;
 	[ProtoMember(3)] public string _hashtest = "";
 	[ProtoMember(4)] public List<TGSpriterObjectRef> _bone_refs = new List<TGSpriterObjectRef>();
 	[ProtoMember(5)] public List<TGSpriterObjectRef> _object_refs = new List<TGSpriterObjectRef>();
+	[ProtoMember(6)] public CurveType _curve_type;
 
 	public TGSpriterObjectRef nth_bone_ref(int i) {
 		return _bone_refs[i];

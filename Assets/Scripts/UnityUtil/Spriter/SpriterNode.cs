@@ -155,9 +155,10 @@ public class SpriterNode : SPNode, CameraRenderHookDelegate {
 		_anim_duration = (int)_data.anim_of_name(anim_name)._duration;
 		_repeat_anim = repeat;
 		_anim_finished = false;
-
-		this.update_mainline_keyframes();
-		this.update_timeline_keyframes();
+	
+		bool should_instant_curve;
+		this.update_mainline_keyframes(out should_instant_curve);
+		this.update_timeline_keyframes(should_instant_curve);
 	}
 
 	public void i_update() {
@@ -176,12 +177,9 @@ public class SpriterNode : SPNode, CameraRenderHookDelegate {
 				}
 			}
 		}
-		//Profiler.BeginSample("update_mainline_keyframes");
-		this.update_mainline_keyframes();
-		//Profiler.EndSample();
-		//Profiler.BeginSample("update_timeline_keyframes");
-		this.update_timeline_keyframes();
-		//Profiler.EndSample();
+		bool should_instant_curve;
+		this.update_mainline_keyframes(out should_instant_curve);
+		this.update_timeline_keyframes(should_instant_curve);
 	}
 	
 	private float _anim_playback_speed_mult = 1;
@@ -203,41 +201,40 @@ public class SpriterNode : SPNode, CameraRenderHookDelegate {
 		return t;
 	}
 
-	private void update_timeline_keyframes() {
-		//Profiler.BeginSample("update_timeline_keyframes_bones");
+	private void update_timeline_keyframes(bool should_instant_curve) {
 		for (int i = 0; i < _bones.key_itr().Count; i++) {
 			int itr = _bones.key_itr()[i];
 			SPNode_Bone itr_bone = _bones[itr];
 			TGSpriterTimeLine timeline = _data.anim_of_name(_current_playing_anim).timeline_key_of_id(itr_bone._timeline_id);
 			TGSpriterTimelineKey keyframe_current = timeline.key_for_time(_current_anim_time);
-			TGSpriterTimelineKey keyframe_next = timeline.next_key_for_time(_current_anim_time);
 
-			float t = get_t_for_keyframes(keyframe_current, keyframe_next, _current_anim_time, _anim_duration, _repeat_anim);
-			//Profiler.BeginSample("update_timeline_keyframes_bones-interp");
-			this.interpolate(itr_bone,keyframe_current,keyframe_next,t);
-			//Profiler.EndSample();
+			if (should_instant_curve) {
+				this.node_timelinekey_set_imm(itr_bone,keyframe_current);
+			} else {
+				TGSpriterTimelineKey keyframe_next = timeline.next_key_for_time(_current_anim_time);
+				float t = get_t_for_keyframes(keyframe_current, keyframe_next, _current_anim_time, _anim_duration, _repeat_anim);
+				this.interpolate(itr_bone,keyframe_current,keyframe_next,t);
+			}
 		}
-		//Profiler.EndSample();
-		//Profiler.BeginSample("update_timeline_keyframes_objs");
 		for (int i = 0; i < _objs.key_itr().Count; i++) {
 			int itr = _objs.key_itr()[i];
 			SPSprite_Object itr_obj = _objs[itr];
 			TGSpriterTimeLine timeline = _data.anim_of_name(_current_playing_anim).timeline_key_of_id(itr_obj._timeline_id);
 
 			TGSpriterTimelineKey keyframe_current = timeline.key_for_time(_current_anim_time);
-			TGSpriterTimelineKey keyframe_next = timeline.next_key_for_time(_current_anim_time);
-			
-			float t = get_t_for_keyframes(keyframe_current, keyframe_next, _current_anim_time, _anim_duration, _repeat_anim);
-			//Profiler.BeginSample("update_timeline_keyframes_objs-interp");
-			this.interpolate(itr_obj,keyframe_current,keyframe_next,t);
-			//Profiler.EndSample();
+			if (should_instant_curve) {
+				this.node_timelinekey_set_imm(itr_obj,keyframe_current);
+			} else {
+				TGSpriterTimelineKey keyframe_next = timeline.next_key_for_time(_current_anim_time);
+				float t = get_t_for_keyframes(keyframe_current, keyframe_next, _current_anim_time, _anim_duration, _repeat_anim);
+				this.interpolate(itr_obj,keyframe_current,keyframe_next,t);
+			}
 
 			TGSpriterFile file = _data.file_for_folderid(keyframe_current._folder,keyframe_current._file);
 			itr_obj.set_texkey(file._texkey);
 			itr_obj.set_tex_rect(file._rect);
 			itr_obj.set_manual_sort_z_order(_sort_z + itr_obj._zindex);
 		}
-		//Profiler.EndSample();
 	}
 
 	private Vector2 get_root_chain_scale(SPNode tar) {
@@ -256,16 +253,8 @@ public class SpriterNode : SPNode, CameraRenderHookDelegate {
 
 	private void interpolate(SPNode node, TGSpriterTimelineKey from, TGSpriterTimelineKey to, float t) {
 		Vector2 rcs = this.get_root_chain_scale(node);
-		/*
-		node.set_u_pos(SpriterUtil.scubic_interp(from._position.x/rcs.x,to._position.x/rcs.x,t),SpriterUtil.scubic_interp(from._position.y/rcs.y,to._position.y/rcs.y,t));
-		node.set_rotation(SpriterUtil.scubic_angular_interp(from._rotation,to._rotation,t));
-		node.set_scale_x(SpriterUtil.scubic_interp(from._scaleX,to._scaleX,t));
-		node.set_scale_y(SpriterUtil.scubic_interp(from._scaleY,to._scaleY,t));
-		node.set_opacity(SpriterUtil.scubic_interp(from._alpha,to._alpha,t));
-		node.set_anchor_point(SpriterUtil.scubic_interp(from._anchorPoint.x,to._anchorPoint.x,t),SpriterUtil.scubic_interp(from._anchorPoint.y,to._anchorPoint.y,t));
-		*/
 
-		//inlined for ~x2 performance
+		//inlined for performance
 		float __il_t = SpriterUtil.scubic_interp(0,1,t);
 		
 		float __from_pos_x = from._position.x/rcs.x;
@@ -286,8 +275,16 @@ public class SpriterNode : SPNode, CameraRenderHookDelegate {
 			from._anchorPoint.y + (to._anchorPoint.y - from._anchorPoint.y) * __il_t
 		);
 	}
+	private void node_timelinekey_set_imm(SPNode node, TGSpriterTimelineKey from) {
+		node.set_u_pos(from._position.x,from._position.y);
+		node.set_rotation(from._rotation);
+		node.set_scale_x(from._scaleX);
+		node.set_scale_y(from._scaleY);
+		node.set_opacity(from._alpha);
+		node.set_anchor_point(from._anchorPoint.x,from._anchorPoint.y);
+	}
 
-	private void update_mainline_keyframes() {
+	private void update_mainline_keyframes(out bool should_instant_curve) {
 		TGSpriterAnimation anim = _data.anim_of_name(_current_playing_anim);
 		TGSpriterMainlineKey mainline_key = null;
 		for (int i = 0; i < anim._mainline_keys.Count; i++) {
@@ -296,12 +293,16 @@ public class SpriterNode : SPNode, CameraRenderHookDelegate {
 			}
 			mainline_key = anim.nth_mainline_key(i);
 		}
-		if (mainline_key == null) return;
+		if (mainline_key == null) {
+			should_instant_curve = false;
+			return;
+		}
 		if (_last_bone_structure_hash != mainline_key._hash) {
 			this.make_bone_hierarchy(mainline_key);
 			this.attach_objects_to_bone_hierarchy(mainline_key);
 			_last_bone_structure_hash = mainline_key._hash;
 		}
+		should_instant_curve = mainline_key._curve_type == TGSpriterMainlineKey.CurveType.INSTANT;
 	}
 
 	private List<int> __unadded_bones = new List<int>();

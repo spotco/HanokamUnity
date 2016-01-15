@@ -157,6 +157,7 @@ public class SpriterData  {
 		}
 		mainline_key._hash = SPUtil.md5(hash.ToString());
 		mainline_key._start_time = itr_key.get_int("time");
+		mainline_key._curve_type = itr_key.get_str("curve_type","quintic") == "instant" ? TGSpriterMainlineKey.CurveType.INSTANT : TGSpriterMainlineKey.CurveType.QUINTIC;
 		spriter_animation._mainline_keys.Add(mainline_key);
 	}
 
