@@ -49,16 +49,18 @@ public class BGVillageJumpLog : SPNodeHierarchyElement {
 	}
 	
 	public void i_update() {
+		/*
 		_bob_vertical_theta += SPUtil.dt_scale_get() * 0.05f;
 		_bob_leftright_theta += SPUtil.dt_scale_get() * 0.04f;
 		
-		_offset = SPUtil.drpt_vec(_offset,Vector3.zero,1/20.0f);
+		_offset = SPUtil.drpt_vec(_offset,Vector3.zero,1/20 re.0f);
 		
 		this.apply_position(
 			SPUtil.vec_add(_offset,
 			SPUtil.vec_add(_position,new Vector3(0,Mathf.Sin(_bob_vertical_theta)*3,0)))
 		);
 		_log.set_rotation(Mathf.Sin(_bob_leftright_theta)*1.5f);
+		*/
 		
 	}
 

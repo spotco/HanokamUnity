@@ -60,22 +60,20 @@ public class OnGroundDiveAnimController : OnGroundStateUpdateable {
 			g._camerac.set_target_zoom(800);
 			g._camerac.set_target_camera_focus_on_character(g,0,180);
 		
-			Vector3 tar_pt = SPUtil.vec_add(g._bg_village.jump_log0_position(),new Vector3(0,0,0));
-			Vector3 ctrl_pt_1 = new Vector3(_anim_initial_position.x,_anim_initial_position.y,(tar_pt.z-_anim_initial_position.z)*0.5f+_anim_initial_position.z);
-			ctrl_pt_1 = SPUtil.vec_add(ctrl_pt_1,new Vector3(0,50,0));
+			Vector3 tar_pt = SPUtil.vec_add(g._bg_village.jump_log2_position(),new Vector3(0,20,0));
+			Vector3 ctrl_pt_1 = SPUtil.vec_add(new Vector3(_anim_initial_position.x,tar_pt.y,(tar_pt.z-_anim_initial_position.z)*0.5f+_anim_initial_position.z),new Vector3(0,0,0));
 			
 			float prev_anim_t = _anim_t;
-			_anim_t = Mathf.Clamp(_anim_t+SPUtil.sec_to_tick(0.75f) * SPUtil.dt_scale_get(),0,1);
+			_anim_t = Mathf.Clamp(_anim_t+SPUtil.sec_to_tick(1f) * SPUtil.dt_scale_get(),0,1);
 			_player_position = SPUtil.bezier_val_for_t(_anim_initial_position,ctrl_pt_1,ctrl_pt_1,tar_pt,_anim_t);
 			
-			float flip_start_pct = 0.35f;
-			if (prev_anim_t < flip_start_pct && _anim_t >= flip_start_pct) {
+			if (prev_anim_t < 0.8f && _anim_t >= 0.8f) {
 				g._player.play_anim(PlayerCharacterAnims.DIVE_FLIP_AND_JUMP,false);
 			}
 			if (_anim_t >= 1) {
 				_current_mode = Mode.JUMP_LOG0_TO_LOG1;
 				_anim_initial_position = tar_pt;
-				_anim_t = 0;
+				_anim_t = 0.05f;
 				g._bg_village._jump_logs[0].apply_offset();
 			}
 			
@@ -84,10 +82,10 @@ public class OnGroundDiveAnimController : OnGroundStateUpdateable {
 			g._camerac.set_target_zoom(950);
 			g._camerac.set_target_camera_focus_on_character(g,0,200);
 		
-			Vector3 tar_pt = SPUtil.vec_add(g._bg_village.jump_log1_position(),new Vector3(0,0,0));
+			Vector3 tar_pt = SPUtil.vec_add(g._bg_village.jump_log3_position(),new Vector3(0,0,0));
 			Vector3 ctrl_pt_1 = new Vector3(
 				_anim_initial_position.x,
-				_anim_initial_position.y + 350,
+				_anim_initial_position.y + 150,
 				(tar_pt.z-_anim_initial_position.z)*0.5f+_anim_initial_position.z);
 			
 			float prev_anim_t = _anim_t;
@@ -115,7 +113,7 @@ public class OnGroundDiveAnimController : OnGroundStateUpdateable {
 		case Mode.JUMP_LOG1: {
 
 			
-			Vector3 tar_pt = SPUtil.vec_add(g._bg_village.jump_log1_position(),new Vector3(0,-100,-20));
+			Vector3 tar_pt = SPUtil.vec_add(g._bg_village.jump_log3_position(),new Vector3(0,-100,-20));
 			Vector3 ctrl_pt_1 = new Vector3(
 				_anim_initial_position.x,
 				_anim_initial_position.y + 500,

@@ -251,8 +251,10 @@ public class BGVillage : SPGameUpdateable, SPNodeHierarchyElement {
 		return this;
 	}
 	
-	public Vector3 jump_log0_position() { return new Vector3(0,-196,-40); }
-	public Vector3 jump_log1_position() { return new Vector3(0,-194,-248); }
+	public Vector3 jump_log0_position() { return new Vector3(0,-129,-8.5f); }
+	public Vector3 jump_log1_position() { return new Vector3(0,-152.9f,-88); }
+	public Vector3 jump_log2_position() { return new Vector3(0,-175.5f,-169.4f); }
+	public Vector3 jump_log3_position() { return new Vector3(0,-194,-274.7f); }
 	
 	public List<BGVillageJumpLog> _jump_logs = new List<BGVillageJumpLog>();
 	
@@ -268,8 +270,24 @@ public class BGVillage : SPGameUpdateable, SPNodeHierarchyElement {
 		{
 			BGVillageJumpLog log = BGVillageJumpLog.cons();
 			log.set_position(this.jump_log1_position());
-			log.set_scale(1.5f);
+			log.set_scale(1.15f);
 			log.set_name("jumping_log_1");
+			log.add_to_parent(_root);
+			_jump_logs.Add(log);
+		}
+		{
+			BGVillageJumpLog log = BGVillageJumpLog.cons();
+			log.set_position(this.jump_log2_position());
+			log.set_scale(1.35f);
+			log.set_name("jumping_log_2");
+			log.add_to_parent(_root);
+			_jump_logs.Add(log);
+		}
+		{
+			BGVillageJumpLog log = BGVillageJumpLog.cons();
+			log.set_position(this.jump_log3_position());
+			log.set_scale(1.5f);
+			log.set_name("jumping_log_3");
 			log.add_to_parent(_root);
 			_jump_logs.Add(log);
 		}
