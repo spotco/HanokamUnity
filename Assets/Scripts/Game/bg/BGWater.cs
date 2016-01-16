@@ -18,9 +18,7 @@ public class BGWater : SPGameUpdateable, CameraRenderHookDelegate, SPNodeHierarc
 	
 	private float _y_offset_in;
 
-	private List<SPParallaxScrollSprite> _underwater_scroll_elements;
-	
-
+	private List<SPParallaxScrollSprite> _underwater_scroll_elements = new List<SPParallaxScrollSprite>();
 	
 	public static BGWater cons(GameEngineScene g) {
 		return (new BGWater()).i_cons(g);
@@ -91,57 +89,66 @@ public class BGWater : SPGameUpdateable, CameraRenderHookDelegate, SPNodeHierarc
 		_offset_root.add_child(_surf_ele_1);
 
 		// ----
+		{
+			SPParallaxScrollSprite front_cliff = SPParallaxScrollSprite.cons(
+				RTex.BG_NUNDERWATER_BG_2,
+				FileCache.inst().get_texrect(RTex.BG_NUNDERWATER_BG_2,"underwater_bg_front_cliff.png"),
+				new Vector2(2.25f,2.25f),
+				new Vector3(0,0,300)
+			);
+			front_cliff.set_uv_y_size(0.75f);
+			front_cliff._img.set_manual_sort_z_order(GameAnchorZ.BGWater_BG_ELE1);
+			front_cliff._img.set_name("front_cliff");
+			front_cliff._img.gameObject.layer = RLayer.get_layer(RLayer.UNDERWATER_ELEMENTS);
+			_underwater_scroll_elements.Add(front_cliff);
+			_root.add_child(front_cliff._img);
+		}
 		
-		SPParallaxScrollSprite back_cliff_left = SPParallaxScrollSprite.cons(
-			RTex.BG_NUNDERWATER_BG_2,
-			FileCache.inst().get_texrect(RTex.BG_NUNDERWATER_BG_2,"underwater_bg_front_cliff.png"),
-			new Vector2(1.5f,1.5f),
-			new Vector3(0,0,300)
-		);
-		back_cliff_left.set_uv_y_size(2.5f);
-		back_cliff_left._img.set_manual_sort_z_order(GameAnchorZ.BGWater_BG_ELE1);
-		back_cliff_left._img.set_name("back_cliff_left");
-		back_cliff_left._img.gameObject.layer = RLayer.get_layer(RLayer.UNDERWATER_ELEMENTS);
-		_root.add_child(back_cliff_left._img);
+		{
+			SPParallaxScrollSprite underwater_bg_mid_cliff = SPParallaxScrollSprite.cons(
+				RTex.BG_NUNDERWATER_BG_2,
+				FileCache.inst().get_texrect(RTex.BG_NUNDERWATER_BG_2,"underwater_bg_mid_cliff.png"),
+				new Vector2(2.8f,2.8f),
+				new Vector3(0,0,750)
+			);
+			underwater_bg_mid_cliff.set_uv_y_size(0.75f);
+			underwater_bg_mid_cliff._img.set_manual_sort_z_order(GameAnchorZ.BGWater_BG_ELE2);
+			underwater_bg_mid_cliff._img.set_name("underwater_bg_mid_cliff");
+			underwater_bg_mid_cliff._img.gameObject.layer = RLayer.get_layer(RLayer.UNDERWATER_ELEMENTS);
+			_underwater_scroll_elements.Add(underwater_bg_mid_cliff);
+			_root.add_child(underwater_bg_mid_cliff._img);
+		}
 		
-		SPParallaxScrollSprite underwater_bg_mid_cliff = SPParallaxScrollSprite.cons(
-			RTex.BG_NUNDERWATER_BG_2,
-			FileCache.inst().get_texrect(RTex.BG_NUNDERWATER_BG_2,"underwater_bg_mid_cliff.png"),
-			new Vector2(1.75f,1.75f),
-			new Vector3(0,0,750)
-		);
-		underwater_bg_mid_cliff.set_uv_y_size(2.5f);
-		underwater_bg_mid_cliff._img.set_manual_sort_z_order(GameAnchorZ.BGWater_BG_ELE2);
-		underwater_bg_mid_cliff._img.set_name("underwater_bg_mid_cliff");
-		underwater_bg_mid_cliff._img.gameObject.layer = RLayer.get_layer(RLayer.UNDERWATER_ELEMENTS);
-		_root.add_child(underwater_bg_mid_cliff._img);
+		{
+			SPParallaxScrollSprite underwater_bg_far_1 = SPParallaxScrollSprite.cons(
+				RTex.BG_NUNDERWATER_BG_1,
+				FileCache.inst().get_texrect(RTex.BG_NUNDERWATER_BG_1,"underwater_bg_far_1.png"),
+				new Vector2(4f,4f),
+				new Vector3(0,0,1700)
+			);
+			underwater_bg_far_1.set_uv_y_size(1f);
+			underwater_bg_far_1._img.set_manual_sort_z_order(GameAnchorZ.BGWater_BG_ELE3);
+			underwater_bg_far_1._img.set_name("underwater_bg_far_1");
+			underwater_bg_far_1._img.gameObject.layer = RLayer.get_layer(RLayer.UNDERWATER_ELEMENTS);
+			_underwater_scroll_elements.Add(underwater_bg_far_1);
+			_root.add_child(underwater_bg_far_1._img);
+		}
 		
-		SPParallaxScrollSprite underwater_bg_far_1 = SPParallaxScrollSprite.cons(
-			RTex.BG_NUNDERWATER_BG_1,
-			FileCache.inst().get_texrect(RTex.BG_NUNDERWATER_BG_1,"underwater_bg_far_1.png"),
-			new Vector2(2.5f,2.5f),
-			new Vector3(0,0,1700)
-		);
-		underwater_bg_far_1.set_uv_y_size(3f);
-		underwater_bg_far_1._img.set_manual_sort_z_order(GameAnchorZ.BGWater_BG_ELE3);
-		underwater_bg_far_1._img.set_name("underwater_bg_far_1");
-		underwater_bg_far_1._img.gameObject.layer = RLayer.get_layer(RLayer.UNDERWATER_ELEMENTS);
-		_root.add_child(underwater_bg_far_1._img);
-
-		SPParallaxScrollSprite underwater_bg_far_2 = SPParallaxScrollSprite.cons(
-			RTex.BG_NUNDERWATER_BG_1,
-			FileCache.inst().get_texrect(RTex.BG_NUNDERWATER_BG_1,"underwater_bg_far_2.png"),
-			new Vector2(3f,3f),
-			new Vector3(0,0,2500)
-		);
-		underwater_bg_far_2.set_uv_y_size(3f);
-		underwater_bg_far_2._img.set_manual_sort_z_order(GameAnchorZ.BGWater_BG_ELE4);
-		underwater_bg_far_2._img.set_name("underwater_bg_far_2");
-		underwater_bg_far_2._img.gameObject.layer = RLayer.get_layer(RLayer.UNDERWATER_ELEMENTS);
-		_root.add_child(underwater_bg_far_2._img);
+		{
+			SPParallaxScrollSprite underwater_bg_far_2 = SPParallaxScrollSprite.cons(
+				RTex.BG_NUNDERWATER_BG_1,
+				FileCache.inst().get_texrect(RTex.BG_NUNDERWATER_BG_1,"underwater_bg_far_2.png"),
+				new Vector2(5f,5f),
+				new Vector3(0,0,2500)
+			);
+			underwater_bg_far_2.set_uv_y_size(0.8f);
+			underwater_bg_far_2._img.set_manual_sort_z_order(GameAnchorZ.BGWater_BG_ELE4);
+			underwater_bg_far_2._img.set_name("underwater_bg_far_2");
+			underwater_bg_far_2._img.gameObject.layer = RLayer.get_layer(RLayer.UNDERWATER_ELEMENTS);
+			_underwater_scroll_elements.Add(underwater_bg_far_2);
+			_root.add_child(underwater_bg_far_2._img);
+		}
 		
-
-		_underwater_scroll_elements = new List<SPParallaxScrollSprite>() { back_cliff_left, underwater_bg_mid_cliff, underwater_bg_far_1, underwater_bg_far_2 };
 		// -------
 
 		_top_fade = SPSprite.cons_sprite_texkey_texrect(

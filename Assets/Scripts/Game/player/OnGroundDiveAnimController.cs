@@ -8,7 +8,6 @@ public class OnGroundDiveAnimController : OnGroundStateUpdateable {
 	private enum Mode {
 		RUN_FORWARD_PREPARE,
 		RUN_FORWARD,
-		JUMP_LOG0_TO_LOG1,
 		JUMP_LOG1,
 		DO_TRANSITION
 	}
@@ -47,7 +46,7 @@ public class OnGroundDiveAnimController : OnGroundStateUpdateable {
 			
 			if (g._player.is_anim_finished()) {
 				_delay_ct+=SPUtil.dt_scale_get();
-				if (_delay_ct > 25) {
+				if (_delay_ct > 15) {
 					g._player.play_anim(PlayerCharacterAnims.DIVE_RUN_FORWARD);
 					_current_mode = Mode.RUN_FORWARD;
 					_anim_t = 0;
@@ -60,63 +59,29 @@ public class OnGroundDiveAnimController : OnGroundStateUpdateable {
 			g._camerac.set_target_zoom(800);
 			g._camerac.set_target_camera_focus_on_character(g,0,180);
 		
-			Vector3 tar_pt = SPUtil.vec_add(g._bg_village.jump_log2_position(),new Vector3(0,20,0));
+			Vector3 tar_pt = SPUtil.vec_add(g._bg_village.jump_log3_position(),new Vector3(0,35,0));
 			Vector3 ctrl_pt_1 = SPUtil.vec_add(new Vector3(_anim_initial_position.x,tar_pt.y,(tar_pt.z-_anim_initial_position.z)*0.5f+_anim_initial_position.z),new Vector3(0,0,0));
 			
 			float prev_anim_t = _anim_t;
 			_anim_t = Mathf.Clamp(_anim_t+SPUtil.sec_to_tick(1f) * SPUtil.dt_scale_get(),0,1);
 			_player_position = SPUtil.bezier_val_for_t(_anim_initial_position,ctrl_pt_1,ctrl_pt_1,tar_pt,_anim_t);
 			
-			if (prev_anim_t < 0.8f && _anim_t >= 0.8f) {
+			if (prev_anim_t < 0.6f && _anim_t >= 0.6f) {
 				g._player.play_anim(PlayerCharacterAnims.DIVE_FLIP_AND_JUMP,false);
 			}
 			if (_anim_t >= 1) {
-				_current_mode = Mode.JUMP_LOG0_TO_LOG1;
+				_current_mode = Mode.JUMP_LOG1;
 				_anim_initial_position = tar_pt;
-				_anim_t = 0.05f;
+				_anim_t = 0;
 				g._bg_village._jump_logs[0].apply_offset();
 			}
 			
 		} break;
-		case Mode.JUMP_LOG0_TO_LOG1: {
-			g._camerac.set_target_zoom(950);
-			g._camerac.set_target_camera_focus_on_character(g,0,200);
-		
-			Vector3 tar_pt = SPUtil.vec_add(g._bg_village.jump_log3_position(),new Vector3(0,0,0));
-			Vector3 ctrl_pt_1 = new Vector3(
-				_anim_initial_position.x,
-				_anim_initial_position.y + 150,
-				(tar_pt.z-_anim_initial_position.z)*0.5f+_anim_initial_position.z);
-			
-			float prev_anim_t = _anim_t;
-			_anim_t = Mathf.Clamp(_anim_t+SPUtil.sec_to_tick(1.25f) * SPUtil.dt_scale_get(),0,1);
-			_player_position = SPUtil.bezier_val_for_t(_anim_initial_position,ctrl_pt_1,ctrl_pt_1,tar_pt,_anim_t);
-			
-			if (_anim_t < 0.85f) {
-				if (g._player.is_anim_finished()) {
-					g._player.play_anim(PlayerCharacterAnims.DIVE_FORWARD_SPIN);
-				}
-			} else {
-				if (prev_anim_t < 0.85f) {
-					g._player.play_anim(PlayerCharacterAnims.DIVE_FLIP_AND_JUMP,false);
-				}
-			}
-			
-			if (_anim_t >= 1) {
-				_current_mode = Mode.JUMP_LOG1;
-				_anim_t = 0;
-				_anim_initial_position = tar_pt;
-				g._bg_village._jump_logs[1].apply_offset();
-			}
-			
-		} break;
-		case Mode.JUMP_LOG1: {
-
-			
+		case Mode.JUMP_LOG1: {			
 			Vector3 tar_pt = SPUtil.vec_add(g._bg_village.jump_log3_position(),new Vector3(0,-100,-20));
 			Vector3 ctrl_pt_1 = new Vector3(
 				_anim_initial_position.x,
-				_anim_initial_position.y + 500,
+				_anim_initial_position.y + 400,
 				(tar_pt.z-_anim_initial_position.z)*0.5f+_anim_initial_position.z);
 			
 			float prev_anim_t = _anim_t;

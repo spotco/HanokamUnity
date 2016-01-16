@@ -68,9 +68,9 @@ public class GameEngineScene : SPScene {
 		_root.add_child(_particle_root);
 		_particles = SPParticleSystem<SPGameEngineParticle>.cons();
 		
-		this.push_game_state(OnGroundGameState.cons(this));
+		//this.push_game_state(OnGroundGameState.cons(this));
 		//this.push_game_state(InAirGameState.cons(this));
-		//this.push_game_state(DiveGameState.cons(this));
+		this.push_game_state(DiveGameState.cons(this));
 		
 		return this;
 	}
