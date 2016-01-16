@@ -22,7 +22,8 @@ public class BGWaterLineBelow : SPGameUpdateable {
 		);
 		_waterline.set_anchor_point(0.5f,0.0f);
 		_waterline.set_u_pos(0,13);
-		_waterline.set_scale(2.5f);
+		_waterline.set_scale_x(4);
+		_waterline.set_scale_y(2);
 		_waterline.set_name("_waterline");
 		_waterline.set_opacity(1.0f);
 		_waterline.set_manual_sort_z_order(GameAnchorZ.BGWater_WaterLineBelow_Line);
@@ -34,7 +35,7 @@ public class BGWaterLineBelow : SPGameUpdateable {
 		);
 		_watergrad.set_anchor_point(0.5f,1.0f);
 		_watergrad.set_u_pos(0,55);
-		_watergrad.set_scale_x(83.3f);
+		_watergrad.set_scale_x(150);
 		_watergrad.set_scale_y(3.3f);
 		_watergrad.set_name("_watergrad");
 		_watergrad.set_manual_sort_z_order(GameAnchorZ.BGWater_WaterLineBelow_Grad);

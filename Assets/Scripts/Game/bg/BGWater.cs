@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-public class BGWater : SPGameUpdateable, CameraRenderHookDelegate, SPNodeHierarchyElement {
+public class BGWater : SPGameUpdateable, SPNodeHierarchyElement {
 
 	private SPNode _root;
 	public void set_u_pos(float x, float y) { _root.set_u_pos(x,y); }
@@ -164,7 +164,7 @@ public class BGWater : SPGameUpdateable, CameraRenderHookDelegate, SPNodeHierarc
 		_offset_root.add_child(_top_fade);
 
 		_surface_gradient = SPSprite.cons_sprite_texkey_texrect(
-			RTex.BG_UNDERWATER_SURFACE_GRADIENT,
+			RTex.BG_TILE_SKY,
 			new Rect(0,0,SPUtil.get_horiz_world_bounds()._max-SPUtil.get_horiz_world_bounds()._min,256));
 		_surface_gradient.set_manual_sort_z_order(GameAnchorZ.BGWater_SurfaceGradient);
 		_surface_gradient.set_name("_surface_gradient");
@@ -173,23 +173,33 @@ public class BGWater : SPGameUpdateable, CameraRenderHookDelegate, SPNodeHierarc
 		_surface_gradient.set_u_pos(0,-116);
 		_surface_gradient.gameObject.layer = RLayer.get_layer(RLayer.UNDERWATER_ELEMENTS);
 		_offset_root.add_child(_surface_gradient);
-
-		_surface_reflection = BGReflection.cons(_offset_root,"Default")
-			.set_name("_surface_reflection")
-			.set_scale(4.75f,4.75f)
-			.set_camera_pos(0,526,-1040)
-			.set_reflection_pos(0,473,0)
-			.set_manual_z_order(GameAnchorZ.BGWater_SurfaceReflection)
-			.add_camerarender_hook(this)
-			.set_alpha_sub(0.25f)
-			.set_opacity(0.65f)
+		
+		_surface_hills_reflection = BGReflection.cons(_offset_root,"Default",256,256)
+			.set_name("_surface_hills_reflection")
+			.set_scale(8f,8f)
+			.set_camera_pos(0,-445,-1126)
+			.set_camera_rotation(new Vector3(341,0,0))
+			.set_reflection_pos(0,164,0)
+			.set_manual_z_order(GameAnchorZ.BGVillage_BUILDINGS_BACK)
+			.set_opacity(1.0f)
+			.set_shader(RShader.DEFAULT)
+			.set_layer(RLayer.REFLECTION_BUILDINGS)
 			.manual_set_camera_cullingmask(
-				int.MaxValue
-					& ~(1 << RLayer.get_layer(RLayer.REFLECTIONS))
-					& ~(1 << RLayer.get_layer(RLayer.UNDERWATER_ELEMENTS))
-					& ~(1 << RLayer.get_layer(RLayer.SPRITER_NODE))
-					& ~(1 << RLayer.get_layer(RLayer.UI))
-			);
+				(1 << RLayer.get_layer(RLayer.REFLECTION_VILLAGE_BACK_HILLS)));
+		
+		_surface_buildings_reflection = BGReflection.cons(_offset_root,"Default",512,256)
+			.set_name("_surface_buildings_reflection")
+			.set_scale(4.8f,5.0f)
+			.set_camera_pos(0,-176,-844)
+			.set_camera_rotation(new Vector3(340.5f,0,0))
+			.set_reflection_pos(0,149,0)
+			.set_manual_z_order(GameAnchorZ.BGWater_SurfaceReflection)
+			.set_opacity(0.65f)
+			.set_shader(RShader.UNDERWATER_VIEW_SURFACE)
+			.manual_set_camera_cullingmask(
+				(1 << RLayer.get_layer(RLayer.REFLECTION_BUILDINGS)) |
+				(1 << RLayer.get_layer(RLayer.REFLECTION_SURFACE_CHARACTER)) |
+				(1 << RLayer.get_layer(RLayer.REFLECTION_SURFACE_DOCK)));
 
 		_waterlinebelow = BGWaterLineBelow.cons(_offset_root);
 		_waterlinebelow.set_u_pos(0,-168);
@@ -209,52 +219,11 @@ public class BGWater : SPGameUpdateable, CameraRenderHookDelegate, SPNodeHierarc
 		return _lake_bottom_ground.get_underwater_treasure_position();
 	}
 
-	private BGVillage _surface_reflection_bgvillage_hook_target = null;
-	private SPDict<string,Vector3> __bgvillage_hook_lpos_prev = new SPDict<string, Vector3>();
-	private SPDict<string,Vector3> __bgvillage_hook_scale_prev = new SPDict<string, Vector3>();
-	private void __bgvillage_hook_prev_record(SPNode node) {
-		__bgvillage_hook_lpos_prev[node.gameObject.name] = node.transform.localPosition;
-		__bgvillage_hook_scale_prev[node.gameObject.name] = node.transform.localScale;
-	}
-	private void __bgvillage_hook_prev_set(SPNode node) {
-		node.transform.localPosition = __bgvillage_hook_lpos_prev[node.gameObject.name];
-		node.transform.localScale = __bgvillage_hook_scale_prev[node.gameObject.name];
-	}
-
-	public void on_pre_render() {
-		if (_surface_reflection_bgvillage_hook_target == null) return;
-		// SPTODO -- underwater reflection system fix
-		/*
-		__bgvillage_hook_prev_record(_surface_reflection_bgvillage_hook_target._bldg_3);
-		__bgvillage_hook_prev_record(_surface_reflection_bgvillage_hook_target._bldg_2);
-		__bgvillage_hook_prev_record(_surface_reflection_bgvillage_hook_target._bldg_1);
-		__bgvillage_hook_prev_record(_surface_reflection_bgvillage_hook_target._docks);
-
-		_surface_reflection_bgvillage_hook_target._bldg_3.transform.localPosition = new Vector3(0,-109,0);
-		_surface_reflection_bgvillage_hook_target._bldg_3.transform.localScale = SPUtil.valv(1.5f);
-		_surface_reflection_bgvillage_hook_target._bldg_2.transform.localPosition = new Vector3(0,-164,0);
-		_surface_reflection_bgvillage_hook_target._bldg_2.transform.localScale = SPUtil.valv(1.5f);
-		_surface_reflection_bgvillage_hook_target._bldg_1.transform.localPosition = new Vector3(-275,-71,0);
-		_surface_reflection_bgvillage_hook_target._bldg_1.transform.localScale = SPUtil.valv(1.5f);
-		_surface_reflection_bgvillage_hook_target._docks.transform.localPosition = new Vector3(0,-107,0);
-		_surface_reflection_bgvillage_hook_target._docks.transform.localScale = SPUtil.valv(1.5f);
-		*/
-	}
-	public void on_post_render() {
-		if (_surface_reflection_bgvillage_hook_target == null) return;
-		/*
-		__bgvillage_hook_prev_set(_surface_reflection_bgvillage_hook_target._bldg_3);
-		__bgvillage_hook_prev_set(_surface_reflection_bgvillage_hook_target._bldg_2);
-		__bgvillage_hook_prev_set(_surface_reflection_bgvillage_hook_target._bldg_1);
-		__bgvillage_hook_prev_set(_surface_reflection_bgvillage_hook_target._docks);
-		*/
-	}
-
 	private SPSprite _surface_gradient;
-	private BGReflection _surface_reflection;
+	private BGReflection _surface_buildings_reflection;
+	private BGReflection _surface_hills_reflection;
 	
 	public void i_update(GameEngineScene g) {
-		_surface_reflection_bgvillage_hook_target = g._bg_village;
 		this.update_water_bg(g);
 
 		for (int i = 0; i < this._underwater_scroll_elements.Count; i++) {
@@ -268,9 +237,9 @@ public class BGWater : SPGameUpdateable, CameraRenderHookDelegate, SPNodeHierarc
 		}
 	}
 	
-	private bool is_underwater(GameEngineScene g) {
+	public bool is_underwater(GameEngineScene g) {
 		GameStateIdentifier cur_state = g.get_top_game_state().get_state();
-		return cur_state == GameStateIdentifier.Dive /*|| cur_state == GameStateIdentifier.DiveReturn*/;
+		return cur_state == GameStateIdentifier.Dive || cur_state == GameStateIdentifier.DiveReturn;
 	}
 
 	private void update_water_bg(GameEngineScene g) {
@@ -281,7 +250,8 @@ public class BGWater : SPGameUpdateable, CameraRenderHookDelegate, SPNodeHierarc
 			_water_bg.set_u_pos(water_bg_viewbox._x1,water_bg_viewbox._y1-1000);
 
 			_surface_gradient.set_enabled(true);
-			_surface_reflection.set_enabled(true);
+			_surface_buildings_reflection.set_enabled(true);
+			_surface_hills_reflection.set_enabled(true);
 			_waterlinebelow.set_enabled(true);
 			_waterlinebelow.i_update(g);
 
@@ -292,7 +262,8 @@ public class BGWater : SPGameUpdateable, CameraRenderHookDelegate, SPNodeHierarc
 
 		} else {
 			_surface_gradient.set_enabled(false);
-			_surface_reflection.set_enabled(false);
+			_surface_buildings_reflection.set_enabled(false);
+			_surface_hills_reflection.set_enabled(false);
 			_water_bg.set_enabled(false);
 			_waterlinebelow.set_enabled(false);
 			

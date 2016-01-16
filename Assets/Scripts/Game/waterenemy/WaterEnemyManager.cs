@@ -42,7 +42,6 @@ public class WaterEnemyManager : DiveGameStateUpdateable, GenericPooledObject {
 			FileCache.inst().get_patternfile(RPattern.GENPATTERN_1),
 			FileCache.inst().get_patternfile(RPattern.GENPATTERN_1),
 			
-			
 			//FileCache.inst().get_patternfile(RPattern.TEST_1)
 			
 		};

@@ -67,6 +67,7 @@ public class BGVillage : SPGameUpdateable, SPNodeHierarchyElement {
 			building_back_left.set_scale(2.1f);
 			building_back_left.set_anchor_point(0.5f,0);
 			building_back_left.set_name("building_back_left");
+			building_back_left.set_layer(RLayer.REFLECTION_BUILDINGS);
 			_root.add_child(building_back_left);
 		}
 		{
@@ -80,6 +81,7 @@ public class BGVillage : SPGameUpdateable, SPNodeHierarchyElement {
 			building_back_right_top.set_scale(2.1f);
 			building_back_right_top.set_anchor_point(0.5f,0);
 			building_back_right_top.set_name("neu_village_building_back_right_top");
+			building_back_right_top.set_layer(RLayer.REFLECTION_BUILDINGS);
 			_root.add_child(building_back_right_top);
 		}
 		{
@@ -93,6 +95,7 @@ public class BGVillage : SPGameUpdateable, SPNodeHierarchyElement {
 			back_flag.set_scale(1.5f);
 			back_flag.set_anchor_point(1,0.5f);
 			back_flag.set_name("back_flag");
+			back_flag.set_layer(RLayer.REFLECTION_BUILDINGS);
 			_root.add_child(back_flag);
 		}
 		
@@ -108,6 +111,7 @@ public class BGVillage : SPGameUpdateable, SPNodeHierarchyElement {
 			mid_flag.set_scale(2.2f);
 			mid_flag.set_anchor_point(1,0.5f);
 			mid_flag.set_name("mid_flag");
+			mid_flag.set_layer(RLayer.REFLECTION_BUILDINGS);
 			_root.add_child(mid_flag);
 		}
 		{
@@ -121,6 +125,7 @@ public class BGVillage : SPGameUpdateable, SPNodeHierarchyElement {
 			building_mid_right.set_scale(2.1f);
 			building_mid_right.set_anchor_point(0.5f,0);
 			building_mid_right.set_name("building_mid_right");
+			building_mid_right.set_layer(RLayer.REFLECTION_BUILDINGS);
 			_root.add_child(building_mid_right);
 		}
 		{
@@ -134,6 +139,7 @@ public class BGVillage : SPGameUpdateable, SPNodeHierarchyElement {
 			building_mid_left.set_scale(1.9f);
 			building_mid_left.set_anchor_point(0.5f,0);
 			building_mid_left.set_name("building_mid_left");
+			building_mid_left.set_layer(RLayer.REFLECTION_BUILDINGS);
 			_root.add_child(building_mid_left);
 		}
 		
@@ -148,6 +154,7 @@ public class BGVillage : SPGameUpdateable, SPNodeHierarchyElement {
 			building_mid_leftmost_left.set_scale(1.9f);
 			building_mid_leftmost_left.set_anchor_point(0.5f,0);
 			building_mid_leftmost_left.set_name("building_mid_leftmost_left");
+			building_mid_leftmost_left.set_layer(RLayer.REFLECTION_BUILDINGS);
 			_root.add_child(building_mid_leftmost_left);
 		}
 		
@@ -164,6 +171,7 @@ public class BGVillage : SPGameUpdateable, SPNodeHierarchyElement {
 			building_front_left_front.set_scale(1.9f);
 			building_front_left_front.set_anchor_point(0.5f,0);
 			building_front_left_front.set_name("neu_village_building_front_left_front");
+			building_front_left_front.set_layer(RLayer.REFLECTION_BUILDINGS);
 			_root.add_child(building_front_left_front);
 		}
 		{
@@ -177,6 +185,7 @@ public class BGVillage : SPGameUpdateable, SPNodeHierarchyElement {
 			building_front_right.set_scale(1.9f);
 			building_front_right.set_anchor_point(0.5f,0);
 			building_front_right.set_name("neu_village_building_front_right");
+			building_front_right.set_layer(RLayer.REFLECTION_BUILDINGS);
 			_root.add_child(building_front_right);
 		}
 		
@@ -256,7 +265,7 @@ public class BGVillage : SPGameUpdateable, SPNodeHierarchyElement {
 	public Vector3 jump_log2_position() { return new Vector3(0,-175.5f,-169.4f); }
 	public Vector3 jump_log3_position() { return new Vector3(0,-194,-274.7f); }
 	
-	public List<BGVillageJumpLog> _jump_logs = new List<BGVillageJumpLog>();
+	private List<BGVillageJumpLog> _jump_logs = new List<BGVillageJumpLog>();
 	
 	private void setup_jumping_logs() {
 		{
@@ -410,7 +419,7 @@ public class BGVillage : SPGameUpdateable, SPNodeHierarchyElement {
 		}
 		
 		for (int i = 0; i < _jump_logs.Count; i++) {
-			_jump_logs[i].i_update();
+			_jump_logs[i].i_update(g);
 		}
 		
 	}

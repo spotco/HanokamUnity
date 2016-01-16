@@ -37,10 +37,10 @@ public class BGWaterGround : SPGameUpdateable {
 		_ground_fill.set_manual_sort_z_order(GameAnchorZ.BGWater_Ground_Fill);
 		_ground_fill.set_color(new Vector4(1.0f/255.0f,19.0f/255.0f,47.0f/255.0f,1.0f));
 		_ground_fill.set_anchor_point(0.5f,1.0f);
-		_ground_fill.set_u_pos(0,-130);
+		_ground_fill.set_u_pos(0,207);
 		_ground_fill.set_name("_ground_fill");
-		_ground_fill.set_scale_x(1.65f);
-		_ground_fill.set_scale_y(3.0f);
+		_ground_fill.set_scale_x(4);
+		_ground_fill.set_scale_y(2.0f);
 		_root.add_child(_ground_fill);
 
 		_underwater_temple_treasure = BGUnderwaterTreasure.cons(_root);
@@ -76,7 +76,7 @@ public class BGWaterGround : SPGameUpdateable {
 		_bottom_fade.set_name("_bottom_fade");
 		_bottom_fade.set_manual_sort_z_order(GameAnchorZ.BGWater_Ground_BottomFade);
 		_bottom_fade.set_u_z(25);
-		_bottom_fade.set_scale_x(1);
+		_bottom_fade.set_scale_x(1.25f);
 		_bottom_fade.set_scale_y(3.0f);
 		_bottom_fade.set_u_pos(0,0);
 		_bottom_fade.set_anchor_point(0.5f,0);

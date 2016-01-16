@@ -7,6 +7,7 @@ public class RShader {
 	public static string ALPHA_GRADIENT = "Custom/SPAlphaGradientSprite";
     public static string NOALPHA = "Custom/SPNoAlphaShader";
 	public static string SPTEXTCHARACTER = "Custom/SPTextCharacter";
+	public static string UNDERWATER_VIEW_SURFACE = "Custom/UnderWaterViewSurface";
 }
 
 public class ShaderResource : Object {

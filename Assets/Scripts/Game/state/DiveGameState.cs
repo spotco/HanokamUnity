@@ -71,6 +71,9 @@ public class DiveGameState : GameStateBase {
 
 		
 		g._player.play_anim(PlayerCharacterAnims.SWIM);
+		g._player.set_layer(RLayer.DEFAULT);
+		g._player.set_rotation(-180);
+		
 		MiscEffects.do_underwater_splash(g);
 		g._delayed_actions.enqueue_action(new DelayedAction() {
 			_time_left = 20,

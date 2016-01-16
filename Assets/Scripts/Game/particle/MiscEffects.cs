@@ -73,7 +73,7 @@ public class MiscEffects : MonoBehaviour {
 			.set_texture(TextureResource.inst().get_tex(RTex.FX_SPLASH))
 			.set_texrect(FileCache.inst().get_texrect(RTex.FX_SPLASH,"uw_splash_0.png"))
 			.set_ctmax(65)
-			.set_pos(g._player._u_x,-100)
+			.set_pos(g._player._u_x,-300)
 			.set_anim_lambda((SPSprite _img, float anim_t) => {
 				_img.set_opacity(SPUtil.bezier_val_for_t(new Vector2(0,0),new Vector2(0,1),new Vector2(0.3f,1.25f),new Vector2(1,0),anim_t).y);
 				_img.set_scale_x(SPUtil.bezier_val_for_t(new Vector2(0,0.75f),new Vector2(0,1.5f),new Vector2(0.6f,2.5f),new Vector2(1,0.65f),anim_t).y * 3.0f);

@@ -73,7 +73,6 @@ public class OnGroundDiveAnimController : OnGroundStateUpdateable {
 				_current_mode = Mode.JUMP_LOG1;
 				_anim_initial_position = tar_pt;
 				_anim_t = 0;
-				g._bg_village._jump_logs[0].apply_offset();
 			}
 			
 		} break;

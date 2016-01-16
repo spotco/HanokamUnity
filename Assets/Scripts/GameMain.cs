@@ -8,13 +8,7 @@ public interface SPMainUpdateable {
 public class GameMain : SPBaseBehavior {
 	/**
 	TODO--
-	-mock divereturn
-	-new underwater ui
-	
-	-hanoka dive work
-	-misc underwater stuff
 	-crab enemy
-	
 	---Underwater gameplay
 	-jelly movepoints
 	-eel side to side bezier
@@ -22,13 +16,13 @@ public class GameMain : SPBaseBehavior {
 	-follow wall
 	-orb spawn spirit shark swim back art transition
 	
-	---Pattern spawn editor	
+	-new underwater ui
+	
+	spike enemy bubble trail
 	---Inair gameplay
 	
 	LATER--
-	bubble trails behind moving enemies
-	bg/village fish underwater implementation
-	_c_pos center should not be tied to camera (inair)
+	bg/village fish
 	**/
 
 	public static GameMain _context;

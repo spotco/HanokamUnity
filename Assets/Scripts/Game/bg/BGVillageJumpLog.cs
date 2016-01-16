@@ -44,24 +44,8 @@ public class BGVillageJumpLog : SPNodeHierarchyElement {
 		parent.add_child(_log);
 	}
 	
-	public void apply_offset() {
-		_offset = new Vector3(0,-30,0);
-	}
-	
-	public void i_update() {
-		/*
-		_bob_vertical_theta += SPUtil.dt_scale_get() * 0.05f;
-		_bob_leftright_theta += SPUtil.dt_scale_get() * 0.04f;
-		
-		_offset = SPUtil.drpt_vec(_offset,Vector3.zero,1/20 re.0f);
-		
-		this.apply_position(
-			SPUtil.vec_add(_offset,
-			SPUtil.vec_add(_position,new Vector3(0,Mathf.Sin(_bob_vertical_theta)*3,0)))
-		);
-		_log.set_rotation(Mathf.Sin(_bob_leftright_theta)*1.5f);
-		*/
-		
+	public void i_update(GameEngineScene g) {
+		_log.set_enabled(!g._bg_water.is_underwater(g));
 	}
 
 }

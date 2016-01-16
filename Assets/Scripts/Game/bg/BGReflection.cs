@@ -68,15 +68,9 @@ public class BGReflection {
 		return this;
 	}
 
-	public BGReflection set_manual_z_order(int val) {
-		_reflection_image.set_manual_sort_z_order(val);
-		return this;
-	}
-
-	public BGReflection set_camera_pos(float x, float y, float z) {
-		_reflection_render_cam.transform.localPosition = new Vector3(x,y,z);
-		return this;
-	}
+	public BGReflection set_manual_z_order(int val) { _reflection_image.set_manual_sort_z_order(val); return this; }
+	public BGReflection set_camera_pos(float x, float y, float z) { _reflection_render_cam.transform.localPosition = new Vector3(x,y,z); return this; }
+	public BGReflection set_camera_rotation(Vector3 rotation) { _reflection_render_cam.transform.localEulerAngles = rotation; return this; }
 
 	public BGReflection set_alpha_sub(float val) {
 		_reflection_image.gameObject.GetComponent<MeshRenderer>().material.SetFloat("_alpha_sub",val);
@@ -93,15 +87,8 @@ public class BGReflection {
 		return this;
 	}
 
-	public BGReflection set_enabled(bool val) {
-		_root.set_enabled(val);
-		return this;
-	}
-
-	public BGReflection manual_set_camera_cullingmask(int val) {
-		_reflection_render_cam.cullingMask = val;
-		return this;
-	}
+	public BGReflection set_enabled(bool val) { _root.set_enabled(val); return this; }
+	public BGReflection manual_set_camera_cullingmask(int val) { _reflection_render_cam.cullingMask = val; return this; }
 
 	public BGReflection add_camerarender_hook(CameraRenderHookDelegate hook) {
 		if (_reflection_render_cam.gameObject.GetComponent<CameraRenderHookDispatcher>() == null) _reflection_render_cam.gameObject.AddComponent<CameraRenderHookDispatcher>();
@@ -109,9 +96,8 @@ public class BGReflection {
 		return this;
 	}
 
-	public BGReflection set_opacity(float val) {
-		_reflection_image.set_opacity(val);
-		return this;
-	}
+	public BGReflection set_opacity(float val) { _reflection_image.set_opacity(val); return this; }
+	public BGReflection set_shader(string shader) { _reflection_image.set_shader(shader); return this; }
+	public BGReflection set_layer(string layer) { _reflection_image.set_layer(layer); return this; }
 
 }

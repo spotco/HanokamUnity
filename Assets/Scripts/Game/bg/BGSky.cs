@@ -45,9 +45,10 @@ public class BGSky : SPGameUpdateable, SPNodeHierarchyElement {
 		_bg_clouds = SPParallaxScrollSprite.cons(
 			RTex.BG_NSKY1_BGCLOUDS,
 			SPUtil.texture_default_rect(RTex.BG_NSKY1_BGCLOUDS),
-			new Vector3(4.5f,4.5f),
+			new Vector3(6.5f,6.5f),
 			new Vector3(0,0,4200)
 		);
+		_bg_clouds.set_uv_y_size(0.75f);
 		_bg_clouds._img.set_manual_sort_z_order(GameAnchorZ.BGSky_BG_ELE3);
 		_bg_clouds._img.set_name("_bg_clouds");
 		_root.add_child(_bg_clouds._img);
@@ -55,9 +56,10 @@ public class BGSky : SPGameUpdateable, SPNodeHierarchyElement {
 		_bg_islands_far_back = SPParallaxScrollSprite.cons(
 			RTex.BG_NSKY1_BGISLANDS,
 			FileCache.inst().get_texrect(RTex.BG_NSKY1_BGISLANDS,"sky_new_bg_islands_far_2.png"),
-			new Vector3(3.75f,3.75f),
+			new Vector3(6.2f,6.2f),
 			new Vector3(0,0,3600)
 			);
+		_bg_islands_far_back.set_uv_y_size(0.5f);
 		_bg_islands_far_back._img.set_manual_sort_z_order(GameAnchorZ.BGSky_BG_ELE2);
 		_bg_islands_far_back._img.set_name("_bg_islands_far_back");
 		_root.add_child(_bg_islands_far_back._img);
@@ -65,9 +67,10 @@ public class BGSky : SPGameUpdateable, SPNodeHierarchyElement {
 		_bg_islands_far_near = SPParallaxScrollSprite.cons(
 			RTex.BG_NSKY1_BGISLANDS,
 			FileCache.inst().get_texrect(RTex.BG_NSKY1_BGISLANDS,"sky_new_bg_islands_far_1.png"),
-			new Vector3(3.5f,3.5f),
+			new Vector3(5.75f,5.75f),
 			new Vector3(0,0,2900)
-			);
+		);
+		_bg_islands_far_near.set_uv_y_size(0.45f);
 		_bg_islands_far_near._img.set_manual_sort_z_order(GameAnchorZ.BGSky_BG_ELE1);
 		_bg_islands_far_near._img.set_name("_bg_islands_near");
 		_root.add_child(_bg_islands_far_near._img);
@@ -75,9 +78,10 @@ public class BGSky : SPGameUpdateable, SPNodeHierarchyElement {
 		_bg_islands = SPParallaxScrollSprite.cons(
 			RTex.BG_NSKY1_BG_OBJS,
 			FileCache.inst().get_texrect(RTex.BG_NSKY1_BG_OBJS,"sky_new_bg_islands.png"),
-			new Vector3(3.1f,3.1f),
+			new Vector3(5f,5f),
 			new Vector3(0,0,2100)
-			);
+		);
+		_bg_islands.set_uv_y_size(0.45f);
 		_bg_islands._img.set_manual_sort_z_order(GameAnchorZ.BGSky_BG_ELE0);
 		_bg_islands._img.set_name("_bg_islands");
 		_root.add_child(_bg_islands._img);
@@ -148,11 +152,11 @@ public class BGSky : SPGameUpdateable, SPNodeHierarchyElement {
 		_bg_clouds.set_x_offset(_test);
 		
 		if (_y_offset_in > 1750) {
-			_bg_cliff_left_x._target = -550;
-			_bg_cliff_right_x._target = 550;
+			_bg_cliff_left_x._target = -790;
+			_bg_cliff_right_x._target = 905;
 		} else {
-			_bg_cliff_left_x._target = -1500;
-			_bg_cliff_right_x._target = 1500;
+			_bg_cliff_left_x._target = -1900;
+			_bg_cliff_right_x._target = 1900;
 		}
 		_bg_cliff_left_x.i_update();
 		_bg_cliff_right_x.i_update();
