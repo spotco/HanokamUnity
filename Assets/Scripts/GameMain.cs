@@ -7,16 +7,13 @@ public interface SPMainUpdateable {
 
 public class GameMain : SPBaseBehavior {
 	/**
-	new UI
 	laser crabs
 	2 other enemies
-	orb work
+	orb work water
 	
 	TODO--
 	---Underwater gameplay
 	-orb spawn spirit shark swim back art transition
-	
-	-new underwater ui
 	
 	spike enemy bubble trail
 	---Inair gameplay

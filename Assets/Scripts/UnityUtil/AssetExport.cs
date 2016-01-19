@@ -6,16 +6,8 @@ using UnityEditor;
 using System;
 using System.Text;
 
-[ProtoBuf.ProtoContract]
-public class ExportTest {
-	[ProtoBuf.ProtoMember(1)] public int test;
-	[ProtoBuf.ProtoMember(2)] public Dictionary<int,Dictionary<string,Rect>> test2;
-}
-
 public class AssetExport {
-	static byte[] _tmp;
-
-	[MenuItem("SPEditorUtils/Write Streaming Assets To Resources")]
+	[MenuItem("SPEditorUtils/Write Streaming Assets To Cached Resources")]
 	public static void write_streaming_assets_to_resources() {
 		if (GameMain._context == null) {
 			Debug.LogError("_context null");
@@ -33,7 +25,11 @@ public class AssetExport {
 		} else {
 			Debug.LogError("_file_cache null");
 		}
-
+		
+		if (!System.IO.Directory.Exists(CachedStreamingAssets.TEXTURE_PATH_PREFIX)) {
+			System.IO.Directory.CreateDirectory(CachedStreamingAssets.TEXTURE_PATH_PREFIX);
+		}
+		
 		if (GameMain._context._tex_resc != null) {
 			foreach(string key in GameMain._context._tex_resc._key_to_resourcevalue.Keys) {
 				string texture_write_to_filepath = CachedStreamingAssets.texture_key_to_filepath(key);

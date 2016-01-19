@@ -117,6 +117,18 @@ public class DiveSubUI_Gameplay : DiveGameStateUpdateable, SPNodeHierarchyElemen
 			_root.add_child(_breath_pct_text);
 			_ui_alpha.add_element(_breath_pct_text);
 		}
+		{
+			SPSprite airword_text = SPSprite.cons_sprite_texkey_texrect(RTex.HUD_SPRITESHEET,FileCache.inst().get_texrect(RTex.HUD_SPRITESHEET,"airword_text.png"));
+			airword_text.set_layer(RLayer.UI);
+			airword_text.set_manual_sort_z_order(1);
+			airword_text.set_scale(0.6f);
+			airword_text.set_u_pos(SPUtil.vec_add(
+				SPUILayout.sibling_pct_of_obj(breath_bar_frame_rect,new Vector2(1.0f,0.0f)),
+				new Vector2(-100,0)
+			));
+			_root.add_child(airword_text);
+			_ui_alpha.add_element(airword_text);
+		}
 		
 		
 		{
@@ -173,25 +185,16 @@ public class DiveSubUI_Gameplay : DiveGameStateUpdateable, SPNodeHierarchyElemen
 			_ui_alpha.add_element(_depth_text);
 		}
 		{
-			SPText depthword_text = SPText.cons_text(RTex.DIALOGUE_FONT, RFnt.DIALOGUE_FONT, SPText.SPTextStyle.cons(
-				SPUtil.color_from_bytes(3,37,50,255),
-				SPUtil.color_from_bytes(127,220,255,255),
-				new Vector4(0,0,0,0),
-				0,0
-			));
+			SPSprite depthword_text = SPSprite.cons_sprite_texkey_texrect(RTex.HUD_SPRITESHEET,FileCache.inst().get_texrect(RTex.HUD_SPRITESHEET,"depthword_text.png"));
 			depthword_text.set_layer(RLayer.UI);
 			depthword_text.set_manual_sort_z_order(1);
-			depthword_text.set_scale(0.5f);
-			depthword_text.set_text_anchor(0.5f,0.5f);
+			depthword_text.set_scale(0.6f);
 			depthword_text.set_u_pos(
 				SPUILayout.sibling_pct_of_obj(depth_frame_rect,new Vector2(0.5f,0.15f))
 			);
-			depthword_text.set_markup_text("DEPTH");
 			_root.add_child(depthword_text);
-			_ui_alpha.add_element(depthword_text);	
+			_ui_alpha.add_element(depthword_text);
 		}
-		
-		
 		
 		_ui_alpha.set_alpha_mult(0);
 		
@@ -203,7 +206,7 @@ public class DiveSubUI_Gameplay : DiveGameStateUpdateable, SPNodeHierarchyElemen
 	public void i_update(GameEngineScene g, DiveGameState state) {
 		float tar_alpha = 0;
 		if (state._params._mode == DiveGameState.Mode.Gameplay) {
-			tar_alpha = 0.85f;			
+			tar_alpha = 0.865f;			
 		}
 		float next_alpha = SPUtil.drpt(_ui_alpha.get_alpha(),tar_alpha,1/10.0f);
 		if (next_alpha < 0.1f) {
