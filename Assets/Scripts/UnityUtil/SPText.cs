@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-public class SPText : SPNode, SPMainUpdateable {
+public class SPText : SPNode, SPMainUpdateable, SPAlphaGroupElement {
 
-	public class SPTextCharacter : SPNodeHierarchyElement, GenericPooledObject {
+	public class SPTextCharacter : SPNodeHierarchyElement, GenericPooledObject, SPAlphaGroupElement {
 		public static SPTextCharacter cons_texkey_rect(string texkey, Rect rect, SPText.SPTextStyle style) {
 			return ObjectPool.inst().generic_depool<SPTextCharacter>().i_cons_texkey_rect(texkey,rect, style);
 		}
@@ -29,6 +29,7 @@ public class SPText : SPNode, SPMainUpdateable {
 			_img.set_tex_rect(rect);
 			_img.set_shader(RShader.SPTEXTCHARACTER);
 			_opacity = 1;
+			_alpha_mult = 1;
 			_start_pos = Vector2.zero;
 			this.set_style(style);
 			return this;
@@ -61,7 +62,7 @@ public class SPText : SPNode, SPMainUpdateable {
 			_material_block.AddColor("_fill_color",style._fill);
 			_material_block.AddColor("_stroke_color",style._stroke);
 			_material_block.AddColor("_shadow_color",style._shadow);
-			_material_block.AddFloat("_opacity",_opacity);
+			_material_block.AddFloat("_opacity",_opacity * _alpha_mult);
 			_mesh_renderer.SetPropertyBlock(_material_block);
 		}
 		
@@ -83,6 +84,12 @@ public class SPText : SPNode, SPMainUpdateable {
 		public void set_manual_sort_z_order(int zord) { _img.set_manual_sort_z_order(zord); }
 		public void cleanup() {
 			ObjectPool.inst().generic_repool<SPTextCharacter>(this);
+		}
+		
+		private float _alpha_mult;
+		public void set_alpha_mult(float alpha_mult) {
+			_alpha_mult = alpha_mult;
+			this.set_style(_style);
 		}
 	}
 	
@@ -148,6 +155,7 @@ public class SPText : SPNode, SPMainUpdateable {
 		_name_to_styles = new Dictionary<string, SPTextStyle>();
 		_time = 0;
 		_animate_text_in_ct = 0;
+		_alpha_mult = 1;
 		this.set_opacity(1);
 		
 		_default_style = default_style;
@@ -274,6 +282,7 @@ public class SPText : SPNode, SPMainUpdateable {
 			neu_char._img.set_layer(_layer);
 			neu_char.set_opacity(_opacity);
 			neu_char.add_to_parent(_pivot_node);
+			neu_char.set_alpha_mult(_alpha_mult);
 			_characters.Add(neu_char);
 			
 			float yoffset = _bmfont_cfg.common.lineHeight - fontDef.yoffset;
@@ -329,6 +338,16 @@ public class SPText : SPNode, SPMainUpdateable {
 		_layer = layer;
 		for (int i = 0; i < this._characters.Count; i++) {
 			this._characters[i]._img.set_layer(_layer);
+		}
+	}
+	
+	private float _alpha_mult;
+	public void set_alpha_mult(float alpha_mult) {
+		if (!SPUtil.flt_cmp_delta(_alpha_mult,alpha_mult,0.01f)) {
+			_alpha_mult = alpha_mult;
+			for (int i = 0; i < _characters.Count; i++) {
+				_characters[i].set_alpha_mult(_alpha_mult);
+			}
 		}
 	}
 

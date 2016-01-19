@@ -54,7 +54,8 @@ public class DiveSubUI_Gameplay : DiveGameStateUpdateable, SPNodeHierarchyElemen
 	}
 	private SPNode _root;
 	private SPAlphaGroup _ui_alpha;
-	private SPSprite _charge_bar_fill;
+	private SPSprite _breath_bar_fill;
+	private SPText _depth_text, _breath_pct_text;
 	
 	private DiveSubUI_Gameplay i_cons(UIRoot ui) {
 	
@@ -63,30 +64,31 @@ public class DiveSubUI_Gameplay : DiveGameStateUpdateable, SPNodeHierarchyElemen
 		_root = SPNode.cons_node();
 		_root.set_name("DiveSubUI_BreathBar");
 		
-		SPHitRect charge_bar_frame_rect;
+		SPHitRect breath_bar_frame_rect;
 		{
-			SPSprite charge_bar_frame = SPSprite.cons_sprite_texkey_texrect(RTex.HUD_SPRITESHEET,FileCache.inst().get_texrect(RTex.HUD_SPRITESHEET,"neu_ui_air_gauge_frame.png"));
-			charge_bar_frame.set_layer(RLayer.UI);
-			charge_bar_frame.set_manual_sort_z_order(0);
-			charge_bar_frame.set_name("charge_bar_frame");
-			SPUILayout.layout_sprite(charge_bar_frame,ui.get_ui_bounds(),new SPUILayout.SpriteLayout() {
+			SPSprite breath_bar_frame = SPSprite.cons_sprite_texkey_texrect(RTex.HUD_SPRITESHEET,FileCache.inst().get_texrect(RTex.HUD_SPRITESHEET,"neu_ui_air_gauge_frame.png"));
+			breath_bar_frame.set_layer(RLayer.UI);
+			breath_bar_frame.set_manual_sort_z_order(0);
+			breath_bar_frame.set_name("breath_bar_frame");
+			SPUILayout.layout_sprite(breath_bar_frame,ui.get_ui_bounds(),new SPUILayout.SpriteLayout() {
 				_anchor_point = new Vector2(0f,1f),
 				_nparent_origin = new Vector2(0f,0.925f),
 				_nparent_placement = new Vector2(0.65f,1f),
 				_p_origin_offset = new Vector2(10f,0f),
 				_p_placement_offset = new Vector2(0f,-10f)
 			});
-			charge_bar_frame_rect = SPUILayout.get_layout_rect(charge_bar_frame);
-			_root.add_child(charge_bar_frame);
-			_ui_alpha.add_sprite(charge_bar_frame);
+			_root.add_child(breath_bar_frame);
+			_ui_alpha.add_element(breath_bar_frame);
+		
+			breath_bar_frame_rect = SPUILayout.get_layout_rect(breath_bar_frame);
 		}
 		{
-			_charge_bar_fill = SPSprite.cons_sprite_texkey_texrect(RTex.BLANK,SPUtil.texture_default_rect(RTex.BLANK));
-			_charge_bar_fill.set_layer(RLayer.UI);
-			_charge_bar_fill.set_manual_sort_z_order(-1);
-			_charge_bar_fill.set_name("_charge_bar_fill");
-			_charge_bar_fill.set_color(SPUtil.color_from_bytes(127,220,255,255));
-			SPUILayout.layout_sprite(_charge_bar_fill,charge_bar_frame_rect,new SPUILayout.SpriteLayout() {
+			_breath_bar_fill = SPSprite.cons_sprite_texkey_texrect(RTex.BLANK,SPUtil.texture_default_rect(RTex.BLANK));
+			_breath_bar_fill.set_layer(RLayer.UI);
+			_breath_bar_fill.set_manual_sort_z_order(-1);
+			_breath_bar_fill.set_name("_breath_bar_fill");
+			_breath_bar_fill.set_color(SPUtil.color_from_bytes(127,220,255,255));
+			SPUILayout.layout_sprite(_breath_bar_fill,breath_bar_frame_rect,new SPUILayout.SpriteLayout() {
 				_anchor_point = new Vector2(0f,1f),
 				_nparent_origin = new Vector2(0f,0f),
 				_nparent_placement = new Vector2(1f,1f),
@@ -94,10 +96,28 @@ public class DiveSubUI_Gameplay : DiveGameStateUpdateable, SPNodeHierarchyElemen
 				_p_placement_offset = new Vector2(-10f,-7f)
 					
 			});
-			_root.add_child(_charge_bar_fill);
-			_ui_alpha.add_sprite(_charge_bar_fill);
+			_root.add_child(_breath_bar_fill);
+			_ui_alpha.add_element(_breath_bar_fill);
 		}
-		this.set_bar_pct(0.5f);
+		{
+			_breath_pct_text = SPText.cons_text(RTex.DIALOGUE_FONT, RFnt.DIALOGUE_FONT, SPText.SPTextStyle.cons(
+				SPUtil.color_from_bytes(3,37,50,255),
+				SPUtil.color_from_bytes(127,220,255,255),
+				new Vector4(0,0,0,0),
+				0,0
+			));
+			_breath_pct_text.set_layer(RLayer.UI);
+			_breath_pct_text.set_manual_sort_z_order(1);
+			_breath_pct_text.set_scale(1.0f);
+			_breath_pct_text.set_text_anchor(0.5f,0.5f);
+			_breath_pct_text.set_u_pos(
+				SPUILayout.sibling_pct_of_obj(breath_bar_frame_rect,new Vector2(1.0f,0.0f))
+			);
+			_breath_pct_text.set_markup_text("100%");
+			_root.add_child(_breath_pct_text);
+			_ui_alpha.add_element(_breath_pct_text);
+		}
+		
 		
 		{
 			SPSprite notification_frame = SPSprite.cons_sprite_texkey_texrect(RTex.HUD_SPRITESHEET,FileCache.inst().get_texrect(RTex.HUD_SPRITESHEET,"neu_ui_notification_frame.png"));
@@ -112,9 +132,10 @@ public class DiveSubUI_Gameplay : DiveGameStateUpdateable, SPNodeHierarchyElemen
 				_p_placement_offset = new Vector2(0f,0f)
 			});
 			_root.add_child(notification_frame);
-			_ui_alpha.add_sprite(notification_frame);
+			_ui_alpha.add_element(notification_frame);
 		}
 		
+		SPHitRect depth_frame_rect;
 		{
 			SPSprite depth_frame = SPSprite.cons_sprite_texkey_texrect(RTex.HUD_SPRITESHEET,FileCache.inst().get_texrect(RTex.HUD_SPRITESHEET,"neu_ui_depth_frame.png"));
 			depth_frame.set_layer(RLayer.UI);
@@ -128,10 +149,51 @@ public class DiveSubUI_Gameplay : DiveGameStateUpdateable, SPNodeHierarchyElemen
 				_p_placement_offset = new Vector2(0f,0f)
 			});
 			_root.add_child(depth_frame);
-			_ui_alpha.add_sprite(depth_frame);
+			_ui_alpha.add_element(depth_frame);
+			
+			depth_frame_rect = SPUILayout.get_layout_rect(depth_frame);
 		}
 		
-		_ui_alpha.set_alpha_mult(0.75f);
+		{
+			_depth_text = SPText.cons_text(RTex.DIALOGUE_FONT, RFnt.DIALOGUE_FONT, SPText.SPTextStyle.cons(
+				SPUtil.color_from_bytes(3,37,50,255),
+				SPUtil.color_from_bytes(127,220,255,255),
+				new Vector4(0,0,0,0),
+				0,0
+			));
+			_depth_text.set_layer(RLayer.UI);
+			_depth_text.set_manual_sort_z_order(1);
+			_depth_text.set_scale(1.0f);
+			_depth_text.set_text_anchor(0.5f,0.5f);
+			_depth_text.set_u_pos(
+				SPUILayout.sibling_pct_of_obj(depth_frame_rect,new Vector2(0.5f,0.575f))
+			);
+			_depth_text.set_markup_text("0m");
+			_root.add_child(_depth_text);
+			_ui_alpha.add_element(_depth_text);
+		}
+		{
+			SPText depthword_text = SPText.cons_text(RTex.DIALOGUE_FONT, RFnt.DIALOGUE_FONT, SPText.SPTextStyle.cons(
+				SPUtil.color_from_bytes(3,37,50,255),
+				SPUtil.color_from_bytes(127,220,255,255),
+				new Vector4(0,0,0,0),
+				0,0
+			));
+			depthword_text.set_layer(RLayer.UI);
+			depthword_text.set_manual_sort_z_order(1);
+			depthword_text.set_scale(0.5f);
+			depthword_text.set_text_anchor(0.5f,0.5f);
+			depthword_text.set_u_pos(
+				SPUILayout.sibling_pct_of_obj(depth_frame_rect,new Vector2(0.5f,0.15f))
+			);
+			depthword_text.set_markup_text("DEPTH");
+			_root.add_child(depthword_text);
+			_ui_alpha.add_element(depthword_text);	
+		}
+		
+		
+		
+		_ui_alpha.set_alpha_mult(0);
 		
 		
 		return this;
@@ -139,7 +201,21 @@ public class DiveSubUI_Gameplay : DiveGameStateUpdateable, SPNodeHierarchyElemen
 	
 	public void add_to_parent(SPNode parent) { parent.add_child(_root); }
 	public void i_update(GameEngineScene g, DiveGameState state) {
-		_root.set_enabled(true);
+		float tar_alpha = 0;
+		if (state._params._mode == DiveGameState.Mode.Gameplay) {
+			tar_alpha = 0.85f;			
+		}
+		float next_alpha = SPUtil.drpt(_ui_alpha.get_alpha(),tar_alpha,1/10.0f);
+		if (next_alpha < 0.1f) {
+			_root.set_enabled(false);
+			_ui_alpha.set_alpha_mult(0);
+		} else {
+			_root.set_enabled(true);
+			_ui_alpha.set_alpha_mult(next_alpha);
+		}
+		
+		this.set_bar_pct(state._params._current_breath/state._params.MAX_BREATH());
+		_depth_text.set_markup_text(string.Format("{0}m",(int)(-state._params._player_pos.y/100.0f)));
 	}
 	
 	private float __last_pct = -1;
@@ -147,13 +223,15 @@ public class DiveSubUI_Gameplay : DiveGameStateUpdateable, SPNodeHierarchyElemen
 		pct = Mathf.Clamp(pct,0,1);
 		if (pct == __last_pct) return;
 		__last_pct = pct;
-		Rect bg_rect = _charge_bar_fill.texrect();
-		_charge_bar_fill.set_tex_rect(new Rect(
+		
+		Rect bg_rect = SPUtil.texture_default_rect(_breath_bar_fill.texkey());
+		_breath_bar_fill.set_tex_rect(new Rect(
 			bg_rect.position.x,
 			bg_rect.position.y,
 			bg_rect.width * pct,
 			bg_rect.height
 		));
+		_breath_pct_text.set_markup_text(string.Format("{0}%",(int)(pct*100)));
 	}
 	
 

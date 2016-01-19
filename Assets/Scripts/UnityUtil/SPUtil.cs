@@ -216,7 +216,7 @@ public class SPUtil {
 	}
 
 	public static float bezier_val_for_t(float p0, float p1, float p2, float p3, float t) {
-		float cp0 = (1 - t)*(1 - t)*(1 - t);
+		float cp0 = (1 - t) * (1 - t) * (1 - t);
 		float cp1 = 3 * t * (1-t)*(1-t);
 		float cp2 = 3 * t * t * (1 - t);
 		float cp3 = t * t * t;
@@ -465,7 +465,7 @@ public class SPAlphaGroup {
 	private List<SPAlphaGroupElement> _elements = new List<SPAlphaGroupElement>();
 	private float _alpha = 1;
 	public static SPAlphaGroup cons() { return new SPAlphaGroup(); }
-	public void add_sprite(SPAlphaGroupElement tar) {
+	public void add_element(SPAlphaGroupElement tar) {
 		tar.set_alpha_mult(_alpha);
 		_elements.Add(tar);
 	}
@@ -475,7 +475,7 @@ public class SPAlphaGroup {
 			_elements[i].set_alpha_mult(_alpha);
 		}
 	}
-	public float get_alpha(float alpha) {
+	public float get_alpha() {
 		return _alpha;
 	}
 }
@@ -525,8 +525,7 @@ public class SPUILayout {
 		};
 	}
 	
-	public static Vector2 sibling_pct_of_obj(SPSprite tar, Vector2 nparent_position) {
-		SPHitRect parent_rect = SPUILayout.get_layout_rect(tar);
+	public static Vector2 sibling_pct_of_obj(SPHitRect parent_rect, Vector2 nparent_position) {
 		return new Vector2(
 			(parent_rect._x2-parent_rect._x1) * nparent_position.x + parent_rect._x1,
 			(parent_rect._y2-parent_rect._y1) * nparent_position.y + parent_rect._y1

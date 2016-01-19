@@ -23,7 +23,6 @@ public class AssetExport {
 		}
 #if !UNITY_WEBPLAYER
 		if (GameMain._context._file_cache != null) {
-
 			FileUtil.DeleteFileOrDirectory(CachedStreamingAssets.FILECACHE_PATH);
 			
 			System.IO.File.WriteAllBytes(
@@ -48,16 +47,15 @@ public class AssetExport {
 		}
 #endif
 	}
-
-	[MenuItem("SPEditorUtils/Debug Read Resources")]
-	public static void debug_read_resources() {
-		FileCache tmp_filecache = ProtoBufSerializer.deserialize_from_bytes<FileCache>(
-				Resources.Load<TextAsset>(
-					CachedStreamingAssets.path_to_loadpath(CachedStreamingAssets.FILECACHE_PATH)
-				).bytes
-		);
+	
+	[MenuItem("SPEditorUtils/Delete Cached Resources")]
+	public static void delete_cached_resources() {
+#if !UNITY_WEBPLAYER
+		FileUtil.DeleteFileOrDirectory(CachedStreamingAssets.FILECACHE_PATH);
+		FileUtil.DeleteFileOrDirectory(CachedStreamingAssets.TEXTURE_PATH_PREFIX);
+#endif
 	}
-
+	
 }
 #endif
 
