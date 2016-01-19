@@ -5,8 +5,12 @@ using System.Collections.Generic;
 using UnityEditor;
 [CustomEditor(typeof(SPNode), true)]
 #endif
-public class SPSprite : SPNode {
-	
+
+public interface SPAlphaGroupElement {
+	void set_alpha_mult(float alpha_mult);
+}
+
+public class SPSprite : SPNode, SPAlphaGroupElement {
 	public static SPSprite cons_sprite_texkey_texrect(string texkey, Rect texrect) {
 		return SPNode.generic_cons<SPSprite>().i_cons_sprite_texkey_texrect(texkey,texrect);
 	}
@@ -34,6 +38,7 @@ public class SPSprite : SPNode {
 			_meshrenderer = this.gameObject.GetComponent<MeshRenderer>();
 			_meshfilter = this.gameObject.GetComponent<MeshFilter>();
 		}
+		this.set_alpha_mult(1);
 		this.set_texkey(texkey);
 
 		_meshrenderer.receiveShadows = false;
@@ -87,7 +92,13 @@ public class SPSprite : SPNode {
 			renderer.GetPropertyBlock(_material_block);
 		}
 		_material_block.Clear();
-		_material_block.AddColor("_Color", _color);
+		
+		Vector4 tar_color = _color;
+		if (_alpha_mult != 1.0f) {
+			tar_color.w = tar_color.w * _alpha_mult;
+		}
+		
+		_material_block.AddColor("_Color", tar_color);
 		renderer.SetPropertyBlock(_material_block);
 		return this;
 	}
@@ -237,6 +248,12 @@ public class SPSprite : SPNode {
 	
 	public void set_layer(string layer_str) {
 		this.gameObject.layer = RLayer.get_layer(layer_str);
+	}
+	
+	private float _alpha_mult;
+	public void set_alpha_mult(float alpha_mult) {
+		_alpha_mult = alpha_mult;
+		this.set_color(this.color());
 	}
 
 }

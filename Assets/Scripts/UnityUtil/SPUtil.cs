@@ -104,32 +104,6 @@ public class SPUtil {
 		return new Vector2(GameMain._context._game_camera.rect.x * Screen.width,GameMain._context._game_camera.rect.y * Screen.height);
 	}
 
-	public static Vector2 pct_of_obj(SPSprite obj, float x, float y) {
-		return new Vector2(
-			obj.texrect().width*(x-obj.anchorpoint().x),
-			obj.texrect().height*(y-obj.anchorpoint().y)
-		);
-	}
-	
-	public static Vector2 inverse_scale(SPNode obj) {
-		Vector2 rtv = new Vector2(1,1);
-		SPNode itr = obj;
-		while (itr != null) {
-			rtv.x /= itr.scale_x();
-			rtv.y /= itr.scale_y();
-			itr = itr._parent;
-		}
-		return rtv;
-	}
-	
-	public static Vector2 fit_to_rect(SPSprite obj, SPHitRect rect) {
-		Vector2 obj_size = obj.texrect().size;
-		return new Vector2(
-			(rect._x2 - rect._x1)/obj_size.x,
-			(rect._y2 - rect._y1)/obj_size.y
-		);
-	}
-
 	public static SPRange get_horiz_world_bounds() {
 		return new SPRange(){ _min = -875, _max = 875 };
 	}
@@ -241,7 +215,6 @@ public class SPUtil {
 		return shortest_angle;
 	}
 
-
 	public static float bezier_val_for_t(float p0, float p1, float p2, float p3, float t) {
 		float cp0 = (1 - t)*(1 - t)*(1 - t);
 		float cp1 = 3 * t * (1-t)*(1-t);
@@ -293,17 +266,11 @@ public class SPUtil {
 		return SPUtil.lerp(min,max,rtv_normalized);
 	}
 	
-	public static int iclamp(float val, float min, float max) {
-		if (val < min) return ((int)min);
-		if (val > max) return ((int)max);
-		return ((int)val);
-	}
-	
 	public static Vector4 color_from_bytes(float r, float g, float b, float a) {
 		return new Vector4(r/255.0f,g/255.0f,b/255.0f,a/255.0f);
 	}
 	
-	public static bool transform_is_enabled(Transform t) {
+	public static bool transform_and_parents_is_enabled(Transform t) {
 		Transform itr = t;
 		while (itr != null) {
 			if (!itr.gameObject.activeSelf) {
@@ -360,6 +327,9 @@ public class SPUtil {
 	public static Vector3 vec_mult(Vector3 a, Vector3 b) {
 		return new Vector3(a.x*b.x,a.y*b.y,a.z*b.z);
 	}
+	public static Vector3 vec_div(Vector3 a, Vector3 b) {
+		return new Vector3(a.x/b.x,a.y/b.y,a.z/b.z);
+	}
 	public static Vector3 vec_add(Vector3 a, Vector3 b) {
 		return a + b;
 	}
@@ -397,6 +367,37 @@ public class SPUtil {
 		return Mathf.Sqrt(Mathf.Pow(a.x-b.x,2)+Mathf.Pow(a.y-b.y,2)+Mathf.Pow(a.z-b.z,2));
 	}
 	public static Vector3 vec_z = new Vector3(0,0,1);
+	
+	// deprecated please remove
+	// SPTODO -- add child_pct_of_obj to SPUILayout
+	public static Vector2 pct_of_obj(SPSprite obj, float x, float y) {
+		return new Vector2(
+			obj.texrect().width*(x-obj.anchorpoint().x),
+			obj.texrect().height*(y-obj.anchorpoint().y)
+		);
+	}
+	
+	// deprecated please remove
+	// SPTODO -- add add_to_parent_layout to SPUILayout
+	public static Vector2 inverse_scale(SPNode obj) {
+		Vector2 rtv = new Vector2(1,1);
+		SPNode itr = obj;
+		while (itr != null) {
+			rtv.x /= itr.scale_x();
+			rtv.y /= itr.scale_y();
+			itr = itr._parent;
+		}
+		return rtv;
+	}
+	
+	//deprecated please remove
+	public static Vector2 fit_to_rect(SPSprite obj, SPHitRect rect) {
+		Vector2 obj_size = obj.texrect().size;
+		return new Vector2(
+			(rect._x2 - rect._x1)/obj_size.x,
+			(rect._y2 - rect._y1)/obj_size.y
+		);
+	}
 
 }
 
@@ -458,5 +459,79 @@ public class MultiMap<TKey, TValue> {
 	public List<TKey> keys() {
 		return _key_to_list.key_itr();
 	}
+}
+
+public class SPAlphaGroup {
+	private List<SPAlphaGroupElement> _elements = new List<SPAlphaGroupElement>();
+	private float _alpha = 1;
+	public static SPAlphaGroup cons() { return new SPAlphaGroup(); }
+	public void add_sprite(SPAlphaGroupElement tar) {
+		tar.set_alpha_mult(_alpha);
+		_elements.Add(tar);
+	}
+	public void set_alpha_mult(float mult) {
+		_alpha = mult;
+		for (int i = 0; i < _elements.Count; i++) {
+			_elements[i].set_alpha_mult(_alpha);
+		}
+	}
+	public float get_alpha(float alpha) {
+		return _alpha;
+	}
+}
+
+public class SPUILayout {
+	
+	public struct SpriteLayout {
+		public Vector2 _anchor_point;
+		public Vector2 _nparent_origin;
+		public Vector2 _nparent_placement;
+		public Vector2 _p_origin_offset;
+		public Vector2 _p_placement_offset;
+	}
+	
+	public static void layout_sprite(SPSprite tar, SPHitRect parent, SPUILayout.SpriteLayout layout) {
+		Vector2 p_parent_size = new Vector2(parent._x2-parent._x1,parent._y2-parent._y1);
+		
+		Vector2 nparent_element_size = new Vector2(layout._nparent_placement.x-layout._nparent_origin.x,layout._nparent_placement.y-layout._nparent_origin.y);
+		Vector2 p_no_offset_element_size = SPUtil.vec_mult(p_parent_size,nparent_element_size);
+		Vector2 p_element_size = SPUtil.vec_add(layout._p_placement_offset,
+			SPUtil.vec_add(p_no_offset_element_size,SPUtil.vec_scale(layout._p_origin_offset,-1)));
+		
+		Vector2 p_anchor00_origin_position = SPUtil.vec_add(SPUtil.vec_mult(p_parent_size,layout._nparent_origin),new Vector2(parent._x1,parent._y1));
+		Vector2 p_anchorlayout_origin_position = SPUtil.vec_add(p_anchor00_origin_position,SPUtil.vec_mult(p_element_size,layout._anchor_point));
+		Vector2 p_tar_origin_position = SPUtil.vec_add(p_anchorlayout_origin_position,layout._p_origin_offset);
+		
+		Vector2 element_default_size = new Vector2(tar.texrect().width,tar.texrect().height);
+		Vector2 element_tar_scale = SPUtil.vec_div(p_element_size,element_default_size);
+		
+		tar.set_scale_x(element_tar_scale.x);
+		tar.set_scale_y(element_tar_scale.y);
+		tar.set_anchor_point(layout._anchor_point.x,layout._anchor_point.y);
+		
+		tar.set_u_pos(p_tar_origin_position);
+	}
+	
+	public static SPHitRect get_layout_rect(SPSprite tar) {
+		Vector2 p_sprite_size = SPUtil.vec_mult(new Vector2(tar.texrect().width,tar.texrect().height),new Vector2(tar.scale_x(),tar.scale_y()));
+		Vector2 p_anchor_offset = SPUtil.vec_scale(SPUtil.vec_mult(tar.anchorpoint(),p_sprite_size),-1);
+		Vector2 p_rtv_origin = SPUtil.vec_add(p_anchor_offset,tar.get_u_pos());
+	
+		return new SPHitRect() {
+			_x1 = p_rtv_origin.x,
+			_y1 = p_rtv_origin.y,
+			_x2 = p_rtv_origin.x + p_sprite_size.x,
+			_y2 = p_rtv_origin.y + p_sprite_size.y
+		};
+	}
+	
+	public static Vector2 sibling_pct_of_obj(SPSprite tar, Vector2 nparent_position) {
+		SPHitRect parent_rect = SPUILayout.get_layout_rect(tar);
+		return new Vector2(
+			(parent_rect._x2-parent_rect._x1) * nparent_position.x + parent_rect._x1,
+			(parent_rect._y2-parent_rect._y1) * nparent_position.y + parent_rect._y1
+		);
+	}
+	
 }
 
