@@ -61,6 +61,7 @@ public class RTex {
 	
 	public static string ENEMY_PUFFER = "monster/enemy_puffer/puffer_enemy_ss";
 	public static string ENEMY_SPIKE = "monster/enemy_spike/spike_enemy_ss";
+	public static string ENEMY_LASER = "monster/enemy_laser/enemy_laser_ss";
 	public static string ENEMY_EFFECTS = "effects/effects_enemy_ss";
 
 	public static string BLANK = "misc/blank";

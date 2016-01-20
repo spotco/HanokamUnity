@@ -66,7 +66,7 @@ public class OnGroundDiveAnimController : OnGroundStateUpdateable {
 			_anim_t = Mathf.Clamp(_anim_t+SPUtil.sec_to_tick(1f) * SPUtil.dt_scale_get(),0,1);
 			_player_position = SPUtil.bezier_val_for_t(_anim_initial_position,ctrl_pt_1,ctrl_pt_1,tar_pt,_anim_t);
 			
-			if (prev_anim_t < 0.6f && _anim_t >= 0.6f) {
+			if (prev_anim_t < 0.4f && _anim_t >= 0.4f) {
 				g._player.play_anim(PlayerCharacterAnims.DIVE_FLIP_AND_JUMP,false);
 			}
 			if (_anim_t >= 1) {
@@ -80,7 +80,7 @@ public class OnGroundDiveAnimController : OnGroundStateUpdateable {
 			Vector3 tar_pt = SPUtil.vec_add(g._bg_village.jump_log3_position(),new Vector3(0,-100,-20));
 			Vector3 ctrl_pt_1 = new Vector3(
 				_anim_initial_position.x,
-				_anim_initial_position.y + 400,
+				_anim_initial_position.y + 500,
 				(tar_pt.z-_anim_initial_position.z)*0.5f+_anim_initial_position.z);
 			
 			float prev_anim_t = _anim_t;

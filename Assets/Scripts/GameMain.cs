@@ -8,18 +8,22 @@ public interface SPMainUpdateable {
 public class GameMain : SPBaseBehavior {
 	/**
 	laser crabs
-	2 other enemies
-	orb work water
+	small/large bubbles
+	2 other enemies (jelly and eel)
+	spike enemy bubble trail
+	spike wall enemy
+	transition orb work water
 	
 	TODO--
-	---Underwater gameplay
-	-orb spawn spirit shark swim back art transition
-	
-	spike enemy bubble trail
-	---Inair gameplay
-	
+	-Inair gameplay
+		homing arrows more
+		
 	LATER--
 	bg/village fish
+	
+	BUG--
+	camera not completely resetting dive->air transition
+	
 	**/
 
 	public static GameMain _context;
