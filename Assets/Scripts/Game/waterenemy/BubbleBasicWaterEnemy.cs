@@ -2,11 +2,11 @@
 using System.Collections;
 
 public class BubbleBasicWaterEnemy : BasicWaterEnemy {
-	public static BubbleBasicWaterEnemy cons(GameEngineScene g, PatternEntry1Pt entry, Vector2 offset) {
-		return (ObjectPool.inst().generic_depool<BubbleBasicWaterEnemy>()).i_cons(g, entry, offset);
+	public static BubbleBasicWaterEnemy cons(GameEngineScene g, PatternEntry1Pt entry) {
+		return (ObjectPool.inst().generic_depool<BubbleBasicWaterEnemy>()).i_cons(g, entry);
 	}
-	public static BubbleBasicWaterEnemy cons(GameEngineScene g, PatternEntry2Pt entry, Vector2 offset) {
-		return (ObjectPool.inst().generic_depool<BubbleBasicWaterEnemy>()).i_cons(g, entry, offset);
+	public static BubbleBasicWaterEnemy cons(GameEngineScene g, PatternEntry2Pt entry) {
+		return (ObjectPool.inst().generic_depool<BubbleBasicWaterEnemy>()).i_cons(g, entry);
 	}
 	
 	public override void do_remove() {
@@ -29,22 +29,22 @@ public class BubbleBasicWaterEnemy : BasicWaterEnemy {
 		base.repool();
 	}
 	
-	private BubbleBasicWaterEnemy i_cons(GameEngineScene g, PatternEntry1Pt entry, Vector2 offset) {
-		this.shared_i_cons_pre(g,entry._start,offset);
+	private BubbleBasicWaterEnemy i_cons(GameEngineScene g, PatternEntry1Pt entry) {
+		this.shared_i_cons_pre(g,entry._start);
 		
-		this.add_component_for_mode(Mode.Moving, OnePointBasicWaterEnemyComponent.cons(SPUtil.vec_add(entry._start,offset)));		
+		this.add_component_for_mode(Mode.Moving, OnePointBasicWaterEnemyComponent.cons(entry._start));		
 		
 		this.shared_i_cons_post(g);
 		return this;
 	}
 	
-	private BubbleBasicWaterEnemy i_cons(GameEngineScene g, PatternEntry2Pt entry, Vector2 offset) {
-		this.shared_i_cons_pre(g,entry._start,offset);
+	private BubbleBasicWaterEnemy i_cons(GameEngineScene g, PatternEntry2Pt entry) {
+		this.shared_i_cons_pre(g,entry._start);
 		
 		this.add_component_for_mode(Mode.Moving,TwoPointSwimBasicWaterEnemyComponent.cons(
-			SPUtil.vec_add(entry._start,offset),
-			SPUtil.vec_add(entry._pt1,offset),
-			SPUtil.vec_add(entry._pt2,offset),
+			entry._start,
+			entry._pt1,
+			entry._pt2,
 			3.0f
 		));
 		
@@ -52,9 +52,9 @@ public class BubbleBasicWaterEnemy : BasicWaterEnemy {
 		return this;
 	}
 	
-	private void shared_i_cons_pre(GameEngineScene g, Vector2 entry_start, Vector2 offset) {
+	private void shared_i_cons_pre(GameEngineScene g, Vector2 entry_start) {
 		base.i_cons();
-		_params._pos = SPUtil.vec_add(entry_start,offset);
+		_params._pos = entry_start;
 	}
 	
 	private void shared_i_cons_post(GameEngineScene g) {

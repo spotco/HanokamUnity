@@ -65,12 +65,11 @@ public class TwoPointSwimBasicWaterEnemyComponent : BasicWaterEnemyComponent {
 	
 	private Vector2 _last_position;
 	public override void i_update(GameEngineScene g, DiveGameState state, BasicWaterEnemy enemy) {
-	
 		_current_pos = SPUtil.vec_lmovto(_current_pos,_expected_pos.get_current(),_target_speed * 1.5f);
 		enemy._params._pos = _current_pos;
 		
 		Vector2 delta = SPUtil.vec_sub(enemy._params._pos,_last_position);
-		if (delta.magnitude > 0) {
+		if (delta.magnitude > 0) {		
 			float tar_rotation = SPUtil.dir_ang_deg(delta.x,delta.y) - 90;
 			enemy.behaviour_set_rotation(
 				SPUtil.drpt(enemy.get_root().rotation(), enemy.get_root().rotation() + SPUtil.shortest_angle(enemy.get_root().rotation(),tar_rotation), 1/10.0f));

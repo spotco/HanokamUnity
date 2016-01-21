@@ -1,12 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class SpikeBasicWaterEnemy : BasicWaterEnemy {
-	public static SpikeBasicWaterEnemy cons(GameEngineScene g, PatternEntry1Pt entry, Vector2 offset) {
-		return (ObjectPool.inst().generic_depool<SpikeBasicWaterEnemy>()).i_cons(g, entry, offset);
+public class SpikeBasicWaterEnemy : BasicWaterEnemy, ImmTriggerBasicWaterEnemyComponent.Delegate {
+	public static SpikeBasicWaterEnemy cons(GameEngineScene g, PatternEntry1Pt entry) {
+		return (ObjectPool.inst().generic_depool<SpikeBasicWaterEnemy>()).i_cons(g, entry);
 	}
-	public static SpikeBasicWaterEnemy cons(GameEngineScene g, PatternEntry2Pt entry, Vector2 offset) {
-		return (ObjectPool.inst().generic_depool<SpikeBasicWaterEnemy>()).i_cons(g, entry, offset);
+	public static SpikeBasicWaterEnemy cons(GameEngineScene g, PatternEntry2Pt entry) {
+		return (ObjectPool.inst().generic_depool<SpikeBasicWaterEnemy>()).i_cons(g, entry);
 	}
 	
 	public override void do_remove() {
@@ -32,13 +32,13 @@ public class SpikeBasicWaterEnemy : BasicWaterEnemy {
 		base.repool();
 	}
 	
-	private SpikeBasicWaterEnemy i_cons(GameEngineScene g, PatternEntry1Pt entry, Vector2 offset) {
-		this.shared_i_cons_pre(g,entry._start,offset);
+	private SpikeBasicWaterEnemy i_cons(GameEngineScene g, PatternEntry1Pt entry) {
+		this.shared_i_cons_pre(g,entry._start);
 		
 		this.add_component_for_mode(Mode.Moving,TwoPointSwimBasicWaterEnemyComponent.cons(
-			SPUtil.vec_add(entry._start,offset),
-			SPUtil.vec_add(entry._start,offset),
-			SPUtil.vec_add(entry._start,offset),
+			entry._start,
+			entry._start,
+			entry._start,
 			1.5f //default "move back to location" speed
 		));
 		
@@ -47,13 +47,13 @@ public class SpikeBasicWaterEnemy : BasicWaterEnemy {
 		return this;
 	}
 	
-	private SpikeBasicWaterEnemy i_cons(GameEngineScene g, PatternEntry2Pt entry, Vector2 offset) {
-		this.shared_i_cons_pre(g,entry._start,offset);
+	private SpikeBasicWaterEnemy i_cons(GameEngineScene g, PatternEntry2Pt entry) {
+		this.shared_i_cons_pre(g,entry._start);
 		
 		this.add_component_for_mode(Mode.Moving,TwoPointSwimBasicWaterEnemyComponent.cons(
-			SPUtil.vec_add(entry._start,offset),
-			SPUtil.vec_add(entry._pt1,offset),
-			SPUtil.vec_add(entry._pt2,offset),
+			entry._start,
+			entry._pt1,
+			entry._pt2,
 			entry._speed
 		));
 		
@@ -61,15 +61,21 @@ public class SpikeBasicWaterEnemy : BasicWaterEnemy {
 		return this;
 	}
 	
-	private void shared_i_cons_pre(GameEngineScene g, Vector2 entry_start, Vector2 offset) {
+	private void shared_i_cons_pre(GameEngineScene g, Vector2 entry_start) {
 		base.i_cons();
-		_params._pos = SPUtil.vec_add(entry_start,offset);
+		_params._pos = entry_start;
 	}
 	
 	private void shared_i_cons_post(GameEngineScene g) {
 		this.add_hiteffect(SpikeReturnToPositionHitEffect.cons());
 		this.add_component_for_mode(Mode.Stunned,KnockbackStunBasicWaterEnemyComponent.cons());
+		this.add_component_for_mode(Mode.StunEnded,ImmTriggerBasicWaterEnemyComponent.cons(this));
 		this.transition_to_mode(g, Mode.Moving);
+	}
+	
+	public void imm_trigger(GameEngineScene g, DiveGameState state, BasicWaterEnemy enemy) {
+		//stun ended
+		this.transition_to_mode(g,Mode.Moving);
 	}
 	
 	private Mode _last_mode;

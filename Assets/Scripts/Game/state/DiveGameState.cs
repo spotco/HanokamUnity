@@ -43,7 +43,6 @@ public class DiveGameState : GameStateBase {
 
 	public enum Mode {
 		TransitionIn,
-		
 		Gameplay,
 		
 		OutOfAirAnimationZoomIn,
@@ -60,6 +59,7 @@ public class DiveGameState : GameStateBase {
 	public Params _params;
 	private FlashEvery _bubble_every;
 	public WaterEnemyManager _enemy_manager;
+	public WaterProjectileManager _projectiles;
 
 	public DiveGameState i_cons(GameEngineScene g) {
 		_params._vel = new Vector2(0,-22);
@@ -83,6 +83,7 @@ public class DiveGameState : GameStateBase {
 		g._player.set_manual_sort_z_order(GameAnchorZ.Player_UnderWater);
 		_bubble_every = FlashEvery.cons(30);
 		_enemy_manager = WaterEnemyManager.cons(g,this);
+		_projectiles = WaterProjectileManager.cons(g);
 		UnderwaterBubbleParticle.proc_multiple_bubbles(g);
 		return this;
 	}
@@ -90,6 +91,7 @@ public class DiveGameState : GameStateBase {
 	public override void i_update(GameEngineScene g) {
 		g._player.i_update(g);
 		_enemy_manager.i_update(g, this);
+		_projectiles.i_update(g, this);
 
 		switch (_params._mode) {
 		case (Mode.TransitionIn): {
@@ -290,7 +292,8 @@ public class DiveGameState : GameStateBase {
 	private void apply_environment_offset_pos(GameEngineScene g) {
 		g._bg_water.set_y_offset(_params._player_pos.y);
 		g._bg_village.set_u_pos(0, -_params._player_pos.y);
-		_enemy_manager.set_offset_y(_params._player_pos.y);
+		_enemy_manager.set_env_offset_y(_params._player_pos.y);
+		_projectiles.set_env_offset_y(_params._player_pos.y);
 	}
 	
 	private void apply_player_offset_position(GameEngineScene g) {
@@ -299,6 +302,7 @@ public class DiveGameState : GameStateBase {
 
 	public override void debug_draw_hitboxes(SPDebugRender draw) {
 		_enemy_manager.debug_draw_hitboxes(draw);
+		_projectiles.debug_draw_hitboxes(draw);
 	}
 
 	public override void on_state_end(GameEngineScene g) {}

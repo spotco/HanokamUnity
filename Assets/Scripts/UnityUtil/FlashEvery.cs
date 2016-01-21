@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 public class FlashEvery {
 	public float _max_time;
-	private float _time;
+	public float _time;
 	public static FlashEvery cons(float time) {
 		return new FlashEvery() { _max_time = time };
 	}

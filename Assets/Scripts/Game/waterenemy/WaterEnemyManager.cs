@@ -5,7 +5,7 @@ public abstract class IWaterEnemy : DiveGameStateUpdateable, DiveReturnGameState
 	public virtual void on_added_to_manager(GameEngineScene g) {}
 	public virtual void i_update(GameEngineScene g, DiveGameState state) {}
 	public virtual void i_update(GameEngineScene g, DiveReturnGameState state) {}
-	public virtual void apply_offset(float offset) {}
+	public virtual void apply_env_offset(float offset) {}
 	public virtual bool should_remove() { return false; }
 	public virtual void do_remove() {}
 	public virtual void add_to_parent(SPNode parent) {}
@@ -42,6 +42,7 @@ public class WaterEnemyManager : DiveGameStateUpdateable, GenericPooledObject {
 			FileCache.inst().get_patternfile(RPattern.GENPATTERN_1),
 			FileCache.inst().get_patternfile(RPattern.GENPATTERN_1),
 			
+			//FileCache.inst().get_patternfile(RPattern.TEST_1),
 			//FileCache.inst().get_patternfile(RPattern.TEST_1)
 			
 		};
@@ -62,32 +63,36 @@ public class WaterEnemyManager : DiveGameStateUpdateable, GenericPooledObject {
 	private void load_patternfile_with_offset(GameEngineScene g, PatternFile patternfile, Vector2 group_offset) {
 		for (int i = 0; i < patternfile._2pt_entries.Count; i++) {
 			PatternEntry2Pt itr_2pt = patternfile._2pt_entries[i];
+			itr_2pt = itr_2pt.copy_applied_offset(group_offset);
+			
 			if (itr_2pt._val == "puffer") {
-				this.add_enemy(g,PufferBasicWaterEnemy.cons(g,itr_2pt,group_offset));
+				this.add_enemy(g,PufferBasicWaterEnemy.cons(g,itr_2pt));
 			} else if (itr_2pt._val == "bubble") {
-				this.add_enemy(g,BubbleBasicWaterEnemy.cons(g,itr_2pt,group_offset));
+				this.add_enemy(g,BubbleBasicWaterEnemy.cons(g,itr_2pt));
 			} else if (itr_2pt._val == "spike") {
-				this.add_enemy(g,SpikeBasicWaterEnemy.cons(g,itr_2pt,group_offset));
+				this.add_enemy(g,SpikeBasicWaterEnemy.cons(g,itr_2pt));
 			} else {
 				Debug.LogError(SPUtil.sprintf("Unknown 2pt({0})",itr_2pt._val));
 			}
 		}
 		for (int i = 0; i < patternfile._1pt_entries.Count; i++) {
 			PatternEntry1Pt itr_1pt = patternfile._1pt_entries[i];
+			itr_1pt = itr_1pt.copy_applied_offset(group_offset);
+			
 			if (itr_1pt._val == "bubble") {
-				this.add_enemy(g,BubbleBasicWaterEnemy.cons(g,itr_1pt,group_offset));
+				this.add_enemy(g,BubbleBasicWaterEnemy.cons(g,itr_1pt));
 			} else if (itr_1pt._val == "spike") {
-				this.add_enemy(g,SpikeBasicWaterEnemy.cons(g,itr_1pt,group_offset));
+				this.add_enemy(g,SpikeBasicWaterEnemy.cons(g,itr_1pt));
 			} else {
 				Debug.LogError(SPUtil.sprintf("Unknown 1pt({0})",itr_1pt._val));
 			}
 		}
 	}
 	
-	public void set_offset_y(float offset_y) {
+	public void set_env_offset_y(float offset_y) {
 		for (int i = _enemies.Count-1; i >= 0; i--) {
 			IWaterEnemy itr = _enemies[i];
-			itr.apply_offset(offset_y);
+			itr.apply_env_offset(offset_y);
 		}
 	}
 	

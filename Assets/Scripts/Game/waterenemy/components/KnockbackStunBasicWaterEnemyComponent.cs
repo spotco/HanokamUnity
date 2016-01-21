@@ -32,7 +32,7 @@ public class KnockbackStunBasicWaterEnemyComponent : BasicWaterEnemyComponent {
 		
 		enemy._params._stun_ct -= SPUtil.dt_scale_get();
 		if (enemy._params._stun_ct <= 0) {
-			enemy.transition_to_mode(g, BasicWaterEnemy.Mode.Moving);
+			enemy.transition_to_mode(g, BasicWaterEnemy.Mode.StunEnded);
 		}
 	}
 }

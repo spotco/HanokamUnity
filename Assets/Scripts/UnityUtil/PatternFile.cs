@@ -95,10 +95,27 @@ public class PatternEntry2Pt {
 	[ProtoMember(3)] public Vector2 _pt2;
 	[ProtoMember(4)] public Vector2 _start;
 	[ProtoMember(5)] public float _speed;
+	
+	public PatternEntry2Pt copy_applied_offset(Vector2 offset) {
+		return new PatternEntry2Pt() {
+			_val = _val,
+			_pt1 = SPUtil.vec_add(_pt1,offset),
+			_pt2 = SPUtil.vec_add(_pt2,offset),
+			_start = SPUtil.vec_add(_start,offset),
+			_speed = _speed
+		};
+	}
 }
 
 [ProtoContract]
 public class PatternEntry1Pt {
 	[ProtoMember(1)] public string _val;
 	[ProtoMember(2)] public Vector2 _start;
+	
+	public PatternEntry1Pt copy_applied_offset(Vector2 offset) {
+		return new PatternEntry1Pt() {
+			_val = _val,
+			_start = SPUtil.vec_add(_start,offset)
+		};
+	}
 }

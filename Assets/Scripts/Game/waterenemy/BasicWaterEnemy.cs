@@ -36,9 +36,10 @@ public abstract class BasicWaterEnemy : IWaterEnemy, GenericPooledObject, SPHitP
 	public enum Mode {
 		Moving,
 		Stunned,
-		
+		StunEnded,
+		Chase,
+		Delayed,
 		Activated,
-		
 		DoRemove
 	}
 	private Mode _current_mode;
@@ -52,7 +53,6 @@ public abstract class BasicWaterEnemy : IWaterEnemy, GenericPooledObject, SPHitP
 		public int _id;
 		
 		public Vector2 _pos;
-		public float _offset;
 		public Vector2 _stun_vel;
 		public float _stun_ct, _stun_ct_max;
 		
@@ -126,13 +126,14 @@ public abstract class BasicWaterEnemy : IWaterEnemy, GenericPooledObject, SPHitP
 		return _current_mode == Mode.DoRemove;
 	}
 	
-	public override void apply_offset(float offset) {
-		_params._offset = offset;
+	private float _env_offset;
+	public override void apply_env_offset(float offset) {
+		_env_offset = offset;
 		this.apply_offset_to_position();
 	}
 	
 	private void apply_offset_to_position() {
-		_root.set_u_pos(_params._pos.x, _params._pos.y - _params._offset);
+		_root.set_u_pos(_params._pos.x, _params._pos.y - _env_offset);
 	}
 	
 	private Vector2 _last_frame_position;

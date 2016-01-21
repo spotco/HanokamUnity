@@ -481,7 +481,6 @@ public class SPAlphaGroup {
 }
 
 public class SPUILayout {
-	
 	public struct SpriteLayout {
 		public Vector2 _anchor_point;
 		public Vector2 _nparent_origin;
@@ -531,6 +530,30 @@ public class SPUILayout {
 			(parent_rect._y2-parent_rect._y1) * nparent_position.y + parent_rect._y1
 		);
 	}
+}
+
+public class SPPhysics {
+	public struct ElasticBodyCollisionParameters {
+		public Vector2 _body_a_pos, _body_b_pos;
+		public Vector2 _body_a_vel, _body_b_vel;
+		public float _body_a_mass, _body_b_mass;
+		public float _a_to_b_elasticity_coef, _b_to_a_elasticity_coef;
+	}
+	public struct ElasticBodyCollisionValues {
+		public Vector2 _body_a_dir, _body_b_dir;
+		public float _body_a_speed, _body_b_speed;
+	}
 	
+	public static ElasticBodyCollisionValues elastic_body_collision(ElasticBodyCollisionParameters param) {
+		Vector2 pos_delta = SPUtil.vec_sub(param._body_b_pos,param._body_a_pos);
+		Vector2 pos_delta_dir = pos_delta.normalized;
+		
+		return new SPPhysics.ElasticBodyCollisionValues() {
+			_body_a_speed = (param._body_b_mass / param._body_a_mass) * param._body_b_vel.magnitude * param._b_to_a_elasticity_coef,
+			_body_b_speed = (param._body_a_mass / param._body_b_mass) * param._body_a_vel.magnitude * param._a_to_b_elasticity_coef,
+			_body_a_dir = SPUtil.vec_add(SPUtil.vec_scale(pos_delta_dir,-1),param._body_b_vel.normalized).normalized,
+			_body_b_dir = SPUtil.vec_add(pos_delta_dir,param._body_a_vel.normalized).normalized
+		};
+	}
 }
 

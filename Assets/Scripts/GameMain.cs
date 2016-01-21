@@ -7,19 +7,32 @@ public interface SPMainUpdateable {
 
 public class GameMain : SPBaseBehavior {
 	/**
-	laser crabs
+	
+	underwater bullet fade effect
+	air bullet use sprite class
+	
+	spike hit bullet
+	laser crab 2point
+	bigjelly multipoint
+	laser ray multipoint
+	eel enemy work bezier side-to-side
 	small/large bubbles
-	2 other enemies (jelly and eel)
-	spike enemy bubble trail
-	spike wall enemy
+	
+	spike enemy move bubble trail
 	transition orb work water
+	
+	design 5 levels of increasing difficulty
 	
 	TODO--
 	-Inair gameplay
 		homing arrows more
+	
+	-Water gameplay
+		360 turret enemy with breaks
+		spikewall enemy
 		
 	LATER--
-	bg/village fish
+	bg/village background fish
 	
 	BUG--
 	camera not completely resetting dive->air transition
