@@ -47,6 +47,8 @@ public class RTex {
 	public static string HANOKA_EFFECTS = "effects/effects_hanoka_ss";
 	public static string HANOKA_EFFECTS_WATER = "effects/hanoka_fx_water";
 	
+	public static string GROUND_EFFECTS = "effects/ground_fx";
+	
 	public static string BUBBLE_EFFECTS = "effects/bubble_ss";
 	
 	public static string SHOP_SHOPBG = "shop/shopbg";

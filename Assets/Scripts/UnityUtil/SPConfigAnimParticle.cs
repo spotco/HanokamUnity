@@ -134,8 +134,15 @@ public class SPConfigAnimParticle : SPGameEngineParticle, GenericPooledObject {
 		_img.set_tex_rect(rect);
 		return this;
 	}
+	public SPConfigAnimParticle set_pos(Vector2 pos) {
+		return this.set_pos(pos.x,pos.y);
+	}
 	public SPConfigAnimParticle set_pos(float x, float y) {
 		_img.set_u_pos(x,y);
+		return this;
+	}
+	public SPConfigAnimParticle set_u_z(float z) {
+		_img.set_u_z(z);
 		return this;
 	}
 	public SPConfigAnimParticle set_name(string name) {

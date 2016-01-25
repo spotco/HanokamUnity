@@ -66,13 +66,32 @@ public class OnGroundDiveAnimController : OnGroundStateUpdateable {
 			_anim_t = Mathf.Clamp(_anim_t+SPUtil.sec_to_tick(1f) * SPUtil.dt_scale_get(),0,1);
 			_player_position = SPUtil.bezier_val_for_t(_anim_initial_position,ctrl_pt_1,ctrl_pt_1,tar_pt,_anim_t);
 			
-			if (prev_anim_t < 0.4f && _anim_t >= 0.4f) {
+			float ripple_trigger_0 = 0.3f;
+			float ripple_trigger_1 = 0.5f;
+			float ripple_trigger_2 = 0.7f;
+			float ripple_trigger_3 = 0.9f;
+			float flipstart_trigger = 0.325f;
+			if (prev_anim_t < ripple_trigger_0 && _anim_t >= ripple_trigger_0) {
+				g._bg_village._jump_logs[0].trigger_ripple();
+			}
+			if (prev_anim_t < ripple_trigger_1 && _anim_t >= ripple_trigger_1) {
+				g._bg_village._jump_logs[1].trigger_ripple();
+			}
+			if (prev_anim_t < ripple_trigger_2 && _anim_t >= ripple_trigger_2) {
+				g._bg_village._jump_logs[2].trigger_ripple();
+			}
+			if (prev_anim_t < ripple_trigger_3 && _anim_t >= ripple_trigger_3) {
+				g._bg_village._jump_logs[3].trigger_ripple();
+			}
+			
+			if (prev_anim_t < flipstart_trigger && _anim_t >= flipstart_trigger) {
 				g._player.play_anim(PlayerCharacterAnims.DIVE_FLIP_AND_JUMP,false);
 			}
 			if (_anim_t >= 1) {
 				_current_mode = Mode.JUMP_LOG1;
 				_anim_initial_position = tar_pt;
 				_anim_t = 0;
+				g._bg_village._jump_logs[3].trigger_particle(g);
 			}
 			
 		} break;

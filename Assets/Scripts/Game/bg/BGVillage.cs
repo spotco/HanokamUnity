@@ -265,7 +265,7 @@ public class BGVillage : SPGameUpdateable, SPNodeHierarchyElement {
 	public Vector3 jump_log2_position() { return new Vector3(0,-175.5f,-169.4f); }
 	public Vector3 jump_log3_position() { return new Vector3(0,-194,-274.7f); }
 	
-	private List<BGVillageJumpLog> _jump_logs = new List<BGVillageJumpLog>();
+	public List<BGVillageJumpLog> _jump_logs = new List<BGVillageJumpLog>();
 	
 	private void setup_jumping_logs() {
 		{

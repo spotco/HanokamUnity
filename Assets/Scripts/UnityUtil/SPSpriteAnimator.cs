@@ -47,6 +47,9 @@ public class SPSpriteAnimator {
 	public bool is_finished() {
 		return _is_finished;
 	}
+	public bool is_current_anim_repeating() {
+		return this.current_anim()._repeating;
+	}
 
 	public SPSpriteAnimator play_anim(string name, bool force = false) {
 		if (!_anim_name_to_anim.ContainsKey(name)) {
