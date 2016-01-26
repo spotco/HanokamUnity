@@ -1,14 +1,6 @@
 {
      "entries": [
           {
-               "type": "1pt",
-               "val": "spike",
-               "start": {
-                    "x": 150,
-                    "y": -100
-               }
-          },
-          {
                "type": "directional",
                "val": "lasercrab",
                "start": {

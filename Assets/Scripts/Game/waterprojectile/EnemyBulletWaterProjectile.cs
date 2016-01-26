@@ -38,7 +38,6 @@ public class EnemyBulletWaterProjectile : WaterProjectileBase, GenericPooledObje
 	public override void i_update(GameEngineScene g, DiveGameState state) {
 		_sprite.i_update(g);
 		_base_params._pos = SPUtil.vec_add(_base_params._pos,SPUtil.vec_scale(_vel,SPUtil.dt_scale_get()));
-		//this.apply_offset_to_position();
 		
 		_ct -= SPUtil.dt_scale_get();
 		
@@ -50,7 +49,7 @@ public class EnemyBulletWaterProjectile : WaterProjectileBase, GenericPooledObje
 				g._camerac.freeze_frame(1);
 				g._camerac.camera_shake(new Vector2(-1.2f,1.3f),10,20);
 				
-			} else {
+			} else if (!state._params.is_invuln()) {
 				g._game_ui.do_red_flash();
 				g._camerac.freeze_frame(2);
 				g._camerac.camera_shake(new Vector2(-1.5f,1.7f),15,30);

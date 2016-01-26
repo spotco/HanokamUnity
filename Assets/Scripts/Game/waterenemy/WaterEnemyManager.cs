@@ -94,6 +94,8 @@ public class WaterEnemyManager : DiveGameStateUpdateable, GenericPooledObject {
 			
 			if (itr_dir._val == "lasercrab") {
 				this.add_enemy(g,LaserCrabBasicWaterEnemy.cons(g,itr_dir));	
+			} else {
+				Debug.LogError(SPUtil.sprintf("Unknown directional({0})",itr_dir._val));
 			}
 		}
 	}

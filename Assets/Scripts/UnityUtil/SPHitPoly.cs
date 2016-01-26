@@ -31,7 +31,7 @@ public struct SPHitPoly {
 		default: return _pts3;
 		}
 	}
-	public string to_string() {
+	public override string ToString() {
 		return SPUtil.sprintf("{{%f,%f},{%f,%f},{%f,%f},{%f,%f}}",
 			_pts0.x,_pts0.y,
 			_pts1.x,_pts1.y,
@@ -97,8 +97,8 @@ public struct SPHitPoly {
 		float max_x = Mathf.Max(buf.pts(0).x,Mathf.Max(buf.pts(1).x,Mathf.Max(buf.pts(2).x,buf.pts(3).x)));
 		float max_y = Mathf.Max(buf.pts(0).y,Mathf.Max(buf.pts(1).y,Mathf.Max(buf.pts(2).y,buf.pts(3).y)));
 		return new SPHitRect() {
-			_x1 = min_x+extend_min.x,
-			_y1 = min_y+extend_min.y,
+			_x1 = min_x-extend_min.x,
+			_y1 = min_y-extend_min.y,
 			_x2 = max_x+extend_max.x,
 			_y2 = max_y+extend_max.y
 		};

@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class EnemyLaserBaseSprite : GenericPooledObject, SPNodeHierarchyElement, SPGameUpdateable {
@@ -25,7 +25,7 @@ public class EnemyLaserBaseSprite : GenericPooledObject, SPNodeHierarchyElement,
 			.add_anim(ANIM_POINT, 
 				FileCache.inst().get_rects_list(RTex.ENEMY_LASER, "laser_point_%d.png",0,2),7)
 			.add_anim(ANIM_START,
-				FileCache.inst().get_rects_list(RTex.ENEMY_LASER, "laser_start%04d.png",0,13),5,false)
+				FileCache.inst().get_rects_list(RTex.ENEMY_LASER, "laser_start%04d.png",0,13),3,false)
 			.play_anim(ANIM_POINT);
 	}
 	public void repool() {

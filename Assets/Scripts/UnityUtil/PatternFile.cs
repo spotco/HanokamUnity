@@ -91,6 +91,9 @@ public class PatternFile {
 			this.cmp_yrange_point(ref y_range,this._2pt_entries[i]._pt1);
 			this.cmp_yrange_point(ref y_range,this._2pt_entries[i]._pt2);
 		}
+		for (int i = 0; i < this._directional_entries.Count; i++) {
+			this.cmp_yrange_point(ref y_range,this._directional_entries[i]._start);
+		}
 		_section_height = y_range._max - y_range._min;
 	}
 	private void cmp_yrange_point(ref SPRange y_range, Vector2 point) {
