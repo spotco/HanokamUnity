@@ -9,24 +9,22 @@ public class EnemyBulletProjectile : AirProjectileBase, GenericPooledObject {
 	
 	private SPNode _root;
 	public override void add_to_parent(SPNode parent) { parent.add_child(_root); }
-	private SPSprite _sprite;
-	private SPSpriteAnimator _animator;
+	
+	private EnemyBulletSprite _bullet_sprite;
 	
 	public void depool() {
 		_root = SPNode.cons_node();
 		_root.set_name("EnemyBulletProjectile");
-		_sprite = SPSprite.cons_sprite_texkey_texrect(RTex.ENEMY_EFFECTS, FileCache.inst().get_texrect(RTex.ENEMY_EFFECTS,"enemy_bullet_normal_000.png"));
-		_sprite.set_manual_sort_z_order(GameAnchorZ.Enemy_FX);
-		_root.add_child(_sprite);
-		_animator = SPSpriteAnimator.cons(_sprite)
-			.add_anim("play", 
-				FileCache.inst().get_rects_list(RTex.ENEMY_EFFECTS, "enemy_bullet_normal_00%d.png",0,4),4)
-			.play_anim("play");
+		
+		_bullet_sprite = EnemyBulletSprite.cons();
+		_bullet_sprite.set_manual_sort_z_order(GameAnchorZ.Enemy_FX);
+		_bullet_sprite.add_to_parent(_root);
 	}
 	public void repool() {
+		ObjectPool.inst().generic_repool<EnemyBulletSprite>(_bullet_sprite);
+		_bullet_sprite = null;
 		_root.repool();
 		_root = null;
-		_sprite = null;
 	}
 	
 	private Vector2 _vel;
@@ -79,6 +77,8 @@ public class EnemyBulletProjectile : AirProjectileBase, GenericPooledObject {
 			}
 		}
 		
+		_bullet_sprite.i_update(g);
+		
 		if (kill) {
 			SPConfigAnimParticle neu_particle = SPConfigAnimParticle.cons()
 				.set_texture(TextureResource.inst().get_tex(RTex.PARTICLES_SPRITESHEET))
@@ -92,8 +92,6 @@ public class EnemyBulletProjectile : AirProjectileBase, GenericPooledObject {
 			_ct = 0;
 			return;
 		}
-		
-		_animator.i_update();
 	
 		_root.set_u_pos(SPUtil.vec_add(_root.get_u_pos(),SPUtil.vec_scale(_vel,SPUtil.dt_scale_get())));
 		_ct -= SPUtil.dt_scale_get();

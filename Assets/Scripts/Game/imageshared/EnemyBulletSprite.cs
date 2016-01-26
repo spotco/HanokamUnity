@@ -15,6 +15,7 @@ public class EnemyBulletSprite : GenericPooledObject, SPNodeHierarchyElement, SP
 		_root.set_name("EnemyBulletSprite");
 		_sprite = SPSprite.cons_sprite_texkey_texrect(RTex.ENEMY_EFFECTS, FileCache.inst().get_texrect(RTex.ENEMY_EFFECTS,"enemy_bullet_normal_000.png"));
 		_sprite.set_manual_sort_z_order(GameAnchorZ.Enemy_FX);
+		_sprite.set_name("EnemyBulletSprite_sprite");
 		_root.add_child(_sprite);
 		_animator = SPSpriteAnimator.cons(_sprite)
 			.add_anim("play", 
@@ -24,16 +25,22 @@ public class EnemyBulletSprite : GenericPooledObject, SPNodeHierarchyElement, SP
 	public void repool() {
 		_root.repool();
 		_animator.set_target(null);
+		_animator = null;
 		_root = null;
 		_sprite = null;
 	}
 	public void add_to_parent(SPNode parent) { parent.add_child(_root); }
-	private EnemyBulletSprite i_cons() { return this; }
+	private EnemyBulletSprite i_cons() { 
+		this.set_opacity(1);
+		return this;
+	}
 	public void i_update(GameEngineScene g) { 
 		if (!_root.is_enabled()) return;
 		_animator.i_update(); 
 	}
 	public void set_enabled(bool val) { _root.set_enabled(val); }
+	public void set_opacity(float val) { _sprite.set_opacity(val); }
+	public void set_manual_sort_z_order(int zord) { _sprite.set_manual_sort_z_order(zord); }
 	
 	public void set_rotation(float rotation) {
 		_root.set_rotation(rotation);

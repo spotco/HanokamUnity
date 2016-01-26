@@ -16,8 +16,9 @@ public class PatternFile {
 	
 	[ProtoMember(1)] public List<PatternEntry2Pt> _2pt_entries = new List<PatternEntry2Pt>();
 	[ProtoMember(2)] public List<PatternEntry1Pt> _1pt_entries = new List<PatternEntry1Pt>();
-	[ProtoMember(3)] public float _section_height;
-	[ProtoMember(4)] public float _spacing_bottom;
+	[ProtoMember(3)] public List<PatternEntryDirectional> _directional_entries = new List<PatternEntryDirectional>();
+	[ProtoMember(4)] public float _section_height;
+	[ProtoMember(5)] public float _spacing_bottom;
 	
 	public static PatternFile cons_from_string(string file_text) {
 		PatternFile rtv = new PatternFile();
@@ -58,6 +59,17 @@ public class PatternFile {
 					_start = start,
 					_speed = speed
 				});
+			
+			} else if (type == "directional") {
+				JSONObject start_obj = itr.GetObject("start");
+				Vector2 start = new Vector2((float)start_obj.GetNumber("x"),(float)start_obj.GetNumber("y"));
+				JSONObject dir = itr.GetObject("dir");
+				Vector2 dir_vec = new Vector2((float)dir.GetNumber("x"),(float)dir.GetNumber("y"));
+				rtv._directional_entries.Add(new PatternEntryDirectional() {
+					_val = val,
+					_start = start,
+					_dir = dir_vec
+				});
 			}
 		}
 		
@@ -86,6 +98,21 @@ public class PatternFile {
 		y_range._max = Mathf.Max(y_range._max,point.y);
 	}
 	
+}
+
+[ProtoContract]
+public class PatternEntryDirectional {
+	[ProtoMember(1)] public string _val;
+	[ProtoMember(2)] public Vector2 _start;
+	[ProtoMember(3)] public Vector2 _dir;
+	
+	public PatternEntryDirectional copy_applied_offset(Vector2 offset) {
+		return new PatternEntryDirectional() {
+			_val = _val,
+			_start = SPUtil.vec_add(_start,offset),
+			_dir = _dir
+		};
+	}
 }
 
 [ProtoContract]

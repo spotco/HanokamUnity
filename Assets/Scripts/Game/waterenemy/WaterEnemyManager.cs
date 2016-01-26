@@ -36,14 +36,15 @@ public class WaterEnemyManager : DiveGameStateUpdateable, GenericPooledObject {
 	public WaterEnemyManager i_cons(GameEngineScene g, DiveGameState state) {
 	
 		List<PatternFile> levels_to_load = new List<PatternFile>() {
+			/*
 			FileCache.inst().get_patternfile(RPattern.GENPATTERN_1),
 			FileCache.inst().get_patternfile(RPattern.GENPATTERN_1),
 			FileCache.inst().get_patternfile(RPattern.GENPATTERN_2),
 			FileCache.inst().get_patternfile(RPattern.GENPATTERN_1),
 			FileCache.inst().get_patternfile(RPattern.GENPATTERN_1),
-			
+			*/
 			//FileCache.inst().get_patternfile(RPattern.TEST_1),
-			//FileCache.inst().get_patternfile(RPattern.TEST_1)
+			FileCache.inst().get_patternfile(RPattern.TEST_1)
 			
 		};
 		Vector2 cur_offset = new Vector2(0,-2000);
@@ -85,6 +86,14 @@ public class WaterEnemyManager : DiveGameStateUpdateable, GenericPooledObject {
 				this.add_enemy(g,SpikeBasicWaterEnemy.cons(g,itr_1pt));
 			} else {
 				Debug.LogError(SPUtil.sprintf("Unknown 1pt({0})",itr_1pt._val));
+			}
+		}
+		for (int i = 0; i < patternfile._directional_entries.Count; i++) {
+			PatternEntryDirectional itr_dir = patternfile._directional_entries[i];
+			itr_dir = itr_dir.copy_applied_offset(group_offset);
+			
+			if (itr_dir._val == "lasercrab") {
+				this.add_enemy(g,LaserCrabBasicWaterEnemy.cons(g,itr_dir));	
 			}
 		}
 	}

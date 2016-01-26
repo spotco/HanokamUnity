@@ -22,29 +22,7 @@
 			<key>spriteTrimmed</key>
 			<true/>
 			<key>textureRect</key>
-			<string>{{712, 686}, {652, 340}}</string>
-			<key>textureRotated</key>
-			<false/>
-		</dict>
-		
-		<key>laser_body_0.png</key>
-		<dict>
-			<key>aliases</key>
-			<array>
-			
-			</array>
-			<key>spriteColorRect</key>
-			<string>{{0, 0}, {64, 512}}</string>
-			<key>spriteOffset</key>
-			<string>{0, 0}</string>
-			<key>spriteSize</key>
-			<string>{64, 512}</string>
-			<key>spriteSourceSize</key>
-			<string>{64, 512}</string>
-			<key>spriteTrimmed</key>
-			<false/>
-			<key>textureRect</key>
-			<string>{{602, 0}, {64, 512}}</string>
+			<string>{{602, 0}, {652, 340}}</string>
 			<key>textureRotated</key>
 			<false/>
 		</dict>
@@ -56,7 +34,7 @@
 			
 			</array>
 			<key>spriteColorRect</key>
-			<string>{{0, 0}, {191, 230}}</string>
+			<string>{{0, 6}, {191, 224}}</string>
 			<key>spriteOffset</key>
 			<string>{0, 0}</string>
 			<key>spriteSize</key>
@@ -66,7 +44,7 @@
 			<key>spriteTrimmed</key>
 			<false/>
 			<key>textureRect</key>
-			<string>{{1559, 686}, {191, 230}}</string>
+			<string>{{958, 574}, {191, 230}}</string>
 			<key>textureRotated</key>
 			<false/>
 		</dict>
@@ -78,7 +56,7 @@
 			
 			</array>
 			<key>spriteColorRect</key>
-			<string>{{7, 11}, {177, 212}}</string>
+			<string>{{5, 16}, {179, 208}}</string>
 			<key>spriteOffset</key>
 			<string>{0, 0}</string>
 			<key>spriteSize</key>
@@ -88,7 +66,7 @@
 			<key>spriteTrimmed</key>
 			<false/>
 			<key>textureRect</key>
-			<string>{{1366, 686}, {191, 230}}</string>
+			<string>{{958, 342}, {191, 230}}</string>
 			<key>textureRotated</key>
 			<false/>
 		</dict>
@@ -100,7 +78,7 @@
 			
 			</array>
 			<key>spriteColorRect</key>
-			<string>{{17, 48}, {300, 179}}</string>
+			<string>{{19, 47}, {302, 181}}</string>
 			<key>spriteOffset</key>
 			<string>{0, 0}</string>
 			<key>spriteSize</key>
@@ -110,7 +88,7 @@
 			<key>spriteTrimmed</key>
 			<false/>
 			<key>textureRect</key>
-			<string>{{356, 772}, {354, 341}}</string>
+			<string>{{356, 1028}, {354, 341}}</string>
 			<key>textureRotated</key>
 			<false/>
 		</dict>
@@ -122,7 +100,7 @@
 			
 			</array>
 			<key>spriteColorRect</key>
-			<string>{{29, 59}, {280, 169}}</string>
+			<string>{{29, 58}, {284, 171}}</string>
 			<key>spriteOffset</key>
 			<string>{0, 0}</string>
 			<key>spriteSize</key>
@@ -132,7 +110,7 @@
 			<key>spriteTrimmed</key>
 			<false/>
 			<key>textureRect</key>
-			<string>{{1366, 918}, {354, 341}}</string>
+			<string>{{1256, 0}, {354, 341}}</string>
 			<key>textureRotated</key>
 			<false/>
 		</dict>
@@ -144,7 +122,7 @@
 			
 			</array>
 			<key>spriteColorRect</key>
-			<string>{{0, 1}, {350, 255}}</string>
+			<string>{{0, 0}, {354, 257}}</string>
 			<key>spriteOffset</key>
 			<string>{0, 0}</string>
 			<key>spriteSize</key>
@@ -154,7 +132,7 @@
 			<key>spriteTrimmed</key>
 			<false/>
 			<key>textureRect</key>
-			<string>{{712, 1028}, {354, 341}}</string>
+			<string>{{1507, 343}, {354, 341}}</string>
 			<key>textureRotated</key>
 			<false/>
 		</dict>
@@ -166,7 +144,7 @@
 			
 			</array>
 			<key>spriteColorRect</key>
-			<string>{{5, 11}, {336, 239}}</string>
+			<string>{{6, 9}, {340, 241}}</string>
 			<key>spriteOffset</key>
 			<string>{0, 0}</string>
 			<key>spriteSize</key>
@@ -176,7 +154,7 @@
 			<key>spriteTrimmed</key>
 			<false/>
 			<key>textureRect</key>
-			<string>{{668, 0}, {354, 341}}</string>
+			<string>{{1612, 0}, {354, 341}}</string>
 			<key>textureRotated</key>
 			<false/>
 		</dict>
@@ -188,161 +166,7 @@
 			
 			</array>
 			<key>spriteColorRect</key>
-			<string>{{12, 6}, {310, 243}}</string>
-			<key>spriteOffset</key>
-			<string>{0, 0}</string>
-			<key>spriteSize</key>
-			<string>{354, 341}</string>
-			<key>spriteSourceSize</key>
-			<string>{354, 341}</string>
-			<key>spriteTrimmed</key>
-			<false/>
-			<key>textureRect</key>
-			<string>{{0, 772}, {354, 341}}</string>
-			<key>textureRotated</key>
-			<false/>
-		</dict>
-		
-		<key>laser_start0005.png</key>
-		<dict>
-			<key>aliases</key>
-			<array>
-			
-			</array>
-			<key>spriteColorRect</key>
-			<string>{{25, 13}, {292, 235}}</string>
-			<key>spriteOffset</key>
-			<string>{0, 0}</string>
-			<key>spriteSize</key>
-			<string>{354, 341}</string>
-			<key>spriteSourceSize</key>
-			<string>{354, 341}</string>
-			<key>spriteTrimmed</key>
-			<false/>
-			<key>textureRect</key>
-			<string>{{1068, 1261}, {354, 341}}</string>
-			<key>textureRotated</key>
-			<false/>
-		</dict>
-		
-		<key>laser_start0006.png</key>
-		<dict>
-			<key>aliases</key>
-			<array>
-			
-			</array>
-			<key>spriteColorRect</key>
-			<string>{{23, 18}, {324, 323}}</string>
-			<key>spriteOffset</key>
-			<string>{0, 0}</string>
-			<key>spriteSize</key>
-			<string>{354, 341}</string>
-			<key>spriteSourceSize</key>
-			<string>{354, 341}</string>
-			<key>spriteTrimmed</key>
-			<false/>
-			<key>textureRect</key>
-			<string>{{1024, 343}, {354, 341}}</string>
-			<key>textureRotated</key>
-			<false/>
-		</dict>
-		
-		<key>laser_start0007.png</key>
-		<dict>
-			<key>aliases</key>
-			<array>
-			
-			</array>
-			<key>spriteColorRect</key>
-			<string>{{50, 42}, {274, 277}}</string>
-			<key>spriteOffset</key>
-			<string>{0, 0}</string>
-			<key>spriteSize</key>
-			<string>{354, 341}</string>
-			<key>spriteSourceSize</key>
-			<string>{354, 341}</string>
-			<key>spriteTrimmed</key>
-			<false/>
-			<key>textureRect</key>
-			<string>{{1024, 0}, {354, 341}}</string>
-			<key>textureRotated</key>
-			<false/>
-		</dict>
-		
-		<key>laser_start0008.png</key>
-		<dict>
-			<key>aliases</key>
-			<array>
-			
-			</array>
-			<key>spriteColorRect</key>
-			<string>{{76, 69}, {218, 219}}</string>
-			<key>spriteOffset</key>
-			<string>{0, 0}</string>
-			<key>spriteSize</key>
-			<string>{354, 341}</string>
-			<key>spriteSourceSize</key>
-			<string>{354, 341}</string>
-			<key>spriteTrimmed</key>
-			<false/>
-			<key>textureRect</key>
-			<string>{{1380, 0}, {354, 341}}</string>
-			<key>textureRotated</key>
-			<false/>
-		</dict>
-		
-		<key>laser_start0009.png</key>
-		<dict>
-			<key>aliases</key>
-			<array>
-			
-			</array>
-			<key>spriteColorRect</key>
-			<string>{{95, 89}, {178, 177}}</string>
-			<key>spriteOffset</key>
-			<string>{0, 0}</string>
-			<key>spriteSize</key>
-			<string>{354, 341}</string>
-			<key>spriteSourceSize</key>
-			<string>{354, 341}</string>
-			<key>spriteTrimmed</key>
-			<false/>
-			<key>textureRect</key>
-			<string>{{356, 1115}, {354, 341}}</string>
-			<key>textureRotated</key>
-			<false/>
-		</dict>
-		
-		<key>laser_start0010.png</key>
-		<dict>
-			<key>aliases</key>
-			<array>
-			
-			</array>
-			<key>spriteColorRect</key>
-			<string>{{105, 101}, {154, 155}}</string>
-			<key>spriteOffset</key>
-			<string>{0, 0}</string>
-			<key>spriteSize</key>
-			<string>{354, 341}</string>
-			<key>spriteSourceSize</key>
-			<string>{354, 341}</string>
-			<key>spriteTrimmed</key>
-			<false/>
-			<key>textureRect</key>
-			<string>{{1380, 343}, {354, 341}}</string>
-			<key>textureRotated</key>
-			<false/>
-		</dict>
-		
-		<key>laser_start0011.png</key>
-		<dict>
-			<key>aliases</key>
-			<array>
-			
-			</array>
-			<key>spriteColorRect</key>
-			<string>{{114, 110}, {138, 139}}</string>
+			<string>{{13, 4}, {312, 245}}</string>
 			<key>spriteOffset</key>
 			<string>{0, 0}</string>
 			<key>spriteSize</key>
@@ -357,14 +181,14 @@
 			<false/>
 		</dict>
 		
-		<key>laser_start0012.png</key>
+		<key>laser_start0005.png</key>
 		<dict>
 			<key>aliases</key>
 			<array>
 			
 			</array>
 			<key>spriteColorRect</key>
-			<string>{{121, 113}, {126, 127}}</string>
+			<string>{{26, 11}, {296, 237}}</string>
 			<key>spriteOffset</key>
 			<string>{0, 0}</string>
 			<key>spriteSize</key>
@@ -374,7 +198,161 @@
 			<key>spriteTrimmed</key>
 			<false/>
 			<key>textureRect</key>
-			<string>{{668, 343}, {354, 341}}</string>
+			<string>{{0, 1458}, {354, 341}}</string>
+			<key>textureRotated</key>
+			<false/>
+		</dict>
+		
+		<key>laser_start0006.png</key>
+		<dict>
+			<key>aliases</key>
+			<array>
+			
+			</array>
+			<key>spriteColorRect</key>
+			<string>{{24, 16}, {328, 325}}</string>
+			<key>spriteOffset</key>
+			<string>{0, 0}</string>
+			<key>spriteSize</key>
+			<string>{354, 341}</string>
+			<key>spriteSourceSize</key>
+			<string>{354, 341}</string>
+			<key>spriteTrimmed</key>
+			<false/>
+			<key>textureRect</key>
+			<string>{{1151, 686}, {354, 341}}</string>
+			<key>textureRotated</key>
+			<false/>
+		</dict>
+		
+		<key>laser_start0007.png</key>
+		<dict>
+			<key>aliases</key>
+			<array>
+			
+			</array>
+			<key>spriteColorRect</key>
+			<string>{{51, 40}, {276, 281}}</string>
+			<key>spriteOffset</key>
+			<string>{0, 0}</string>
+			<key>spriteSize</key>
+			<string>{354, 341}</string>
+			<key>spriteSourceSize</key>
+			<string>{354, 341}</string>
+			<key>spriteTrimmed</key>
+			<false/>
+			<key>textureRect</key>
+			<string>{{602, 685}, {354, 341}}</string>
+			<key>textureRotated</key>
+			<false/>
+		</dict>
+		
+		<key>laser_start0008.png</key>
+		<dict>
+			<key>aliases</key>
+			<array>
+			
+			</array>
+			<key>spriteColorRect</key>
+			<string>{{78, 68}, {220, 221}}</string>
+			<key>spriteOffset</key>
+			<string>{0, 0}</string>
+			<key>spriteSize</key>
+			<string>{354, 341}</string>
+			<key>spriteSourceSize</key>
+			<string>{354, 341}</string>
+			<key>spriteTrimmed</key>
+			<false/>
+			<key>textureRect</key>
+			<string>{{1507, 686}, {354, 341}}</string>
+			<key>textureRotated</key>
+			<false/>
+		</dict>
+		
+		<key>laser_start0009.png</key>
+		<dict>
+			<key>aliases</key>
+			<array>
+			
+			</array>
+			<key>spriteColorRect</key>
+			<string>{{96, 89}, {180, 179}}</string>
+			<key>spriteOffset</key>
+			<string>{0, 0}</string>
+			<key>spriteSize</key>
+			<string>{354, 341}</string>
+			<key>spriteSourceSize</key>
+			<string>{354, 341}</string>
+			<key>spriteTrimmed</key>
+			<false/>
+			<key>textureRect</key>
+			<string>{{712, 1028}, {354, 341}}</string>
+			<key>textureRotated</key>
+			<false/>
+		</dict>
+		
+		<key>laser_start0010.png</key>
+		<dict>
+			<key>aliases</key>
+			<array>
+			
+			</array>
+			<key>spriteColorRect</key>
+			<string>{{107, 100}, {156, 157}}</string>
+			<key>spriteOffset</key>
+			<string>{0, 0}</string>
+			<key>spriteSize</key>
+			<string>{354, 341}</string>
+			<key>spriteSourceSize</key>
+			<string>{354, 341}</string>
+			<key>spriteTrimmed</key>
+			<false/>
+			<key>textureRect</key>
+			<string>{{0, 772}, {354, 341}}</string>
+			<key>textureRotated</key>
+			<false/>
+		</dict>
+		
+		<key>laser_start0011.png</key>
+		<dict>
+			<key>aliases</key>
+			<array>
+			
+			</array>
+			<key>spriteColorRect</key>
+			<string>{{116, 110}, {140, 139}}</string>
+			<key>spriteOffset</key>
+			<string>{0, 0}</string>
+			<key>spriteSize</key>
+			<string>{354, 341}</string>
+			<key>spriteSourceSize</key>
+			<string>{354, 341}</string>
+			<key>spriteTrimmed</key>
+			<false/>
+			<key>textureRect</key>
+			<string>{{1151, 343}, {354, 341}}</string>
+			<key>textureRotated</key>
+			<false/>
+		</dict>
+		
+		<key>laser_start0012.png</key>
+		<dict>
+			<key>aliases</key>
+			<array>
+			
+			</array>
+			<key>spriteColorRect</key>
+			<string>{{123, 113}, {126, 127}}</string>
+			<key>spriteOffset</key>
+			<string>{0, 0}</string>
+			<key>spriteSize</key>
+			<string>{354, 341}</string>
+			<key>spriteSourceSize</key>
+			<string>{354, 341}</string>
+			<key>spriteTrimmed</key>
+			<false/>
+			<key>textureRect</key>
+			<string>{{602, 342}, {354, 341}}</string>
 			<key>textureRotated</key>
 			<false/>
 		</dict>

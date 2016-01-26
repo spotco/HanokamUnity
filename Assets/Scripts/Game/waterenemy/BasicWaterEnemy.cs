@@ -39,10 +39,12 @@ public abstract class BasicWaterEnemy : IWaterEnemy, GenericPooledObject, SPHitP
 		StunEnded,
 		Chase,
 		Delayed,
+		UnActivated,
 		Activated,
+		
 		DoRemove
 	}
-	private Mode _current_mode;
+	protected Mode _current_mode;
 	public Mode get_current_mode() { return _current_mode; }
 	
 	private MultiMap<Mode,BasicWaterEnemyComponent> _mode_to_state;

@@ -8,6 +8,7 @@ public class RShader {
     public static string NOALPHA = "Custom/SPNoAlphaShader";
 	public static string SPTEXTCHARACTER = "Custom/SPTextCharacter";
 	public static string UNDERWATER_VIEW_SURFACE = "Custom/UnderWaterViewSurface";
+	public static string LASER_COLOR_SHADER = "Custom/LaserColorShader";
 }
 
 public class ShaderResource : Object {

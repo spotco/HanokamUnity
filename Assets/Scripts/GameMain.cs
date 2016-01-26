@@ -7,11 +7,6 @@ public interface SPMainUpdateable {
 
 public class GameMain : SPBaseBehavior {
 	/**
-	
-	underwater bullet fade effect
-	air bullet use sprite class
-	
-	spike hit bullet
 	laser crab 2point
 	bigjelly multipoint
 	laser ray multipoint

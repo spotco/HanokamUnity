@@ -20,11 +20,17 @@ public class EnemyBulletWaterProjectile : WaterProjectileBase, GenericPooledObje
 	private Vector2 _vel;
 	private float _ct;
 	
+	private FlashEvery _fade_anim;
+	private bool _fade_toggle;
+	
 	private EnemyBulletWaterProjectile i_cons(GameEngineScene g, DiveGameState state, Vector2 pos, Vector2 dir, float vel) {
 		_base_params._pos = pos;
 		_vel = SPUtil.vec_scale(dir.normalized,vel);
 		_ct = 300;
 		_sprite.set_rotation(SPUtil.dir_ang_deg(_vel.x,_vel.y) - 90);
+		
+		_fade_anim = FlashEvery.cons(5);
+		_fade_toggle = false;
 		
 		return this;
 	}
@@ -32,7 +38,7 @@ public class EnemyBulletWaterProjectile : WaterProjectileBase, GenericPooledObje
 	public override void i_update(GameEngineScene g, DiveGameState state) {
 		_sprite.i_update(g);
 		_base_params._pos = SPUtil.vec_add(_base_params._pos,SPUtil.vec_scale(_vel,SPUtil.dt_scale_get()));
-		this.apply_offset_to_position();
+		//this.apply_offset_to_position();
 		
 		_ct -= SPUtil.dt_scale_get();
 		
@@ -58,6 +64,19 @@ public class EnemyBulletWaterProjectile : WaterProjectileBase, GenericPooledObje
 			_ct = 0;
 		}
 		
+		if (_ct < 80) {
+			_fade_anim.i_update();
+			if (_fade_anim.do_flash()) {
+				if (_fade_toggle) {
+					_sprite.set_opacity(0.75f);
+				} else {
+					_sprite.set_opacity(0.2f);
+				}
+				_fade_toggle = !_fade_toggle;
+			}
+			
+		}
+		
 		_sprite.set_enabled(SPHitRect.hitrect_touch(g.get_viewbox(),this.get_hit_rect()));
 	}
 	
@@ -66,7 +85,7 @@ public class EnemyBulletWaterProjectile : WaterProjectileBase, GenericPooledObje
 		ObjectPool.inst().generic_repool<EnemyBulletWaterProjectile>(this);
 	}
 	
-	private void apply_offset_to_position() {
+	protected override void apply_offset_to_position() {
 		_sprite.set_u_pos(_base_params._pos.x,_base_params._pos.y - _env_offset);
 	}
 	

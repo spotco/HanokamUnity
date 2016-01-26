@@ -368,6 +368,16 @@ public class SPUtil {
 	}
 	public static Vector3 vec_z = new Vector3(0,0,1);
 	
+	public static List<T> list_reverse<T>(List<T> list) {
+		for (int i = 0; i < list.Count/2; i++) {
+			T a = list[i];
+			T b = list[list.Count-1-i];
+			list[i] = b;
+			list[list.Count-1-i] = a;
+		}
+		return list;
+	}
+	
 	// deprecated please remove
 	// SPTODO -- add child_pct_of_obj to SPUILayout
 	public static Vector2 pct_of_obj(SPSprite obj, float x, float y) {

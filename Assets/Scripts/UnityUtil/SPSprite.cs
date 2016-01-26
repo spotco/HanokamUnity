@@ -38,6 +38,9 @@ public class SPSprite : SPNode, SPAlphaGroupElement {
 			_meshrenderer = this.gameObject.GetComponent<MeshRenderer>();
 			_meshfilter = this.gameObject.GetComponent<MeshFilter>();
 		}
+		
+		_material_color_params = null;
+		
 		this.set_alpha_mult(1);
 		this.set_texkey(texkey);
 
@@ -74,18 +77,23 @@ public class SPSprite : SPNode, SPAlphaGroupElement {
 
 	public override SPNode set_opacity(float val) {
 		_color.w = val;
-		return this.set_color(_color);
+		this.apply_material_params();
+		return this;
 	}
 
 	public override float get_opacity() { return _color.w; }
 
 	public SPSprite set_color(Vector4 color) {
 		_color = color;
+		
+		// Shouldn't be here, but breaks stuff when removed.
+		if (_texkey != null) { _meshrenderer.material = GameMain._context._tex_resc.get_material_default(_texkey); }
 
-		if (_texkey != null) {
-			_meshrenderer.material = GameMain._context._tex_resc.get_material_default(_texkey);
-		}
-
+		this.apply_material_params();
+		return this;
+	}
+	
+	private void apply_material_params() {
 		MeshRenderer renderer = _meshrenderer;
 		if (_material_block == null) {
 			_material_block = new MaterialPropertyBlock();
@@ -99,8 +107,19 @@ public class SPSprite : SPNode, SPAlphaGroupElement {
 		}
 		
 		_material_block.AddColor("_Color", tar_color);
+		if (_material_color_params != null) {
+			foreach (string key in _material_color_params.Keys) {
+				_material_block.AddColor(key,_material_color_params[key]);
+			}
+		}
 		renderer.SetPropertyBlock(_material_block);
-		return this;
+	}
+	
+	private Dictionary<string,Color> _material_color_params;
+	public void add_material_color_param(string param, Color color) {
+		if (_material_color_params == null) _material_color_params = new Dictionary<string, Color>();
+		_material_color_params[param] = color;
+		this.apply_material_params();
 	}
 
 	public Vector4 color() { return _color; }
@@ -110,7 +129,7 @@ public class SPSprite : SPNode, SPAlphaGroupElement {
 	public const int VTX_1_1 = 2;
 	public const int VTX_0_1 = 3;
 
-	Vector2[] __uvs = new Vector2[4];
+	private Vector2[] __uvs = new Vector2[4];
 	public Rect texrect() { return _texrect; }
 	public SPSprite set_tex_rect(Rect texrect) {
 		if (texrect.x == _texrect.x && texrect.y == _texrect.y && texrect.width == _texrect.width && texrect.height == _texrect.height) return this;
@@ -253,7 +272,7 @@ public class SPSprite : SPNode, SPAlphaGroupElement {
 	private float _alpha_mult;
 	public void set_alpha_mult(float alpha_mult) {
 		_alpha_mult = alpha_mult;
-		this.set_color(this.color());
+		this.apply_material_params();
 	}
 
 }
