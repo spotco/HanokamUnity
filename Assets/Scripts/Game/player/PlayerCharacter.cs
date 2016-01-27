@@ -250,9 +250,9 @@ public class PlayerCharacterAnims {
 
 public class PlayerCharacterUtil {
 
-	public static Vector2 pos_in_bounds(float x, float y) {
+	public static Vector2 pos_in_bounds(Vector2 pos) {
 		SPRange bounds_ext = SPUtil.get_horiz_world_bounds().extend(-50);
-		return new Vector2(Mathf.Clamp(x,bounds_ext._min,bounds_ext._max),y);
+		return new Vector2(Mathf.Clamp(pos.x,bounds_ext._min,bounds_ext._max),pos.y);
 	}
 
 	public static void move_in_bounds(PlayerCharacter player, float x, float y) {
@@ -264,11 +264,17 @@ public class PlayerCharacterUtil {
 		player.set_center_u_pos(Mathf.Clamp(x,bounds_ext._min,bounds_ext._max),y);
 	}
 	public static void rotate_to_rotation_for_vel(PlayerCharacter player, float vx, float vy, float fric, float offset = -90) {
-		float tar_rotation = SPUtil.dir_ang_deg(vx,vy) + offset;
-		PlayerCharacterUtil.rotate_to_rotation(player,tar_rotation,fric);
+		player.set_rotation(PlayerCharacterUtil.get_next_rotate_to_rotation_for_vel(player,vx,vy,fric,offset));
 	}
 	public static void rotate_to_rotation(PlayerCharacter player, float tar_rotation, float fric) {
-		player.set_rotation(SPUtil.drpt(player.rotation(), player.rotation() + SPUtil.shortest_angle(player.rotation(),tar_rotation), fric));
+		player.set_rotation(PlayerCharacterUtil.get_next_rotate_to_rotation(player,tar_rotation,fric));
+	}
+	public static float get_next_rotate_to_rotation_for_vel(PlayerCharacter player, float vx, float vy, float fric, float offset = -90) {
+		float tar_rotation = SPUtil.dir_ang_deg(vx,vy) + offset;
+		return PlayerCharacterUtil.get_next_rotate_to_rotation(player,tar_rotation,fric);
+	}
+	public static float get_next_rotate_to_rotation(PlayerCharacter player, float tar_rotation, float fric) {
+		return SPUtil.drpt(player.rotation(), player.rotation() + SPUtil.shortest_angle(player.rotation(),tar_rotation), fric);
 	}
 	
 }

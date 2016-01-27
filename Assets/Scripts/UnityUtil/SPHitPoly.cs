@@ -1,6 +1,6 @@
 ﻿using System;
 using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 //stackoverflow.com/questions/10962379/how-to-check-intersection-between-2-rotated-rectangles
 
 public interface SPHitPolyOwner {
@@ -31,6 +31,11 @@ public struct SPHitPoly {
 		default: return _pts3;
 		}
 	}
+	public bool contains_point(Vector2 point) {
+		return SPHitPoly.hitpoly_intersect(this,new SPHitPoly() {
+			_pts0 = point, _pts1 = point, _pts2 = point, _pts3 = point
+		});
+	}
 	public override string ToString() {
 		return SPUtil.sprintf("{{%f,%f},{%f,%f},{%f,%f},{%f,%f}}",
 			_pts0.x,_pts0.y,
@@ -43,9 +48,11 @@ public struct SPHitPoly {
 	private static SPHitPoly[] __polygons = new SPHitPoly[2];
 	public static bool polyowners_intersect(SPHitPolyOwner a, SPHitPolyOwner b) {
 		if (!SPHitRect.hitrect_touch(a.get_hit_rect(),b.get_hit_rect())) return false;
-		
-		__polygons[0] = a.get_hit_poly();
-		__polygons[1] = b.get_hit_poly();
+		return SPHitPoly.hitpoly_intersect(a.get_hit_poly(),b.get_hit_poly());
+	}
+	public static bool hitpoly_intersect(SPHitPoly a, SPHitPoly b) {
+		__polygons[0] = a;
+		__polygons[1] = b;
 		for(int i = 0; i < 2; i++) { 
 			SPHitPoly polygon = __polygons[i];
 			for (int i1 = 0; i1 < 4; i1++) {

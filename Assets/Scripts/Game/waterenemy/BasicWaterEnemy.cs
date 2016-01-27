@@ -68,7 +68,7 @@ public abstract class BasicWaterEnemy : IWaterEnemy, GenericPooledObject, SPHitP
 		return this;
 	}
 	
-	public override void on_added_to_manager(GameEngineScene g) {
+	public override void on_added_to_manager(GameEngineScene g, DiveGameState state) {
 		{
 			List<BasicWaterEnemyComponent> components = _mode_to_state.list(_current_mode);
 			for (int i = 0; i < components.Count; i++) {

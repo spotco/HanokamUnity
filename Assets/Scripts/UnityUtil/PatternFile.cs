@@ -17,8 +17,9 @@ public class PatternFile {
 	[ProtoMember(1)] public List<PatternEntry2Pt> _2pt_entries = new List<PatternEntry2Pt>();
 	[ProtoMember(2)] public List<PatternEntry1Pt> _1pt_entries = new List<PatternEntry1Pt>();
 	[ProtoMember(3)] public List<PatternEntryDirectional> _directional_entries = new List<PatternEntryDirectional>();
-	[ProtoMember(4)] public float _section_height;
-	[ProtoMember(5)] public float _spacing_bottom;
+	[ProtoMember(4)] public List<PatternEntryLine> _line_entries = new List<PatternEntryLine>();
+	[ProtoMember(5)] public float _section_height;
+	[ProtoMember(6)] public float _spacing_bottom;
 	
 	public static PatternFile cons_from_string(string file_text) {
 		PatternFile rtv = new PatternFile();
@@ -70,6 +71,17 @@ public class PatternFile {
 					_start = start,
 					_dir = dir_vec
 				});
+			
+			} else if (type == "line") {
+				JSONObject pt1_obj = itr.GetObject("pt1");
+				Vector2 pt1 = new Vector2((float)pt1_obj.GetNumber("x"),(float)pt1_obj.GetNumber("y"));
+				JSONObject pt2_obj = itr.GetObject("pt2");
+				Vector2 pt2 = new Vector2((float)pt2_obj.GetNumber("x"),(float)pt2_obj.GetNumber("y"));
+				rtv._line_entries.Add(new PatternEntryLine() {
+					_val = val,
+					_pt1 = pt1,
+					_pt2 = pt2
+				});
 			}
 		}
 		
@@ -94,6 +106,10 @@ public class PatternFile {
 		for (int i = 0; i < this._directional_entries.Count; i++) {
 			this.cmp_yrange_point(ref y_range,this._directional_entries[i]._start);
 		}
+		for (int i = 0; i < this._line_entries.Count; i++) {
+			this.cmp_yrange_point(ref y_range,this._line_entries[i]._pt1);
+			this.cmp_yrange_point(ref y_range,this._line_entries[i]._pt2);
+		}
 		_section_height = y_range._max - y_range._min;
 	}
 	private void cmp_yrange_point(ref SPRange y_range, Vector2 point) {
@@ -101,6 +117,21 @@ public class PatternFile {
 		y_range._max = Mathf.Max(y_range._max,point.y);
 	}
 	
+}
+
+[ProtoContract]
+public class PatternEntryLine {
+	[ProtoMember(1)] public string _val;
+	[ProtoMember(2)] public Vector2 _pt1;
+	[ProtoMember(3)] public Vector2 _pt2;
+	
+	public PatternEntryLine copy_applied_offset(Vector2 offset) {
+		return new PatternEntryLine() {
+			_val = _val,
+			_pt1 = SPUtil.vec_add(_pt1,offset),
+			_pt2 = SPUtil.vec_add(_pt2,offset)
+		};
+	}
 }
 
 [ProtoContract]

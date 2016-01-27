@@ -84,6 +84,9 @@ public class DiveGameState : GameStateBase {
 		_bubble_every = FlashEvery.cons(30);
 		_enemy_manager = WaterEnemyManager.cons(g,this);
 		_projectiles = WaterProjectileManager.cons(g);
+		
+		_enemy_manager.load_testlevel(g,this);
+		
 		UnderwaterBubbleParticle.proc_multiple_bubbles(g);
 		return this;
 	}
@@ -106,10 +109,8 @@ public class DiveGameState : GameStateBase {
 			PlayerCharacterUtil.rotate_to_rotation_for_vel(g._player,_params._vel.x,_params._vel.y,1/10.0f);
 			
 			_params._player_pos = PlayerCharacterUtil.pos_in_bounds(
-				_params._player_pos.x + _params._vel.x * SPUtil.dt_scale_get(),
-				_params._player_pos.y
-			);
-			_params._player_pos.y += _params._vel.y * SPUtil.dt_scale_get();
+				SPUtil.vec_add(_params._player_pos,SPUtil.vec_scale(_params._vel,SPUtil.dt_scale_get())));
+			
 			if (_params._player_pos.y < -1000) {
 				_params._mode = Mode.Gameplay;
 				g._camerac.set_target_zoom(1500);
@@ -133,14 +134,14 @@ public class DiveGameState : GameStateBase {
 			_params._camera_offset_y = SPUtil.drpt(_params._camera_offset_y,tar_camera_offset_y,1/10.0f);
 			g._camerac.set_target_camera_focus_on_character(g,0,_params._camera_offset_y);
 			
+			float tar_rotation = g._player.rotation();
 			bool turn_mode = false;
 			if (!(_params._dashing && _params._dash_has_hit) && !(_params.is_invuln())) {
 				if (g._controls.get_control_down(ControlManager.Control.ShootArrow) && !_params._dashing && _params._turn_mode_delay_ct <= 0) {
 					if (g._controls.is_move_x() || g._controls.is_move_y()) {
 						Vector2 dir = g._controls.get_move();
 						float rotation_pre = g._player.rotation();
-						PlayerCharacterUtil.rotate_to_rotation_for_vel(g._player,dir.x,dir.y,1/10.0f);
-						float rotation_post = g._player.rotation();
+						float rotation_post = PlayerCharacterUtil.get_next_rotate_to_rotation_for_vel(g._player,dir.x,dir.y,1/10.0f);
 						if (Mathf.Abs(rotation_post-rotation_pre) > 1.0f) {
 							turn_mode = true;
 						}
@@ -181,7 +182,7 @@ public class DiveGameState : GameStateBase {
 						_params._vel.y = SPUtil.drpt(_params._vel.y,0,1/30.0f);
 					}
 					
-					PlayerCharacterUtil.rotate_to_rotation_for_vel(g._player,_params._vel.x,_params._vel.y,1/10.0f);
+					tar_rotation = PlayerCharacterUtil.get_next_rotate_to_rotation_for_vel(g._player,_params._vel.x,_params._vel.y,1/10.0f);
 				}
 			}
 			
@@ -246,17 +247,16 @@ public class DiveGameState : GameStateBase {
 				UnderwaterBubbleParticle.proc_multiple_bubbles(g);
 				_params._mode = Mode.SwimToUnderwaterTreasure;
 			}
-			_params._player_pos = PlayerCharacterUtil.pos_in_bounds(
-				_params._player_pos.x + _params._vel.x * SPUtil.dt_scale_get(),
-				_params._player_pos.y
-				);
-			_params._player_pos.y += _params._vel.y * SPUtil.dt_scale_get();
+			
+			
+			this.calculate_player_position(g,tar_rotation);
 			
 			this.apply_environment_offset_pos(g);
 			this.apply_player_offset_position(g);
 			
 		} break;
 		case Mode.OutOfAirAnimationZoomIn: {
+			//SPTODO -- make a controller for this
 			g._player.play_anim(PlayerCharacterAnims.SWIMHURT);
 			g._camerac.set_target_camera_focus_on_character(g,0,50);
 			g._camerac.set_target_zoom(700);
@@ -286,6 +286,41 @@ public class DiveGameState : GameStateBase {
 			
 		} break;
 		default: break;
+		}
+	}
+
+	
+	private void calculate_player_position(GameEngineScene g, float tar_rotation) {		
+		_params._player_pos = PlayerCharacterUtil.pos_in_bounds(
+			SPUtil.vec_add(_params._player_pos,SPUtil.vec_scale(_params._vel,SPUtil.dt_scale_get())));
+		g._player.set_rotation(tar_rotation);
+		
+		g._player.set_u_pos(_params._player_pos.x, 0);
+		_enemy_manager.set_env_offset_y(_params._player_pos.y);
+		_projectiles.set_env_offset_y(_params._player_pos.y);
+		
+		for (int i_obstacle = 0; i_obstacle < _enemy_manager._obstacles.Count; i_obstacle++) {
+			IWaterObstacle itr_obstacle = _enemy_manager._obstacles[i_obstacle];
+			if (SPHitPoly.polyowners_intersect(itr_obstacle,g._player)) {
+				Vector2 player_pos_pre = _params._player_pos;
+				bool loop_continue = true;
+				float magnitude = Mathf.Floor(_params._vel.magnitude);
+				while (loop_continue) {
+					for (float i = 0; i <= 8; i++) {
+						Vector2 dir = SPUtil.vec_scale(SPUtil.ang_deg_dir(45*i),magnitude);
+						_params._player_pos = SPUtil.vec_add(player_pos_pre,dir);
+						
+						g._player.set_u_pos(_params._player_pos.x, 0);
+						itr_obstacle.apply_env_offset(_params._player_pos.y);
+						
+						if (!SPHitPoly.polyowners_intersect(itr_obstacle,g._player)) {
+							loop_continue = false;
+							break;
+						}
+					}
+					magnitude += 1;
+				}
+			}
 		}
 	}
 	
