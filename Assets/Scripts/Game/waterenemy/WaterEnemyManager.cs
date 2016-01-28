@@ -108,10 +108,17 @@ public class WaterEnemyManager : DiveGameStateUpdateable, GenericPooledObject {
 		for (int i = 0; i < patternfile._line_entries.Count; i++) {
 			PatternEntryLine itr_line = patternfile._line_entries[i];
 			itr_line = itr_line.copy_applied_offset(group_offset);
-			if (itr_line._val == "blockleft" || itr_line._val == "blockright") {
-				this.add_enemy(g,state,BlockWaterEnemy.cons(g,itr_line));
-			} else {
+			if (true) {
 				Debug.LogError(SPUtil.sprintf("Unknown line({0})",itr_line._val));
+			}
+		}
+		for (int i = 0; i < patternfile._polygon_entries.Count; i++) {
+			PatternEntryPolygon itr_poly = patternfile._polygon_entries[i];
+			itr_poly = itr_poly.copy_applied_offset(group_offset);
+			if (itr_poly._val == "block") {
+				this.add_enemy(g,state,BlockWaterEnemy.cons(g,itr_poly));
+			} else {
+				Debug.LogError(SPUtil.sprintf("Unknown poly({0})",itr_poly._val));
 			}
 		}
 	}

@@ -3,7 +3,7 @@ using System.Collections;
 
 public class BlockWaterEnemy : IWaterObstacle, GenericPooledObject {
 	
-	public static BlockWaterEnemy cons(GameEngineScene g, PatternEntryLine entry) {
+	public static BlockWaterEnemy cons(GameEngineScene g, PatternEntryPolygon entry) {
 		return ObjectPool.inst().generic_depool<BlockWaterEnemy>().i_cons(g,entry);
 	}
 	
@@ -23,25 +23,20 @@ public class BlockWaterEnemy : IWaterObstacle, GenericPooledObject {
 	public override Vector2 get_u_pos() { return _root.get_u_pos(); }
 	public override void apply_env_offset(float offset) { _root.set_u_pos(_pos.x, _pos.y - offset); }
 	
-	private Vector2 _pt1_to_pt2_delta;
 	private Vector2 _pos;
+	private Vector2 _pt0, _pt1, _pt2, _pt3;
 	
-	private BlockWaterEnemy i_cons(GameEngineScene g, PatternEntryLine entry) {
-		_pos = entry._pt1;
+	private BlockWaterEnemy i_cons(GameEngineScene g, PatternEntryPolygon entry) {
+		_pos = entry._pt0;
 		
-		Vector2 pt_delta = SPUtil.vec_sub(entry._pt2,entry._pt1);
-		_pt1_to_pt2_delta = pt_delta;
+		_pt0 = entry._pt0;
+		_pt1 = entry._pt1;
+		_pt2 = entry._pt2;
+		_pt3 = entry._pt3;
 		
-		if (entry._val == "blockleft") {
-			_img.set_anchor_point(0,0.5f);
-			_img.set_tex_rect(FileCache.inst().get_texrect(RTex.ENEMY_BLOCK,"block_left.png"));
-			_img.set_rotation(SPUtil.dir_ang_deg(pt_delta.x,pt_delta.y));
-			
-		} else if (entry._val == "blockright") {
-			_img.set_anchor_point(1,0.5f);
-			_img.set_tex_rect(FileCache.inst().get_texrect(RTex.ENEMY_BLOCK,"block_right.png"));
-			_img.set_rotation(SPUtil.dir_ang_deg(pt_delta.x,pt_delta.y)-180);	
-		}
+		_img.set_anchor_point(0,0.5f);
+		_img.set_tex_rect(FileCache.inst().get_texrect(RTex.ENEMY_BLOCK,"block_left.png"));
+		
 		return this;
 	}
 	public override void on_added_to_manager(GameEngineScene g, DiveGameState state) {
@@ -55,13 +50,11 @@ public class BlockWaterEnemy : IWaterObstacle, GenericPooledObject {
 	}
 	public override SPHitPoly get_hit_poly() {
 		Vector2 root_pos = _root.get_u_pos();
-		Vector2 up_dir = _pt1_to_pt2_delta.normalized;
-		Vector2 right_dir = SPUtil.vec_cross(up_dir,SPUtil.vec_z).normalized;
 		return new SPHitPoly() {
-			_pts0 = SPUtil.vec_add(root_pos,SPUtil.vec_add(SPUtil.vec_scale(up_dir,0),SPUtil.vec_scale(right_dir,-50))),
-			_pts1 = SPUtil.vec_add(root_pos,SPUtil.vec_add(SPUtil.vec_scale(up_dir,0),SPUtil.vec_scale(right_dir,50))),
-			_pts3 = SPUtil.vec_add(root_pos,SPUtil.vec_add(SPUtil.vec_scale(up_dir,_pt1_to_pt2_delta.magnitude),SPUtil.vec_scale(right_dir,-50))),
-			_pts2 = SPUtil.vec_add(root_pos,SPUtil.vec_add(SPUtil.vec_scale(up_dir,_pt1_to_pt2_delta.magnitude),SPUtil.vec_scale(right_dir,50)))
+			_pts0 = root_pos,
+			_pts1 = SPUtil.vec_add(root_pos,SPUtil.vec_sub(_pt1,_pt0)),
+			_pts2 = SPUtil.vec_add(root_pos,SPUtil.vec_sub(_pt2,_pt0)),
+			_pts3 = SPUtil.vec_add(root_pos,SPUtil.vec_sub(_pt3,_pt0))
 		};
 	}
 	
