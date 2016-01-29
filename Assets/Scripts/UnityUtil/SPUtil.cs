@@ -416,6 +416,11 @@ public class SPUtil {
 		}
 	}
 	
+	public static float round_dec(float val,int i) {
+		float div = Mathf.Pow(10,i);
+		return Mathf.Floor(val*div)/div;
+	}
+	
 	// deprecated please remove
 	// SPTODO -- add child_pct_of_obj to SPUILayout
 	public static Vector2 pct_of_obj(SPSprite obj, float x, float y) {
@@ -603,5 +608,71 @@ public class SPPhysics {
 			_body_b_dir = SPUtil.vec_add(pos_delta_dir,param._body_a_vel.normalized).normalized
 		};
 	}
+	
+	
+	public interface SolidCollisionUpdateDelegate {
+		void test_move_delta(Vector2 pos_delta, List<SPHitPolyOwner> obstacles, System.Object parameters);
+	}
+	public struct SolidCollisionValues {
+		public bool _do_not_move;
+		public bool _is_collide_this_frame;
+		public Vector2 _collide_pushback_vel;
+	}
+	
+	public static List<SPHitPolyOwner> __tmp_list = new List<SPHitPolyOwner>();
+	public static List<SPHitPolyOwner> tmp_list() { __tmp_list.Clear(); return __tmp_list; }
+	
+	public static bool hit_any(SPHitPolyOwner target, List<SPHitPolyOwner> obstacles) {
+		for (int i_obstacle = 0; i_obstacle < obstacles.Count; i_obstacle++) {
+			SPHitPolyOwner itr_obstacle = (SPHitPolyOwner)obstacles[i_obstacle];
+			if (SPHitPoly.polyowners_intersect(target,itr_obstacle)) return true;	
+		}
+		return false;
+	}
+	
+	public static SolidCollisionValues solid_collision_update_frame(SPHitPolyOwner target, List<SPHitPolyOwner> obstacles, SolidCollisionUpdateDelegate callback, float min_check_magnitude, float search_start_angle, System.Object parameters) {
+		SolidCollisionValues rtv = new SolidCollisionValues() {
+			_is_collide_this_frame = false,
+			_do_not_move = false
+		};
+		
+		for (int i_obstacle = 0; i_obstacle < obstacles.Count; i_obstacle++) {
+			SPHitPolyOwner itr_obstacle = (SPHitPolyOwner)obstacles[i_obstacle];
+			if (SPHitPoly.polyowners_intersect(itr_obstacle,target)) {
+				Vector2 pos_delta = Vector2.zero;
+				bool loop_continue = true;
+				float magnitude = Mathf.Floor(min_check_magnitude);
+				int check_ct = 8;
+				int loop_ct = 0;
+				while (loop_continue) {
+					for (float i = 0; i <= check_ct; i++) {
+						Vector2 delta = SPUtil.vec_scale(SPUtil.ang_deg_dir((360.0f/check_ct)*i + search_start_angle),magnitude);
+						callback.test_move_delta(delta,obstacles,parameters);
+						if (!SPHitPoly.polyowners_intersect(itr_obstacle,target) && !SPPhysics.hit_any(target,obstacles)) {
+							loop_continue = false;
+							rtv._is_collide_this_frame = true;
+							rtv._collide_pushback_vel = delta;
+							i_obstacle = 0;
+							goto loop_end;
+						}
+					}
+					magnitude += 1;
+					loop_ct++;
+					if (loop_ct > 35) {
+						check_ct = 24;
+					} else if (loop_ct > 20) {
+						check_ct = 16;
+					}
+					if (loop_ct > 50) {
+						rtv._do_not_move = true;
+						goto loop_end;
+					}
+				}
+			}
+		}
+		loop_end:;
+		return rtv;
+	}
+	
 }
 

@@ -1,11 +1,11 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 
 public interface DiveGameStateUpdateable {
 	void i_update(GameEngineScene g, DiveGameState state);
 }
 
-public class DiveGameState : GameStateBase {
+public class DiveGameState : GameStateBase, SPPhysics.SolidCollisionUpdateDelegate {
 
 	public struct Params {
 		public Vector2 _player_pos;
@@ -289,9 +289,22 @@ public class DiveGameState : GameStateBase {
 		default: break;
 		}
 	}
-
 	
-	private void calculate_player_position(GameEngineScene g, float tar_rotation) {		
+	private Vector2 __test_move_delta_player_pos_pre;
+	public void test_move_delta(Vector2 pos_delta, List<SPHitPolyOwner> obstacles, System.Object parameters) {
+		GameEngineScene g = (GameEngineScene)parameters;
+		_params._player_pos = SPUtil.vec_add(__test_move_delta_player_pos_pre,pos_delta);
+		g._player.set_u_pos(_params._player_pos.x, 0);
+		for (int i = 0; i < obstacles.Count; i++) {
+			((IWaterObstacle)obstacles[i]).apply_env_offset(_params._player_pos.y);
+		}
+		
+	}
+	
+	private void calculate_player_position(GameEngineScene g, float tar_rotation) {
+		Vector2 player_pre_position = _params._player_pos;
+		float player_pre_rotation = g._player.rotation();
+	
 		_params._player_pos = PlayerCharacterUtil.pos_in_bounds(
 			SPUtil.vec_add(_params._player_pos,SPUtil.vec_scale(_params._vel,SPUtil.dt_scale_get())));
 		g._player.set_rotation(tar_rotation);
@@ -300,28 +313,26 @@ public class DiveGameState : GameStateBase {
 		_enemy_manager.set_env_offset_y(_params._player_pos.y);
 		_projectiles.set_env_offset_y(_params._player_pos.y);
 		
-		for (int i_obstacle = 0; i_obstacle < _enemy_manager._obstacles.Count; i_obstacle++) {
-			IWaterObstacle itr_obstacle = _enemy_manager._obstacles[i_obstacle];
-			if (SPHitPoly.polyowners_intersect(itr_obstacle,g._player)) {
-				Vector2 player_pos_pre = _params._player_pos;
-				bool loop_continue = true;
-				float magnitude = Mathf.Floor(_params._vel.magnitude);
-				while (loop_continue) {
-					for (float i = 0; i <= 8; i++) {
-						Vector2 dir = SPUtil.vec_scale(SPUtil.ang_deg_dir(45*i),magnitude);
-						_params._player_pos = SPUtil.vec_add(player_pos_pre,dir);
-						
-						g._player.set_u_pos(_params._player_pos.x, 0);
-						itr_obstacle.apply_env_offset(_params._player_pos.y);
-						
-						if (!SPHitPoly.polyowners_intersect(itr_obstacle,g._player)) {
-							loop_continue = false;
-							break;
-						}
-					}
-					magnitude += 1;
-				}
-			}
+		__test_move_delta_player_pos_pre = _params._player_pos;
+		List<SPHitPolyOwner> tmp = SPPhysics.tmp_list();
+		for (int i = 0; i < _enemy_manager._obstacles.Count; i++) {
+			tmp.Add(_enemy_manager._obstacles[i]);
+		}
+		SPPhysics.SolidCollisionValues collision_vals = SPPhysics.solid_collision_update_frame(
+			g._player,
+			tmp,this,
+			Mathf.Floor(_params._vel.magnitude),
+			SPUtil.dir_ang_deg(-_params._vel.x,-_params._vel.y),
+			(System.Object)g
+		);
+		tmp.Clear();
+		if (collision_vals._do_not_move) {
+			_params._player_pos = player_pre_position;
+			g._player.set_rotation(player_pre_rotation);
+			
+			g._player.set_u_pos(_params._player_pos.x, 0);
+			_enemy_manager.set_env_offset_y(_params._player_pos.y);
+			_projectiles.set_env_offset_y(_params._player_pos.y);
 		}
 	}
 	

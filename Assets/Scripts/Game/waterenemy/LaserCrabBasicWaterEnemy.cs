@@ -71,7 +71,7 @@ public class LaserCrabMovementBasicWaterEnemyComponent : BasicWaterEnemyComponen
 	public override void i_update(GameEngineScene g, DiveGameState state, BasicWaterEnemy enemy) {
 		Params movement_params = ((LaserCrabMovementBasicWaterEnemyComponent.ParamHolder)enemy).get_params();
 		
-		Debug.Log(movement_params._mode);
+		//Debug.Log(movement_params._mode);
 		
 		switch (movement_params._mode) {
 		case Mode.OnGround: {
