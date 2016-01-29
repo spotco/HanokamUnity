@@ -16,6 +16,7 @@ public class BasicWaterEnemyComponentUtility {
 		public Vector2 _player_vel;
 		public float _enemy_invuln_ct, _enemy_stun_ct;
 		public bool _ignore_dash;
+		public bool _transition_mode;
 		
 		public float _player_to_enemy_elasticity_coef;
 		public float _enemy_to_player_elasticity_coef;
@@ -29,7 +30,8 @@ public class BasicWaterEnemyComponentUtility {
 				_enemy_invuln_ct = 15,
 				_ignore_dash = false,
 				_player_to_enemy_elasticity_coef = 1,
-				_enemy_to_player_elasticity_coef = 1
+				_enemy_to_player_elasticity_coef = 1,
+				_transition_mode = true
 			};
 		}
 		
@@ -65,8 +67,10 @@ public class BasicWaterEnemyComponentUtility {
 		if (enemy.get_current_mode() != BasicWaterEnemy.Mode.Stunned) {
 			g._camerac.freeze_frame(2);
 			g._camerac.camera_shake(new Vector2(-1.5f,1.7f),15,30);
-			enemy.transition_to_mode(g, BasicWaterEnemy.Mode.Stunned);	
 			MiscEffects.do_water_hit(g,enemy.get_u_pos());
+			if (hit_params._transition_mode) {
+				enemy.transition_to_mode(g, BasicWaterEnemy.Mode.Stunned);	
+			}
 		}
 		
 		if (state._params._dashing && !hit_params._ignore_dash) {

@@ -28,9 +28,19 @@ public struct SPHitPoly {
 		case 1: return _pts1;
 		case 2: return _pts2;
 		case 3: return _pts3;
-		default: return _pts3;
+		default: {
+			Debug.LogError(SPUtil.sprintf("SPHitPoly pts(%d) out of range",i));
+			return _pts3;
+		}
 		}
 	}
+	public SPLineSegment line_segment_of_point(int pt) {
+		return new SPLineSegment() {
+			_pt0 = this.pts(pt),
+			_pt1 = this.pts((pt+1)%this.length)
+		};
+	}
+	
 	public bool contains_point(Vector2 point) {
 		return SPHitPoly.hitpoly_intersect(this,new SPHitPoly() {
 			_pts0 = point, _pts1 = point, _pts2 = point, _pts3 = point

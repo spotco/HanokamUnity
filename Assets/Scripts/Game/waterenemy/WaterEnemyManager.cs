@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 public abstract class IWaterEnemy : DiveGameStateUpdateable, DiveReturnGameStateUpdateable, SPNodeHierarchyElement {
 	public virtual void on_added_to_manager(GameEngineScene g, DiveGameState state) {}
+	public virtual void load_postprocess(GameEngineScene g, DiveGameState state) {}
 	public virtual void i_update(GameEngineScene g, DiveGameState state) {}
 	public virtual void i_update(GameEngineScene g, DiveReturnGameState state) {}
 	public virtual void apply_env_offset(float offset) {}
@@ -17,7 +18,6 @@ public abstract class IWaterEnemy : DiveGameStateUpdateable, DiveReturnGameState
 public abstract class IWaterObstacle : IWaterEnemy, SPHitPolyOwner {
 	public virtual SPHitRect get_hit_rect() { return new SPHitRect(); }
 	public virtual SPHitPoly get_hit_poly() { return new SPHitPoly(); }
-	public virtual void load_postprocess(GameEngineScene g, DiveGameState state) {}
 }
 
 public class WaterEnemyManager : DiveGameStateUpdateable, GenericPooledObject {	
@@ -124,9 +124,9 @@ public class WaterEnemyManager : DiveGameStateUpdateable, GenericPooledObject {
 		}
 		
 		
-		for (int i = 0; i < _obstacles.Count; i++) {
-			IWaterObstacle itr_obstacle = _obstacles[i];
-			itr_obstacle.load_postprocess(g,state);
+		for (int i = 0; i < _enemies.Count; i++) {
+			IWaterEnemy itr = _enemies[i];
+			itr.load_postprocess(g,state);
 		}
 	}
 	

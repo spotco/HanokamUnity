@@ -76,6 +76,19 @@ public struct SPLineSegment {
 		return new Vector2((float)X,(float)Y);
 	}
 	
+	public SPHitRect bounding_rect() {
+		return new SPHitRect() {
+			_x1 = Mathf.Min(_pt0.x,_pt1.x),
+			_y1 = Mathf.Min(_pt0.y,_pt1.y),
+			_x2 = Mathf.Max(_pt0.x,_pt1.x),
+			_y2 = Mathf.Max(_pt0.x,_pt1.x)
+		};
+	}
+	
+	public static bool is_intersect_point(Vector2 pt) {
+		return !float.IsNaN(pt.x) && !float.IsNaN(pt.y);
+	}
+	
 	public override string ToString() {
 		return string.Format("SPLineSegment(({0})->({1}))",_pt0,_pt1);
 	}
@@ -390,6 +403,17 @@ public class SPUtil {
 			list[list.Count-1-i] = a;
 		}
 		return list;
+	}
+	
+	public static Vector2 point_line_intersection_dir(Vector2 from, Vector2 line_point, Vector2 line_dir) {
+		Vector2 linept_to_pt_dir = SPUtil.vec_sub(from,line_point).normalized;
+		Vector3 up = SPUtil.vec_cross(linept_to_pt_dir,line_dir);
+		Vector2 dir_to = SPUtil.vec_cross(line_dir,up);
+		if (dir_to.magnitude > 0) {
+			return dir_to.normalized;
+		} else {
+			return SPUtil.vec_cross(line_dir,SPUtil.vec_z).normalized;
+		}
 	}
 	
 	// deprecated please remove

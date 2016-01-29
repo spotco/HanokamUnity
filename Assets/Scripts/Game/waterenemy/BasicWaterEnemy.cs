@@ -2,17 +2,19 @@
 using System.Collections.Generic;
 
 public abstract class BasicWaterEnemyComponent {
-	public virtual void notify_start_on_state(GameEngineScene g, BasicWaterEnemy enemy) {}
-	public virtual void notify_transition_to_state(GameEngineScene g, BasicWaterEnemy enemy) {}
-	public virtual void notify_transition_from_state(GameEngineScene g, BasicWaterEnemy enemy) {}
+	public virtual void load_postprocess(GameEngineScene g, DiveGameState state, BasicWaterEnemy enemy) {} //DiveGameState is ready
+	public virtual void notify_start_on_state(GameEngineScene g, BasicWaterEnemy enemy) {} //DiveGameState not ready yet
+	
+	public virtual void notify_transition_to_state(GameEngineScene g, BasicWaterEnemy enemy) {} //Becoming state
+	public virtual void notify_transition_from_state(GameEngineScene g, BasicWaterEnemy enemy) {} //Leaving state
 	public virtual void i_update(GameEngineScene g, DiveGameState state, BasicWaterEnemy enemy) {} //if active
 	public virtual void i_always_update_pre(GameEngineScene g, DiveGameState state, BasicWaterEnemy enemy) {} //always
 	
 	public virtual void debug_draw_hitboxes(SPDebugRender draw) {}
 }
 
-public abstract class BasicWaterEnemyHitEffect {
-	public virtual void apply_hit(GameEngineScene g, DiveGameState state, BasicWaterEnemy enemy) {}
+public interface BasicWaterEnemyHitEffect {
+	void apply_hit(GameEngineScene g, DiveGameState state, BasicWaterEnemy enemy);
 }
 
 public abstract class BasicWaterEnemy : IWaterEnemy, GenericPooledObject, SPHitPolyOwner {
@@ -76,6 +78,16 @@ public abstract class BasicWaterEnemy : IWaterEnemy, GenericPooledObject, SPHitP
 			}
 		}
 		this.apply_offset_to_position();	
+	}
+	
+	public override void load_postprocess(GameEngineScene g, DiveGameState state) {
+		{
+			List<BasicWaterEnemyComponent> components = _mode_to_state.list(_current_mode);
+			for (int i = 0; i < components.Count; i++) {
+				components[i].load_postprocess(g,state,this);
+			}
+		}
+		this.apply_offset_to_position();
 	}
 	
 	public BasicWaterEnemy add_component_for_mode(Mode mode, BasicWaterEnemyComponent component) { _mode_to_state.add(mode,component); return this; }

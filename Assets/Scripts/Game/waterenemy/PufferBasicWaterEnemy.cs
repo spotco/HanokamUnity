@@ -3,7 +3,7 @@ using System.Collections;
 
 public class SmallEnemyBasicWaterEnemyHitEffect : BasicWaterEnemyHitEffect {
 	public static SmallEnemyBasicWaterEnemyHitEffect cons() { return new SmallEnemyBasicWaterEnemyHitEffect(); }
-	public override void apply_hit(GameEngineScene g, DiveGameState state, BasicWaterEnemy enemy) {
+	public void apply_hit(GameEngineScene g, DiveGameState state, BasicWaterEnemy enemy) {
 		BasicWaterEnemyComponentUtility.HitParams hit_params = BasicWaterEnemyComponentUtility.HitParams.cons_default();
 		hit_params._player_vel = state._params._vel;
 		hit_params._enemy_vel = enemy.get_calculated_velocity();

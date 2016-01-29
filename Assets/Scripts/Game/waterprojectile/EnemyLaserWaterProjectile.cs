@@ -106,7 +106,7 @@ public class EnemyLaserWaterProjectile : WaterProjectileBase, GenericPooledObjec
 					state._params._current_breath -= 200;
 					state._params._invuln_ct = 25;
 					
-					Vector2 pushback_dir = EnemyLaserWaterProjectile.point_line_intersection_dir(g._player.get_center(),_root.get_u_pos(),_dir.normalized);
+					Vector2 pushback_dir = SPUtil.point_line_intersection_dir(g._player.get_center(),_root.get_u_pos(),_dir.normalized);
 					state._params._vel = SPUtil.vec_scale(pushback_dir,6);
 				}
 			}
@@ -136,17 +136,6 @@ public class EnemyLaserWaterProjectile : WaterProjectileBase, GenericPooledObjec
 	
 	public void owner_hold(int ct = 5) {
 		_hold_ct = System.Math.Max(_hold_ct,ct);
-	}
-	
-	private static Vector2 point_line_intersection_dir(Vector2 from, Vector2 line_point, Vector2 line_dir) {
-		Vector2 linept_to_pt_dir = SPUtil.vec_sub(from,line_point).normalized;
-		Vector3 up = SPUtil.vec_cross(linept_to_pt_dir,line_dir);
-		Vector2 dir_to = SPUtil.vec_cross(line_dir,up);
-		if (dir_to.magnitude > 0) {
-			return dir_to.normalized;
-		} else {
-			return SPUtil.vec_cross(line_dir,SPUtil.vec_z).normalized;
-		}
 	}
 	
 	private void apply_body_height() {
