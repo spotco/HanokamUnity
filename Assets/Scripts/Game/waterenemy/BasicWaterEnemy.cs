@@ -146,7 +146,7 @@ public abstract class BasicWaterEnemy : IWaterEnemy, GenericPooledObject, SPHitP
 		this.apply_offset_to_position();
 	}
 	
-	private void apply_offset_to_position() {
+	public void apply_offset_to_position() {
 		_root.set_u_pos(_params._pos.x, _params._pos.y - _env_offset);
 	}
 	

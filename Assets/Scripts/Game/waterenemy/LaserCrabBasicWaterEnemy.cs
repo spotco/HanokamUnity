@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-public class LaserCrabMovementBasicWaterEnemyComponent : BasicWaterEnemyComponent, BasicWaterEnemyHitEffect {
+public class LaserCrabMovementBasicWaterEnemyComponent : BasicWaterEnemyComponent, BasicWaterEnemyHitEffect, SPPhysics.SolidCollisionUpdateDelegate {
 	public static LaserCrabMovementBasicWaterEnemyComponent cons(Vector2 pos, Vector2 dir) {
 		return (new LaserCrabMovementBasicWaterEnemyComponent()).i_cons(pos,dir);
 	}
@@ -25,7 +25,7 @@ public class LaserCrabMovementBasicWaterEnemyComponent : BasicWaterEnemyComponen
 		LaserCrabMovementBasicWaterEnemyComponent.Params get_params();
 	}
 	
-	private void face_to(BasicWaterEnemy enemy, Vector2 dir) { enemy.get_root().set_rotation(SPUtil.dir_ang_deg(_starting_dir.x,_starting_dir.y)-90); }
+	private void face_to(BasicWaterEnemy enemy, Vector2 dir) { enemy.get_root().set_rotation(SPUtil.dir_ang_deg(dir.x,dir.y)-90); }
 	
 	public override void load_postprocess(GameEngineScene g, DiveGameState state, BasicWaterEnemy enemy) {
 		Params movement_params = ((LaserCrabMovementBasicWaterEnemyComponent.ParamHolder)enemy).get_params();
@@ -71,8 +71,6 @@ public class LaserCrabMovementBasicWaterEnemyComponent : BasicWaterEnemyComponen
 	public override void i_update(GameEngineScene g, DiveGameState state, BasicWaterEnemy enemy) {
 		Params movement_params = ((LaserCrabMovementBasicWaterEnemyComponent.ParamHolder)enemy).get_params();
 		
-		//Debug.Log(movement_params._mode);
-		
 		switch (movement_params._mode) {
 		case Mode.OnGround: {
 			if (SPHitPoly.polyowners_intersect(enemy,g._player)) {
@@ -81,10 +79,61 @@ public class LaserCrabMovementBasicWaterEnemyComponent : BasicWaterEnemyComponen
 		
 		} break;
 		case Mode.InWater: {
+			Vector2 pos_prev = enemy._params._pos;
 			enemy._params._pos = SPUtil.vec_add(enemy._params._pos, SPUtil.vec_scale(enemy._params._stun_vel,SPUtil.dt_scale_get()));
+			enemy.apply_offset_to_position();
+			
+			__test_move_delta_pos_pre = enemy._params._pos;
+			
+			List<SPHitPolyOwner> tmp = SPPhysics.tmp_list();
+			for (int i = 0; i < state._enemy_manager._obstacles.Count; i++) {
+				tmp.Add(state._enemy_manager._obstacles[i]);
+			}
+			SPPhysics.SolidCollisionValues collision_vals = SPPhysics.solid_collision_update_frame(
+				enemy,
+				tmp,
+				this,
+				Mathf.Floor(enemy._params._stun_vel.magnitude),
+				SPUtil.dir_ang_deg(-enemy._params._stun_vel.x,-enemy._params._stun_vel.y),
+				(System.Object)enemy
+			);
+			tmp.Clear();
+			
+			if (enemy._params._invuln_ct >= 0) {
+				enemy._params._invuln_ct -= SPUtil.dt_scale_get();
+			} 
+			if (enemy._params._stun_ct >= 0) {
+				enemy._params._stun_ct -= SPUtil.dt_scale_get();
+			}
+			
+			if (collision_vals._do_not_move || collision_vals._is_collide_this_frame) {
+				enemy._params._stun_vel = SPUtil.vec_scale(
+					SPUtil.vec_add(collision_vals._collide_pushback_vel.normalized,SPUtil.vec_scale(enemy._params._stun_vel.normalized,0.95f)).normalized,
+					SPUtil.drpt(enemy._params._stun_vel.magnitude,0,0.1f));
+				
+				SPUtil.logf("%.2f -- %.2f",enemy._params._invuln_ct,enemy._params._stun_ct);
+				if (enemy._params._invuln_ct < 0 && enemy._params._stun_ct < 0) {
+					Debug.LogError("TRIGGER");
+					movement_params._mode = Mode.OnGround;
+					this.face_to(enemy,collision_vals._collide_pushback_vel);
+				}
+			}
+			enemy.apply_offset_to_position();
+			
+			enemy._params._stun_vel.y -= 0.5f * SPUtil.dt_scale_get();
+			
 			
 		} break;
 		}
+	
+		//Debug.Log(enemy._params._invuln_ct + enemy._params._stun_ct + "," + movement_params._mode);
+	}
+	
+	private Vector2 __test_move_delta_pos_pre;
+	public void test_move_delta(Vector2 pos_delta, List<SPHitPolyOwner> obstacles, System.Object parameters) {
+		BasicWaterEnemy enemy = (BasicWaterEnemy)parameters;
+		enemy._params._pos = SPUtil.vec_add(__test_move_delta_pos_pre,pos_delta);
+		enemy.apply_offset_to_position();	
 	}
 	
 	public void apply_hit(GameEngineScene g, DiveGameState state, BasicWaterEnemy enemy) {
@@ -92,11 +141,14 @@ public class LaserCrabMovementBasicWaterEnemyComponent : BasicWaterEnemyComponen
 		
 		switch (movement_params._mode) {
 		case Mode.OnGround: {
+			Debug.LogError("APPLY HIT");
 			BasicWaterEnemyComponentUtility.HitParams hit_params = BasicWaterEnemyComponentUtility.HitParams.cons_default();
 			hit_params._player_vel = state._params._vel;
 			hit_params._enemy_vel = enemy.get_calculated_velocity();
 			hit_params._enemy_to_player_elasticity_coef = 0.7f;
 			hit_params._transition_mode = false;
+			hit_params._enemy_invuln_ct = 30;
+			hit_params._enemy_stun_ct = 50;
 			BasicWaterEnemyComponentUtility.small_enemy_apply_hit(g,state,enemy,hit_params);
 			
 			movement_params._mode = Mode.InWater;
@@ -106,8 +158,6 @@ public class LaserCrabMovementBasicWaterEnemyComponent : BasicWaterEnemyComponen
 			
 		} break;
 		}
-		
-		Debug.Log(movement_params._mode);
 	}
 }
 
