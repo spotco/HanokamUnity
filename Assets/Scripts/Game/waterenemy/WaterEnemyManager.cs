@@ -17,6 +17,7 @@ public abstract class IWaterEnemy : DiveGameStateUpdateable, DiveReturnGameState
 public abstract class IWaterObstacle : IWaterEnemy, SPHitPolyOwner {
 	public virtual SPHitRect get_hit_rect() { return new SPHitRect(); }
 	public virtual SPHitPoly get_hit_poly() { return new SPHitPoly(); }
+	public virtual void load_postprocess(GameEngineScene g, DiveGameState state) {}
 }
 
 public class WaterEnemyManager : DiveGameStateUpdateable, GenericPooledObject {	
@@ -121,6 +122,14 @@ public class WaterEnemyManager : DiveGameStateUpdateable, GenericPooledObject {
 				Debug.LogError(SPUtil.sprintf("Unknown poly({0})",itr_poly._val));
 			}
 		}
+		
+		
+		for (int i = 0; i < _obstacles.Count; i++) {
+			IWaterObstacle itr_obstacle = _obstacles[i];
+			itr_obstacle.load_postprocess(g,state);
+		}
+		
+		//_obstacles[1].load_postprocess(g,state);
 	}
 	
 	public void set_env_offset_y(float offset_y) {

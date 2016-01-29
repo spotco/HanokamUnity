@@ -23,8 +23,61 @@ public struct SPHitRect {
 		         r1._y1 > r2._y2 ||
 		         r2._y1 > r1._y2);
 	}
+	public static bool hitrect_contains_pt(SPHitRect rect, Vector2 pt) {
+		return (pt.x > rect._x1 && pt.x < rect._x2) && (pt.y > rect._y1 && pt.y < rect._y2);
+	}
 	public override string ToString() {
 		return string.Format("SPHitRect(({0},{1}),({2},{3}))",_x1,_y1,_x2,_y2);
+	}
+}
+
+public struct SPLineSegment {
+	public Vector2 _pt0, _pt1;
+	public static Vector2 line_seg_intersection(SPLineSegment a, SPLineSegment b) {
+		return SPLineSegment.line_seg_intersection_pts(a._pt0,a._pt1,b._pt0,b._pt1);
+	}
+	
+	public static Vector2 line_seg_intersection_pts(Vector2 a1, Vector2 a2, Vector2 b1, Vector2 b2) {
+		double Ax = a1.x; double Ay = a1.y;
+		double Bx = a2.x; double By = a2.y;
+		double Cx = b1.x; double Cy = b1.y;
+		double Dx = b2.x; double Dy = b2.y;
+		double X; double Y;
+		double  distAB, theCos, theSin, newX, ABpos ;
+		
+		if ((Ax==Bx && Ay==By) || (Cx==Dx && Cy==Dy)) return new Vector2(float.NaN,float.NaN); //  Fail if either line segment is zero-length.
+		
+		Bx-=Ax; By-=Ay;//Translate the system so that point A is on the origin.
+		Cx-=Ax; Cy-=Ay;
+		Dx-=Ax; Dy-=Ay;
+		
+		distAB=System.Math.Sqrt(Bx*Bx+By*By);//Discover the length of segment A-B.
+		
+		theCos=Bx/distAB;//Rotate the system so that point B is on the positive X axis.
+		theSin=By/distAB;
+		
+		newX=Cx*theCos+Cy*theSin;
+		Cy  =Cy*theCos-Cx*theSin; Cx=newX;
+		newX=Dx*theCos+Dy*theSin;
+		Dy  =Dy*theCos-Dx*theSin; Dx=newX;
+		
+		if ((Cy<0.0 && Dy<0.0) || (Cy>=0.0 && Dy>=0.0)) return new Vector2(float.NaN,float.NaN); //C-D must be origin crossing line
+		
+		ABpos=Dx+(Cx-Dx)*Dy/(Dy-Cy);//Discover the position of the intersection point along line A-B.
+		
+		
+		if (ABpos<0.0 || ABpos-distAB> 0.001) {
+			return new Vector2(float.NaN,float.NaN);//  Fail if segment C-D crosses line A-B outside of segment A-B.
+		}
+		
+		X=Ax+ABpos*theCos;//Apply the discovered position to line A-B in the original coordinate system.
+		Y=Ay+ABpos*theSin;
+		
+		return new Vector2((float)X,(float)Y);
+	}
+	
+	public override string ToString() {
+		return string.Format("SPLineSegment(({0})->({1}))",_pt0,_pt1);
 	}
 }
 
@@ -168,45 +221,6 @@ public class SPUtil {
 	
 	public static float rad_to_deg(float rad) {
 		return rad * 180.0f / Mathf.PI;
-	}
-
-	public Vector2 line_seg_intersection_pts(Vector2 a1, Vector2 a2, Vector2 b1, Vector2 b2) {
-		double Ax = a1.x; double Ay = a1.y;
-		double Bx = a2.x; double By = a2.y;
-		double Cx = b1.x; double Cy = b1.y;
-		double Dx = b2.x; double Dy = b2.y;
-		double X; double Y;
-		double  distAB, theCos, theSin, newX, ABpos ;
-		
-		if ((Ax==Bx && Ay==By) || (Cx==Dx && Cy==Dy)) return new Vector2(float.NaN,float.NaN); //  Fail if either line segment is zero-length.
-		
-		Bx-=Ax; By-=Ay;//Translate the system so that point A is on the origin.
-		Cx-=Ax; Cy-=Ay;
-		Dx-=Ax; Dy-=Ay;
-		
-		distAB=System.Math.Sqrt(Bx*Bx+By*By);//Discover the length of segment A-B.
-		
-		theCos=Bx/distAB;//Rotate the system so that point B is on the positive X axis.
-		theSin=By/distAB;
-		
-		newX=Cx*theCos+Cy*theSin;
-		Cy  =Cy*theCos-Cx*theSin; Cx=newX;
-		newX=Dx*theCos+Dy*theSin;
-		Dy  =Dy*theCos-Dx*theSin; Dx=newX;
-		
-		if ((Cy<0.0 && Dy<0.0) || (Cy>=0.0 && Dy>=0.0)) return new Vector2(float.NaN,float.NaN); //C-D must be origin crossing line
-		
-		ABpos=Dx+(Cx-Dx)*Dy/(Dy-Cy);//Discover the position of the intersection point along line A-B.
-		
-		
-		if (ABpos<0.0 || ABpos-distAB> 0.001) {
-			return new Vector2(float.NaN,float.NaN);//  Fail if segment C-D crosses line A-B outside of segment A-B.
-		}
-		
-		X=Ax+ABpos*theCos;//Apply the discovered position to line A-B in the original coordinate system.
-		Y=Ay+ABpos*theSin;
-		
-		return new Vector2((float)X,(float)Y);
 	}
 
 	public static float fmod(float a, float b) { return a % b; }

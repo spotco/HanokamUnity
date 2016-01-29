@@ -69,7 +69,8 @@ public class RTex {
 	public static string ENEMY_LASER = "monster/enemy_laser/enemy_laser_ss";
 	public static string ENEMY_LASER_BODY = "monster/enemy_laser/enemy_laser_body_ss";
 	
-	public static string ENEMY_BLOCK = "monster/block/block_ss";
+	public static string ENEMY_BLOCK_BODY_FILL = "monster/block/block_body_fill";
+	public static string ENEMY_BLOCK_TOP_SECTION = "monster/block/block_top_section";
 	
 	public static string ENEMY_EFFECTS = "effects/effects_enemy_ss";
 

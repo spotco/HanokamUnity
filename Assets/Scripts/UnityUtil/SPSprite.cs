@@ -265,6 +265,25 @@ public class SPSprite : SPNode, SPAlphaGroupElement {
 		_texrect = new Rect(0,0,tex_wid,tex_hei);
 	}
 	
+	public void manual_set_vertex(int index, Vector3 val) {
+		Mesh sprite_mesh = _meshfilter.mesh;
+		Vector3[] verts = sprite_mesh.vertices;
+		verts[index] = val;
+		sprite_mesh.vertices = verts;
+		sprite_mesh.RecalculateBounds();
+	}
+	
+	public void manual_set_uv(int index, Vector2 val) {
+		Mesh sprite_mesh = _meshfilter.mesh;
+		Vector2[] uvs = __uvs;
+		uvs[index] = val;
+		sprite_mesh.uv = uvs;
+	}
+	
+	public Vector2 uv_at_vertex(int index) {
+		return __uvs[index];
+	}
+	
 	public void set_layer(string layer_str) {
 		this.gameObject.layer = RLayer.get_layer(layer_str);
 	}

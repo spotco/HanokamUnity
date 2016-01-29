@@ -19,8 +19,8 @@ public class PatternFile {
 	[ProtoMember(3)] public List<PatternEntryDirectional> _directional_entries = new List<PatternEntryDirectional>();
 	[ProtoMember(4)] public List<PatternEntryLine> _line_entries = new List<PatternEntryLine>();
 	[ProtoMember(5)] public List<PatternEntryPolygon> _polygon_entries = new List<PatternEntryPolygon>();
-	[ProtoMember(5)] public float _section_height;
-	[ProtoMember(6)] public float _spacing_bottom;
+	[ProtoMember(6)] public float _section_height;
+	[ProtoMember(7)] public float _spacing_bottom;
 	
 	public static PatternFile cons_from_string(string file_text) {
 		PatternFile rtv = new PatternFile();

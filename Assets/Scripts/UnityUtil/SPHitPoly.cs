@@ -36,8 +36,16 @@ public struct SPHitPoly {
 			_pts0 = point, _pts1 = point, _pts2 = point, _pts3 = point
 		});
 	}
+	public SPHitPoly offset_by(Vector2 offset) {
+		return new SPHitPoly() {
+			_pts0 = SPUtil.vec_add(_pts0,offset),
+			_pts1 = SPUtil.vec_add(_pts1,offset),
+			_pts2 = SPUtil.vec_add(_pts2,offset),
+			_pts3 = SPUtil.vec_add(_pts3,offset)
+		};
+	}
 	public override string ToString() {
-		return SPUtil.sprintf("{{%f,%f},{%f,%f},{%f,%f},{%f,%f}}",
+		return SPUtil.sprintf("{{%.2f,%.2f},{%.2f,%.2f},{%.2f,%.2f},{%.2f,%.2f}}",
 			_pts0.x,_pts0.y,
 			_pts1.x,_pts1.y,
 			_pts2.x,_pts2.y,

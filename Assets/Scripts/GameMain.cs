@@ -7,8 +7,8 @@ public interface SPMainUpdateable {
 
 public class GameMain : SPBaseBehavior {
 	/**
+	L/R obstacle implementation
 	laser crab anim & body
-	L/R/orb obstacle implementation with mock art
 	
 	
 	bigjelly multipoint
@@ -201,8 +201,8 @@ public class GameMain : SPBaseBehavior {
 		_controls = ControlManager.cons();
 		_camerac = GameCameraController.cons();
 		_camera_active = true;
-		_draw_hitboxes = true;
-		//_draw_hitboxes = false;
+		//_draw_hitboxes = true;
+		_draw_hitboxes = false;
 		_game_ui = UIRoot.cons();
 	
 		this.push_scene(GameEngineScene.cons());		
