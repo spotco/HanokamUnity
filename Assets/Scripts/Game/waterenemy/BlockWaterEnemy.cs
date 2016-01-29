@@ -177,10 +177,12 @@ public class BlockWaterEnemy : IWaterObstacle, GenericPooledObject {
 		
 			SPSprite itr_fill = SPSprite.cons_sprite_texkey_texrect(RTex.ENEMY_BLOCK_TOP_SECTION,SPUtil.texture_default_rect(RTex.ENEMY_BLOCK_TOP_SECTION));
 			itr_fill.set_name(string.Format("_border_fills[{0}]",i));
+			itr_fill.set_manual_sort_z_order(GameAnchorZ.BGWater_Underwater_Obstacle_TOP);
 			_root.add_child(itr_fill);
 			
 			Vector2 vtx_delta = SPUtil.vec_sub(itr_link._n1,itr_link._n0);
 			Rect itr_texrect = itr_fill.texrect();
+			itr_texrect.position = new Vector2(SPUtil.float_random(-1,1),itr_texrect.position.y);
 			itr_texrect.size = new Vector2(itr_texrect.size.x * vtx_delta.magnitude / TextureResource.inst().get_tex(itr_fill.texkey()).width, itr_texrect.size.y);
 			itr_fill.set_tex_rect(itr_texrect);
 			itr_fill.manual_set_mesh_size(vtx_delta.magnitude,itr_fill.texrect().height);
@@ -220,6 +222,7 @@ public class BlockWaterEnemy : IWaterObstacle, GenericPooledObject {
 
 				SPSprite itr_corner = SPSprite.cons_sprite_texkey_texrect(itr_sprite.texkey(),itr_sprite.texrect());
 				itr_corner.set_name(string.Format("corner({0})",itr_sprite.gameObject.name));
+				itr_corner.set_manual_sort_z_order(GameAnchorZ.BGWater_Underwater_Obstacle_TOP);
 				itr_corner.set_u_pos(SPUtil.vec_sub(tri_pt_intersection,_pos));
 				itr_corner.manual_set_vertex(SPSprite.VTX_0_0,Vector2.zero);
 				itr_corner.manual_set_vertex(SPSprite.VTX_1_0,SPUtil.vec_sub(tri_pt_itr,tri_pt_intersection));
@@ -281,6 +284,7 @@ public class BlockWaterEnemy : IWaterObstacle, GenericPooledObject {
 			Vector2 vtx_uv_pos = this.vtx_rel_pos_to_world_uv(vtx_rel_pos,TextureResource.inst().get_tex(_main_fill.texkey()));
 			_main_fill.manual_set_uv(vtx,SPUtil.vec_add(vtx_uv_pos,recenter_offset));
 		}
+		_main_fill.set_manual_sort_z_order(GameAnchorZ.BGWater_Underwater_Obstacle_FILL);
 	}
 	
 	private Vector2 vtx_rel_pos_to_world_uv(Vector2 vtx_rel_pos, Texture tex) {

@@ -7,9 +7,11 @@ public interface SPMainUpdateable {
 
 public class GameMain : SPBaseBehavior {
 	/**
-	L/R obstacle implementation
 	laser crab anim & body
-	
+		-attach to obstacle behaviour
+		-fall behaviour
+		-stop firing behaviour
+		-return to position behaviour
 	
 	bigjelly multipoint
 	laser ray multipoint
@@ -93,7 +95,9 @@ public class GameMain : SPBaseBehavior {
 
 		_ui_camera.targetTexture = _ui_camera_out;
 		_game_camera.targetTexture = _game_camera_out;
-
+		_game_camera.transparencySortMode = TransparencySortMode.Orthographic;
+		_game_camera.opaqueSortMode = UnityEngine.Rendering.OpaqueSortMode.FrontToBack;
+		
 		SPSprite game_camera_out = SPSprite.cons_sprite_texkey_texrect(RTex.BLANK,new Rect(0,0,1,1));
 		game_camera_out.set_u_pos(0,0);
         game_camera_out.set_shader(RShader.NOALPHA);

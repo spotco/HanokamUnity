@@ -81,7 +81,7 @@ public class WaterEnemyManager : DiveGameStateUpdateable, GenericPooledObject {
 			} else if (itr_2pt._val == "spike") {
 				this.add_enemy(g,state,SpikeBasicWaterEnemy.cons(g,itr_2pt));
 			} else {
-				Debug.LogError(SPUtil.sprintf("Unknown 2pt({0})",itr_2pt._val));
+				Debug.LogError(SPUtil.sprintf("Unknown 2pt(%s)",itr_2pt._val));
 			}
 		}
 		for (int i = 0; i < patternfile._1pt_entries.Count; i++) {
@@ -93,7 +93,7 @@ public class WaterEnemyManager : DiveGameStateUpdateable, GenericPooledObject {
 			} else if (itr_1pt._val == "spike") {
 				this.add_enemy(g,state,SpikeBasicWaterEnemy.cons(g,itr_1pt));
 			} else {
-				Debug.LogError(SPUtil.sprintf("Unknown 1pt({0})",itr_1pt._val));
+				Debug.LogError(SPUtil.sprintf("Unknown 1pt(%s)",itr_1pt._val));
 			}
 		}
 		for (int i = 0; i < patternfile._directional_entries.Count; i++) {
@@ -103,14 +103,14 @@ public class WaterEnemyManager : DiveGameStateUpdateable, GenericPooledObject {
 			if (itr_dir._val == "lasercrab") {
 				this.add_enemy(g,state,LaserCrabBasicWaterEnemy.cons(g,itr_dir));	
 			} else {
-				Debug.LogError(SPUtil.sprintf("Unknown directional({0})",itr_dir._val));
+				Debug.LogError(SPUtil.sprintf("Unknown directional(%s)",itr_dir._val));
 			}
 		}
 		for (int i = 0; i < patternfile._line_entries.Count; i++) {
 			PatternEntryLine itr_line = patternfile._line_entries[i];
 			itr_line = itr_line.copy_applied_offset(group_offset);
 			if (true) {
-				Debug.LogError(SPUtil.sprintf("Unknown line({0})",itr_line._val));
+				Debug.LogError(SPUtil.sprintf("Unknown line(%s)",itr_line._val));
 			}
 		}
 		for (int i = 0; i < patternfile._polygon_entries.Count; i++) {
@@ -119,7 +119,7 @@ public class WaterEnemyManager : DiveGameStateUpdateable, GenericPooledObject {
 			if (itr_poly._val == "block") {
 				this.add_enemy(g,state,BlockWaterEnemy.cons(g,itr_poly));
 			} else {
-				Debug.LogError(SPUtil.sprintf("Unknown poly({0})",itr_poly._val));
+				Debug.LogError(SPUtil.sprintf("Unknown poly(%s)",itr_poly._val));
 			}
 		}
 		
@@ -128,8 +128,6 @@ public class WaterEnemyManager : DiveGameStateUpdateable, GenericPooledObject {
 			IWaterObstacle itr_obstacle = _obstacles[i];
 			itr_obstacle.load_postprocess(g,state);
 		}
-		
-		//_obstacles[1].load_postprocess(g,state);
 	}
 	
 	public void set_env_offset_y(float offset_y) {

@@ -23,6 +23,7 @@ public class GameAnchorZ {
 
 	public const int Player_UnderWater = 155;
 	
+	
 	public const int Player_Ground_InFrontOf_Docks_Front = 151;
 	public const int BGVillage_Docks_Front = 150;
 	public const int Player_InAir = 149;
@@ -58,6 +59,9 @@ public class GameAnchorZ {
 	public const int BGWater_Ground_Pillar = -901;
 	public const int BGWater_Ground_Fill = -902;
 	public const int BGWater_Ground_BottomFade = -903;
+
+	public const int BGWater_Underwater_Obstacle_TOP = -920;
+	public const int BGWater_Underwater_Obstacle_FILL = -921;
 
 	public const int BGWater_TOP_FADE = -950;
 	public const int BGWater_BG_ELE1 = -998;

@@ -142,6 +142,7 @@ public class DiveGameState : GameStateBase {
 						Vector2 dir = g._controls.get_move();
 						float rotation_pre = g._player.rotation();
 						float rotation_post = PlayerCharacterUtil.get_next_rotate_to_rotation_for_vel(g._player,dir.x,dir.y,1/10.0f);
+						tar_rotation = rotation_post;
 						if (Mathf.Abs(rotation_post-rotation_pre) > 1.0f) {
 							turn_mode = true;
 						}
