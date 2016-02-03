@@ -111,6 +111,7 @@ public class LaserCrabMovementBasicWaterEnemyComponent : BasicWaterEnemyComponen
 					SPUtil.vec_add(collision_vals._collide_pushback_vel.normalized,SPUtil.vec_scale(enemy._params._stun_vel.normalized,0.95f)).normalized,
 					SPUtil.drpt(enemy._params._stun_vel.magnitude,0,0.1f));
 				
+				//SPTODO -- invert the normal basis, keep the tangent
 				SPUtil.logf("%.2f -- %.2f",enemy._params._invuln_ct,enemy._params._stun_ct);
 				if (enemy._params._invuln_ct < 0 && enemy._params._stun_ct < 0) {
 					Debug.LogError("TRIGGER");

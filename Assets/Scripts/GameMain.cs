@@ -8,7 +8,7 @@ public interface SPMainUpdateable {
 public class GameMain : SPBaseBehavior {
 	/**
 	laser crab anim & body
-		-attach to obstacle behaviour
+		-attach to obstacle behaviour-fix
 		-fall behaviour
 		-stop firing behaviour
 		-return to position behaviour
