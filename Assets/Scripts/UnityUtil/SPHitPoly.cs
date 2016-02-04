@@ -36,7 +36,7 @@ public struct SPHitPoly {
 	}
 	public SPLineSegment line_segment_of_point(int pt) {
 		return new SPLineSegment() {
-			_pt0 = this.pts(pt),
+			_pt0 = this.pts(pt%this.length),
 			_pt1 = this.pts((pt+1)%this.length)
 		};
 	}

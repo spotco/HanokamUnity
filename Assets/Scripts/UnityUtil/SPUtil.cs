@@ -23,6 +23,14 @@ public struct SPHitRect {
 		         r1._y1 > r2._y2 ||
 		         r2._y1 > r1._y2);
 	}
+	public static SPHitRect extend(SPHitRect rect, float by) {
+		return new SPHitRect() {
+			_x1 = rect._x1 - by,
+			_y1 = rect._y1 - by,
+			_x2 = rect._x2 + by,
+			_y2 = rect._y2 + by
+		};
+	}
 	public static bool hitrect_contains_pt(SPHitRect rect, Vector2 pt) {
 		return (pt.x > rect._x1 && pt.x < rect._x2) && (pt.y > rect._y1 && pt.y < rect._y2);
 	}
@@ -81,8 +89,19 @@ public struct SPLineSegment {
 			_x1 = Mathf.Min(_pt0.x,_pt1.x),
 			_y1 = Mathf.Min(_pt0.y,_pt1.y),
 			_x2 = Mathf.Max(_pt0.x,_pt1.x),
-			_y2 = Mathf.Max(_pt0.x,_pt1.x)
+			_y2 = Mathf.Max(_pt0.y,_pt1.y)
 		};
+	}
+	
+	public float pt_parametric_t(Vector2 pt) {
+		return SPUtil.vec_dist(pt,_pt0) / SPUtil.vec_dist(_pt1,_pt0);
+	}
+	
+	public SPLineSegment extend(float val) {
+		Vector2 dir = SPUtil.vec_sub(_pt1,_pt0).normalized;
+		_pt0 = SPUtil.vec_add(_pt0,SPUtil.vec_scale(dir,-val));
+		_pt1 = SPUtil.vec_add(_pt1,SPUtil.vec_scale(dir,val));
+		return this;
 	}
 	
 	public static bool is_intersect_point(Vector2 pt) {
@@ -617,6 +636,8 @@ public class SPPhysics {
 		public bool _do_not_move;
 		public bool _is_collide_this_frame;
 		public Vector2 _collide_pushback_vel;
+		public Vector2 _collision_normal;
+		public Vector2 _collision_tangent;
 	}
 	
 	public static List<SPHitPolyOwner> __tmp_list = new List<SPHitPolyOwner>();
@@ -630,6 +651,8 @@ public class SPPhysics {
 		return false;
 	}
 	
+	private static List<Vector2> __tmp_collision_normals = new List<Vector2>();
+	private static List<Vector2> __tmp_collision_tangents = new List<Vector2>();
 	public static SolidCollisionValues solid_collision_update_frame(SPHitPolyOwner target, List<SPHitPolyOwner> obstacles, SolidCollisionUpdateDelegate callback, float min_check_magnitude, float search_start_angle, System.Object parameters) {
 		SolidCollisionValues rtv = new SolidCollisionValues() {
 			_is_collide_this_frame = false,
@@ -645,14 +668,72 @@ public class SPPhysics {
 				int check_ct = 8;
 				int loop_ct = 0;
 				while (loop_continue) {
-					for (float i = 0; i <= check_ct; i++) {
-						Vector2 delta = SPUtil.vec_scale(SPUtil.ang_deg_dir((360.0f/check_ct)*i + search_start_angle),magnitude);
+					for (float i_check_ct = 0; i_check_ct <= check_ct; i_check_ct++) {
+						Vector2 delta = SPUtil.vec_scale(SPUtil.ang_deg_dir((360.0f/check_ct)*i_check_ct + search_start_angle),magnitude);
 						callback.test_move_delta(delta,obstacles,parameters);
 						if (!SPHitPoly.polyowners_intersect(itr_obstacle,target) && !SPPhysics.hit_any(target,obstacles)) {
 							loop_continue = false;
 							rtv._is_collide_this_frame = true;
 							rtv._collide_pushback_vel = delta;
-							i_obstacle = 0;
+							
+							__tmp_collision_normals.Clear();
+							__tmp_collision_tangents.Clear();
+							
+							SPHitPoly obstacle_poly = itr_obstacle.get_hit_poly();
+							SPHitPoly target_poly = target.get_hit_poly();
+							for (int i_target_poly_vtx = 0; i_target_poly_vtx < target_poly.length; i_target_poly_vtx++) {
+								SPLineSegment itr_target_vtx_seg = new SPLineSegment() {
+									_pt0 = target_poly.pts(i_target_poly_vtx),
+									_pt1 = SPUtil.vec_add(target_poly.pts(i_target_poly_vtx),SPUtil.vec_scale(delta,-1))
+								}.extend(50);
+								
+								bool found = false;
+								float lowest_t = float.PositiveInfinity;
+								Vector2 tmp_normal = new Vector2();
+								Vector2 tmp_tangent = new Vector2();
+								
+								for (int i_obstacle_poly_vtx = 0; i_obstacle_poly_vtx < obstacle_poly.length; i_obstacle_poly_vtx++) {
+									SPLineSegment itr_obstacle_vtx_seg = obstacle_poly.line_segment_of_point(i_obstacle_poly_vtx);
+									Vector2 intersection = SPLineSegment.line_seg_intersection(itr_target_vtx_seg,itr_obstacle_vtx_seg);
+									if (SPLineSegment.is_intersect_point(intersection)) {
+										found = true;
+										SPLineSegment itr_obstacle_vtx_seg_next = obstacle_poly.line_segment_of_point(i_obstacle_poly_vtx+1);
+										Vector2 seg_dir = SPUtil.vec_sub(itr_obstacle_vtx_seg._pt1,itr_obstacle_vtx_seg._pt0).normalized;
+										Vector2 seg_next_dir = SPUtil.vec_sub(itr_obstacle_vtx_seg_next._pt1,itr_obstacle_vtx_seg_next._pt0).normalized;
+										Vector3 out_cross_dir = SPUtil.vec_cross(seg_dir,seg_next_dir);
+										Vector2 normal = SPUtil.vec_cross(seg_dir,out_cross_dir).normalized;
+										float intersection_t = itr_target_vtx_seg.pt_parametric_t(intersection);
+										
+										if (intersection_t < lowest_t) {
+											tmp_normal = normal;
+											tmp_tangent = seg_dir;
+										}
+									}
+								}
+								
+								if (found) {
+									__tmp_collision_normals.Add(tmp_normal);
+									__tmp_collision_tangents.Add(tmp_tangent);
+								}
+								
+							}
+							
+							if (__tmp_collision_normals.Count > 0) {
+								Vector2 collision_normal_avg = new Vector2();
+								Vector2 collision_tangent_avg = new Vector2();
+								for (int j = 0; j < __tmp_collision_normals.Count; j++) {
+									collision_normal_avg = SPUtil.vec_add(collision_normal_avg,__tmp_collision_normals[j]);
+									collision_tangent_avg = SPUtil.vec_add(collision_tangent_avg,__tmp_collision_tangents[j]);
+								}
+								collision_normal_avg = SPUtil.vec_scale(collision_normal_avg,1.0f/__tmp_collision_normals.Count);
+								collision_tangent_avg = SPUtil.vec_scale(collision_tangent_avg,1.0f/__tmp_collision_normals.Count);
+								rtv._collision_normal = collision_normal_avg.normalized;
+								rtv._collision_tangent = collision_tangent_avg.normalized;
+							} else {
+								rtv._collision_normal = new Vector2(0,1);
+								rtv._collision_tangent = new Vector2(1,0);
+								Debug.LogError("ERROR: collision no line segment found");
+							}
 							goto loop_end;
 						}
 					}

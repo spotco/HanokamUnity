@@ -58,7 +58,7 @@ public class LaserCrabMovementBasicWaterEnemyComponent : BasicWaterEnemyComponen
 		if (obstacle_attach_found) {
 			enemy._params._pos = SPUtil.vec_add(obstacle_attach_point, SPUtil.vec_scale(_starting_dir.normalized,50));
 			Vector2 intersection_dir = SPUtil.point_line_intersection_dir(_starting_pos,obstacle_attach._pt0,SPUtil.vec_sub(obstacle_attach._pt1,obstacle_attach._pt0));
-			this.face_to(enemy,SPUtil.vec_scale(intersection_dir,-1));
+			this.face_to(enemy,intersection_dir);
 			movement_params._mode = Mode.OnGround;
 			
 		} else {
@@ -107,14 +107,14 @@ public class LaserCrabMovementBasicWaterEnemyComponent : BasicWaterEnemyComponen
 			}
 			
 			if (collision_vals._do_not_move || collision_vals._is_collide_this_frame) {
-				enemy._params._stun_vel = SPUtil.vec_scale(
-					SPUtil.vec_add(collision_vals._collide_pushback_vel.normalized,SPUtil.vec_scale(enemy._params._stun_vel.normalized,0.95f)).normalized,
-					SPUtil.drpt(enemy._params._stun_vel.magnitude,0,0.1f));
+				Vector2 tangent_basis = collision_vals._collision_tangent;
+				Vector2 normal_basis = collision_vals._collision_normal;
+				enemy._params._stun_vel = SPUtil.vec_add(
+					SPUtil.vec_scale(normal_basis,SPUtil.vec_dot(enemy._params._stun_vel,normal_basis) * -0.5f),
+					SPUtil.vec_scale(tangent_basis,SPUtil.vec_dot(enemy._params._stun_vel,tangent_basis))
+				);
 				
-				//SPTODO -- invert the normal basis, keep the tangent
-				SPUtil.logf("%.2f -- %.2f",enemy._params._invuln_ct,enemy._params._stun_ct);
 				if (enemy._params._invuln_ct < 0 && enemy._params._stun_ct < 0) {
-					Debug.LogError("TRIGGER");
 					movement_params._mode = Mode.OnGround;
 					this.face_to(enemy,collision_vals._collide_pushback_vel);
 				}
@@ -126,8 +126,6 @@ public class LaserCrabMovementBasicWaterEnemyComponent : BasicWaterEnemyComponen
 			
 		} break;
 		}
-	
-		//Debug.Log(enemy._params._invuln_ct + enemy._params._stun_ct + "," + movement_params._mode);
 	}
 	
 	private Vector2 __test_move_delta_pos_pre;

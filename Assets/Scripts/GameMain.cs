@@ -8,6 +8,7 @@ public interface SPMainUpdateable {
 public class GameMain : SPBaseBehavior {
 	/**
 	laser crab anim & body
+		-out of world bounds bounce
 		-attach to obstacle behaviour-fix
 		-fall behaviour
 		-stop firing behaviour
@@ -64,7 +65,7 @@ public class GameMain : SPBaseBehavior {
 
 	private const float ROOT_SCF = 0.1f;
 
-	public override void Start () {
+	public override void Start () {	
 		Application.targetFrameRate = 30;
 		this.transform.localScale = new Vector3(ROOT_SCF,ROOT_SCF,ROOT_SCF);
 		
