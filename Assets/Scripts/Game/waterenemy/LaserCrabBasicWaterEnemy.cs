@@ -20,12 +20,20 @@ public class LaserCrabMovementBasicWaterEnemyComponent : BasicWaterEnemyComponen
 	}
 	public class Params {
 		public Mode _mode;
+		public Vector2 _tar_facing_direction;
 	}
 	public interface ParamHolder {
 		LaserCrabMovementBasicWaterEnemyComponent.Params get_params();
 	}
 	
-	private void face_to(BasicWaterEnemy enemy, Vector2 dir) { enemy.get_root().set_rotation(SPUtil.dir_ang_deg(dir.x,dir.y)-90); }
+	private void face_to(BasicWaterEnemy enemy, Vector2 dir, bool imm = false, float drpty_spd = 1/10.0f) { 
+		float tar_ang = SPUtil.dir_ang_deg(dir.x,dir.y)-90;
+		if (imm) {
+			enemy.get_root().set_rotation(tar_ang); 
+		} else {
+			enemy.get_root().set_rotation(enemy.get_root().rotation()+SPUtil.drpty(drpty_spd)*SPUtil.shortest_angle(enemy.get_root().rotation(),tar_ang));
+		}
+	}
 	
 	public override void load_postprocess(GameEngineScene g, DiveGameState state, BasicWaterEnemy enemy) {
 		Params movement_params = ((LaserCrabMovementBasicWaterEnemyComponent.ParamHolder)enemy).get_params();
@@ -58,13 +66,15 @@ public class LaserCrabMovementBasicWaterEnemyComponent : BasicWaterEnemyComponen
 		if (obstacle_attach_found) {
 			enemy._params._pos = SPUtil.vec_add(obstacle_attach_point, SPUtil.vec_scale(_starting_dir.normalized,50));
 			Vector2 intersection_dir = SPUtil.point_line_intersection_dir(_starting_pos,obstacle_attach._pt0,SPUtil.vec_sub(obstacle_attach._pt1,obstacle_attach._pt0));
-			this.face_to(enemy,intersection_dir);
+			movement_params._tar_facing_direction = intersection_dir;
+			this.face_to(enemy,movement_params._tar_facing_direction,true);
 			movement_params._mode = Mode.OnGround;
 			
 		} else {
 			movement_params._mode = Mode.InWater;
 			enemy._params._pos = _starting_pos;
-			this.face_to(enemy,_starting_dir);
+			movement_params._tar_facing_direction = _starting_dir;
+			this.face_to(enemy,movement_params._tar_facing_direction,true);
 		}
 	}
 	
@@ -73,7 +83,7 @@ public class LaserCrabMovementBasicWaterEnemyComponent : BasicWaterEnemyComponen
 		
 		switch (movement_params._mode) {
 		case Mode.OnGround: {
-			if (SPHitPoly.polyowners_intersect(enemy,g._player)) {
+			if (enemy._params._invuln_ct <= 0 && !state._params.is_invuln() && SPHitPoly.polyowners_intersect(enemy,g._player)) {
 				enemy.get_hit_effect().apply_hit(g,state,enemy);
 			}
 		
@@ -95,68 +105,65 @@ public class LaserCrabMovementBasicWaterEnemyComponent : BasicWaterEnemyComponen
 				this,
 				Mathf.Floor(enemy._params._stun_vel.magnitude),
 				SPUtil.dir_ang_deg(-enemy._params._stun_vel.x,-enemy._params._stun_vel.y),
-				(System.Object)enemy
+				(System.Object)enemy,
+				SPPhysics.get_world_bounds_extra_obstacles(enemy.get_hit_rect())
 			);
 			tmp.Clear();
 			
-			if (enemy._params._invuln_ct >= 0) {
+			if (enemy._params._invuln_ct > 0) {
 				enemy._params._invuln_ct -= SPUtil.dt_scale_get();
-			} 
-			if (enemy._params._stun_ct >= 0) {
+			} else if (enemy._params._stun_ct > 0) {
 				enemy._params._stun_ct -= SPUtil.dt_scale_get();
 			}
+			
+			if (enemy._params._invuln_ct <= 0 && !state._params.is_invuln() && SPHitPoly.polyowners_intersect(enemy,g._player)) {
+				enemy.get_hit_effect().apply_hit(g,state,enemy);
+			} 
 			
 			if (collision_vals._do_not_move || collision_vals._is_collide_this_frame) {
 				Vector2 tangent_basis = collision_vals._collision_tangent;
 				Vector2 normal_basis = collision_vals._collision_normal;
 				enemy._params._stun_vel = SPUtil.vec_add(
-					SPUtil.vec_scale(normal_basis,SPUtil.vec_dot(enemy._params._stun_vel,normal_basis) * -0.5f),
+					SPUtil.vec_scale(normal_basis,SPUtil.vec_dot(enemy._params._stun_vel,normal_basis) * -0.9f),
 					SPUtil.vec_scale(tangent_basis,SPUtil.vec_dot(enemy._params._stun_vel,tangent_basis))
 				);
-				
-				if (enemy._params._invuln_ct < 0 && enemy._params._stun_ct < 0) {
+				if ((enemy._params._invuln_ct <= 0 && enemy._params._stun_ct <= 0) && normal_basis.normalized.y > 0.2f) {
 					movement_params._mode = Mode.OnGround;
-					this.face_to(enemy,collision_vals._collide_pushback_vel);
+					movement_params._tar_facing_direction = normal_basis;
+				}
+			} else {
+				if (enemy._params._stun_vel.magnitude > 0) {
+					movement_params._tar_facing_direction = enemy._params._stun_vel.normalized;
 				}
 			}
 			enemy.apply_offset_to_position();
-			
-			enemy._params._stun_vel.y -= 0.5f * SPUtil.dt_scale_get();
-			
+			enemy._params._stun_vel.y -= 0.3f * SPUtil.dt_scale_get();
 			
 		} break;
 		}
+		this.face_to(enemy,movement_params._tar_facing_direction,false, movement_params._mode == Mode.OnGround ? 1/10.0f : 1/35.0f);
 	}
 	
 	private Vector2 __test_move_delta_pos_pre;
 	public void test_move_delta(Vector2 pos_delta, List<SPHitPolyOwner> obstacles, System.Object parameters) {
 		BasicWaterEnemy enemy = (BasicWaterEnemy)parameters;
 		enemy._params._pos = SPUtil.vec_add(__test_move_delta_pos_pre,pos_delta);
-		enemy.apply_offset_to_position();	
+		enemy.apply_offset_to_position();
 	}
 	
 	public void apply_hit(GameEngineScene g, DiveGameState state, BasicWaterEnemy enemy) {
 		Params movement_params = ((LaserCrabMovementBasicWaterEnemyComponent.ParamHolder)enemy).get_params();
 		
-		switch (movement_params._mode) {
-		case Mode.OnGround: {
-			Debug.LogError("APPLY HIT");
-			BasicWaterEnemyComponentUtility.HitParams hit_params = BasicWaterEnemyComponentUtility.HitParams.cons_default();
-			hit_params._player_vel = state._params._vel;
-			hit_params._enemy_vel = enemy.get_calculated_velocity();
-			hit_params._enemy_to_player_elasticity_coef = 0.7f;
-			hit_params._transition_mode = false;
-			hit_params._enemy_invuln_ct = 30;
-			hit_params._enemy_stun_ct = 50;
-			BasicWaterEnemyComponentUtility.small_enemy_apply_hit(g,state,enemy,hit_params);
-			
-			movement_params._mode = Mode.InWater;
-			
-		} break;
-		case Mode.InWater: {
-			
-		} break;
-		}
+		BasicWaterEnemyComponentUtility.HitParams hit_params = BasicWaterEnemyComponentUtility.HitParams.cons_default();
+		hit_params._player_vel = state._params._vel;
+		hit_params._enemy_vel = enemy.get_calculated_velocity();
+		hit_params._enemy_to_player_elasticity_coef = 0.9f;
+		hit_params._transition_mode = false;
+		hit_params._enemy_invuln_ct = 30;
+		hit_params._enemy_stun_ct = 50;
+		BasicWaterEnemyComponentUtility.small_enemy_apply_hit(g,state,enemy,hit_params);
+		
+		movement_params._mode = Mode.InWater;
 	}
 }
 
@@ -191,8 +198,15 @@ public class LaserCrabBasicWaterEnemy :
 	private LaserCrabMovementBasicWaterEnemyComponent.Params _movement_params;
 	public LaserCrabMovementBasicWaterEnemyComponent.Params get_params() { return _movement_params; }
 	
+	private FlashEvery _invuln_flash;
+	private bool _invuln_flash_toggle;
+	
 	private LaserCrabBasicWaterEnemy i_cons(GameEngineScene g, PatternEntryDirectional entry) {
 		base.i_cons();
+		
+		_invuln_flash = FlashEvery.cons(5);
+		_invuln_flash_toggle = false;
+		
 		this._current_mode = Mode.Activated;
 		_movement_params = new LaserCrabMovementBasicWaterEnemyComponent.Params();
 		
@@ -205,6 +219,27 @@ public class LaserCrabBasicWaterEnemy :
 	
 	public override void i_update(GameEngineScene g, DiveGameState state) {
 		base.i_update(g,state);
+		
+		if (_movement_params._mode == LaserCrabMovementBasicWaterEnemyComponent.Mode.OnGround) {
+			_img._img.set_opacity(1);
+			_img.play_anim(LaserCrabEnemySprite.ANIM_UNDERWATER_IDLE);
+			
+		} else if (_movement_params._mode == LaserCrabMovementBasicWaterEnemyComponent.Mode.InWater) {
+			if (_params._invuln_ct > 0 || _params._stun_ct > 0) {
+				_invuln_flash.i_update();
+				if (_invuln_flash.do_flash()) {
+					_invuln_flash_toggle = !_invuln_flash_toggle;
+				}
+				_img._img.set_opacity(_invuln_flash_toggle ? 0.8f : 0.45f);
+				
+			} else {
+				_img._img.set_opacity(1);
+			}
+		
+			_img.play_anim(LaserCrabEnemySprite.ANIM_AIR_IDLE);
+		}
+		
+		_img.i_update(g);
 	}
 	
 	public override SPHitRect get_hit_rect() { return _img.get_hit_rect(this.get_root().get_u_pos(),this.get_root().rotation()); }

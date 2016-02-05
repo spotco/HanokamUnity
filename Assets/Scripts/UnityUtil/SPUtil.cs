@@ -12,6 +12,15 @@ public struct SPRange {
 	public override string ToString() {
 		return string.Format("SPRange({0},{1})",_min,_max);
 	}
+	public float clamp(float val) {
+		return Mathf.Clamp(val,_min,_max);
+	}
+	public static bool is_range_intersect(SPRange a, SPRange b) {
+		return (a._min > b._min && a._min < b._max) ||
+			(a._max > b._min && a._max < b._max) ||
+			(b._min > a._min && b._min < a._max) ||
+			(b._max > a._min && b._max < a._max);
+	}
 }
 
 public struct SPHitRect {
@@ -651,16 +660,81 @@ public class SPPhysics {
 		return false;
 	}
 	
+	private static List<SPHitPolyOwner> __world_bounds_obstacles = new List<SPHitPolyOwner>();
+	private static SPHitPolyOwnerImpl __world_bounds_left = new SPHitPolyOwnerImpl();
+	private static SPHitPolyOwnerImpl __world_bounds_right = new SPHitPolyOwnerImpl();
+	public static List<SPHitPolyOwner> get_world_bounds_extra_obstacles(SPHitRect center) {
+		__world_bounds_obstacles.Clear();
+		
+		SPRange world_bounds = SPUtil.get_horiz_world_bounds();
+		float min_y = center._y1 - 500;
+		float max_y = center._y2 + 500;
+		
+		__world_bounds_left._poly._pts0 = new Vector2(world_bounds._min,min_y);
+		__world_bounds_left._poly._pts1 = new Vector2(world_bounds._min,max_y);
+		__world_bounds_left._poly._pts2 = SPUtil.vec_add(__world_bounds_left._poly._pts1, new Vector2(-500,0));
+		__world_bounds_left._poly._pts3 = SPUtil.vec_add(__world_bounds_left._poly._pts0, new Vector2(-500,0));
+		
+		__world_bounds_right._poly._pts0 = new Vector2(world_bounds._max,min_y);
+		__world_bounds_right._poly._pts1 = new Vector2(world_bounds._max,max_y);
+		__world_bounds_right._poly._pts2 = SPUtil.vec_add(__world_bounds_right._poly._pts1, new Vector2(500,0));
+		__world_bounds_right._poly._pts3 = SPUtil.vec_add(__world_bounds_right._poly._pts0, new Vector2(500,0));
+		
+		__world_bounds_obstacles.Add(__world_bounds_left);
+		__world_bounds_obstacles.Add(__world_bounds_right);
+		return __world_bounds_obstacles;
+	}
+	
 	private static List<Vector2> __tmp_collision_normals = new List<Vector2>();
 	private static List<Vector2> __tmp_collision_tangents = new List<Vector2>();
-	public static SolidCollisionValues solid_collision_update_frame(SPHitPolyOwner target, List<SPHitPolyOwner> obstacles, SolidCollisionUpdateDelegate callback, float min_check_magnitude, float search_start_angle, System.Object parameters) {
+	private static List<SPHitPolyOwner> __test_obstacles = new List<SPHitPolyOwner>();
+	public static SolidCollisionValues solid_collision_update_frame(
+		SPHitPolyOwner target, 
+		List<SPHitPolyOwner> obstacles, 
+		SolidCollisionUpdateDelegate callback, 
+		float min_check_magnitude, 
+		float search_start_angle, 
+		System.Object parameters,
+		List<SPHitPolyOwner> extra_obstacles = null) {
+		
+		List<SPHitPolyOwner> test_obstacles;
+		{
+			SPHitRect target_rect = target.get_hit_rect();
+			SPRange target_range = new SPRange() {
+				_min = target_rect._y1,
+				_max = target_rect._y2
+			};
+			
+			__test_obstacles.Clear();
+			test_obstacles = __test_obstacles;
+			for (int i_obstacle = 0; i_obstacle < obstacles.Count; i_obstacle++) {
+				SPHitPolyOwner itr_obstacle = obstacles[i_obstacle];
+				SPHitRect itr_rect = itr_obstacle.get_hit_rect();
+				SPRange itr_obstacle_yrange = (new SPRange() {
+					_min = itr_rect._y1,
+					_max = itr_rect._y2
+				}).extend(100);
+				
+				if (SPRange.is_range_intersect(target_range,itr_obstacle_yrange)) {
+					test_obstacles.Add(itr_obstacle);
+				}	
+			}
+		}
+		
+		if (extra_obstacles != null) {
+			for (int i_obstacle = 0; i_obstacle < extra_obstacles.Count; i_obstacle++) {
+				test_obstacles.Add(extra_obstacles[i_obstacle]);
+			}
+		}
+		
+		
 		SolidCollisionValues rtv = new SolidCollisionValues() {
 			_is_collide_this_frame = false,
 			_do_not_move = false
 		};
 		
-		for (int i_obstacle = 0; i_obstacle < obstacles.Count; i_obstacle++) {
-			SPHitPolyOwner itr_obstacle = (SPHitPolyOwner)obstacles[i_obstacle];
+		for (int i_obstacle = 0; i_obstacle < test_obstacles.Count; i_obstacle++) {
+			SPHitPolyOwner itr_obstacle = (SPHitPolyOwner)test_obstacles[i_obstacle];
 			if (SPHitPoly.polyowners_intersect(itr_obstacle,target)) {
 				Vector2 pos_delta = Vector2.zero;
 				bool loop_continue = true;
@@ -670,8 +744,8 @@ public class SPPhysics {
 				while (loop_continue) {
 					for (float i_check_ct = 0; i_check_ct <= check_ct; i_check_ct++) {
 						Vector2 delta = SPUtil.vec_scale(SPUtil.ang_deg_dir((360.0f/check_ct)*i_check_ct + search_start_angle),magnitude);
-						callback.test_move_delta(delta,obstacles,parameters);
-						if (!SPHitPoly.polyowners_intersect(itr_obstacle,target) && !SPPhysics.hit_any(target,obstacles)) {
+						callback.test_move_delta(delta,test_obstacles,parameters);
+						if (!SPHitPoly.polyowners_intersect(itr_obstacle,target) && !SPPhysics.hit_any(target,test_obstacles)) {
 							loop_continue = false;
 							rtv._is_collide_this_frame = true;
 							rtv._collide_pushback_vel = delta;
@@ -732,7 +806,7 @@ public class SPPhysics {
 							} else {
 								rtv._collision_normal = new Vector2(0,1);
 								rtv._collision_tangent = new Vector2(1,0);
-								Debug.LogError("ERROR: collision no line segment found");
+								//Debug.LogError("ERROR: collision no line segment found");
 							}
 							goto loop_end;
 						}
@@ -752,6 +826,7 @@ public class SPPhysics {
 			}
 		}
 		loop_end:;
+		test_obstacles.Clear();
 		return rtv;
 	}
 	

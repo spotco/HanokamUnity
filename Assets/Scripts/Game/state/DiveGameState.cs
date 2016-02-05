@@ -298,7 +298,6 @@ public class DiveGameState : GameStateBase, SPPhysics.SolidCollisionUpdateDelega
 		for (int i = 0; i < obstacles.Count; i++) {
 			((IWaterObstacle)obstacles[i]).apply_env_offset(_params._player_pos.y);
 		}
-		
 	}
 	
 	private void calculate_player_position(GameEngineScene g, float tar_rotation) {

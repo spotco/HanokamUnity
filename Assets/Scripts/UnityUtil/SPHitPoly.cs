@@ -8,6 +8,12 @@ public interface SPHitPolyOwner {
 	SPHitPoly get_hit_poly();
 }
 
+public class SPHitPolyOwnerImpl : SPHitPolyOwner {
+	public SPHitPoly _poly = new SPHitPoly();
+	public SPHitRect get_hit_rect() { return SPHitPoly.hitpoly_to_bounding_hitrect(_poly,Vector2.zero,Vector2.zero); }
+	public SPHitPoly get_hit_poly() { return _poly; }
+}
+
 public class DelegatedSPHitPolyOwner {
 	public Func<SPHitRect> _hit_rect_delegate;
 	public Func<SPHitPoly> _hit_poly_delegate;
